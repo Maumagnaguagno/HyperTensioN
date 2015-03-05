@@ -58,7 +58,7 @@ module Hypertension
         # Keep decomposing the hierarchy
         plan = planning(tasks.drop(1), level)
         if plan
-          # Some actions are not visible
+          # Some operators are not visible
           plan.unshift(current_task) if decompose
           return plan
         end
