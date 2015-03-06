@@ -35,23 +35,23 @@ module Robby
   # Operators
   #-----------------------------------------------
 
-  def enter(bot, source, destiny)
+  def enter(bot, source, destination)
     apply_operator(
       # True preconditions
       [
         ['robot', bot],
         ['hallway', source],
-        ['room', destiny],
+        ['room', destination],
         ['at', bot, source],
-        ['connected', source, destiny]
+        ['connected', source, destination]
       ],
       # False preconditions
       [
-        ['at', bot, destiny]
+        ['at', bot, destination]
       ],
       # Add effects
       [
-        ['at', bot, destiny]
+        ['at', bot, destination]
       ],
       # Del effects
       [
@@ -60,23 +60,23 @@ module Robby
     )
   end
 
-  def exit(bot, source, destiny)
+  def exit(bot, source, destination)
     apply_operator(
       # True preconditions
       [
         ['robot', bot],
         ['room', source],
-        ['hallway', destiny],
+        ['hallway', destination],
         ['at', bot, source],
-        ['connected', source, destiny]
+        ['connected', source, destination]
       ],
       # False preconditions
       [
-        ['at', bot, destiny]
+        ['at', bot, destination]
       ],
       # Add effects
       [
-        ['at', bot, destiny]
+        ['at', bot, destination]
       ],
       # Del effects
       [
@@ -85,23 +85,23 @@ module Robby
     )
   end
 
-  def move(bot, source, destiny)
+  def move(bot, source, destination)
     apply_operator(
       # True preconditions
       [
         ['robot', bot],
         ['hallway', source],
-        ['hallway', destiny],
+        ['hallway', destination],
         ['at', bot, source],
-        ['connected', source, destiny]
+        ['connected', source, destination]
       ],
       # False preconditions
       [
-        ['at', bot, destiny]
+        ['at', bot, destination]
       ],
       # Add effects
       [
-        ['at', bot, destiny]
+        ['at', bot, destination]
       ],
       # Del effects
       [
