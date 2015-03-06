@@ -40,11 +40,64 @@ I chose the explicit way, therefore you need to specify operator visibility and 
 
 ## Example
 
-ToDo description
+Nothing better than an example to understand the behavior of something. We will start with the **Robby domain**. Our rescue robot Robby is called to action, the robot is inside an office building trying to check the status of certain locations. Those locations are defined by the existence of a beacon, and the robot must be in the same hallway or room to check the status. Robby has a small set of actions available:
+- Enter a room connected to the current hallway
+- Exit the current room to a connected hallway
+- Move from hallway to hallway
+- Report status of beacon in the current room or hallway
+
+This is the set of primitive operators, not enough to HTN planning. We need to expand it. We know Robby must move, enter and exit zero or more times to reach any beacon, report the beacon, and repeat this process for every beacon.
+If you are used to regular expressions the result is similar to this (using ```,``` as a separator):
+```Ruby
+/(?:(?:move,|enter,|exit,)*report,)*/
+```
+
+We need to match the movement pattern first, the trick part is to avoid repetitions or our robot may be stuck in a loop of A to B and B to A again. Robby needs to remember, let us see this in a recursive format. The movement actions swap the position of Robby, predicate ```at```. The base of the recursion is to be already at the destination, otherwise use move, enter or exit, mark the position and call the recursion again. We need to remember to unvisit the locations once we reach our goal:
+
+```Ruby
+def swap_at(object, goal)
+  if swap_at__base(object, goal)
+    return []
+    unvisit(object)
+  elsif swap_at__enter(object, goal)
+    visited(object.position)
+    return [enter] + swap_at(object, goal)
+  elsif swap_at__recursion_exit(object, goal)
+    visited(object.position)
+    return [exit] + swap_at(object, goal)
+  elsif swap_at__recursion_move(object, goal)
+    visited(object.position)
+    return [move] + swap_at(object, goal)
+  end
+end
+```
+
+This example is hardcoded and abstracts most of the problem, it is time to build it in HTN. Remember to exploit the recursive nature of HTN to take the decisions for you, this make it simpler.
 
 ### Domain example
 
-ToDo PUT ROBBY EXAMPLE HERE
+Better start with code:
+
+```
+@domain = {
+  # Operators
+  'enter' => true,
+  'exit' => true,
+  'move' => true,
+  'report' => true,
+  'visit_at' => false,
+  'unvisit_at' => false,
+  # Methods
+  'swap_at' => [
+    'swap_at__base',
+    'swap_at__recursion_enter',
+    'swap_at__recursion_exit',
+    'swap_at__recursion_move'
+  ]
+}
+```
+
+The operators are the same as before, but visit and unvisit are not really important outside the planning stage, therefore they are not visible (```false```), while the others are visible (```true```). Our swap_at method is there, without any code describing its behavior. You could compare this with the header file holding the prototypes of functions as in C. And yes, I did not created the outerside pattern ```/(?:swap_at*report)*/```, one step at a time.
 
 ### Problem
 
