@@ -52,7 +52,7 @@ If you are used to regular expressions the result is similar to this (using ```,
 /(?:(?:move,|enter,|exit,)*report,)*/
 ```
 
-We need to match the movement pattern first, the trick part is to avoid repetitions or our robot may be stuck in a loop of A to B and B to A again. Robby needs to remember, let us see this in a recursive format. The movement actions swap the position of Robby, predicate ```at```. The base of the recursion is to be already at the destination, otherwise use move, enter or exit, mark the position and call the recursion again. We need to remember to unvisit the locations once we reach our goal:
+We need to match the movement pattern first, the trick part is to avoid repetitions or our robot may be stuck in a loop of A to B and B to A again. Robby needs to remember which locations were visited, let us see this in a recursive format. The movement actions swap the position of Robby, predicate ```at```. The base of the recursion happens when the object (Robby) is already at the destination, otherwise use move, enter or exit, mark the position and call the recursion again. We need to remember to unvisit the locations once we reach our goal, otherwise Robby may be stuck:
 
 ```Ruby
 def swap_at(object, goal)
@@ -78,26 +78,79 @@ This example is hardcoded and abstracts most of the problem, it is time to build
 
 Better start with code:
 
-```
-@domain = {
-  # Operators
-  'enter' => true,
-  'exit' => true,
-  'move' => true,
-  'report' => true,
-  'visit_at' => false,
-  'unvisit_at' => false,
-  # Methods
-  'swap_at' => [
-    'swap_at__base',
-    'swap_at__recursion_enter',
-    'swap_at__recursion_exit',
-    'swap_at__recursion_move'
-  ]
-}
+```Ruby
+require '../../Hypertension'
+
+module Robby
+  include Hypertension
+  extend self
+
+  @domain = {
+    # Operators
+    'enter' => true,
+    'exit' => true,
+    'move' => true,
+    'report' => true,
+    'visit_at' => false,
+    'unvisit_at' => false,
+    # Methods
+    'swap_at' => [
+      'swap_at__base',
+      'swap_at__recursion_enter',
+      'swap_at__recursion_exit',
+      'swap_at__recursion_move'
+    ]
+  }
+end
 ```
 
 The operators are the same as before, but visit and unvisit are not really important outside the planning stage, therefore they are not visible (```false```), while the others are visible (```true```). Our swap_at method is there, without any code describing its behavior. You could compare this with the header file holding the prototypes of functions as in C. And yes, I did not created the outerside pattern ```/(?:swap_at*report)*/```, one step at a time.
+
+The enter operator appears to be a good starting point, we need to define our preconditions and effects. I prefer to handle them in a table, easier to see what is changing:
+
+**enter(bot, source, destination)**
+
+| Preconditions | Effects |
+| ---: | ---: |
+| robot(bot) | |
+| hallway(source) ||
+| room(destination) ||
+| connected(source, destination) ||
+| at(bot, source) | **not** at(bot, source) |
+| **not** at(bot, source) | at(bot, destination) |
+
+This translates to:
+
+```Ruby
+  def enter(bot, source, destination)
+    apply_operator(
+      # True preconditions
+      [
+        ['robot', bot],
+        ['hallway', source],
+        ['room', destination],
+        ['at', bot, source],
+        ['connected', source, destination]
+      ],
+      # False preconditions
+      [
+        ['at', bot, destination]
+      ],
+      # Add effects
+      [
+        ['at', bot, destination]
+      ],
+      # Del effects
+      [
+        ['at', bot, source]
+      ]
+    )
+  end
+```
+
+The other operators are no different, time to see how our swap_at method works:
+
+ToDo
 
 ### Problem
 
