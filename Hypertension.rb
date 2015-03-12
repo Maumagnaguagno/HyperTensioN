@@ -120,26 +120,26 @@ module Hypertension
       # Swap free variable with set to match
       pred = objs.map {|p| objects.find {|j| j.first.equal?(p)} or p}
       # Compare with current state
-      @state[name].each {|v|
+      @state[name].each {|terms|
         next unless pred.each_with_index {|p,i|
           # Free variable
           if p.instance_of?(Array)
             # Not unified
             if p.first.empty?
-              match_objects.push(p, v[i])
+              match_objects.push(p, i)
             # No match with previous unification
-            elsif not p.include?(v[i])
+            elsif not p.include?(terms[i])
               match_objects.clear
               break
             end
           # No match with value
-          elsif v[i] != p
+          elsif p != terms[i]
             match_objects.clear
             break
           end
         }
         # Add values to sets
-        match_objects.shift << match_objects.shift until match_objects.empty?
+        match_objects.shift << terms[match_objects.shift] until match_objects.empty?
       }
       # Unification closed
       pred.each {|i| i.first.replace('X') if i.instance_of?(Array) and i.first.empty?}
@@ -187,7 +187,6 @@ module Hypertension
   #-----------------------------------------------
 
   def problem(start, tasks, debug = false)
-    setup if respond_to?(:setup)
     # Debug information
     @debug = debug
     # Planning
@@ -202,6 +201,10 @@ module Hypertension
       print_data(plan)
     else puts 'Planning failed'
     end
+    #if RUBY_VERSION >= '2.0'
+    #  GC.stat.each {|i| p i}
+    #  ObjectSpace.count_objects.each {|i| p i}
+    #end
   rescue Interrupt
     puts 'Interrupted'
   rescue
