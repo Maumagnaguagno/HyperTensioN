@@ -47,9 +47,9 @@ Nothing better than an example to understand the behavior of something. We will 
 - Report status of beacon in the current room or hallway
 
 This is the set of primitive operators, not enough to HTN planning. We need to expand it. We know Robby must move, enter and exit zero or more times to reach any beacon, report the beacon, and repeat this process for every beacon.
-If you are used to regular expressions the result is similar to this (using ```,``` as a separator):
+If you are used to regular expressions the result is similar to this:
 ```Ruby
-/(?:(?:move,|enter,|exit,)*report,)*/
+/((move|enter|exit)*report)*/
 ```
 
 We need to match the movement pattern first, the trick part is to avoid repetitions or our robot may be stuck in a loop of A to B and B to A again. Robby needs to remember which locations were visited, let us see this in a recursive format. The movement actions swap the position of Robby, predicate ```at```. The base of the recursion happens when the object (Robby) is already at the destination, otherwise use move, enter or exit, mark the position and call the recursion again. We need to remember to unvisit the locations once we reach our goal, otherwise Robby may be stuck:
