@@ -164,15 +164,16 @@ module Robby
     intermediary = ''
     # Generate unifications
     generate(
-    # True preconditions
-    [
-      ['at', object, current],
-      ['connected', current, intermediary]
-    ],
-    # False preconditions
-    [
-      ['at', object, goal]
-    ], current, intermediary) {
+      # True preconditions
+      [
+        ['at', object, current],
+        ['connected', current, intermediary]
+      ],
+      # False preconditions
+      [
+        ['at', object, goal]
+      ], current, intermediary
+    ) {
       unless @visited_at[object].include?(intermediary)
         yield [
           ['enter', object, current, intermediary],
@@ -189,15 +190,16 @@ module Robby
     intermediary = ''
     # Generate unifications
     generate(
-    # True preconditions
-    [
-      ['at', object, current],
-      ['connected', current, intermediary]
-    ],
-    # False preconditions
-    [
-      ['at', object, goal]
-    ], current, intermediary) {
+      # True preconditions
+      [
+        ['at', object, current],
+        ['connected', current, intermediary]
+      ],
+      # False preconditions
+      [
+        ['at', object, goal]
+      ], current, intermediary
+    ) {
       unless @visited_at[object].include?(intermediary)
         yield [
           ['exit', object, current, intermediary],
@@ -214,15 +216,16 @@ module Robby
     intermediary = ''
     # Generate unifications
     generate(
-    # True preconditions
-    [
-      ['at', object, current],
-      ['connected', current, intermediary]
-    ],
-    # False preconditions
-    [
-      ['at', object, goal]
-    ], current, intermediary) {
+      # True preconditions
+      [
+        ['at', object, current],
+        ['connected', current, intermediary]
+      ],
+      # False preconditions
+      [
+        ['at', object, goal]
+      ], current, intermediary
+    ) {
       unless @visited_at[object].include?(intermediary)
         yield [
           ['move', object, current, intermediary],
