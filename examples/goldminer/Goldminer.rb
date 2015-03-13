@@ -163,17 +163,18 @@ module Goldminer
     place = ''
     # Generate unifications
     generate(
-    # True preconditions
-    [
-      ['at', agent, from],
-      ['adjacent', from, place]
-    ],
-    # False preconditions
-    [
-      ['at', agent, to],
-      ['blocked', place],
-      ['blocked', to]
-    ], place) {
+      # True preconditions
+      [
+        ['at', agent, from],
+        ['adjacent', from, place]
+      ],
+      # False preconditions
+      [
+        ['at', agent, to],
+        ['blocked', place],
+        ['blocked', to]
+      ], place
+    ) {
       unless @visited_at[agent].include?(place)
         yield [
           ['move', agent, from, place],
@@ -226,18 +227,19 @@ module Goldminer
     deposit_pos = ''
     # Generate unifications
     generate(
-    # True preconditions
-    [
-      ['duty', agent],
-      ['at', agent, agent_pos],
-      ['on', gold, gold_pos],
-      ['deposit', deposit_pos],
-      ['next', agent, other]
-    ],
-    # False preconditions
-    [
-      ['dibs', gold]
-    ], agent, agent_pos, other, gold, gold_pos, deposit_pos) {
+      # True preconditions
+      [
+        ['duty', agent],
+        ['at', agent, agent_pos],
+        ['on', gold, gold_pos],
+        ['deposit', deposit_pos],
+        ['next', agent, other]
+      ],
+      # False preconditions
+      [
+        ['dibs', gold]
+      ], agent, agent_pos, other, gold, gold_pos, deposit_pos
+    ) {
       yield [
         ['see', gold],
         ['travel', agent, agent_pos, gold_pos],
