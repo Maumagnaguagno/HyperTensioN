@@ -150,17 +150,18 @@ module Travel
     distance = ''
     # Generate unifications
     generate(
-    # True preconditions
-    [
-      ['at', agent, source],
-      ['at', 'taxi', taxi_position],
-      ['cash', agent, amount_of_money],
-      ['distance', source, destination, distance]
-    ],
-    # False preconditions
-    [
-      ['at', agent, destination]
-    ], amount_of_money, taxi_position, distance) {
+      # True preconditions
+      [
+        ['at', agent, source],
+        ['at', 'taxi', taxi_position],
+        ['cash', agent, amount_of_money],
+        ['distance', source, destination, distance]
+      ],
+      # False preconditions
+      [
+        ['at', agent, destination]
+      ], amount_of_money, taxi_position, distance
+    ) {
       distance = distance.to_i
       if distance > STAMINA
         cost = taxi_rate(distance)
