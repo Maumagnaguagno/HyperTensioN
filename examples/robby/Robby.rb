@@ -27,10 +27,6 @@ module Robby
   # Memory
   @visited_at = Hash.new {|h,k| h[k] = []}
 
-  def setup
-    @visited_at.clear
-  end
-
   #-----------------------------------------------
   # Operators
   #-----------------------------------------------
