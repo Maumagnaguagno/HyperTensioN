@@ -41,10 +41,10 @@ I chose the explicit way, therefore you need to specify operator visibility and 
 ### Example
 
 Nothing better than an example to understand the behavior of something. We will start with the **Robby domain**. Our rescue robot Robby is called to action, the robot is inside an office building trying to check the status of certain locations. Those locations are defined by the existence of a beacon, and the robot must be in the same hallway or room to check the status. Robby has a small set of actions available:
-- Enter a room connected to the current hallway
-- Exit the current room to a connected hallway
-- Move from hallway to hallway
-- Report status of beacon in the current room or hallway
+- **Enter** a room connected to the current hallway
+- **Exit** the current room to a connected hallway
+- **Move** from hallway to hallway
+- **Report** status of beacon in the current room or hallway
 
 This is the set of primitive operators, not enough to HTN planning. We need to expand it. We know Robby must move, enter and exit zero or more times to reach any beacon, report the beacon, and repeat this process for every beacon.
 If you are used to regular expressions the result is similar to this:
@@ -155,6 +155,21 @@ ToDo
 ### Problem
 
 ToDo PUT ROBBY EXAMPLE HERE
+
+## Execution
+
+The problem acts as the main function since the problems include the domain, and the domain include the planning engine.
+
+```
+cd HyperTensioN/examples/project
+ruby pb1.rb
+```
+
+The parsing engine is still under development and eventually will be able to read both PDDL operators and JSHOP methods and operator, and convert to Hypertension code. This is not uncommon, as JSHOP itself compiling methods and operators to Java, trying to achieve the best performance possible. Currently JSHOP is the only language being supported. If no output folder is provided the system prints out what was understood from the files.
+
+```
+ruby Hyparser.rb domain_file problem_file [output_folder]
+```
 
 ## API
 
