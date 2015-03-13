@@ -25,11 +25,10 @@ module <DOMAIN_NAME>
   #-----------------------------------------------
   # Methods
   #-----------------------------------------------
-<DEFINE_METHODS>
-end
+<DEFINE_METHODS>end
 EOF
 
-  TEMPLATE_PROBLEM = "require './<DOMAIN_FILE>'\n\n# Objects\n<OBJECTS>\n\n<DOMAIN_NAME>.problem(\n  # Start\n  {\n<START>\n  },\n  # Tasks\n  [\n<TASKS>\n  ]\n)\n"
+  TEMPLATE_PROBLEM = "require './<DOMAIN_FILE>'\n\n# Objects\n<OBJECTS>\n\n<DOMAIN_NAME>.problem(\n  # Start\n  {\n<START>\n  },\n  # Tasks\n  [\n<TASKS>  ]\n)"
 
   OPERATOR_NAME = 0
   OPERATOR_PREC = 1
@@ -327,6 +326,16 @@ Problem #@problem_name of #@problem_domain
     #{propositions_to_s(@tasks, "\n    ")}"
   end
 
+  def yield_subtasks(output, subtasks, indentation)
+    if subtasks.empty?
+      output << "#{indentation}yield []\n"
+    else
+      output << "#{indentation}yield [\n"
+      subtasks.each_with_index {|t,i| output << "#{indentation}  ['#{t.first}'#{t.drop(1).map {|i| ", #{i}"}.join}]#{',' if subtasks.size.pred != i}\n"}
+      output << "#{indentation}]\n"
+    end
+  end
+
   #-----------------------------------------------
   # To Ruby
   #-----------------------------------------------
@@ -337,7 +346,7 @@ Problem #@problem_name of #@problem_domain
     domain_operators = ''
     domain_define_operators = ''
     @operators.each_with_index {|op,i|
-      domain_operators << "    '#{op.first}' => true#{(@operators.size.pred != i or not @methods.empty?) ? ',' : ''}\n"
+      domain_operators << "    '#{op.first}' => true#{',' if @operators.size.pred != i or not @methods.empty?}\n"
       domain_define_operators << "\n  def #{op.first}(#{op[1].join(', ')})\n    apply_operator(\n"
       op[2..5].each_with_index {|group,gi|
         domain_define_operators << '      # ' << ['True preconditions', 'False preconditions', 'Add effects', 'Del effects'][gi]
@@ -346,11 +355,11 @@ Problem #@problem_name of #@problem_domain
           domain_define_operators << "\n"
           group.each_with_index {|g,j|
             start_hash[g.first] ||= []
-            domain_define_operators << "        ['#{g.first}', #{g.drop(1).join(', ')}]#{group.size.pred != j ? ',' : ''}\n"
+            domain_define_operators << "        ['#{g.first}', #{g.drop(1).join(', ')}]#{',' if group.size.pred != j}\n"
           }
           domain_define_operators << '      '
         end
-        domain_define_operators << "]#{gi != 3 ? ',' : ''}\n"
+        domain_define_operators << "]#{',' if gi != 3}\n"
       }
       domain_define_operators << "    )\n  end\n"
     }
@@ -360,70 +369,55 @@ Problem #@problem_name of #@problem_domain
     @methods.each_with_index {|met,mi|
       domain_methods << "    '#{met.first}' => [\n"
       met.drop(2).each_with_index {|met_decompose,i|
-        domain_methods << "      '#{met_decompose.first}'#{met.size - 3 != i ? ',' : ''}\n"
-        domain_define_methods << "\n  def #{met_decompose.first}(#{met[1].join(', ')})\n"
-        p met_decompose
-        STDIN.gets
+        domain_methods << "      '#{met_decompose.first}'#{',' if met.size - 3 != i}\n"
+        domain_define_methods << "\n  def #{met_decompose.first}"
+        domain_define_methods << "(#{met[1].join(', ')})" unless met[1].empty?
+        domain_define_methods << "\n"
         # No Preconditions
         if met_decompose[2].empty? and met_decompose[3].empty?
-          domain_define_methods << "    yield ["
-          unless met_decompose[4].empty?
-            domain_define_methods << "\n"
-            met_decompose[4].each_with_index {|g,j| domain_define_methods << "        ['#{g.first}', #{g.drop(1).join(', ')}]#{met_decompose[4].size.pred != j ? ',' : ''}\n"}
-            domain_define_methods << '      '
-          end
-          domain_define_methods << "]\n  end\n"
+          yield_subtasks(domain_define_methods, met_decompose[4], '    ')
+          domain_define_methods << "  end\n"
         # Grounded
         elsif met_decompose[1].empty?
           domain_define_methods << "    if applicable?(\n"
           met_decompose[2..3].each_with_index {|group,gi|
-            domain_define_methods << '      # ' << ['True preconditions', 'False preconditions'][gi]
-            domain_define_methods << "\n      ["
+            domain_define_methods << '      # ' << (gi.zero? ? 'True' : 'False') << " preconditions\n      ["
             unless group.empty?
               domain_define_methods << "\n"
               group.each {|i|
                 start_hash[i.first] ||= []
-                domain_define_methods << "        ['#{i.first}', #{i.drop(1).join(', ')}]#{group.size.pred != i ? ',' : ''}\n"
+                domain_define_methods << "        ['#{i.first}', #{i.drop(1).join(', ')}]#{',' if group.size.pred != i}\n"
               }
               domain_define_methods << '      '
             end
-            domain_define_methods << "]#{gi != 1 ? ',' : ''}\n"
+            domain_define_methods << "]#{',' if gi != 1}\n"
           }
-          domain_define_methods << "    )\n      yield ["
-          unless met_decompose[4].empty?
-            domain_define_methods << "\n"
-            met_decompose[4].each_with_index {|g,j| domain_define_methods << "        ['#{g.first}'#{g.drop(1).map {|i| ", #{i}"}.join}]#{met_decompose[4].size.pred != j ? ',' : ''}\n"}
-            domain_define_methods << '      '
-          end
-          domain_define_methods << "]\n    end\n  end\n"
+          domain_define_methods << "    )\n"
+          yield_subtasks(domain_define_methods, met_decompose[4], '      ')
+          domain_define_methods << "    end\n  end\n"
         # Lifted
         else
           met_decompose[1].each {|free| domain_define_methods << "    #{free} = ''\n"}
           domain_define_methods << "    generate("
           met_decompose[2..3].each_with_index {|group,gi|
-            domain_define_methods << "\n      # " << ['True preconditions', 'False preconditions'][gi]
-            domain_define_methods << "\n      ["
+            domain_define_methods << "\n      # " << (gi.zero? ? 'True' : 'False') << " preconditions\n      ["
             unless group.empty?
               domain_define_methods << "\n"
               group.each {|i|
                 start_hash[i.first] ||= []
-                domain_define_methods << "        ['#{i.first}', #{i.drop(1).join(', ')}]#{group.size.pred != i ? ',' : ''}\n"
+                domain_define_methods << "        ['#{i.first}', #{i.drop(1).join(', ')}]#{',' if group.size.pred != i}\n"
               }
               domain_define_methods << '      '
             end
-            domain_define_methods << "]#{gi != 1 ? ',' : ''}"
+            domain_define_methods << "]#{',' if gi != 1}"
           }
           met_decompose[1].each {|free| domain_define_methods << ", #{free}"}
-          domain_define_methods << ") {\n      yield ["
-          unless met_decompose[4].empty?
-            domain_define_methods << "\n"
-            met_decompose[4].each_with_index {|g,j| domain_define_methods << "        ['#{g.first}'#{g.drop(1).map {|i| ", #{i}"}.join}]#{met_decompose[4].size.pred != j ? ',' : ''}\n"}
-            domain_define_methods << '      '
-          end
-          domain_define_methods << "]\n    }\n  end\n"
+          domain_define_methods << "\n    ) {\n"
+          yield_subtasks(domain_define_methods, met_decompose[4], '      ')
+          domain_define_methods << "    }\n  end\n"
         end
       }
-      domain_methods << "    ]#{@methods.size.pred != mi ? ',' : ''}\n"
+      domain_methods << "    ]#{',' if @methods.size.pred != mi}\n"
     }
     # Domain
     folder = "examples/#{folder}"
@@ -448,7 +442,7 @@ Problem #@problem_name of #@problem_domain
       start << "    ],\n"
     }
     tasks = ''
-    @tasks.each_with_index {|t,i| tasks << "    ['#{t.first}', #{t.drop(1).join(', ')}]#{@tasks.size.pred != i ? ',' : ''}\n"}
+    @tasks.each_with_index {|t,i| tasks << "    ['#{t.first}', #{t.drop(1).join(', ')}]#{',' if @tasks.size.pred != i}\n"}
     objects.uniq!
     problem_str = TEMPLATE_PROBLEM.dup
     problem_str.sub!('<DOMAIN_FILE>', domain_filename)
