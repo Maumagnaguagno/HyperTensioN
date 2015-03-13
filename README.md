@@ -148,9 +148,78 @@ This translates to:
   end
 ```
 
-The other operators are no different, time to see how our swap_at method works:
+The other operators are no different, time to see how our swap_at method works. We need to define every single case as a different method. The order they appear in the domain definition implies the order of evaluation. Methods may appear in 3 different scenarios:
+- **No preconditions**, direct application of subtasks.
+- **Grounded preconditions**, apply subtasks if satisfied, every variable is [grounded](http://en.wikipedia.org/wiki/Ground_expression).
+- **Lifted preconditions**, unify [free-variables](http://en.wikipedia.org/wiki/Free_variables_and_bound_variables) according to the preconditions.
 
-ToDo
+Instead of returning, the methods yield a subtask list. This approach solves the problem of returning several unifications per method call, yielding them as required. Be aware that all methods must have the same parameter list, other variables must be bounded during run-time (**Lifted preconditions**).
+
+#### No preconditions
+
+This is the simplest case, the method **yields** a subtask list without test. The list may be empty. This example is not part of the current implementation of Robby.
+
+```Ruby
+def swap_at__jump(object, goal)
+    yield [
+      ['jump', object]
+    ]
+  end
+end
+```
+
+#### Grounded preconditions
+
+Sometimes we have preconditions in the last operator of the subtask list, we want to discover if the precondition is satisfied now instead of executing a lot of steps to discover this decomposition leads to a failure. Use preconditions as look-aheads, this may create a redundancy with the operators, but saves quite a lot of time if used wisely.
+
+```Ruby
+def swap_at__base(object, goal)
+  if applicable?(
+    # True preconditions
+    [
+      ['at', object, goal]
+    ],
+    # False preconditions
+    []
+  )
+    yield [
+      ['unvisit_at', object]
+    ]
+  end
+end
+```
+
+#### Lifted preconditions
+
+It is impossible to propagate variables all the time, some variables must be bounded during run-time. Free-variables are created as empty strings, being used as pointers to their future values. A ```generate([true],[false],free-variables)``` method will do the hard job, using positive preconditions to find possible values and unify accordingly, only yielding values that satisfy the preconditions requested. The following example goes beyond this specification, using an instance variable to avoid cached positions created by other decomposition paths. You can always use ```if-else``` constructs to speed-up problem solving. Here it is clear that no state memory is created by Hypertension, that is why we use ```@visited_at```. This memory is also cleared during the process to reuse previous positions, give a look at visit and unvisit operators in Robby to understand. You could also define visit and unvisit as predicates, but then your memory would only hold the current path, which makes it slower.
+
+```Ruby
+  def swap_at__recursion_enter(object, goal)
+    # Free variables
+    current = ''
+    intermediary = ''
+    # Generate unifications
+    generate(
+      # True preconditions
+      [
+        ['at', object, current],
+        ['connected', current, intermediary]
+      ],
+      # False preconditions
+      [
+        ['at', object, goal]
+      ], current, intermediary
+    ) {
+      unless @visited_at[object].include?(intermediary)
+        yield [
+          ['enter', object, current, intermediary],
+          ['visit_at', object, current],
+          ['swap_at', object, goal]
+        ]
+      end
+    }
+  end
+```
 
 ### Problem
 
