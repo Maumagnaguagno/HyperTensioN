@@ -326,6 +326,27 @@ Problem #@problem_name of #@problem_domain
     #{propositions_to_s(@tasks, "\n    ")}"
   end
 
+  #-----------------------------------------------
+  # Add propositions
+  #-----------------------------------------------
+
+  def add_propositions(output, group, start_hash)
+    if group.empty?
+      output << "\n      []"
+    else
+      output << "\n      [\n"
+      group.each_with_index {|g,i|
+        start_hash[g.first] ||= []
+        output << "        ['#{g.first}', #{g.drop(1).join(', ')}]#{',' if group.size.pred != i}\n"
+      }
+      output << '      ]'
+    end
+  end
+
+  #-----------------------------------------------
+  # Yield subtasks
+  #-----------------------------------------------
+
   def yield_subtasks(output, subtasks, indentation)
     if subtasks.empty?
       output << "#{indentation}yield []\n"
@@ -334,6 +355,24 @@ Problem #@problem_name of #@problem_domain
       subtasks.each_with_index {|t,i| output << "#{indentation}  ['#{t.first}'#{t.drop(1).map {|i| ", #{i}"}.join}]#{',' if subtasks.size.pred != i}\n"}
       output << "#{indentation}]\n"
     end
+  end
+
+  #-----------------------------------------------
+  # Add method
+  #-----------------------------------------------
+
+  def add_method(test, output, method, start_hash)
+    method[1].each {|free| output << "    #{free} = ''\n"}
+    output << "    #{test}("
+    method[2..3].each_with_index {|group,gi|
+      output << "\n      # " << (gi.zero? ? 'True' : 'False') << " preconditions"
+      add_propositions(output, group, start_hash)
+      output << ',' if gi != 1
+    }
+    method[1].each {|free| output << ", #{free}"}
+    output << "\n    )#{' {' unless method[1].empty?}\n"
+    yield_subtasks(output, method[4], '      ')
+    output << "    #{method[1].empty? ? 'end' : '}'}\n"
   end
 
   #-----------------------------------------------
@@ -350,16 +389,9 @@ Problem #@problem_name of #@problem_domain
       domain_define_operators << "\n  def #{op.first}(#{op[1].join(', ')})\n    apply_operator(\n"
       op[2..5].each_with_index {|group,gi|
         domain_define_operators << '      # ' << ['True preconditions', 'False preconditions', 'Add effects', 'Del effects'][gi]
-        domain_define_operators << "\n      ["
-        unless group.empty?
-          domain_define_operators << "\n"
-          group.each_with_index {|g,j|
-            start_hash[g.first] ||= []
-            domain_define_operators << "        ['#{g.first}', #{g.drop(1).join(', ')}]#{',' if group.size.pred != j}\n"
-          }
-          domain_define_operators << '      '
-        end
-        domain_define_operators << "]#{',' if gi != 3}\n"
+        add_propositions(domain_define_operators, group, start_hash)
+        domain_define_operators << ',' if gi != 3
+        domain_define_operators << "\n"
       }
       domain_define_operators << "    )\n  end\n"
     }
@@ -376,46 +408,14 @@ Problem #@problem_name of #@problem_domain
         # No Preconditions
         if met_decompose[2].empty? and met_decompose[3].empty?
           yield_subtasks(domain_define_methods, met_decompose[4], '    ')
-          domain_define_methods << "  end\n"
         # Grounded
         elsif met_decompose[1].empty?
-          domain_define_methods << "    if applicable?(\n"
-          met_decompose[2..3].each_with_index {|group,gi|
-            domain_define_methods << '      # ' << (gi.zero? ? 'True' : 'False') << " preconditions\n      ["
-            unless group.empty?
-              domain_define_methods << "\n"
-              group.each {|i|
-                start_hash[i.first] ||= []
-                domain_define_methods << "        ['#{i.first}', #{i.drop(1).join(', ')}]#{',' if group.size.pred != i}\n"
-              }
-              domain_define_methods << '      '
-            end
-            domain_define_methods << "]#{',' if gi != 1}\n"
-          }
-          domain_define_methods << "    )\n"
-          yield_subtasks(domain_define_methods, met_decompose[4], '      ')
-          domain_define_methods << "    end\n  end\n"
+          add_method('if applicable?', domain_define_methods, met_decompose, start_hash)
         # Lifted
         else
-          met_decompose[1].each {|free| domain_define_methods << "    #{free} = ''\n"}
-          domain_define_methods << "    generate("
-          met_decompose[2..3].each_with_index {|group,gi|
-            domain_define_methods << "\n      # " << (gi.zero? ? 'True' : 'False') << " preconditions\n      ["
-            unless group.empty?
-              domain_define_methods << "\n"
-              group.each {|i|
-                start_hash[i.first] ||= []
-                domain_define_methods << "        ['#{i.first}', #{i.drop(1).join(', ')}]#{',' if group.size.pred != i}\n"
-              }
-              domain_define_methods << '      '
-            end
-            domain_define_methods << "]#{',' if gi != 1}"
-          }
-          met_decompose[1].each {|free| domain_define_methods << ", #{free}"}
-          domain_define_methods << "\n    ) {\n"
-          yield_subtasks(domain_define_methods, met_decompose[4], '      ')
-          domain_define_methods << "    }\n  end\n"
+          add_method('generate', domain_define_methods, met_decompose, start_hash)
         end
+        domain_define_methods << "  end\n"
       }
       domain_methods << "    ]#{',' if @methods.size.pred != mi}\n"
     }
@@ -433,13 +433,18 @@ Problem #@problem_name of #@problem_domain
     start = ''
     objects = []
     @state.each {|i| (start_hash[i.first] ||= []) << i.drop(1)}
-    start_hash.each {|k,v|
-      start << "    '#{k}' => [\n"
-      v.each {|obj|
-        start << "      [#{obj.join(', ')}],\n"
-        objects.push(*obj)
-      }
-      start << "    ],\n"
+    start_hash.each_with_index {|(k,v),i|
+      if v.empty?
+        start << "    '#{k}' => []"
+      else
+        start << "    '#{k}' => [\n"
+        v.each_with_index {|obj,j|
+          start << "      [#{obj.join(', ')}]#{',' if v.size.pred != j}\n"
+          objects.push(*obj)
+        }
+        start << '    ]'
+      end
+      start << ",\n" if start_hash.size.pred != i
     }
     tasks = ''
     @tasks.each_with_index {|t,i| tasks << "    ['#{t.first}', #{t.drop(1).join(', ')}]#{',' if @tasks.size.pred != i}\n"}

@@ -168,7 +168,7 @@ module Goldminer
     if applicable?(
       # True preconditions
       [
-        ['blocked', to],
+        ['blocked', to]
       ],
       # False preconditions
       []
@@ -181,7 +181,7 @@ module Goldminer
     if applicable?(
       # True preconditions
       [
-        ['at', agent, to],
+        ['at', agent, to]
       ],
       # False preconditions
       []
@@ -197,14 +197,15 @@ module Goldminer
       # True preconditions
       [
         ['at', agent, from],
-        ['rail', from, place],
+        ['rail', from, place]
       ],
       # False preconditions
       [
         ['at', agent, to],
         ['blocked', place],
-        ['visited', agent, place],
-      ], from, place) {
+        ['visited', agent, place]
+      ], from, place
+    ) {
       yield [
         ['move', agent, from, place],
         ['visit', agent, from],
@@ -221,15 +222,16 @@ module Goldminer
       # True preconditions
       [
         ['at', agent, from],
-        ['adjacent', from, place],
+        ['adjacent', from, place]
       ],
       # False preconditions
       [
         ['at', agent, to],
         ['rail', from, place],
         ['blocked', place],
-        ['visited', agent, place],
-      ], from, place) {
+        ['visited', agent, place]
+      ], from, place
+    ) {
       yield [
         ['move', agent, from, place],
         ['visit', agent, from],
@@ -239,7 +241,7 @@ module Goldminer
     }
   end
 
-  def get_gold_recursion()
+  def get_gold_recursion
     agent = ''
     agent_pos = ''
     gold = ''
@@ -252,13 +254,14 @@ module Goldminer
         ['duty', agent],
         ['at', agent, agent_pos],
         ['on', gold, gold_pos],
-        ['deposit', deposit_pos],
+        ['deposit', deposit_pos]
       ],
       # False preconditions
       [
         ['has', agent, anygold],
-        ['dibs', gold],
-      ], agent, agent_pos, gold, gold_pos, anygold, deposit_pos) {
+        ['dibs', gold]
+      ], agent, agent_pos, gold, gold_pos, anygold, deposit_pos
+    ) {
       yield [
         ['see', gold],
         ['travel', agent, gold_pos],
@@ -271,8 +274,7 @@ module Goldminer
     }
   end
 
-  def get_gold_base()
+  def get_gold_base
     yield []
   end
-
 end
