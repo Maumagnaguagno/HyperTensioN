@@ -36,7 +36,7 @@ Robby.problem(
       [left],
       [middle],
       [right],
-      [room1],
+      [room1]
     ],
     'hallway' => [
       [left],
