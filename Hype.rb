@@ -1,7 +1,7 @@
 module Hyparser
   extend self
 
-  TEMPLATE_DOMAIN = <<EOF
+  TEMPLATE_DOMAIN = "
 require '../../Hypertension'
 
 module <DOMAIN_NAME>
@@ -25,8 +25,7 @@ module <DOMAIN_NAME>
   #-----------------------------------------------
   # Methods
   #-----------------------------------------------
-<DEFINE_METHODS>end
-EOF
+<DEFINE_METHODS>end"
 
   TEMPLATE_PROBLEM = "require './<DOMAIN_FILE>'\n\n# Objects\n<OBJECTS>\n\n<DOMAIN_NAME>.problem(\n  # Start\n  {\n<START>\n  },\n  # Tasks\n  [\n<TASKS>  ]\n)"
 
@@ -86,10 +85,10 @@ EOF
   end
 
   #-----------------------------------------------
-  # Operator
+  # Parse operator
   #-----------------------------------------------
 
-  def operator(op)
+  def parse_operator(op)
     operator = Array.new(6)
     counter = OPERATOR_NAME
     scan_groups(op) {|value|
@@ -139,10 +138,10 @@ EOF
   end
 
   #-----------------------------------------------
-  # Method
+  # Parse method
   #-----------------------------------------------
 
-  def method(met)
+  def parse_method(met)
     method = []
     counter = METHOD_NAME
     label = true
@@ -207,10 +206,10 @@ EOF
   end
 
   #-----------------------------------------------
-  # Domain
+  # Parse domain
   #-----------------------------------------------
 
-  def domain(domain_filename)
+  def parse_domain(domain_filename)
     description = IO.read(domain_filename)
     description.gsub!(/;.*$|\n/,'')
     if description =~ /^\s*\(\s*defdomain\s+(\w+)\s*\(\s*(.*)\s*\)\s*\)\s*$/
@@ -221,9 +220,9 @@ EOF
         if group =~ /^\s*\(\s*:(operator|method)\s*(.*)\s*\)\s*$/
           case $1
           when 'operator'
-            operator($2)
+            parse_operator($2)
           when 'method'
-            method($2)
+            parse_method($2)
           end
         else puts "#{group} is not recognized"
         end
@@ -233,10 +232,10 @@ EOF
   end
 
   #-----------------------------------------------
-  # Problem
+  # Parse problem
   #-----------------------------------------------
 
-  def problem(problem_filename)
+  def parse_problem(problem_filename)
     description = IO.read(problem_filename)
     description.gsub!(/;.*$|\n/,'')
     if description =~ /^\s*\(\s*defproblem\s+(\w+)\s+(\w+)\s+\(\s*(.+)\s*\)\s*\)\s*$/
@@ -327,10 +326,10 @@ Problem #@problem_name of #@problem_domain
   end
 
   #-----------------------------------------------
-  # Add propositions
+  # Propositions to Ruby
   #-----------------------------------------------
 
-  def add_propositions(output, group, start_hash)
+  def propositions_to_ruby(output, group, start_hash)
     if group.empty?
       output << "\n      []"
     else
@@ -344,10 +343,10 @@ Problem #@problem_name of #@problem_domain
   end
 
   #-----------------------------------------------
-  # Yield subtasks
+  # Subtasks to Ruby
   #-----------------------------------------------
 
-  def yield_subtasks(output, subtasks, indentation)
+  def subtasks_to_ruby(output, subtasks, indentation)
     if subtasks.empty?
       output << "#{indentation}yield []\n"
     else
@@ -358,21 +357,68 @@ Problem #@problem_name of #@problem_domain
   end
 
   #-----------------------------------------------
-  # Add method
+  # Method to Ruby
   #-----------------------------------------------
 
-  def add_method(test, output, method, start_hash)
+  def method_to_ruby(test, output, method, start_hash)
     method[1].each {|free| output << "    #{free} = ''\n"}
     output << "    #{test}("
     method[2..3].each_with_index {|group,gi|
       output << "\n      # " << (gi.zero? ? 'True' : 'False') << " preconditions"
-      add_propositions(output, group, start_hash)
+      define_propositions(output, group, start_hash)
       output << ',' if gi != 1
     }
     method[1].each {|free| output << ", #{free}"}
     output << "\n    )#{' {' unless method[1].empty?}\n"
     yield_subtasks(output, method[4], '      ')
-    output << "    #{method[1].empty? ? 'end' : '}'}\n"
+    output << (method[1].empty? ? "    end\n" : "    }\n")
+  end
+
+  #-----------------------------------------------
+  # Operators to Ruby
+  #-----------------------------------------------
+
+  def operators_to_ruby(decompose, output)
+    @operators.each_with_index {|op,i|
+      decompose << "    '#{op.first}' => true#{',' if @operators.size.pred != i or not @methods.empty?}\n"
+      output << "\n  def #{op.first}"
+      output << "(#{op[1].join(', ')})" unless op[1].empty?
+      output << "\n    apply_operator(\n"
+      op[2..5].each_with_index {|group,gi|
+        output << '      # ' << ['True preconditions', 'False preconditions', 'Add effects', 'Del effects'][gi]
+        define_propositions(output, group, start_hash)
+        output << (gi != 3 ? ',' : ",\n")
+      }
+      output << "    )\n  end\n"
+    }
+  end
+
+  #-----------------------------------------------
+  # Methods to Ruby
+  #-----------------------------------------------
+
+  def methods_to_ruby(decompose, output, start_hash)
+    @methods.each_with_index {|met,mi|
+      decompose << "    '#{met.first}' => [\n"
+      met.drop(2).each_with_index {|met_case,i|
+        decompose << "      '#{met_case.first}'#{',' if met.size - 3 != i}\n"
+        output << "\n  def #{met_case.first}"
+        output << "(#{met[1].join(', ')})" unless met[1].empty?
+        output << "\n"
+        # No Preconditions
+        if met_case[2].empty? and met_case[3].empty?
+          subtasks_to_ruby(output, met_case[4], '    ')
+        # Grounded
+        elsif met_case[1].empty?
+          method_to_ruby('if applicable?', output, met_case, start_hash)
+        # Lifted
+        else
+          method_to_ruby('generate', output, met_case, start_hash)
+        end
+        output << "  end\n"
+      }
+      decompose << "    ]#{',' if @methods.size.pred != mi}\n"
+    }
   end
 
   #-----------------------------------------------
@@ -384,41 +430,11 @@ Problem #@problem_name of #@problem_domain
     # Operators
     domain_operators = ''
     domain_define_operators = ''
-    @operators.each_with_index {|op,i|
-      domain_operators << "    '#{op.first}' => true#{',' if @operators.size.pred != i or not @methods.empty?}\n"
-      domain_define_operators << "\n  def #{op.first}(#{op[1].join(', ')})\n    apply_operator(\n"
-      op[2..5].each_with_index {|group,gi|
-        domain_define_operators << '      # ' << ['True preconditions', 'False preconditions', 'Add effects', 'Del effects'][gi]
-        add_propositions(domain_define_operators, group, start_hash)
-        domain_define_operators << ',' if gi != 3
-        domain_define_operators << "\n"
-      }
-      domain_define_operators << "    )\n  end\n"
-    }
+    operators_to_ruby(domain_operators, domain_define_operators)
     # Methods
     domain_methods = ''
     domain_define_methods = ''
-    @methods.each_with_index {|met,mi|
-      domain_methods << "    '#{met.first}' => [\n"
-      met.drop(2).each_with_index {|met_decompose,i|
-        domain_methods << "      '#{met_decompose.first}'#{',' if met.size - 3 != i}\n"
-        domain_define_methods << "\n  def #{met_decompose.first}"
-        domain_define_methods << "(#{met[1].join(', ')})" unless met[1].empty?
-        domain_define_methods << "\n"
-        # No Preconditions
-        if met_decompose[2].empty? and met_decompose[3].empty?
-          yield_subtasks(domain_define_methods, met_decompose[4], '    ')
-        # Grounded
-        elsif met_decompose[1].empty?
-          add_method('if applicable?', domain_define_methods, met_decompose, start_hash)
-        # Lifted
-        else
-          add_method('generate', domain_define_methods, met_decompose, start_hash)
-        end
-        domain_define_methods << "  end\n"
-      }
-      domain_methods << "    ]#{',' if @methods.size.pred != mi}\n"
-    }
+    methods_to_ruby(domain_methods, domain_define_methods, start_hash)
     # Domain
     folder = "examples/#{folder}"
     Dir.mkdir(folder) unless Dir.exist?(folder)
@@ -480,8 +496,8 @@ if $0 == __FILE__
       elsif not File.exist?(ARGV[1])
         puts "File not found: #{ARGV[1]}!"
       else
-        Hyparser.domain(ARGV.first)
-        Hyparser.problem(ARGV[1])
+        Hyparser.parse_domain(ARGV.first)
+        Hyparser.parse_problem(ARGV[1])
         puts Hyparser.to_s
         Hyparser.to_ruby(*ARGV) if ARGV[2]
       end

@@ -223,7 +223,73 @@ It is impossible to propagate variables all the time, some variables must be bou
 
 ### Problem
 
-ToDo PUT ROBBY EXAMPLE HERE
+With your domain ready all you need is to define the initial state and the task list. The initial state is defined as a Hash table were the keys are the predicates while the value is an array of possible terms. The task list follows the same principle, an array of each task to be solved. Note that he names must match the ones defined in the domain and tasks will be decomposed in the same order they are described.
+Even if a predicate has no true terms associated in the initial state you must declare them, as ```reported => []``` is declared in the example. If your problem does not generate objects during run-time a speed improvement can be obtained moving them to variables, therefore the comparisons will be pointer-based.
+
+```
+require './Robby'
+
+# Objects
+robby = 'robby'
+left = 'left'
+middle = 'middle'
+right = 'right'
+room1 = 'room1'
+beacon1 = 'beacon1'
+
+Robby.problem(
+  # Start
+  {
+    'at' => [
+      [robby, left]
+    ],
+    'in' => [
+      [beacon1, room1]
+    ],
+    'connected' => [
+      [middle, room1],
+      [room1, middle],
+      [left, middle],
+      [middle, left],
+      [middle, right],
+      [right, middle]
+    ],
+    'robot' => [
+      [robby]
+    ],
+    'object'=> [
+      [robby],
+      [beacon1]
+    ],
+    'location' => [
+      [left],
+      [middle],
+      [right],
+      [room1],
+    ],
+    'hallway' => [
+      [left],
+      [middle],
+      [right]
+    ],
+    'room' => [
+      [room1]
+    ],
+    'beacon' => [
+      [beacon1]
+    ],
+    'reported' => []
+  },
+  # Tasks
+  [
+    ['swap_at', robby, room1],
+    ['report', robby, room1, beacon1],
+    ['swap_at', robby, right]
+  ],
+  # Debug
+  true
+)
+```
 
 ## Execution
 
@@ -234,10 +300,11 @@ cd HyperTensioN/examples/project
 ruby pb1.rb
 ```
 
-The parsing engine is still under development and eventually will be able to read both PDDL operators and JSHOP methods and operator, and convert to Hypertension code. This is not uncommon, as JSHOP itself compiling methods and operators to Java, trying to achieve the best performance possible. Currently JSHOP is the only language being supported. If no output folder is provided the system prints out what was understood from the files.
+The parsing engine is still under development and eventually will be able to read both PDDL operators and JSHOP methods and operators, and convert to Hypertension and JSHOP code. This is not uncommon, as JSHOP itself compiles the input to Java, trying to achieve the best performance possible. Currently JSHOP is the only language being supported. If no output folder is provided the system only prints out what was understood from the files.
+The goal is to have Hyparser as a module/namespace for the parsers and Hypothesis as a module/namespace for the compiler tools. The namespace that encapsulate both as a tool is called Hype. You can always not believe the Hype and convert files by yourself.
 
 ```
-ruby Hyparser.rb domain_file problem_file [output_folder]
+ruby Hype.rb domain_file problem_file [output_folder]
 ```
 
 ## API
