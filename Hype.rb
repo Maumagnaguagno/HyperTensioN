@@ -1,4 +1,4 @@
-module Hyparser
+module Hype
   extend self
 
   TEMPLATE_DOMAIN = "
@@ -496,10 +496,10 @@ if $0 == __FILE__
       elsif not File.exist?(ARGV[1])
         puts "File not found: #{ARGV[1]}!"
       else
-        Hyparser.parse_domain(ARGV.first)
-        Hyparser.parse_problem(ARGV[1])
-        puts Hyparser.to_s
-        Hyparser.to_ruby(*ARGV) if ARGV[2]
+        Hype.parse_domain(ARGV.first)
+        Hype.parse_problem(ARGV[1])
+        puts Hype.to_s
+        Hype.to_ruby(*ARGV) if ARGV[2]
       end
     else
       puts "Use #$0 domain_filename problem_filename [output_folder]"

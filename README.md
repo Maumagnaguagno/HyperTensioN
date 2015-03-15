@@ -276,7 +276,7 @@ ruby pb1.rb
 ```
 
 The parsing engine is still under development and eventually will be able to read both PDDL operators and JSHOP methods and operators, and convert to Hypertension and JSHOP code. This is not uncommon, as JSHOP itself compiles the input to Java, trying to achieve the best performance possible. Currently JSHOP is the only language being supported. If no output folder is provided the system only prints out what was understood from the files.
-The goal is to have Hyparser as a module/namespace for the parsers and Hypothesis as a module/namespace for the compiler tools. The namespace that encapsulate both as a tool is called Hype. You can always not believe the Hype and convert files by yourself.
+You can always not believe the Hype and convert files by yourself.
 
 ```
 ruby Hype.rb domain_file problem_file [output_folder]
