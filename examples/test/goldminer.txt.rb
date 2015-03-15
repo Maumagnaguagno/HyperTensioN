@@ -1,3 +1,4 @@
+
 require '../../Hypertension'
 
 module Goldminer
@@ -17,7 +18,6 @@ module Goldminer
     'unvisit' => true,
     'see' => true,
     'shift' => true,
-
     # Methods
     'travel' => [
       'travel_impossible',

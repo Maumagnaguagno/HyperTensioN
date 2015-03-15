@@ -13,10 +13,9 @@ module <DOMAIN_NAME>
   #-----------------------------------------------
 
   @domain = {
-    # Operators
-<OPERATORS>
-    # Methods
-<METHODS>  }
+    # Operators<OPERATORS>
+    # Methods<METHODS>
+  }
 
   #-----------------------------------------------
   # Operators
@@ -177,13 +176,12 @@ module <DOMAIN_NAME>
           i.scan(/\(\s*(.+?)\s*\)/) {|j|
             if j.first =~ /^not\s*\(\s*(.+)\s*$/
               proposition = $1.split
-              free_variables.push(*proposition.find_all {|i| i.sub!(/^\?/,'') and not method[1].include?(i)})
               neg << proposition
             else
               proposition = j.first.split
-              free_variables.push(*proposition.find_all {|i| i.sub!(/^\?/,'') and not method[1].include?(i)})
               pos << proposition
             end
+            free_variables.push(*proposition.find_all {|i| i.sub!(/^\?/,'') and not method[1].include?(i)})
           }
         }
         free_variables.uniq!
@@ -329,12 +327,17 @@ Problem #@problem_name of #@problem_domain
   # Propositions to Ruby
   #-----------------------------------------------
 
-  def propositions_to_ruby(output, group, start_hash)
+  def propositions_to_ruby(output, group, start_hash, predicate_type)
     if group.empty?
       output << "\n      []"
     else
       output << "\n      [\n"
       group.each_with_index {|g,i|
+        if predicate_type
+          @predicates[g.first] = true if @predicates[g.first].nil?
+        else
+          @predicates[g.first] = false
+        end
         start_hash[g.first] ||= []
         output << "        ['#{g.first}', #{g.drop(1).join(', ')}]#{',' if group.size.pred != i}\n"
       }
@@ -365,12 +368,12 @@ Problem #@problem_name of #@problem_domain
     output << "    #{test}("
     method[2..3].each_with_index {|group,gi|
       output << "\n      # " << (gi.zero? ? 'True' : 'False') << " preconditions"
-      define_propositions(output, group, start_hash)
+      propositions_to_ruby(output, group, start_hash, true)
       output << ',' if gi != 1
     }
     method[1].each {|free| output << ", #{free}"}
     output << "\n    )#{' {' unless method[1].empty?}\n"
-    yield_subtasks(output, method[4], '      ')
+    subtasks_to_ruby(output, method[4], '      ')
     output << (method[1].empty? ? "    end\n" : "    }\n")
   end
 
@@ -378,18 +381,18 @@ Problem #@problem_name of #@problem_domain
   # Operators to Ruby
   #-----------------------------------------------
 
-  def operators_to_ruby(decompose, output)
+  def operators_to_ruby(decompose, output, start_hash)
     @operators.each_with_index {|op,i|
-      decompose << "    '#{op.first}' => true#{',' if @operators.size.pred != i or not @methods.empty?}\n"
+      decompose << "\n    '#{op.first}' => true#{',' if @operators.size.pred != i or not @methods.empty?}"
       output << "\n  def #{op.first}"
       output << "(#{op[1].join(', ')})" unless op[1].empty?
-      output << "\n    apply_operator(\n"
+      output << "\n    apply_operator("
       op[2..5].each_with_index {|group,gi|
-        output << '      # ' << ['True preconditions', 'False preconditions', 'Add effects', 'Del effects'][gi]
-        define_propositions(output, group, start_hash)
-        output << (gi != 3 ? ',' : ",\n")
+        output << "\n      # " << ['True preconditions', 'False preconditions', 'Add effects', 'Del effects'][gi]
+        propositions_to_ruby(output, group, start_hash, gi < 2)
+        output << ',' if gi != 3
       }
-      output << "    )\n  end\n"
+      output << "\n    )\n  end\n"
     }
   end
 
@@ -399,7 +402,7 @@ Problem #@problem_name of #@problem_domain
 
   def methods_to_ruby(decompose, output, start_hash)
     @methods.each_with_index {|met,mi|
-      decompose << "    '#{met.first}' => [\n"
+      decompose << "\n    '#{met.first}' => [\n"
       met.drop(2).each_with_index {|met_case,i|
         decompose << "      '#{met_case.first}'#{',' if met.size - 3 != i}\n"
         output << "\n  def #{met_case.first}"
@@ -417,7 +420,7 @@ Problem #@problem_name of #@problem_domain
         end
         output << "  end\n"
       }
-      decompose << "    ]#{',' if @methods.size.pred != mi}\n"
+      decompose << "    ]#{',' if @methods.size.pred != mi}"
     }
   end
 
@@ -426,11 +429,12 @@ Problem #@problem_name of #@problem_domain
   #-----------------------------------------------
 
   def to_ruby(domain_filename, problem_filename, folder)
+    @predicates = {}
     start_hash = {}
     # Operators
     domain_operators = ''
     domain_define_operators = ''
-    operators_to_ruby(domain_operators, domain_define_operators)
+    operators_to_ruby(domain_operators, domain_define_operators, start_hash)
     # Methods
     domain_methods = ''
     domain_define_methods = ''
@@ -454,6 +458,7 @@ Problem #@problem_name of #@problem_domain
         start << "    '#{k}' => []"
       else
         start << "    '#{k}' => [\n"
+        @predicates[k] = nil unless @predicates.include?(k)
         v.each_with_index {|obj,j|
           start << "      [#{obj.join(', ')}]#{',' if v.size.pred != j}\n"
           objects.push(*obj)
@@ -496,10 +501,12 @@ if $0 == __FILE__
       elsif not File.exist?(ARGV[1])
         puts "File not found: #{ARGV[1]}!"
       else
+        t = Time.now.to_f
         Hype.parse_domain(ARGV.first)
         Hype.parse_problem(ARGV[1])
         puts Hype.to_s
         Hype.to_ruby(*ARGV) if ARGV[2]
+        p Time.now.to_f - t
       end
     else
       puts "Use #$0 domain_filename problem_filename [output_folder]"
