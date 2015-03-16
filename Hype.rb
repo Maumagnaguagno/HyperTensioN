@@ -1,3 +1,8 @@
+# Patterns are closed for now
+USE_PATTERNS = ENV['USER'] == 'Mau'
+
+require '../Patterns' if USE_PATTERNS
+
 module Hype
   extend self
 
@@ -37,12 +42,7 @@ module <DOMAIN_NAME>
   METHOD_PREC  = 1
   METHOD_SUBTAKS = 2
 
-  POS_PRECONDITION = 1
-  NEG_PRECONDITION = 2
-  ADD_EFFECT = 4
-  DEL_EFFECT = 8
-
-  attr_reader :domain_name, :problem_name, :problem_domain, :operators, :methods, :state, :tasks
+  attr_reader :domain_name, :problem_name, :problem_domain, :operators, :methods, :predicates, :state, :tasks
 
   #-----------------------------------------------
   # Scan groups
@@ -108,10 +108,13 @@ module <DOMAIN_NAME>
           i.gsub!('?','')
           i.scan(/\(\s*(.+?)\s*\)/) {|j|
             if j.first =~ /^not\s*\(\s*(.+)\s*$/
-              neg << $1.split
+              proposition = $1.split
+              neg << proposition
             else
-              pos << j.first.split
+              proposition = j.first.split
+              pos << proposition
             end
+            @predicates[proposition.first] = true if @predicates[proposition.first].nil?
           }
         }
       when OPERATOR_DEL_EFF
@@ -119,14 +122,22 @@ module <DOMAIN_NAME>
         value.scan(/^\(\s*(.+?)\s*\)$/) {|i|
           i = i.first
           i.gsub!('?','')
-          i.scan(/\(\s*(.+?)\s*\)/) {|j| del << j.first.split}
+          i.scan(/\(\s*(.+?)\s*\)/) {|j|
+            proposition = j.first.split
+            del << proposition
+            @predicates[proposition.first] = false
+          }
         }
       when OPERATOR_ADD_EFF
         operator[4] = add = []
         value.scan(/^\(\s*(.+?)\s*\)$/) {|i|
           i = i.first
           i.gsub!('?','')
-          i.scan(/\(\s*(.+?)\s*\)/) {|j| add << j.first.split}
+          i.scan(/\(\s*(.+?)\s*\)/) {|j|
+            proposition = j.first.split
+            add << proposition
+            @predicates[proposition.first] = false
+          }
         }
         @operators << operator
       else raise "Unknow operator group"
@@ -181,6 +192,7 @@ module <DOMAIN_NAME>
               proposition = j.first.split
               pos << proposition
             end
+            @predicates[proposition.first] = true if @predicates[proposition.first].nil?
             free_variables.push(*proposition.find_all {|i| i.sub!(/^\?/,'') and not method[1].include?(i)})
           }
         }
@@ -214,6 +226,7 @@ module <DOMAIN_NAME>
       @operators = []
       @methods = []
       @domain_name = $1
+      @predicates = {}
       scan_groups($2) {|group|
         if group =~ /^\s*\(\s*:(operator|method)\s*(.*)\s*\)\s*$/
           case $1
@@ -244,7 +257,11 @@ module <DOMAIN_NAME>
         tasks = $2
         @state = []
         @tasks = []
-        state.scan(/\(\s*(.+?)\s*\)/) {|values| @state << values.first.split}
+        state.scan(/\(\s*(.+?)\s*\)/) {|values|
+          proposition = values.first.split
+          @predicates[proposition.first] = nil unless @predicates.include?(proposition.first)
+          @state << proposition
+        }
         tasks.scan(/\(\s*(.+?)\s*\)/) {|values| @tasks << values.first.split}
       else raise 'Problem does not define two groups'
       end
@@ -257,7 +274,7 @@ module <DOMAIN_NAME>
   #-----------------------------------------------
 
   def clear
-    @domain_name = @problem_name = @problem_domain = @operators = @methods = @state = @tasks = nil
+    @domain_name = @problem_name = @problem_domain = @operators = @methods = @state = @tasks = @predicates = nil
   end
 
   #-----------------------------------------------
@@ -324,32 +341,24 @@ Problem #@problem_name of #@problem_domain
   end
 
   #-----------------------------------------------
-  # Propositions to Ruby
+  # Propositions to Hyper
   #-----------------------------------------------
 
-  def propositions_to_ruby(output, group, start_hash, predicate_type)
+  def propositions_to_hyper(output, group)
     if group.empty?
       output << "\n      []"
     else
       output << "\n      [\n"
-      group.each_with_index {|g,i|
-        if predicate_type
-          @predicates[g.first] = true if @predicates[g.first].nil?
-        else
-          @predicates[g.first] = false
-        end
-        start_hash[g.first] ||= []
-        output << "        ['#{g.first}', #{g.drop(1).join(', ')}]#{',' if group.size.pred != i}\n"
-      }
+      group.each_with_index {|g,i| output << "        ['#{g.first}', #{g.drop(1).join(', ')}]#{',' if group.size.pred != i}\n"}
       output << '      ]'
     end
   end
 
   #-----------------------------------------------
-  # Subtasks to Ruby
+  # Subtasks to Hyper
   #-----------------------------------------------
 
-  def subtasks_to_ruby(output, subtasks, indentation)
+  def subtasks_to_hyper(output, subtasks, indentation)
     if subtasks.empty?
       output << "#{indentation}yield []\n"
     else
@@ -360,28 +369,28 @@ Problem #@problem_name of #@problem_domain
   end
 
   #-----------------------------------------------
-  # Method to Ruby
+  # Method to Hyper
   #-----------------------------------------------
 
-  def method_to_ruby(test, output, method, start_hash)
+  def method_to_hyper(test, output, method)
     method[1].each {|free| output << "    #{free} = ''\n"}
     output << "    #{test}("
     method[2..3].each_with_index {|group,gi|
       output << "\n      # " << (gi.zero? ? 'True' : 'False') << " preconditions"
-      propositions_to_ruby(output, group, start_hash, true)
+      propositions_to_hyper(output, group)
       output << ',' if gi != 1
     }
     method[1].each {|free| output << ", #{free}"}
     output << "\n    )#{' {' unless method[1].empty?}\n"
-    subtasks_to_ruby(output, method[4], '      ')
+    subtasks_to_hyper(output, method[4], '      ')
     output << (method[1].empty? ? "    end\n" : "    }\n")
   end
 
   #-----------------------------------------------
-  # Operators to Ruby
+  # Operators to Hyper
   #-----------------------------------------------
 
-  def operators_to_ruby(decompose, output, start_hash)
+  def operators_to_hyper(decompose, output)
     @operators.each_with_index {|op,i|
       decompose << "\n    '#{op.first}' => true#{',' if @operators.size.pred != i or not @methods.empty?}"
       output << "\n  def #{op.first}"
@@ -389,7 +398,7 @@ Problem #@problem_name of #@problem_domain
       output << "\n    apply_operator("
       op[2..5].each_with_index {|group,gi|
         output << "\n      # " << ['True preconditions', 'False preconditions', 'Add effects', 'Del effects'][gi]
-        propositions_to_ruby(output, group, start_hash, gi < 2)
+        propositions_to_hyper(output, group)
         output << ',' if gi != 3
       }
       output << "\n    )\n  end\n"
@@ -397,10 +406,10 @@ Problem #@problem_name of #@problem_domain
   end
 
   #-----------------------------------------------
-  # Methods to Ruby
+  # Methods to Hyper
   #-----------------------------------------------
 
-  def methods_to_ruby(decompose, output, start_hash)
+  def methods_to_hyper(decompose, output)
     @methods.each_with_index {|met,mi|
       decompose << "\n    '#{met.first}' => [\n"
       met.drop(2).each_with_index {|met_case,i|
@@ -410,13 +419,13 @@ Problem #@problem_name of #@problem_domain
         output << "\n"
         # No Preconditions
         if met_case[2].empty? and met_case[3].empty?
-          subtasks_to_ruby(output, met_case[4], '    ')
+          subtasks_to_hyper(output, met_case[4], '    ')
         # Grounded
         elsif met_case[1].empty?
-          method_to_ruby('if applicable?', output, met_case, start_hash)
+          method_to_hyper('if applicable?', output, met_case)
         # Lifted
         else
-          method_to_ruby('generate', output, met_case, start_hash)
+          method_to_hyper('generate', output, met_case)
         end
         output << "  end\n"
       }
@@ -425,20 +434,18 @@ Problem #@problem_name of #@problem_domain
   end
 
   #-----------------------------------------------
-  # To Ruby
+  # To Hyper
   #-----------------------------------------------
 
-  def to_ruby(domain_filename, problem_filename, folder)
-    @predicates = {}
-    start_hash = {}
+  def to_hyper(domain_filename, problem_filename, folder)
     # Operators
     domain_operators = ''
     domain_define_operators = ''
-    operators_to_ruby(domain_operators, domain_define_operators, start_hash)
+    operators_to_hyper(domain_operators, domain_define_operators)
     # Methods
     domain_methods = ''
     domain_define_methods = ''
-    methods_to_ruby(domain_methods, domain_define_methods, start_hash)
+    methods_to_hyper(domain_methods, domain_define_methods)
     # Domain
     folder = "examples/#{folder}"
     Dir.mkdir(folder) unless Dir.exist?(folder)
@@ -452,13 +459,14 @@ Problem #@problem_name of #@problem_domain
     # Problem
     start = ''
     objects = []
-    @state.each {|i| (start_hash[i.first] ||= []) << i.drop(1)}
+    start_hash = {}
+    @predicates.each_key {|i| start_hash[i] = []}
+    @state.each {|i| start_hash[i.first] << i.drop(1)}
     start_hash.each_with_index {|(k,v),i|
       if v.empty?
         start << "    '#{k}' => []"
       else
         start << "    '#{k}' => [\n"
-        @predicates[k] = nil unless @predicates.include?(k)
         v.each_with_index {|obj,j|
           start << "      [#{obj.join(', ')}]#{',' if v.size.pred != j}\n"
           objects.push(*obj)
@@ -478,15 +486,6 @@ Problem #@problem_name of #@problem_domain
     problem_str.sub!('<OBJECTS>', objects.map! {|i| "#{i} = '#{i}'"}.join("\n"))
     open("#{folder}/#{problem_filename}.rb", 'w') {|file| file << problem_str}
   end
-
-  # TODO include this method during parsing, move @predicates outside loop
-  def classify_predicates(operator)
-    @predicates = Hash.new {|h,k| h[k] = 0}
-    operator[2].each {|propositions| propositions.each {|predicate,*terms| @predicate[predicate] |= POS_PRECONDITION}}
-    operator[3].each {|propositions| propositions.each {|predicate,*terms| @predicate[predicate] |= NEG_PRECONDITION}}
-    operator[4].each {|propositions| propositions.each {|predicate,*terms| @predicate[predicate] |= ADD_EFFECT}}
-    operator[5].each {|propositions| propositions.each {|predicate,*terms| @predicate[predicate] |= DEL_EFFECT}}
-  end
 end
 
 #-----------------------------------------------
@@ -505,7 +504,11 @@ if $0 == __FILE__
         Hype.parse_domain(ARGV.first)
         Hype.parse_problem(ARGV[1])
         puts Hype.to_s
-        Hype.to_ruby(*ARGV) if ARGV[2]
+        if USE_PATTERNS
+          Patterns.match(Hype.domain_name, Hype.operators, Hype.predicates)
+          #Patterns.generate_domain(...)
+        end
+        Hype.to_hyper(*ARGV) if ARGV[2]
         p Time.now.to_f - t
       end
     else
