@@ -268,15 +268,28 @@ Robby.problem(
 
 ## Execution
 
-The problem acts as the main function since the problems include the domain, and the domain include the planning engine.
+The problem acts as the main function since the problems include the domain, and the domain include the planner.
 
 ```
 cd HyperTensioN/examples/project
 ruby pb1.rb
 ```
 
-The parsing engine is still under development and eventually will be able to read both PDDL operators and JSHOP methods and operators, and convert to Hypertension and JSHOP code. This is not uncommon, as JSHOP itself compiles the input to Java, trying to achieve the best performance possible. Currently JSHOP is the only language being supported. If no output folder is provided the system only prints out what was understood from the files.
-You can always not believe the Hype and convert files by yourself.
+The **Hype** is the framework for parsers and compilers of planning languages and common representations. It will save time and avoid errors during conversions of domains and problems for comparison results with other planners.
+This is not uncommon, as JSHOP itself compiles the input to Java, trying to achieve the best performance possible.
+
+Parser support:
+- [ ] PDDL
+- [x] JSHOP
+
+Compiler support:
+- [x] Hypertension
+- [ ] JSHOP
+- [ ] PDDL
+- [ ] Graphviz DOT
+
+You can always not believe the ```Hype``` and convert descriptions by yourself.
+If no output folder is provided the system only prints out what was understood from the files.
 
 ```
 ruby Hype.rb domain_file problem_file [output_folder]
@@ -284,11 +297,27 @@ ruby Hype.rb domain_file problem_file [output_folder]
 
 ## API
 
-ToDo
+Here are the descriptions to use and extend Hypertension and Hype functionality.
+
+### Planner
+
+ToDo explain methods of Hypertension
+
+### Parser
+
+ToDo define common interface for parsers
+
+### Compiler
+
+ToDo define common interface for compilers
 
 ## Advantages
 
-ToDo
+ToDo compare with PyHop and JSHOP
 
 ## ToDoS
 - Complete the README
+- More parsers
+- More compilers
+- Tests
+- Examples
