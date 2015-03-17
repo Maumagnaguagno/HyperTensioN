@@ -132,9 +132,7 @@ if $0 == __FILE__
       else
         t = Time.now.to_f
         Hype.parse('jshop', ARGV.first, ARGV[1])
-        if USE_PATTERNS
-          Patterns.match(Hype.parser.domain_name, Hype.parser.operators, Hype.parser.predicates)
-        end
+        Patterns.match(Hype.parser.domain_name, Hype.parser.operators, Hype.parser.predicates) if USE_PATTERNS
         if ARGV[2]
           Hype.compile('hyper', *ARGV)
         else
