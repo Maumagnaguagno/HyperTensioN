@@ -122,10 +122,10 @@ module <DOMAIN_NAME>
   end
 
   #-----------------------------------------------
-  # Compile
+  # Compile domain
   #-----------------------------------------------
 
-  def compile(domain_name, operators, methods, predicates, state, tasks, domain_filename, problem_filename, folder)
+  def compile_domain(domain_name, operators, methods, predicates, state, tasks)
     # Operators
     domain_operators = ''
     define_operators = ''
@@ -135,16 +135,21 @@ module <DOMAIN_NAME>
     define_methods = ''
     methods_to_hyper(domain_methods, define_methods, methods)
     # Domain
-    folder = "examples/#{folder}"
-    Dir.mkdir(folder) unless Dir.exist?(folder)
     domain_str = TEMPLATE_DOMAIN.dup
     domain_str.sub!('<DOMAIN_NAME>', domain_name.capitalize)
     domain_str.sub!('<OPERATORS>', domain_operators)
     domain_str.sub!('<METHODS>', domain_methods)
     domain_str.sub!('<DEFINE_OPERATORS>', define_operators)
     domain_str.sub!('<DEFINE_METHODS>', define_methods)
-    open("#{folder}/#{domain_filename}.rb", 'w') {|file| file << domain_str}
-    # Problem
+    domain_str
+  end
+
+  #-----------------------------------------------
+  # Compile Problem
+  #-----------------------------------------------
+
+  def compile_problem(domain_name, operators, methods, predicates, state, tasks, domain_filename)
+    # Start
     start = ''
     objects = []
     start_hash = {}
@@ -163,15 +168,17 @@ module <DOMAIN_NAME>
       end
       start << ",\n" if start_hash.size.pred != i
     }
+    # Tasks
     tasks_str = ''
     tasks.each_with_index {|t,i| tasks_str << "    ['#{t.first}', #{t.drop(1).join(', ')}]#{',' if tasks.size.pred != i}\n"}
     objects.uniq!
+    # Problem
     problem_str = TEMPLATE_PROBLEM.dup
     problem_str.sub!('<DOMAIN_FILE>', domain_filename)
     problem_str.sub!('<DOMAIN_NAME>', domain_name.capitalize)
     problem_str.sub!('<START>', start)
     problem_str.sub!('<TASKS>', tasks_str)
     problem_str.sub!('<OBJECTS>', objects.map! {|i| "#{i} = '#{i}'"}.join("\n"))
-    open("#{folder}/#{problem_filename}.rb", 'w') {|file| file << problem_str}
+    problem_str
   end
 end

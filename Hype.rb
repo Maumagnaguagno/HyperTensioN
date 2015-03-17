@@ -101,12 +101,20 @@ Problem #{@parser.problem_name} of #{@parser.problem_domain}
     case type
     when 'hyper'
       compiler = Hyper_Compiler
+      ext = 'rb'
     when 'jshop'
       compiler = JSHOP_Compiler
+      ext = 'jshop'
     else raise "Unknown type #{type} to save"
     end
-    compiler.compile(@parser.domain_name, @parser.operators, @parser.methods, @parser.predicates, @parser.state, @parser.tasks, domain, problem, folder)
-    # TODO break into compile_domain and compile_problem
+    folder = "examples/#{folder}"
+    Dir.mkdir(folder) unless Dir.exist?(folder)
+    open("#{folder}/#{domain}.#{ext}", 'w') {|file|
+      file << compiler.compile_domain(@parser.domain_name, @parser.operators, @parser.methods, @parser.predicates, @parser.state, @parser.tasks)
+    }
+    open("#{folder}/#{problem}.#{ext}", 'w') {|file|
+      file << compiler.compile_problem(@parser.domain_name, @parser.operators, @parser.methods, @parser.predicates, @parser.state, @parser.tasks, domain)
+    }
   end
 end
 
@@ -124,11 +132,14 @@ if $0 == __FILE__
       else
         t = Time.now.to_f
         Hype.parse('jshop', ARGV.first, ARGV[1])
-        puts Hype.to_s
         if USE_PATTERNS
           Patterns.match(Hype.parser.domain_name, Hype.parser.operators, Hype.parser.predicates)
         end
-        Hype.compile('hyper', *ARGV) if ARGV[2]
+        if ARGV[2]
+          Hype.compile('hyper', *ARGV)
+        else
+          puts Hype.to_s
+        end
         p Time.now.to_f - t
       end
     else
