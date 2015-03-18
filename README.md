@@ -1,5 +1,5 @@
 # HyperTensioN
-HTN planning in Ruby
+**HTN planning in Ruby**
 
 Hypertension is an Hierarchical Task Network Planner written in Ruby, which means you have to describe how tasks can be accomplished using method decomposition to achieve a plan, but in Ruby. This is very alike to how humans think, taking mental steps further into primitive operators. When all operators in the plan are satisfied, the plan found is a valid one.
 HTN is used as an acronym for Hypertension in medical context, therefore the name was given.
@@ -304,8 +304,7 @@ Here are some hints for everyone:
 - Use the precondition in you favor, you do not need to test things twice using a smart method decomposition.
 - Unification is costly, avoid generate at any cost, match your values once and propagate them as long as possible.
 - Even if a precondition or effect is an empty set you need to declare, use ```[]```.
-- Empty predicate sets must be put in the initial state at the problem file, otherwise the system thinks the value is ```nil```.
-  - This also avoids predicate naming typos, as all predicates must be previously defined.
+- Empty predicate sets must be put in the initial state at the problem file. This avoids predicate naming typos, as all predicates must be previously defined.
 
 ## API
 
@@ -326,7 +325,11 @@ The methods are few and simple to use:
 - ```planning(tasks, level = 0)``` receives a task list to decompose and the nesting level to help debug.
 Only call this method after domain and state definition. This method is called recursively until it finds an empty task list, then it starts to build the plan in the backtracking.
 Therefore no plan actually exists before reaching an empty task list.
-  - The task list is defined as a sequence of tasks: ```[['task1', 'term1', 'term2'], ['task2', 'term3']]```
+
+  ```Ruby
+task_list = [['task1', 'term1', 'term2'], ['task2', 'term3']]
+empty_task_list = []
+  ```
 - ```applicable?(precond_true, precond_false)``` is used to test if all true preconditions are found and no false precondition is present at the current state.
 It returns true if applicable and false otherwise.
 - ```apply_operator(precond_true, precond_false, effect_add, effect_del)``` extends this idea applying effects if ```applicable?```. Returns true if applied, false otherwise.
