@@ -2,6 +2,7 @@
 HTN planning in Ruby
 
 Hypertension is an Hierarchical Task Network Planner written in Ruby, which means you have to describe how tasks can be accomplished using method decomposition to achieve a plan, but in Ruby. This is very alike to how humans think, taking mental steps further into primitive operators. When all operators in the plan are satisfied, the plan found is a valid one.
+HTN is used as an acronym for Hypertension in medical context, therefore the name was given.
 
 The current version has most of its algorithm inspired by PyHop, with backtracking and unification added.
 
@@ -295,21 +296,59 @@ If no output folder is provided the system only prints out what was understood f
 ruby Hype.rb domain_file problem_file [output_folder]
 ```
 
+## Hints
+
+Here are some hints for everyone:
+- Having objects on separate variables is faster to compare (pointer comparison), only works if no object is created during run-time.
+- Order the methods decomposition wisely, otherwise you may test a lot before actually going to the correct path.
+- Use the precondition in you favor, you do not need to test things twice using a smart method decomposition.
+- Unification is costly, avoid generate at any cost, match your values once and propagate them as long as possible.
+- Even if a precondition or effect is an empty set you need to declare, use ```[]```.
+- Empty predicate sets must be put in the initial state at the problem file, otherwise the system thinks the value is ```nil```.
+  - This also avoids predicate naming typos, as all predicates must be previously defined.
+
 ## API
 
 Here are the descriptions to use and extend Hypertension and Hype functionality.
 
 ### Planner
 
-ToDo explain methods of Hypertension
+Hypertension is a Ruby module and have a few instance variables:
+- ```@state``` with the current state.
+- ```@domain``` with the decomposition rules that can be applied to the operators and methods.
+- ```@debug``` as a flag to print intermediary data during planning.
+
+They were defined as instance variables to be mixed in other classes if needed, that is why they are not class variables.
+Having the state and domain as separate variables also means we do not need to propagate them all the time, this makes the source more declarative.
+This also means you can, at any point, change more than the state. This may be usefull to reorder method decompositions in the domain to modify the behavior without touching the methods.
+
+The methods are few and simple to use:
+- ```planning(tasks, level = 0)``` receives a task list to decompose and the nesting level to help debug.
+Only call this method after domain and state definition. This method is called recursively until it finds an empty task list, then it starts to build the plan in the backtracking.
+Therefore no plan actually exists before reaching an empty task list.
+  - The task list is defined as a sequence of tasks: ```[['task1', 'term1', 'term2'], ['task2', 'term3']]```
+- ```applicable?(precond_true, precond_false)``` is used to test if all true preconditions are found and no false precondition is present at the current state.
+It returns true if applicable and false otherwise.
+- ```apply_operator(precond_true, precond_false, effect_add, effect_del)``` extends this idea applying effects if ```applicable?```. Returns true if applied, false otherwise.
+- ```generate(precond_true, precond_false, *free)``` yields all possible unifications to the free-variables defined, therefore you need a block to capture the unifications. The return value is undetermined.
+- ```print_data(data)``` can be used to print task lists and proposition lists, usefull for debug.
+- ```problem(start, tasks, debug = false)``` can be used to simplify the creation of a problem instance. Use it as a template to see how to add Hypertension in your project.
+
+Domain operators can be defined without ```apply_operator``` and will have the return value considered.
+  - ```false``` or ```nil``` means the operator has failed.
+  - Any other value means the operator was applied with success.
+
+Domain methods must yield a task list or are nullified, having no decomposition.
 
 ### Parser
 
-ToDo define common interface for parsers
+Parsers are modules to be used to read planning descriptions, they are being developed now and still require an interface definition.
+Be patient while this feature is developed, more information to come.
 
 ### Compiler
 
-ToDo define common interface for compilers
+Compilers are modules to be used to write planning descriptions, they are being developed now and still require an interface definition.
+Be patient while this feature is developed, more information to come.
 
 ## Advantages
 
@@ -321,3 +360,5 @@ ToDo compare with PyHop and JSHOP
 - More compilers
 - Tests
 - Examples
+- Maybe applicable?(precond_true, precond_false) in generate does not need to test precond_true
+  - applicable?([], precond_false) appears to be enough

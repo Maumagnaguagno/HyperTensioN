@@ -27,6 +27,8 @@
 # - Plan is built after tasks solved
 # - Domain and problem separated
 # - Deep copy only used at operator application
+# Mar 2014
+# - Refactoring of generate
 #-----------------------------------------------
 # TODOs
 # - Write parser
