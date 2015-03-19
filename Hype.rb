@@ -2,7 +2,6 @@
 USE_PATTERNS = ENV['USER'] == 'Mau'
 
 require '../Patterns' if USE_PATTERNS
-
 require './compilers/Hyper_Compiler'
 require './parsers/JSHOP_Parser'
 
@@ -132,12 +131,12 @@ if $0 == __FILE__
       else
         t = Time.now.to_f
         Hype.parse('jshop', ARGV.first, ARGV[1])
-        Patterns.match(Hype.parser.domain_name, Hype.parser.operators, Hype.parser.predicates) if USE_PATTERNS
         if ARGV[2]
           Hype.compile('hyper', *ARGV)
         else
           puts Hype.to_s
         end
+        Patterns.match(Hype.parser.operators, Hype.parser.predicates) if USE_PATTERNS
         p Time.now.to_f - t
       end
     else
