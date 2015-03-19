@@ -123,36 +123,36 @@ The enter operator appears to be a good starting point, we need to define our pr
 This translates to:
 
 ```Ruby
-  def enter(bot, source, destination)
-    apply_operator(
-      # True preconditions
-      [
-        ['robot', bot],
-        ['hallway', source],
-        ['room', destination],
-        ['at', bot, source],
-        ['connected', source, destination]
-      ],
-      # False preconditions
-      [
-        ['at', bot, destination]
-      ],
-      # Add effects
-      [
-        ['at', bot, destination]
-      ],
-      # Del effects
-      [
-        ['at', bot, source]
-      ]
-    )
-  end
+def enter(bot, source, destination)
+  apply_operator(
+    # True preconditions
+    [
+      ['robot', bot],
+      ['hallway', source],
+      ['room', destination],
+      ['at', bot, source],
+      ['connected', source, destination]
+    ],
+    # False preconditions
+    [
+      ['at', bot, destination]
+    ],
+    # Add effects
+    [
+      ['at', bot, destination]
+    ],
+    # Del effects
+    [
+      ['at', bot, source]
+    ]
+  )
+end
 ```
 
 The other operators are no different, time to see how our swap_at method works. We need to define every single case as a different method. The order they appear in the domain definition implies the order of evaluation. Methods may appear in 3 different scenarios:
 - **No preconditions**, direct application of subtasks.
 - **Grounded preconditions**, apply subtasks if satisfied, every variable is [grounded](http://en.wikipedia.org/wiki/Ground_expression).
-- **Lifted preconditions**, unify [free-variables](http://en.wikipedia.org/wiki/Free_variables_and_bound_variables) according to the preconditions.
+- **Lifted preconditions**, unify [free-variables](http://en.wikipedia.org/wiki/Free_variables_and_bound_variables) according to the preconditions. [See how it works](.#Free-Variables?).
 
 Instead of returning, the methods yield a subtask list. This approach solves the problem of returning several unifications per method call, yielding them as required. Be aware that all methods must have the same parameter list, other variables must be bounded during run-time (**Lifted preconditions**).
 
@@ -192,34 +192,65 @@ end
 
 #### Lifted preconditions
 
-It is impossible to propagate variables all the time, some variables must be bounded during run-time. Free-variables are created as empty strings, being used as pointers to their future values. A ```generate([true],[false],free-variables)``` method will do the hard job, using positive preconditions to find possible values and unify accordingly, only yielding values that satisfy the preconditions requested. The following example goes beyond this specification, using an instance variable to avoid cached positions created by other decomposition paths. You can always use ```if-else``` constructs to speed-up problem solving. Here it is clear that no state memory is created by Hypertension, that is why we use ```@visited_at```. This memory is also cleared during the process to reuse previous positions, give a look at visit and unvisit operators in Robby to understand. You could also define visit and unvisit as predicates, but then your memory would only hold the current path, which makes it slower.
+It is impossible to propagate variables all the time, some variables must be bounded during run-time. Free-variables are created as empty strings, being used as pointers to their future values. A ```generate([true],[false],free-variables)``` method will do the hard job, using positive preconditions to find possible values and unify accordingly, only yielding values that satisfy the preconditions requested. The following example goes beyond this specification, using an instance variable to avoid cached positions created by other decomposition paths. You can always use ```if-else``` constructs to speed-up problem solving. Here it is clear that no state memory is created by Hypertension, that is why we use ```@visited_at```. This memory is also cleared during the process to reuse previous positions, give a look at visit and unvisit operators in Robby to understand. You could also define visit and unvisit as predicates, but then your memory would only hold the current path, which makes planning slower.
 
 ```Ruby
-  def swap_at__recursion_enter(object, goal)
-    # Free variables
-    current = ''
-    intermediary = ''
-    # Generate unifications
-    generate(
-      # True preconditions
-      [
-        ['at', object, current],
-        ['connected', current, intermediary]
-      ],
-      # False preconditions
-      [
-        ['at', object, goal]
-      ], current, intermediary
-    ) {
-      unless @visited_at[object].include?(intermediary)
-        yield [
-          ['enter', object, current, intermediary],
-          ['visit_at', object, current],
-          ['swap_at', object, goal]
-        ]
-      end
-    }
-  end
+def swap_at__recursion_enter(object, goal)
+  # Free variables
+  current = ''
+  intermediary = ''
+  # Generate unifications
+  generate(
+    # True preconditions
+    [
+      ['at', object, current],
+      ['connected', current, intermediary]
+    ],
+    # False preconditions
+    [
+      ['at', object, goal]
+    ], current, intermediary
+  ) {
+    unless @visited_at[object].include?(intermediary)
+      yield [
+        ['enter', object, current, intermediary],
+        ['visit_at', object, current],
+        ['swap_at', object, goal]
+      ]
+    end
+  }
+end
+```
+
+#### Free Variables?
+
+Free variables are not supported by Ruby, we need to simulate their behavior. A free variable works like a placeholder, once bounded it will have a value like any common variable. The bounding process requires the context to dictate possible values to the variable. In Ruby we can replace the content of a string to the bounded value, but that requires the creation of the original string with any value or a more complex solution involving ```method_missing``` to tell the interpreter to create variables if none is found. If you find my style a little misleading, ```my_var = ''```, you can add this little method for verbosity reasons with a minimal overhead due to the method call.
+
+```Ruby
+def free_variable
+  ''
+end
+```
+
+You can also define the free variables as arguments, no problem. You still need to pass to generate the free variables being used, this avoids the step of searching on every element of the preconditions which variables are empty and let you use empty strings as objects if needed. The example refactored looks like this:
+
+```Ruby
+def swap_at__recursion_enter(object, goal, current = free_variable, intermediary = free_variable)
+  # Generate unifications
+  generate(
+    # True preconditions
+    [
+      ['at', object, current],
+      ['connected', current, intermediary]
+    ],
+    # False preconditions
+    [
+      ['at', object, goal]
+    ], current, intermediary
+  ) {
+    block_removed
+  }
+end
 ```
 
 ### Problem
