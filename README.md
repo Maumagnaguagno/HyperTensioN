@@ -152,7 +152,7 @@ end
 The other operators are no different, time to see how our swap_at method works. We need to define every single case as a different method. The order they appear in the domain definition implies the order of evaluation. Methods may appear in 3 different scenarios:
 - **No preconditions**, direct application of subtasks.
 - **Grounded preconditions**, apply subtasks if satisfied, every variable is [grounded](http://en.wikipedia.org/wiki/Ground_expression).
-- **Lifted preconditions**, unify [free-variables](http://en.wikipedia.org/wiki/Free_variables_and_bound_variables) according to the preconditions. [See how it works](.#Free-Variables?).
+- **Lifted preconditions**, unify [free-variables](http://en.wikipedia.org/wiki/Free_variables_and_bound_variables) according to the preconditions. [See how it works](#free-variables).
 
 Instead of returning, the methods yield a subtask list. This approach solves the problem of returning several unifications per method call, yielding them as required. Be aware that all methods must have the same parameter list, other variables must be bounded during run-time (**Lifted preconditions**).
 
@@ -232,7 +232,7 @@ def free_variable
 end
 ```
 
-You can also define the free variables as arguments, no problem. You still need to pass to generate the free variables being used, this avoids the step of searching on every element of the preconditions which variables are empty and let you use empty strings as objects if needed. The example refactored looks like this:
+You can also define the free variables as arguments, no problem. You still need to pass to generate the free variables being used, this avoids the step of searching on every element of the preconditions which variables are empty and let you use empty strings as objects if needed. The only way to create seamless free variables is to rescue inside a block, which is a slow alternative. The example refactored looks like this:
 
 ```Ruby
 def swap_at__recursion_enter(object, goal, current = free_variable, intermediary = free_variable)
