@@ -51,7 +51,13 @@ module JSHOP_Compiler
     state.each {|pre| problem_str << "    (#{pre.first} #{pre.drop(1).join(' ')})\n"}
     # Tasks
     problem_str << "  )\n\n  ;" << '=' * 30 << "\n  ; Tasks\n  ;" << '=' * 30 << "\n\n  (\n"
-    tasks.each {|pre| problem_str << "    (#{pre.first} #{pre.drop(1).join(' ')})\n"}
+    tasks.each {|t|
+      if operators.any? {|op| op.first == t.first}
+        problem_str << "    (!#{t.first} #{t.drop(1).join(' ')})\n"
+      else
+        problem_str << "    (#{t.first} #{t.drop(1).join(' ')})\n"
+      end
+    }
     problem_str << "  )\n)\n"
   end
 end
