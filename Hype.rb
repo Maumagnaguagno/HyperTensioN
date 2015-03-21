@@ -1,5 +1,5 @@
 # Patterns are closed for now
-USE_PATTERNS = true#ENV['USER'] == 'Mau'
+USE_PATTERNS = ENV['USER'] == 'Mau'
 
 require '../Patterns' if USE_PATTERNS
 require './parsers/JSHOP_Parser'
