@@ -1,9 +1,11 @@
 # Patterns are closed for now
-USE_PATTERNS = ENV['USER'] == 'Mau'
+USE_PATTERNS = true#ENV['USER'] == 'Mau'
 
 require '../Patterns' if USE_PATTERNS
-require './compilers/Hyper_Compiler'
 require './parsers/JSHOP_Parser'
+require './compilers/JSHOP_Compiler'
+require './compilers/Hyper_Compiler'
+
 
 module Hype
   extend self
@@ -48,6 +50,7 @@ module Hype
         output << "        Free variables:\n          #{met_decompose[1].join("\n          ")}\n" unless met_decompose[1].empty?
         output << "        Precond positive:\n          #{propositions_to_s(met_decompose[2], "\n          ")}\n" unless met_decompose[2].empty?
         output << "        Precond negative:\n          #{propositions_to_s(met_decompose[3], "\n          ")}\n" unless met_decompose[3].empty?
+        # TODO differentiate between operator and method as subtask
         output << "        Subtasks:\n          #{met_decompose[4].empty? ? 'empty': propositions_to_s(met_decompose[4], "\n          ")}\n"
       }
       output << "\n"
@@ -136,6 +139,7 @@ if $0 == __FILE__
         else
           puts Hype.to_s
         end
+        Hype.compile('jshop', ARGV[0], ARGV[1], 'test')
         Patterns.match(Hype.parser.operators, Hype.parser.predicates) if USE_PATTERNS
         p Time.now.to_f - t
       end
