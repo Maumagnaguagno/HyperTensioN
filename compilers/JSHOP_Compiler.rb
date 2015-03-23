@@ -12,19 +12,19 @@ module JSHOP_Compiler
     end
   end
 
-  def subtasks_to_jshop(output, tasks, operators)
+  def subtasks_to_jshop(output, tasks, operators, indentation)
     if tasks.empty?
-      output << "    nil\n"
+      output << "#{indentation}nil\n"
     else
-      output << "    (\n"
+      output << "#{indentation}(\n"
       tasks.each {|t|
         if operators.any? {|op| op.first == t.first}
-          output << "    (!#{t.first} #{t.drop(1).join(' ')})\n"
+          output << "#{indentation}  (!#{t.first} #{t.drop(1).join(' ')})\n"
         else
-          output << "    (#{t.first} #{t.drop(1).join(' ')})\n"
+          output << "#{indentation}  (#{t.first} #{t.drop(1).join(' ')})\n"
         end
       }
-      output << "    )\n"
+      output << "#{indentation})\n"
     end
   end
 
@@ -54,7 +54,7 @@ module JSHOP_Compiler
         # Preconditions
         propositions_to_jshop(domain_str, met_decompose[2], met_decompose[3])
         # Subtasks
-        subtasks_to_jshop(domain_str, met_decompose[4], operators)
+        subtasks_to_jshop(domain_str, met_decompose[4], operators, '    ')
         domain_str << "  )\n\n"
       }
     }
@@ -67,7 +67,7 @@ module JSHOP_Compiler
     state.each {|pre| problem_str << "    (#{pre.first} #{pre.drop(1).join(' ')})\n"}
     # Tasks
     problem_str << "  )\n\n  ;" << '=' * 30 << "\n  ; Tasks\n  ;" << '=' * 30 << "\n\n"
-    subtasks_to_jshop(problem_str, tasks, operators)
+    subtasks_to_jshop(problem_str, tasks, operators, '  ')
     problem_str << ")\n"
   end
 end
