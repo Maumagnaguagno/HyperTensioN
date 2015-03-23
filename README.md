@@ -309,19 +309,22 @@ ruby pb1.rb
 
 The **Hype** is the framework for parsers and compilers of planning languages and common representations. It will save time and avoid errors during conversions of domains and problems for comparison results with other planners.
 This is not uncommon, as JSHOP itself compiles the input to Java, trying to achieve the best performance possible.
+**Hype (parsers and compilers) is under development and may change at any moment!**
 
 Parser support:
-- [ ] PDDL
-- [x] JSHOP
+- [ ] [PDDL](http://en.wikipedia.org/wiki/Planning_Domain_Definition_Language)
+- [x] [JSHOP](http://www.cs.umd.edu/projects/shop/description.html)
+- [ ] [HPDDL](https://github.com/ronwalf/HTN-Translation)
 
 Compiler support:
-- [x] Hypertension
-- [ ] JSHOP
-- [ ] PDDL
+- [x] Hypertension (methods and tasks may not be available)
+- [ ] PDDL (methods are ignored, goal must be manually converted)
+- [x] JSHOP (methods and tasks may not be available)
+- [ ] HPDDL (methods and tasks may not be available)
 - [ ] Graphviz DOT
 
 You can always not believe the ```Hype``` and convert descriptions by yourself.
-If no output folder is provided the system only prints out what was understood from the files.
+If no output folder is provided, the system only prints out what was understood from the files.
 
 ```
 ruby Hype.rb domain_file problem_file [output_folder]
