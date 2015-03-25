@@ -1,11 +1,10 @@
 # Patterns are closed for now
-USE_PATTERNS = ENV['USER'] == 'Mau'
+USE_PATTERNS = true or ENV['USER'] == 'Mau'
 
 require '../Patterns' if USE_PATTERNS
 require './parsers/JSHOP_Parser'
 require './compilers/JSHOP_Compiler'
 require './compilers/Hyper_Compiler'
-
 
 module Hype
   extend self
@@ -17,6 +16,7 @@ module Hype
   #-----------------------------------------------
 
   def propositions_to_s(props, joiner)
+    # TODO differentiate between free-variables and constants in terms
     props.map {|i| "(#{i.join(' ')})"}.join(joiner)
   end
 
@@ -139,8 +139,9 @@ if $0 == __FILE__
         else
           puts Hype.to_s
         end
+        # Testing...
+        Patterns.match(Hype.parser.operators, Hype.parser.methods, Hype.parser.predicates) if USE_PATTERNS
         Hype.compile('jshop', ARGV[0], ARGV[1], 'test')
-        Patterns.match(Hype.parser.operators, Hype.parser.predicates) if USE_PATTERNS
         p Time.now.to_f - t
       end
     else
