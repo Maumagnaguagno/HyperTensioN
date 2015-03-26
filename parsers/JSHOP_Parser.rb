@@ -134,7 +134,13 @@ module JSHOP_Parser
           i = i.split
           method << i.shift << i
         }
-        @methods << method
+        # Already defined
+        met = @methods.find {|m| m.first == method.first}
+        if met
+          method = met
+        else
+          @methods << method
+        end
         counter = METHOD_PREC
       when METHOD_PREC
         complete = false
@@ -145,8 +151,8 @@ module JSHOP_Parser
             decompose = [value]
             next
           else
-            # TODO add numbers as labels for the unlabeled cases
-            decompose = ['']
+            # Add numbers as labels for the unlabeled cases
+            decompose = ["unlabeled_#{method.size - 2}"]
           end
         end
         decompose << (free_variables = []) << (pos = []) << (neg = [])
