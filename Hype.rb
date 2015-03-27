@@ -3,8 +3,10 @@ USE_PATTERNS = true or ENV['USER'] == 'Mau'
 
 require '../Patterns' if USE_PATTERNS
 require './parsers/JSHOP_Parser'
-require './compilers/JSHOP_Compiler'
+
 require './compilers/Hyper_Compiler'
+require './compilers/JSHOP_Compiler'
+require './compilers/PDDL_Compiler'
 
 module Hype
   extend self
@@ -106,7 +108,10 @@ Problem #{@parser.problem_name} of #{@parser.problem_domain}
       ext = 'rb'
     when 'jshop'
       compiler = JSHOP_Compiler
-      ext = 'jshop'
+      ext = type
+    when 'pddl'
+      compiler = PDDL_Compiler
+      ext = type
     else raise "Unknown type #{type} to save"
     end
     folder = "examples/#{folder}"
@@ -141,7 +146,7 @@ if $0 == __FILE__
         end
         # Testing...
         Patterns.match(Hype.parser.operators, Hype.parser.methods, Hype.parser.predicates) if USE_PATTERNS
-        Hype.compile('jshop', ARGV[0], ARGV[1], 'test')
+        Hype.compile('pddl', ARGV[0], ARGV[1], 'test')
         p Time.now.to_f - t
       end
     else
