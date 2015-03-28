@@ -4,7 +4,9 @@
 Hypertension is an Hierarchical Task Network Planner written in Ruby, which means you have to describe how tasks can be accomplished using method decomposition to achieve a plan, but in Ruby. This is very alike to how humans think, taking mental steps further into primitive operators. When all operators in the plan are satisfied, the plan found is a valid one.
 HTN is used as an acronym for Hypertension in medical context, therefore the name was given.
 
-The current version has most of its algorithm inspired by PyHop, with backtracking and unification added.
+The current version has most of its algorithm inspired by PyHop, with backtracking and unification added. It is being developed with **Ruby 2.0**.
+
+In order to support other planning languages a module named Hype will take care of the conversion process.
 
 ## Algorithm
 
@@ -146,6 +148,18 @@ def enter(bot, source, destination)
       ['at', bot, source]
     ]
   )
+end
+```
+
+And if you want to create dummy operators to simulate a success or failure without modifications in the current state you just return the outcome. Success may be useful during the debug process, becoming part of the plan. Failure can be used to destroy the current plan decomposition without the use of preconditions, a specific case in which this construct is useful is not know.
+
+```Ruby
+def success(term1, term2)
+  true
+end
+
+def failure(term1, term2)
+  false
 end
 ```
 
@@ -307,8 +321,8 @@ cd HyperTensioN/examples/project
 ruby pb1.rb
 ```
 
-The **Hype** is the framework for parsers and compilers of planning languages and common representations. It will save time and avoid errors during conversions of domains and problems for comparison results with other planners.
-This is not uncommon, as JSHOP itself compiles the input to Java, trying to achieve the best performance possible.
+Sometimes you may already have your domain description in a different planning language and you want to follow the Hype! The **Hype** is the framework for parsers and compilers of planning languages and common representations. It will save time and avoid errors during conversions of domains and problems for comparison results with other planners.
+This conversion step is not uncommon, as JSHOP itself compiles the description to Java code, trying to achieve the best performance possible.
 **Hype (parsers and compilers) is under development and may change at any moment!**
 
 Parser support:
@@ -317,11 +331,11 @@ Parser support:
 - [ ] [HPDDL](https://github.com/ronwalf/HTN-Translation)
 
 Compiler support:
-- [x] Hypertension (methods and tasks may not be available)
-- [ ] PDDL (methods are ignored, goal must be manually converted)
-- [x] JSHOP (methods and tasks may not be available)
-- [ ] HPDDL (methods and tasks may not be available)
-- [ ] Graphviz DOT
+- [x] Hypertension (methods and tasks may not be available if the input was PDDL)
+- [x] PDDL (methods are ignored, goal must be manually converted from the tasks)
+- [x] JSHOP (methods and tasks may not be available if the input was PDDL)
+- [ ] HPDDL (methods and tasks may not be available if the input was PDDL)
+- [ ] [Graphviz DOT](http://www.graphviz.org/) (generate a graph description to be compiled to an image)
 
 You can always not believe the ```Hype``` and convert descriptions by yourself.
 If no output folder is provided, the system only prints out what was understood from the files.
@@ -342,7 +356,7 @@ Here are some hints for everyone:
 
 ## API
 
-Here are the descriptions to use and extend Hypertension and Hype functionality.
+Here are the descriptions to use and extend Hypertension and Hype functionality. Hypertension being the module with the planning engine and Hype being a collection of parsers and compilers to generate code from/to several planning languages.
 
 ### Planner
 
@@ -389,10 +403,10 @@ Be patient while this feature is developed, more information to come.
 
 ## Advantages
 
-ToDo compare with PyHop and JSHOP
+The main advantage is to be able to define behavior in the core language, if you wish, without losing clarity, this alone gives a lot of power. JSHOP requires you to dive into a very complex structure if you want to unlock this power. PyHop is based in this feature, everything is Python, but does not support backtracking and unification, which means you will have to create your own unification system and define your domain so no backtracking is required.
+The biggest advantage is not the planning itself, but the parsers and compilers being built around it, so that your description can be converted automatically without breaking compatibility with other planners. JSHOP and PyHop live in their own world, with their own language acting as a barrier. Perhaps the most invisible advantage is the lack of classes, every object used during planning is defined as one of the core objects. Once the designer understands Strings, Arrays and Hashes the entire Hypertension module is just a few methods away from complete understanding. This also means that any update in the implementation of Ruby will benefit this project directly, as those objects are always target of optimizations.
 
 ## ToDoS
-- Complete the README
 - More parsers
 - More compilers
 - Tests
