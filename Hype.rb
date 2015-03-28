@@ -1,5 +1,5 @@
 # Patterns are closed for now
-USE_PATTERNS = true or ENV['USER'] == 'Mau'
+USE_PATTERNS = false# ENV['USER'] == 'Mau'
 
 require '../Patterns' if USE_PATTERNS
 require './parsers/JSHOP_Parser'
@@ -146,7 +146,7 @@ if $0 == __FILE__
         end
         # Testing...
         Patterns.match(Hype.parser.operators, Hype.parser.methods, Hype.parser.predicates) if USE_PATTERNS
-        Hype.compile('pddl', ARGV[0], ARGV[1], 'test')
+        Hype.compile('hyper', ARGV[0], ARGV[1], 'test')
         p Time.now.to_f - t
       end
     else
