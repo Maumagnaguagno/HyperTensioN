@@ -4,6 +4,7 @@ USE_PATTERNS = false# ENV['USER'] == 'Mau'
 require '../Patterns' if USE_PATTERNS
 require './parsers/JSHOP_Parser'
 
+require './compilers/Dot_Compiler'
 require './compilers/Hyper_Compiler'
 require './compilers/JSHOP_Compiler'
 require './compilers/PDDL_Compiler'
@@ -105,21 +106,16 @@ Problem #{@parser.problem_name} of #{@parser.problem_domain}
   def compile(domain, problem, type)
     raise "No data to compile" unless @parser
     case type
-    when 'hyper'
-      compiler = Hyper_Compiler
-      ext = 'rb'
-    when 'jshop'
-      compiler = JSHOP_Compiler
-      ext = type
-    when 'pddl'
-      compiler = PDDL_Compiler
-      ext = type
+    when 'rb' then compiler = Hyper_Compiler
+    when 'jshop' then compiler = JSHOP_Compiler
+    when 'pddl' then compiler = PDDL_Compiler
+    when 'dot' then compiler = Dot_Compiler
     else raise "Unknown type #{type} to save"
     end
-    open("#{domain}.#{ext}", 'w') {|file|
+    open("#{domain}.#{type}", 'w') {|file|
       file << compiler.compile_domain(@parser.domain_name, @parser.operators, @parser.methods, @parser.predicates, @parser.state, @parser.tasks)
     }
-    open("#{problem}.#{ext}", 'w') {|file|
+    open("#{problem}.#{type}", 'w') {|file|
       file << compiler.compile_problem(@parser.domain_name, @parser.operators, @parser.methods, @parser.predicates, @parser.state, @parser.tasks, File.basename(domain))
     }
   end
