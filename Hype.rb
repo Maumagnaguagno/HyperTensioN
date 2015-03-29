@@ -82,15 +82,17 @@ Problem #{@parser.problem_name} of #{@parser.problem_domain}
   # Parse
   #-----------------------------------------------
 
-  def parse(type, domain, problem)
-    case type
-    when 'jshop'
+  def parse(domain, problem)
+    # TODO remove this limitation in the future
+    raise 'Incompatible extensions between domain and problem' if File.extname(domain) != File.extname(problem)
+    case File.extname(domain)
+    when '.jshop'
       @parser = JSHOP_Parser
-    when 'pddl'
+    when '.pddl'
       @parser = PDDL_Parser
     else
       @parser = nil
-      raise "Unknown type #{type} to parse"
+      raise "Unknown type #{File.extname(domain)} to parse"
     end
     @parser.parse_domain(domain)
     @parser.parse_problem(problem)
@@ -100,7 +102,7 @@ Problem #{@parser.problem_name} of #{@parser.problem_domain}
   # Compile
   #-----------------------------------------------
 
-  def compile(type, domain, problem, folder)
+  def compile(domain, problem, type)
     raise "No data to compile" unless @parser
     case type
     when 'hyper'
@@ -114,13 +116,11 @@ Problem #{@parser.problem_name} of #{@parser.problem_domain}
       ext = type
     else raise "Unknown type #{type} to save"
     end
-    folder = "examples/#{folder}"
-    Dir.mkdir(folder) unless Dir.exist?(folder)
-    open("#{folder}/#{domain}.#{ext}", 'w') {|file|
+    open("#{domain}.#{ext}", 'w') {|file|
       file << compiler.compile_domain(@parser.domain_name, @parser.operators, @parser.methods, @parser.predicates, @parser.state, @parser.tasks)
     }
-    open("#{folder}/#{problem}.#{ext}", 'w') {|file|
-      file << compiler.compile_problem(@parser.domain_name, @parser.operators, @parser.methods, @parser.predicates, @parser.state, @parser.tasks, domain)
+    open("#{problem}.#{ext}", 'w') {|file|
+      file << compiler.compile_problem(@parser.domain_name, @parser.operators, @parser.methods, @parser.predicates, @parser.state, @parser.tasks, File.basename(domain))
     }
   end
 end
@@ -132,25 +132,23 @@ end
 if $0 == __FILE__
   begin
     if ARGV.size.between?(2,3)
-      if not File.exist?(ARGV.first)
-        puts "File not found: #{ARGV.first}!"
-      elsif not File.exist?(ARGV[1])
-        puts "File not found: #{ARGV[1]}!"
+      domain = ARGV[0]
+      problem = ARGV[1]
+      if not File.exist?(domain)
+        puts "File not found: #{domain}!"
+      elsif not File.exist?(problem)
+        puts "File not found: #{problem}!"
       else
         t = Time.now.to_f
-        Hype.parse('jshop', ARGV.first, ARGV[1])
-        if ARGV[2]
-          Hype.compile('hyper', *ARGV)
-        else
-          puts Hype.to_s
-        end
-        # Testing...
+        Hype.parse(domain, problem)
         Patterns.match(Hype.parser.operators, Hype.parser.methods, Hype.parser.predicates) if USE_PATTERNS
-        Hype.compile('hyper', ARGV[0], ARGV[1], 'test')
+        if ARGV[2]
+          Hype.compile(domain, problem, ARGV[2])
+        else puts Hype.to_s
+        end
         p Time.now.to_f - t
       end
-    else
-      puts "Use #$0 domain_filename problem_filename [output_folder]"
+    else puts "Use #$0 domain_filename problem_filename output_type"
     end
   rescue
     puts $!, $@
