@@ -1,4 +1,4 @@
-(defproblem problem goldminer
+(defproblem pb1 goldminer
   (
     (at ag1 p0_0)
     (adjacent p0_0 p1_0)
