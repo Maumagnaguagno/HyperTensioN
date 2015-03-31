@@ -4,30 +4,6 @@ module JSHOP_Parser
   attr_reader :domain_name, :problem_name, :problem_domain, :operators, :methods, :predicates, :state, :tasks, :goal
 
   #-----------------------------------------------
-  # Scan tokens
-  #-----------------------------------------------
-
-  def scan_tokens(str)
-    tokenize(str.scan(/[()]|[!?:]*\w+/))
-  end
-
-  #-----------------------------------------------
-  # Tokenize
-  #-----------------------------------------------
-
-  def tokenize(tokens)
-    raise 'No more tokens found' if tokens.empty?
-    t = tokens.shift
-    if t == '('
-      list = []
-      list << tokenize(tokens) until tokens.first == ')'
-      tokens.shift
-      list
-    else t
-    end
-  end
-
-  #-----------------------------------------------
   # Parse operator
   #-----------------------------------------------
 
@@ -51,7 +27,7 @@ module JSHOP_Parser
           proposition = pro
           pos << proposition
         end
-        proposition.each {|i| i.sub!('?','')}
+        proposition.each {|i| i.sub!(/^\?/,'')}
         @predicates[proposition.first] = true if @predicates[proposition.first].nil?
       }
     end
@@ -62,7 +38,7 @@ module JSHOP_Parser
       group.each {|proposition|
         raise "Error with #{name} del effects" if proposition.first == 'not'
         del << proposition
-        proposition.each {|i| i.sub!('?','')}
+        proposition.each {|i| i.sub!(/^\?/,'')}
         @predicates[proposition.first] = false
       }
     end
@@ -72,7 +48,7 @@ module JSHOP_Parser
       group.each {|proposition|
         raise "Error with #{name} add effects" if proposition.first == 'not'
         add << proposition
-        proposition.each {|i| i.sub!('?','')}
+        proposition.each {|i| i.sub!(/^\?/,'')}
         @predicates[proposition.first] = false
       }
     end
@@ -136,7 +112,7 @@ module JSHOP_Parser
   def parse_domain(domain_filename)
     description = IO.read(domain_filename)
     description.gsub!(/;.*$|\n/,'')
-    tokens = scan_tokens(description)
+    tokens = Hype.scan_tokens(description)
     if tokens.instance_of?(Array) and tokens.shift == 'defdomain'
       @operators = []
       @methods = []
@@ -164,7 +140,7 @@ module JSHOP_Parser
   def parse_problem(problem_filename)
     description = IO.read(problem_filename)
     description.gsub!(/;.*$|\n/,'')
-    tokens = scan_tokens(description)
+    tokens = Hype.scan_tokens(description)
     if tokens.instance_of?(Array) and tokens.size == 5 and tokens.shift == 'defproblem'
       @problem_name = tokens.shift
       @problem_domain = tokens.shift

@@ -2,7 +2,9 @@
 USE_PATTERNS = false# ENV['USER'] == 'Mau'
 
 require '../Patterns' if USE_PATTERNS
+
 require './parsers/JSHOP_Parser'
+require './parsers/PDDL_Parser'
 
 require './compilers/Dot_Compiler'
 require './compilers/Hyper_Compiler'
@@ -13,6 +15,30 @@ module Hype
   extend self
 
   attr_reader :parser
+
+  #-----------------------------------------------
+  # Scan tokens
+  #-----------------------------------------------
+
+  def scan_tokens(str)
+    tokenize(str.scan(/[()]|[!?:]*[\w-]+/))
+  end
+
+  #-----------------------------------------------
+  # Tokenize
+  #-----------------------------------------------
+
+  def tokenize(tokens)
+    raise 'No more tokens found' if tokens.empty?
+    t = tokens.shift
+    if t == '('
+      list = []
+      list << tokenize(tokens) until tokens.first == ')'
+      tokens.shift
+      list
+    else t
+    end
+  end
 
   #-----------------------------------------------
   # Propositions to string
@@ -84,16 +110,12 @@ Problem #{@parser.problem_name} of #{@parser.problem_domain}
   #-----------------------------------------------
 
   def parse(domain, problem)
-    # TODO remove this limitation in the future
+    # TODO remove this limitation in the future (mix files)
     raise 'Incompatible extensions between domain and problem' if File.extname(domain) != File.extname(problem)
     case File.extname(domain)
-    when '.jshop'
-      @parser = JSHOP_Parser
-    when '.pddl'
-      @parser = PDDL_Parser
-    else
-      @parser = nil
-      raise "Unknown type #{File.extname(domain)} to parse"
+    when '.jshop' then @parser = JSHOP_Parser
+    when '.pddl' then @parser = PDDL_Parser
+    else raise "Unknown type #{File.extname(domain)} to parse"
     end
     @parser.parse_domain(domain)
     @parser.parse_problem(problem)
