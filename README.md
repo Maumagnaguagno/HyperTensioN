@@ -10,7 +10,7 @@ In order to support other planning languages a module named Hype will take care 
 
 ## Algorithm
 
-The algorithm for HTN planning is quite simple and flexible, the hard part is in the structure that decomposes and the unification engine. Our task list (input of planning) is decomposed until nothing remains, the base of recursion, returning an empty plan. The tail of recursion are the operator and method cases. The operator tests if the current task (the first in the list, since it decomposes in order here) can be applied to the current state (which is a visible structure to the other Ruby methods, but does not appear here). If successfully applied, the planning continues decomposing and insert the current task in the beginning of the plan, as it builds the plan during recursion from last to first. If it is a method, the path is different, we need to decompose into one of several cases with a valid unification for the free-variables. Each case unified is a list of tasks, subtasks, that may require decomposition too, occupying the same place the method that generated them once was. I exposed the unification only to methods, but it is possible to expose to operators too (which kinda kills the idea of what a primitive is to me). This way the methods take care of the heavy part (should the _agent_ **move** from _here_ to _there_ by **foot**[walking] or call a **cab**[call,enter,ride,pay,exit]) while the primite operators just execute the effects when applicable. If no decomposition happens, failure is returned.
+The algorithm for HTN planning is quite simple and flexible, the hard part is in the structure that decomposes and the unification engine. Our task list (input of planning) is decomposed until nothing remains, the base of recursion, returning an empty plan. The tail of recursion are the operator and method cases. The operator tests if the current task (the first in the list, since it decomposes in order here) can be applied to the current state (which is a visible structure to the other Ruby methods, but does not appear here). If successfully applied, the planning continues decomposing and insert the current task in the beginning of the plan, as it builds the plan during recursion from last to first. If it is a method, the path is different, we need to decompose into one of several cases with a valid unification for the free-variables. Each case unified is a list of tasks, subtasks, that may require decomposition too, occupying the same place the method that generated them once was. I exposed the unification only to methods, but it is possible to expose to operators too (which kinda kills the idea of what a primitive is to me). This way the methods take care of the heavy part (should the _agent_ **move** from _here_ to _there_ by **foot**[walking] or call a **cab**[call,enter,ride,pay,exit]) while the primitive operators just execute the effects when applicable. If no decomposition happens, failure is returned.
 
 ```Ruby
 Algorithm planning(list tasks)
@@ -151,7 +151,7 @@ def enter(bot, source, destination)
 end
 ```
 
-And if you want to create dummy operators to simulate a success or failure without modifications in the current state you just return the outcome. Success may be useful during the debug process, becoming part of the plan. Failure can be used to destroy the current plan decomposition without the use of preconditions, a specific case in which this construct is useful is not know.
+And if you want to create dummy operators to simulate a success or failure without modifications in the current state you just return the outcome. Success may be useful during the debug process or to change an internal feature of the agent wrapping the HTN when parsing the plan returned. Failure can be used to destroy the current plan decomposition without the use of preconditions, a specific case in which this construct is useful is not know.
 
 ```Ruby
 def success(term1, term2)
@@ -326,7 +326,7 @@ This conversion step is not uncommon, as JSHOP itself compiles the description t
 **Hype (parsers and compilers) is under development and may change at any moment!**
 
 Parser support:
-- [ ] [PDDL](http://en.wikipedia.org/wiki/Planning_Domain_Definition_Language)
+- [x] [PDDL](http://en.wikipedia.org/wiki/Planning_Domain_Definition_Language)
 - [x] [JSHOP](http://www.cs.umd.edu/projects/shop/description.html)
 - [ ] [HPDDL](https://github.com/ronwalf/HTN-Translation)
 
@@ -334,14 +334,14 @@ Compiler support:
 - [x] Hypertension (methods and tasks may not be available if the input was PDDL)
 - [x] PDDL (methods are ignored, goal must be manually converted from the tasks)
 - [x] JSHOP (methods and tasks may not be available if the input was PDDL)
+- [x] [Graphviz DOT](http://www.graphviz.org/) (generate a graph description to be compiled into an image)
 - [ ] HPDDL (methods and tasks may not be available if the input was PDDL)
-- [ ] [Graphviz DOT](http://www.graphviz.org/) (generate a graph description to be compiled to an image)
 
 You can always not believe the ```Hype``` and convert descriptions by yourself.
-If no output folder is provided, the system only prints out what was understood from the files.
+If no output type is provided, the system only prints out what was understood from the files.
 
 ```
-ruby Hype.rb domain_file problem_file [output_folder]
+ruby Hype.rb path/domain_file path/problem_file [rb|pddl|jsho|dot]
 ```
 
 ## Hints
@@ -393,22 +393,22 @@ Domain methods must yield a task list or are nullified, having no decomposition.
 
 ### Parser
 
-Parsers are modules to be used to read planning descriptions, they are being developed now and still require an interface definition.
+Parsers are modules to be used to read planning descriptions, they are being developed now and still require a standard interface.
 Be patient while this feature is developed, more information to come.
 
 ### Compiler
 
-Compilers are modules to be used to write planning descriptions, they are being developed now and still require an interface definition.
+Compilers are modules to be used to write planning descriptions, they are being developed now and still require a standard interface.
 Be patient while this feature is developed, more information to come.
 
 ## Advantages
 
 The main advantage is to be able to define behavior in the core language, if you wish, without losing clarity, this alone gives a lot of power. JSHOP requires you to dive into a very complex structure if you want to unlock this power. PyHop is based in this feature, everything is Python, but does not support backtracking and unification, which means you will have to create your own unification system and define your domain so no backtracking is required.
-The biggest advantage is not the planning itself, but the parsers and compilers being built around it, so that your description can be converted automatically without breaking compatibility with other planners. JSHOP and PyHop live in their own world, with their own language acting as a barrier. Perhaps the most invisible advantage is the lack of classes, every object used during planning is defined as one of the core objects. Once the designer understands Strings, Arrays and Hashes the entire Hypertension module is just a few methods away from complete understanding. This also means that any update in the implementation of Ruby will benefit this project directly, as those objects are always target of optimizations.
+The biggest advantage is not the planning itself, but the parsers and compilers being built around it, so that your description can be converted automatically without breaking compatibility with other planners. JSHOP and PyHop live in their own world, with their own language acting as a barrier. Perhaps the most invisible advantage is the lack of classes, every object used during planning is defined as one of the core objects. Once the designer understands Strings, Arrays and Hashes the entire Hypertension module is just a few methods away from complete understanding. This also means that any update in the implementation of Ruby will benefit this project directly, as those objects are always target of optimizations. The only feature that we lack is unordered execution of tasks, a feature that JSHOP supports and is extremely important to achieve good plans in some cases.
 
 ## ToDoS
-- More parsers
-- More compilers
+- Parsers with more features support
+- Compilers with more features support
 - Tests
 - Examples
 - Maybe applicable?(precond_true, precond_false) in generate does not need to test precond_true
