@@ -337,7 +337,12 @@ Compiler support:
 - [x] [Graphviz DOT](http://www.graphviz.org/) (generate a graph description to be compiled into an image)
 - [ ] HPDDL (methods and tasks may not be available if the input was PDDL)
 
-You can always not believe the ```Hype``` and convert descriptions by yourself.
+As any parser the ones provided by Hype are limited in one way or another, PDDL have far more features than supported by a fast planner and JSHOP have 2 ways to define methods.
+Methods may be broken into several independent blocks or in the same block without the need to check the same preconditions again.
+We support both cases, but will evaluate the preconditions of each set independently always. JSHOP only evaluates the last if the first ones evaluated to false in the same block. In order to copy the behavior we can not simply copy the positive preconditions in the negative set and vice-versa.
+Sometimes only one proposition in the set is false, if we copied in the other set for the other methods it would never work. Declare the methods in the same Ruby method is possible (losing label definition), but kills the simplicity and declaration independence we are trying to achieve.
+
+You can always not believe the ```Hype``` and convert descriptions by yourself, following a style that achieves a better or faster solution with the indentation that makes you happy.
 If no output type is provided, the system only prints out what was understood from the files.
 
 ```
