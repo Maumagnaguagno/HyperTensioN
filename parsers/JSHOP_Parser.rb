@@ -1,7 +1,7 @@
 module JSHOP_Parser
   extend self
 
-  attr_reader :domain_name, :problem_name, :problem_domain, :operators, :methods, :predicates, :state, :tasks, :goal
+  attr_reader :domain_name, :problem_name, :problem_domain, :operators, :methods, :predicates, :state, :tasks, :goal_pos, :goal_not
 
   #-----------------------------------------------
   # Parse operator
@@ -147,6 +147,8 @@ module JSHOP_Parser
       @state = tokens.shift
       @state.each {|proposition| @predicates[proposition.first] = nil unless @predicates.include?(proposition.first)}
       @tasks = tokens.shift
+      @goal_pos = []
+      @goal_not = []
     else raise "File #{problem_filename} does not match problem pattern"
     end
   end

@@ -134,12 +134,19 @@ Problem #{@parser.problem_name} of #{@parser.problem_domain}
     when 'dot' then compiler = Dot_Compiler
     else raise "Unknown type #{type} to save"
     end
-    open("#{domain}.#{type}", 'w') {|file|
-      file << compiler.compile_domain(@parser.domain_name, @parser.operators, @parser.methods, @parser.predicates, @parser.state, @parser.tasks)
-    }
-    open("#{problem}.#{type}", 'w') {|file|
-      file << compiler.compile_problem(@parser.domain_name, @parser.operators, @parser.methods, @parser.predicates, @parser.state, @parser.tasks, File.basename(domain))
-    }
+    args = [
+      @parser.domain_name,
+      @parser.operators,
+      @parser.methods,
+      @parser.predicates,
+      @parser.state,
+      @parser.tasks,
+      @parser.goal_pos,
+      @parser.goal_not
+    ]
+    open("#{domain}.#{type}", 'w') {|file| file << compiler.compile_domain(*args)}
+    args << File.basename(domain)
+    open("#{problem}.#{type}", 'w') {|file| file << compiler.compile_problem(*args)}
   end
 end
 

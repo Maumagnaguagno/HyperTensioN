@@ -1,7 +1,7 @@
 module PDDL_Parser
   extend self
 
-  attr_reader :domain_name, :problem_name, :problem_domain, :operators, :methods, :predicates, :state, :tasks, :goal
+  attr_reader :domain_name, :problem_name, :problem_domain, :operators, :methods, :predicates, :state, :tasks, :goal_pos, :goal_not
 
   #-----------------------------------------------
   # Parse action
