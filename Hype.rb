@@ -50,6 +50,14 @@ module Hype
   end
 
   #-----------------------------------------------
+  # Subtasks to string
+  #-----------------------------------------------
+
+  def subtasks_to_s(tasks, operators, joiner)
+    tasks.map {|t| "#{operators.any? {|op| op.first == t.first} ? 'operator' : 'method'} (#{t.first}#{t.drop(1).map {|i| " #{i}"}.join})"}.join(joiner)
+  end
+
+  #-----------------------------------------------
   # Operators to string
   #-----------------------------------------------
 
@@ -101,8 +109,13 @@ Problem #{@parser.problem_name} of #{@parser.problem_domain}
   State:
     #{propositions_to_s(@parser.state, "\n    ")}
 
-  Tasks:
-    #{propositions_to_s(@parser.tasks, "\n    ")}"
+  Goal:
+    Tasks:
+      #{subtasks_to_s(@parser.tasks, @parser.operators, "\n      ")}
+    Positive:
+      #{propositions_to_s(@parser.goal_pos, "\n      ")}
+    Negative:
+      #{propositions_to_s(@parser.goal_not, "\n      ")}"
   end
 
   #-----------------------------------------------

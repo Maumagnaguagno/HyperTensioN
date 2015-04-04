@@ -132,17 +132,23 @@ module PDDL_Parser
           @state = group
           @state.each {|proposition| @predicates[proposition.first] = nil unless @predicates.include?(proposition.first)}
         when ':goal'
+          group.shift
           # TODO raise
           @goal_pos = []
           @goal_not = []
           @tasks = []
-          group.shift
-          group.each {|pro|
-            if pro.first == 'not'
-              @goal_not << pro.last
-            else @goal_pos << pro
-            end
-          }
+          group = group.shift
+          if group.first == 'and'
+            group.shift
+            group.each {|pro|
+              if pro.first == 'not'
+                @goal_not << pro.last
+              else @goal_pos << pro
+              end
+            }
+          # TODO Atom
+          else raise 'Single group not implemented'
+          end
         end
       end
     else raise "File #{problem_filename} does not match problem pattern"
