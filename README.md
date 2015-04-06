@@ -43,7 +43,7 @@ I chose the explicit way, therefore you need to specify operator visibility and 
 
 ### Example
 
-Nothing better than an example to understand the behavior of something. We will start with the **Robby domain**. Our rescue robot Robby is called to action, the robot is inside an office building trying to check the status of certain locations. Those locations are defined by the existence of a beacon, and the robot must be in the same hallway or room to check the status. Robby has a small set of actions available:
+There is nothing better than an example to understand the behavior of something. We will start with the **Robby domain**. Our rescue robot Robby is called to action, the robot is inside an office building trying to check the status of certain locations. Those locations are defined by the existence of a beacon, and the robot must be in the same hallway or room to check the status. Robby has a small set of actions available:
 - **Enter** a room connected to the current hallway
 - **Exit** the current room to a connected hallway
 - **Move** from hallway to hallway
