@@ -54,7 +54,7 @@ module Hype
   #-----------------------------------------------
 
   def subtasks_to_s(tasks, operators, joiner)
-    tasks.map {|t| "#{operators.any? {|op| op.first == t.first} ? 'operator' : 'method'} (#{t.first}#{t.drop(1).map {|i| " #{i}"}.join})"}.join(joiner)
+    tasks.map {|t| "#{operators.any? {|op| op.first == t.first} ? 'operator' : 'method  '} (#{t.first}#{t.drop(1).map {|i| " #{i}"}.join})"}.join(joiner)
   end
 
   #-----------------------------------------------
@@ -87,8 +87,7 @@ module Hype
         output << "        Free variables:\n          #{met_decompose[1].join("\n          ")}\n" unless met_decompose[1].empty?
         output << "        Precond positive:\n          #{propositions_to_s(met_decompose[2], "\n          ")}\n" unless met_decompose[2].empty?
         output << "        Precond negative:\n          #{propositions_to_s(met_decompose[3], "\n          ")}\n" unless met_decompose[3].empty?
-        # TODO differentiate between operator and method as subtask
-        output << "        Subtasks:\n          #{met_decompose[4].empty? ? 'empty': propositions_to_s(met_decompose[4], "\n          ")}\n"
+        output << "        Subtasks:\n          #{met_decompose[4].empty? ? 'empty': subtasks_to_s(met_decompose[4], @parser.operators, "\n          ")}\n"
       }
       output << "\n"
     }
