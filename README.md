@@ -411,10 +411,10 @@ Be patient while this feature is developed, more information to come.
 The main advantage is to be able to define behavior in the core language, if you wish, without losing clarity, this alone gives a lot of power. JSHOP requires you to dive into a very complex structure if you want to unlock this power. PyHop is based in this feature, everything is Python, but does not support backtracking and unification, which means you will have to create your own unification system and define your domain so no backtracking is required.
 The biggest advantage is not the planning itself, but the parsers and compilers being built around it, so that your description can be converted automatically without breaking compatibility with other planners. JSHOP and PyHop live in their own world, with their own language acting as a barrier. Perhaps the most invisible advantage is the lack of classes, every object used during planning is defined as one of the core objects. Once the designer understands Strings, Arrays and Hashes the entire Hypertension module is just a few methods away from complete understanding. This also means that any update in the implementation of Ruby will benefit this project directly, as those objects are always target of optimizations. The only feature that we lack is unordered execution of tasks, a feature that JSHOP supports and is extremely important to achieve good plans in some cases.
 
-## ToDoS
+## ToDo's
 - Parsers with more features support
 - Compilers with more features support
 - Tests
 - Examples
-- Maybe applicable?(precond_true, precond_false) in generate does not need to test precond_true
-  - applicable?([], precond_false) appears to be enough
+- Maybe ```applicable?(precond_true, precond_false)``` in generate does not need to test precond_true
+  - ```applicable?([], precond_false)``` appears to be enough
