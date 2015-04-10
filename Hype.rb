@@ -156,9 +156,11 @@ Problem #{@parser.problem_name} of #{@parser.problem_domain}
       @parser.goal_pos,
       @parser.goal_not
     ]
-    open("#{domain}.#{type}", 'w') {|file| file << compiler.compile_domain(*args)}
+    data = compiler.compile_domain(*args)
+    open("#{domain}.#{type}", 'w') {|file| file << data} unless data.empty?
     args << File.basename(domain)
-    open("#{problem}.#{type}", 'w') {|file| file << compiler.compile_problem(*args)}
+    data = compiler.compile_problem(*args)
+    open("#{problem}.#{type}", 'w') {|file| file << data} unless data.empty?
   end
 end
 
