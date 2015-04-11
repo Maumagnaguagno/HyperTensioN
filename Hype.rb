@@ -1,6 +1,6 @@
 # Patterns are closed for now
-USE_PATTERNS = File.exist?('../Patterns.rb')
-require '../Patterns' if USE_PATTERNS
+PATTERNS = File.exist?('../Patterns.rb')
+require '../Patterns' if PATTERNS
 
 require './parsers/JSHOP_Parser'
 require './parsers/PDDL_Parser'
@@ -179,7 +179,7 @@ if $0 == __FILE__
       else
         t = Time.now.to_f
         Hype.parse(domain, problem)
-        Patterns.match(Hype.parser.operators, Hype.parser.methods, Hype.parser.predicates) if USE_PATTERNS
+        Patterns.match(Hype.parser.operators, Hype.parser.methods, Hype.parser.predicates) if PATTERNS
         if ARGV[2]
           Hype.compile(domain, problem, ARGV[2])
         else puts Hype.to_s
