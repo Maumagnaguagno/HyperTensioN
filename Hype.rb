@@ -1,6 +1,5 @@
 # Patterns are closed for now
-USE_PATTERNS = false# ENV['USER'] == 'Mau'
-
+USE_PATTERNS = File.exist?('../Patterns.rb')
 require '../Patterns' if USE_PATTERNS
 
 require './parsers/JSHOP_Parser'
