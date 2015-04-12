@@ -470,7 +470,7 @@ You may notice an [old_versions](old_versions) folder with incompatible variatio
 ## ToDo's
 - Parsers with more features support
 - Compilers with more features support
-- Define the standard interface for parsers and compilers, the current ones require several attributes instead of a Hash {:attr => data} and there is an inconsistency about file handling (Hype should do all IO).
+- Define the standard interface for parsers and compilers, the current ones require several attributes instead of a Hash ```{:attr => data}``` and there is an inconsistency about file handling (Hype should do all IO).
 - Tests
 - Examples
 - Maybe ```applicable?(precond_true, precond_false)``` in generate does not need to test precond_true
