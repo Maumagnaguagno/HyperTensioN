@@ -315,7 +315,7 @@ Robby.problem(
 ## Hints
 
 Here are some hints for everyone:
-- Having an object in a separate variable being reused is faster to compare (pointer comparison), only works if no object is created during run-time.
+- Having an a common object in a variable being reused is faster to compare (pointer comparison), instead of String == String, only works for constant objects.
 - Order the methods decomposition wisely, otherwise you may test a lot before actually going to the correct path.
 - Use the precondition in you favor, you do not need to test things twice using a smart method decomposition.
 - Unification is costly, avoid generate at any cost, match your values once and propagate them as long as possible.
