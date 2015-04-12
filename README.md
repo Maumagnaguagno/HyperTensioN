@@ -6,7 +6,7 @@ HTN is used as an acronym for Hypertension in medical context, therefore the nam
 
 The current version has most of its algorithm inspired by PyHop, with backtracking and unification added. It is being developed with **Ruby 2.0**.
 
-In order to support other planning languages a module named Hype will take care of the conversion process.
+In order to support other planning languages a module named [Hype](#hype) will take care of the conversion process.
 
 ## Algorithm
 
@@ -312,6 +312,16 @@ Robby.problem(
 )
 ```
 
+## Hints
+
+Here are some hints for everyone:
+- Having an object in a separate variable being reused is faster to compare (pointer comparison), only works if no object is created during run-time.
+- Order the methods decomposition wisely, otherwise you may test a lot before actually going to the correct path.
+- Use the precondition in you favor, you do not need to test things twice using a smart method decomposition.
+- Unification is costly, avoid generate at any cost, match your values once and propagate them as long as possible.
+- Even if a precondition or effect is an empty set you need to declare, use ```[]```.
+- Empty predicate sets must be put in the initial state at the problem file. This avoids predicate naming typos, as all predicates must be previously defined.
+
 ## Execution
 
 The problem acts as the main function since the problems include the domain, and the domain include the planner.
@@ -320,44 +330,6 @@ The problem acts as the main function since the problems include the domain, and
 cd HyperTensioN/examples/project
 ruby pb1.rb
 ```
-
-Sometimes you may already have your domain description in a different planning language and you want to follow the Hype! The **Hype** is the framework for parsers and compilers of planning languages and common representations. It will save time and avoid errors during conversions of domains and problems for comparison results with other planners.
-This conversion step is not uncommon, as JSHOP itself compiles the description to Java code, trying to achieve the best performance possible.
-**Hype (parsers and compilers) is under development and may change at any moment!**
-
-Parser support:
-- [x] [PDDL](http://en.wikipedia.org/wiki/Planning_Domain_Definition_Language)
-- [x] [JSHOP](http://www.cs.umd.edu/projects/shop/description.html)
-- [ ] [HPDDL](https://github.com/ronwalf/HTN-Translation)
-
-Compiler support:
-- [x] Hypertension (methods and tasks may not be available if the input was PDDL)
-- [x] PDDL (methods are ignored, goal must be manually converted from the tasks)
-- [x] JSHOP (methods and tasks may not be available if the input was PDDL)
-- [x] [Graphviz DOT](http://www.graphviz.org/) (generate a graph description to be compiled into an image)
-- [ ] HPDDL (methods and tasks may not be available if the input was PDDL)
-
-As any parser the ones provided by Hype are limited in one way or another, PDDL have far more features than supported by a fast planner and JSHOP have 2 ways to define methods.
-Methods may be broken into several independent blocks or in the same block without the need to check the same preconditions again.
-We support both cases, but will evaluate the preconditions of each set independently always. JSHOP only evaluates the last if the first ones evaluated to false in the same block. In order to copy the behavior we can not simply copy the positive preconditions in the negative set and vice-versa.
-Sometimes only one proposition in the set is false, if we copied in the other set for the other methods it would never work. Declare the methods in the same Ruby method is possible (losing label definition), but kills the simplicity and declaration independence we are trying to achieve.
-
-You can always not believe the ```Hype``` and convert descriptions by yourself, following a style that achieves a better or faster solution with the indentation that makes you happy.
-If no output type is provided, the system only prints out what was understood from the files.
-
-```
-ruby Hype.rb path/domain_file path/problem_file [rb|pddl|jsho|dot]
-```
-
-## Hints
-
-Here are some hints for everyone:
-- Having objects on separate variables is faster to compare (pointer comparison), only works if no object is created during run-time.
-- Order the methods decomposition wisely, otherwise you may test a lot before actually going to the correct path.
-- Use the precondition in you favor, you do not need to test things twice using a smart method decomposition.
-- Unification is costly, avoid generate at any cost, match your values once and propagate them as long as possible.
-- Even if a precondition or effect is an empty set you need to declare, use ```[]```.
-- Empty predicate sets must be put in the initial state at the problem file. This avoids predicate naming typos, as all predicates must be previously defined.
 
 ## API
 
@@ -396,7 +368,41 @@ Domain operators can be defined without ```apply_operator``` and will have the r
 
 Domain methods must yield a task list or are nullified, having no decomposition.
 
-### Parser
+## Hype
+
+The **Hype** is the framework for parsers and compilers of planning languages and common representations. It will save time and avoid errors during conversions of domains and problems for comparison results with other planners.
+This conversion step is not uncommon, as JSHOP itself compiles the description to Java code, trying to achieve the best performance possible.
+
+Parser support:
+- [x] [PDDL](http://en.wikipedia.org/wiki/Planning_Domain_Definition_Language)
+- [x] [JSHOP](http://www.cs.umd.edu/projects/shop/description.html)
+- [ ] [HPDDL](https://github.com/ronwalf/HTN-Translation)
+
+Compiler support:
+- [x] Hypertension (methods and tasks may not be available if the input was PDDL)
+- [x] PDDL (methods are ignored, goal must be manually converted from the tasks)
+- [x] JSHOP (methods and tasks may not be available if the input was PDDL)
+- [x] [Graphviz DOT](http://www.graphviz.org/) (generate a graph description to be compiled into an image)
+- [ ] HPDDL (methods and tasks may not be available if the input was PDDL)
+
+As any parser the ones provided by Hype are limited in one way or another, PDDL have far more features than supported by a fast planner and JSHOP have 2 ways to define methods.
+Methods may be broken into several independent blocks or in the same block without the need to check the same preconditions again.
+We support both cases, but will evaluate the preconditions of each set independently always. JSHOP only evaluates the last if the first ones evaluated to false in the same block. In order to copy the behavior we can not simply copy the positive preconditions in the negative set and vice-versa.
+Sometimes only one proposition in the set is false, if we copied in the other set for the other methods it would never work. Declare the methods in the same Ruby method is possible (losing label definition), but kills the simplicity and declaration independence we are trying to achieve.
+
+You can always not believe the **Hype** and convert descriptions by yourself, following a style that achieves a better or faster solution with the indentation that makes you happy.
+
+
+## Execution
+
+Hype requires a domain and problem file to be compiled to a certain output type.
+If no output type is provided, the system only prints out what was understood from the files and the time to parse.
+
+```
+ruby Hype.rb path/domain_filename path/problem_filename [rb|pddl|jshop|dot]
+```
+
+### Parsers
 
 Parsers are modules to be used to read planning descriptions, they are being developed now and still require a standard interface.
 The prototype interface is a module with the domain attributes and two methods to parse problem and domain files:
@@ -425,7 +431,7 @@ Maybe the file reading is common enough to be read outside the parsers, but then
 - Binary files (uncommon, but possible)
 - Problem generators (common)
 
-### Compiler
+### Compilers
 
 Compilers are modules to be used to write planning descriptions, they are being developed now and still require a standard interface.
 The prototype interface is a module with two methods to compile problem and domain files to text:
