@@ -460,6 +460,13 @@ In fact this is the core idea behinf Hype, be able to parse, modify and compile 
 The main advantage is to be able to define behavior in the core language, if you wish, without losing clarity, this alone gives a lot of power. JSHOP requires you to dive into a very complex structure if you want to unlock this power. PyHop is based in this feature, everything is Python, but does not support backtracking and unification, which means you will have to create your own unification system and define your domain so no backtracking is required.
 The biggest advantage is not the planning itself, but the parsers and compilers being built around it, so that your description can be converted automatically without breaking compatibility with other planners. JSHOP and PyHop live in their own world, with their own language acting as a barrier. Perhaps the most invisible advantage is the lack of classes, every object used during planning is defined as one of the core objects. Once the designer understands Strings, Arrays and Hashes the entire Hypertension module is just a few methods away from complete understanding. This also means that any update in the implementation of Ruby will benefit this project directly, as those objects are always target of optimizations. The only feature that we lack is unordered execution of tasks, a feature that JSHOP supports and is extremely important to achieve good plans in some cases.
 
+## Old Versions
+
+You may notice an [old_versions](old_versions) folder with older an incompatible variations of Hypertension. This folder contain the RubyHop (PyHop remade in Ruby) and Simple (Hypertension without unification). Simple shares the core of Hypertension, but builds the plan while searching, while Hypertension builds the plan after, and support probability planning to show all outcomes that may happen. I left them in a separate folder as some of their features are now gone. I plan to create variations of the current core to support the plan built during search and probabilistic outcomes in the future, probably when I need those. Those versions also let you express your state in any way you want, but you need to take care of eveything, which is not the case now as unification and operator application require a standard structure.
+- RubyHop: interesting only if you want to port from PyHop.
+- Plan built during search is useful to interleave tasks and optimize the plan.
+- Probabilistic planning is useful if you need to know what may happen and the different probabilities of each scenario.
+
 ## ToDo's
 - Parsers with more features support
 - Compilers with more features support
