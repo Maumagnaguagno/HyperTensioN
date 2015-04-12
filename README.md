@@ -361,7 +361,7 @@ Here are some hints for everyone:
 
 ## API
 
-Here are the descriptions to use and extend Hypertension and Hype functionality. Hypertension being the module with the planning engine and Hype being a collection of parsers and compilers to generate code from/to several planning languages.
+Here are the descriptions to use and extend Hypertension and Hype functionality. Hypertension being the module with the planning engine and Hype being a collection of parsers and compilers to generate code from/to several planning formats.
 
 ### Planner
 
@@ -399,12 +399,55 @@ Domain methods must yield a task list or are nullified, having no decomposition.
 ### Parser
 
 Parsers are modules to be used to read planning descriptions, they are being developed now and still require a standard interface.
-Be patient while this feature is developed, more information to come.
+The prototype interface is a module with the domain attributes and two methods to parse problem and domain files:
+
+```Ruby
+module Foo_Parser
+  extend self
+
+  attr_reader :domain_name, :problem_name, :problem_domain, :operators, :methods, :predicates, :state, :tasks, :goal_pos, :goal_not
+
+  def parse_domain(domain_filename)
+    description = IO.read(domain_filename)
+    # TODO fill attributes
+  end
+
+  def parse_problem(problem_filename)
+    description = IO.read(problem_filename)
+    # TODO fill attributes
+  end
+end
+```
+
+With the parser completed you need to connect with the Hype based in the file extensions of the files provided.
+Both files (domain and problem) must have the same extension.
+Maybe the file reading is common enough to be read outside the parsers, but then no special files would be supported, like:
+- Binary files (uncommon, but possible)
+- Problem generators (common)
 
 ### Compiler
 
 Compilers are modules to be used to write planning descriptions, they are being developed now and still require a standard interface.
-Be patient while this feature is developed, more information to come.
+The prototype interface is a module with two methods to compile problem and domain files to text:
+
+```Ruby
+module Bar_Compiler
+  extend self
+
+  def compile_domain(domain_name, operators, methods, predicates, state, tasks, goal_pos, goal_not)
+    # TODO return string or nil, nil means no output file is generated
+  end
+
+  def compile_problem(domain_name, operators, methods, predicates, state, tasks, goal_pos, goal_not, domain_filename)
+    # TODO return string or nil, nil means no output file is generated
+  end
+end
+```
+
+In the same sense of the parsers, it would be a better idea to handle the file here, which is still possible doing what you need and returning nil.
+The output filename is the input filename plus the new extension, therefore ```input.pddl``` to jshop would be ```input.pddl.jshop```, so that you do not lose the information about the source.
+Note that any compiler have access to the parser attributes, which means you can call one module to optimize before calling another to actually compile.
+In fact this is the core idea behinf Hype, be able to parse, modify and compile domains without having to worry about language support, any future language could be supported just adding a new parser and compiler.
 
 ## Advantages
 
@@ -414,6 +457,7 @@ The biggest advantage is not the planning itself, but the parsers and compilers 
 ## ToDo's
 - Parsers with more features support
 - Compilers with more features support
+- Define the standard interface for parsers and compilers, the current ones require several attributes instead of a Hash {:attr => data} and there is an inconsistency about file handling (Hype should do all IO).
 - Tests
 - Examples
 - Maybe ```applicable?(precond_true, precond_false)``` in generate does not need to test precond_true

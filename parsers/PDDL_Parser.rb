@@ -106,7 +106,6 @@ module PDDL_Parser
   #-----------------------------------------------
 
   def parse_problem(problem_filename)
-    # TODO this entire method
     description = IO.read(problem_filename)
     description.gsub!(/;.*$|\n/,'')
     tokens = Hype.scan_tokens(description)
