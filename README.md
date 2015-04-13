@@ -107,7 +107,7 @@ module Robby
 end
 ```
 
-The operators are the same as before, but visit and unvisit are not really important outside the planning stage, therefore they are not visible (```false```), while the others are visible (```true```). Our swap_at method is there, without any code describing its behavior. You could compare this with the header file holding the prototypes of functions as in C. And yes, I did not created the outerside pattern ```/(?:swap_at*report)*/```, one step at a time.
+The operators are the same as before, but visit and unvisit are not really important outside the planning stage, therefore they are not visible (```false```), while the others are visible (```true```). Our swap_at method is there, without any code describing its behavior. You could compare this with the header file holding the prototypes of functions as in C. And yes, I did not created the outerside pattern ```/((swap_at)*report)*/```, one step at a time.
 
 The enter operator appears to be a good starting point, we need to define our preconditions and effects. I prefer to handle them in a table, easier to see what is changing:
 
