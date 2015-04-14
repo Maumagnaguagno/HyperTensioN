@@ -53,6 +53,7 @@ module Hype
   #-----------------------------------------------
 
   def subtasks_to_s(tasks, operators, joiner)
+    return 'empty' if tasks.empty?
     tasks.map {|t| "#{operators.any? {|op| op.first == t.first} ? 'operator' : 'method  '} (#{t.first}#{t.drop(1).map {|i| " #{i}"}.join})"}.join(joiner)
   end
 
@@ -86,7 +87,7 @@ module Hype
         output << "        Free variables:\n          #{met_decompose[1].join("\n          ")}\n" unless met_decompose[1].empty?
         output << "        Precond positive:\n          #{propositions_to_s(met_decompose[2], "\n          ")}\n" unless met_decompose[2].empty?
         output << "        Precond negative:\n          #{propositions_to_s(met_decompose[3], "\n          ")}\n" unless met_decompose[3].empty?
-        output << "        Subtasks:\n          #{met_decompose[4].empty? ? 'empty': subtasks_to_s(met_decompose[4], @parser.operators, "\n          ")}\n"
+        output << "        Subtasks:\n          #{subtasks_to_s(met_decompose[4], @parser.operators, "\n          ")}\n"
       }
       output << "\n"
     }
@@ -111,9 +112,9 @@ Problem #{@parser.problem_name} of #{@parser.problem_domain}
     Tasks:
       #{subtasks_to_s(@parser.tasks, @parser.operators, "\n      ")}
     Positive:
-      #{propositions_to_s(@parser.goal_pos, "\n      ")}
+      #{@parser.goal_pos.empty? ? 'empty' : propositions_to_s(@parser.goal_pos, "\n      ")}
     Negative:
-      #{propositions_to_s(@parser.goal_not, "\n      ")}"
+      #{@parser.goal_not.empty? ? 'empty' : propositions_to_s(@parser.goal_not, "\n      ")}"
   end
 
   #-----------------------------------------------
@@ -156,10 +157,10 @@ Problem #{@parser.problem_name} of #{@parser.problem_domain}
       @parser.goal_not
     ]
     data = compiler.compile_domain(*args)
-    open("#{domain}.#{type}", 'w') {|file| file << data} if data
+    open("#{domain}.#{type}",'w') {|file| file << data} if data
     args << File.basename(domain)
     data = compiler.compile_problem(*args)
-    open("#{problem}.#{type}", 'w') {|file| file << data} if data
+    open("#{problem}.#{type}",'w') {|file| file << data} if data
   end
 end
 
@@ -179,12 +180,20 @@ if $0 == __FILE__
       else
         t = Time.now.to_f
         Hype.parse(domain, problem)
-        Patterns.match(Hype.parser.operators, Hype.parser.methods, Hype.parser.predicates) if PATTERNS
+        if PATTERNS
+          Patterns.match(
+            Hype.parser.operators,
+            Hype.parser.methods,
+            Hype.parser.predicates,
+            Hype.parser.goal_pos,
+            Hype.parser.goal_not
+          )
+        end
         if ARGV[2]
           Hype.compile(domain, problem, ARGV[2])
         else puts Hype.to_s
         end
-        p Time.now.to_f - t
+        puts Time.now.to_f - t
       end
     else puts "Use #$0 domain_filename problem_filename output_type"
     end
