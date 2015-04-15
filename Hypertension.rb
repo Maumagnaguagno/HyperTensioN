@@ -31,7 +31,6 @@
 # - Refactoring of generate
 #-----------------------------------------------
 # TODOs
-# - Write parser
 # - Testing (more problems, level testing)
 # - Unordered tasks
 # - Anytime mode

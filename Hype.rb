@@ -185,6 +185,7 @@ if $0 == __FILE__
             Hype.parser.operators,
             Hype.parser.methods,
             Hype.parser.predicates,
+            Hype.parser.tasks,
             Hype.parser.goal_pos,
             Hype.parser.goal_not
           )

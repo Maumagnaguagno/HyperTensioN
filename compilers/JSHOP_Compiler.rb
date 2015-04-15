@@ -4,10 +4,10 @@ module JSHOP_Compiler
   SPACER = '=' * 30
 
   #-----------------------------------------------
-  # Propositions to JSHOP
+  # Predicates to JSHOP
   #-----------------------------------------------
 
-  def propositions_to_jshop(output, group, group_not = [])
+  def predicates_to_jshop(output, group, group_not = [])
     if group.empty? and group_not.empty?
       output << "    nil\n"
     else
@@ -44,11 +44,11 @@ module JSHOP_Compiler
       # Header
       domain_str << "  (:operator (!#{op.first} #{op[1].map {|i| "?#{i}"}.join(' ')})\n"
       # Preconditions
-      propositions_to_jshop(domain_str, op[2], op[3])
+      predicates_to_jshop(domain_str, op[2], op[3])
       # Delete effects
-      propositions_to_jshop(domain_str, op[5])
+      predicates_to_jshop(domain_str, op[5])
       # Add effects
-      propositions_to_jshop(domain_str, op[4])
+      predicates_to_jshop(domain_str, op[4])
       domain_str << "  )\n\n"
     }
     # Methods
@@ -59,7 +59,7 @@ module JSHOP_Compiler
         # Header and label
         domain_str << header << "    #{met_decompose.first}\n"
         # Preconditions
-        propositions_to_jshop(domain_str, met_decompose[2], met_decompose[3])
+        predicates_to_jshop(domain_str, met_decompose[2], met_decompose[3])
         # Subtasks
         subtasks_to_jshop(domain_str, met_decompose[4], operators, '    ', '?')
         domain_str << "  )\n\n"

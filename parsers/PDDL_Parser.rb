@@ -17,11 +17,16 @@ module PDDL_Parser
       group = op.shift
       case group
       when ':parameters'
-        # TODO Add type support
-        group = op.shift
-        raise "Error with #{name} parameters" unless group.instance_of?(Array)
-        group.each {|i| i.sub!(/^\?/,'')}
-        free_variables.push(*group)
+        raise "Error with #{name} parameters" unless op.first.instance_of?(Array)
+        # Make "ob1 ob2 - type" become [type, ob1] [type, ob2]
+        op.shift.join.scan(/([^-]+)(?:\s*-\s*(\w+))?/) {|list,type|
+          list.scan(/\w+/) {|o|
+            o.sub!(/^\?/,'')
+            pos << [type, o]
+            @predicates[type] = true if @predicates[type].nil?
+            free_variables << o
+          }
+        }
       when ':precondition'
         group = op.shift
         raise "Error with #{name} precondition" unless group.instance_of?(Array)
@@ -94,6 +99,7 @@ module PDDL_Parser
         when ':predicates'
           # TODO take advantage of predicates definition
         when ':action' then parse_action(group)
+        when ':types'
         else puts "#{group.first} is not recognized"
         end
       end
