@@ -22,9 +22,11 @@ module PDDL_Parser
         op.shift.join.scan(/([^-]+)(?:\s*-\s*(\w+))?/) {|list,type|
           list.scan(/\w+/) {|o|
             o.sub!(/^\?/,'')
-            pos << [type, o]
-            @predicates[type] = true if @predicates[type].nil?
             free_variables << o
+            if type
+              pos << [type, o]
+              @predicates[type] = true if @predicates[type].nil?
+            end
           }
         }
       when ':precondition'
@@ -118,6 +120,7 @@ module PDDL_Parser
     if tokens.instance_of?(Array) and tokens.shift == 'define'
       @problem_name = 'unknown'
       @problem_domain = 'unknown'
+      @state = []
       until tokens.empty?
         group = tokens.shift
         case group.first
@@ -130,11 +133,21 @@ module PDDL_Parser
         when ':requirements'
           # TODO take advantage of requirements definition
         when ':objects'
-          # TODO take advantage of objects definition
+          # Move types to initial state
+          group.shift
+          objects = []
+          until group.empty?
+            objects << group.shift
+            if group.first == '-'
+              group.shift
+              type = group.shift
+              @state << [type, objects.shift] until objects.empty?
+            end
+          end
         when ':init'
           # TODO raise
           group.shift
-          @state = group
+          @state.push(*group)
           @state.each {|proposition| @predicates[proposition.first] = nil unless @predicates.include?(proposition.first)}
         when ':goal'
           group.shift
