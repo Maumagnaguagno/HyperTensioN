@@ -18,17 +18,22 @@ module PDDL_Parser
       case group
       when ':parameters'
         raise "Error with #{name} parameters" unless op.first.instance_of?(Array)
-        # Make "ob1 ob2 - type" become [type, ob1] [type, ob2]
-        op.shift.join.scan(/([^-]+)(?:\s*-\s*(\w+))?/) {|list,type|
-          list.scan(/\w+/) {|o|
-            o.sub!(/^\?/,'')
-            free_variables << o
-            if type
-              pos << [type, o]
-              @predicates[type] = true if @predicates[type].nil?
-            end
-          }
-        }
+        group = op.shift
+        raise "Error with #{name} typed parameters" if group.first == '-'
+        parameters = []
+        until group.empty?
+          o = group.shift
+          o.sub!(/^\?/,'')
+          parameters << o
+          free_variables << o
+          # Make "ob1 ob2 - type" become [type, ob1] [type, ob2]
+          if group.first == '-'
+            group.shift
+            type = group.shift
+            pos << [type, parameters.shift] until parameters.empty?
+            @predicates[type] = true if @predicates[type].nil?
+          end
+        end
       when ':precondition'
         group = op.shift
         raise "Error with #{name} precondition" unless group.instance_of?(Array)
@@ -136,6 +141,7 @@ module PDDL_Parser
           # Move types to initial state
           group.shift
           objects = []
+          raise "Error with #{name} typed objects" if group.first == '-'
           until group.empty?
             objects << group.shift
             if group.first == '-'
