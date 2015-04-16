@@ -107,6 +107,7 @@ module PDDL_Parser
           # TODO take advantage of predicates definition
         when ':action' then parse_action(group)
         when ':types'
+          # TODO convert type hierarchy to propositions of initial state
         else puts "#{group.first} is not recognized"
         end
       end

@@ -148,6 +148,7 @@ Problem #{@parser.problem_name} of #{@parser.problem_domain}
     end
     args = [
       @parser.domain_name,
+      @parser.problem_name,
       @parser.operators,
       @parser.methods,
       @parser.predicates,
