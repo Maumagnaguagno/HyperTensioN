@@ -440,11 +440,11 @@ The prototype interface is a module with two methods to compile problem and doma
 module Bar_Compiler
   extend self
 
-  def compile_domain(domain_name, operators, methods, predicates, state, tasks, goal_pos, goal_not)
+  def compile_domain(domain_name, problem_name, operators, methods, predicates, state, tasks, goal_pos, goal_not)
     # TODO return string or nil, nil means no output file is generated
   end
 
-  def compile_problem(domain_name, operators, methods, predicates, state, tasks, goal_pos, goal_not, domain_filename)
+  def compile_problem(domain_name, problem_name, operators, methods, predicates, state, tasks, goal_pos, goal_not, domain_filename)
     # TODO return string or nil, nil means no output file is generated
   end
 end
