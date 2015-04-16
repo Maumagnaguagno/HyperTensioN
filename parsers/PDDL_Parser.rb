@@ -95,6 +95,7 @@ module PDDL_Parser
       @methods = []
       @domain_name = 'unknown'
       @predicates = {}
+      @types = []
       until tokens.empty?
         group = tokens.shift
         case group.first
@@ -107,12 +108,24 @@ module PDDL_Parser
           # TODO take advantage of predicates definition
         when ':action' then parse_action(group)
         when ':types'
-          # TODO convert type hierarchy to propositions of initial state
+          # Type hierarchy
+          group.shift
+          subtypes = []
+          raise "Error with types" if group.first == '-'
+          until group.empty?
+            subtypes << group.shift
+            if group.first == '-'
+              group.shift
+              @types << [subtypes, group.shift]
+              subtypes = []
+            end
+          end
         else puts "#{group.first} is not recognized"
         end
       end
     else raise "File #{domain_filename} does not match domain pattern"
     end
+    p @types
   end
 
   #-----------------------------------------------
@@ -149,6 +162,7 @@ module PDDL_Parser
               group.shift
               type = group.shift
               @state << [type, objects.shift] until objects.empty?
+              # TODO convert type hierarchy to propositions of initial state
             end
           end
         when ':init'
