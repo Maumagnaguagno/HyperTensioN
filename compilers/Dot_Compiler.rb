@@ -22,10 +22,10 @@ module Dot_Compiler
     }
     # Methods
     methods.each {|met|
-      domain_str << "  #{met.first} [\n    shape=record\n    label=\"{{#{met.first}|#{met[1].map {|i| "?#{i}"}.join(' ')}}|{#{met.drop(2).each_with_index.map {|decompose,i| "<n#{i}>#{decompose.first}"}.join('|')}}}\"];\n"
+      domain_str << "  #{met.first} [\n    shape=Mrecord\n    label=\"{{#{met.first}|#{met[1].map {|i| "?#{i}"}.join(' ')}}|{#{met.drop(2).each_with_index.map {|decompose,i| "<n#{i}>#{decompose.first}"}.join('|')}}}\"];\n"
       met.drop(2).each_with_index {|met_decompose,i|
         # Label
-        domain_str << "  #{met_decompose.first} [\n    shape=record\n    label=\"{{#{met_decompose.first}|#{met_decompose[1].map {|t| "?#{t}"}.join(' ')}}|"
+        domain_str << "  #{met_decompose.first} [\n    shape=Mrecord\n    label=\"{{#{met_decompose.first}|#{met_decompose[1].map {|t| "?#{t}"}.join(' ')}}|"
         # Preconditions
         met_decompose[2].each {|p| domain_str << "(#{p.first}#{p.map {|t| " ?#{t}"}.join})\\n"}
         met_decompose[3].each {|p| domain_str << "not (#{p.first}#{p.map {|t| " ?#{t}"}.join})\\n"}

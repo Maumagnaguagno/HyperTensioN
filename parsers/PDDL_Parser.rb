@@ -116,8 +116,8 @@ module PDDL_Parser
             subtypes << group.shift
             if group.first == '-'
               group.shift
-              @types << [subtypes, group.shift]
-              subtypes = []
+              type = group.shift
+              @types << [subtypes.shift, type] until subtypes.empty?
             end
           end
         else puts "#{group.first} is not recognized"
@@ -125,7 +125,6 @@ module PDDL_Parser
       end
     else raise "File #{domain_filename} does not match domain pattern"
     end
-    p @types
   end
 
   #-----------------------------------------------
@@ -161,8 +160,21 @@ module PDDL_Parser
             if group.first == '-'
               group.shift
               type = group.shift
-              @state << [type, objects.shift] until objects.empty?
-              # TODO convert type hierarchy to propositions of initial state
+              until objects.empty?
+                o = objects.shift
+                @state << [type, o]
+                # Convert type hierarchy to propositions of initial state
+                types = [type]
+                until types.empty?
+                  @types.each {|sub,t|
+                    if sub == types.first
+                      @state << [t, o]
+                      types << t
+                    end
+                  }
+                  types.shift
+                end
+              end
             end
           end
         when ':init'
