@@ -20,7 +20,7 @@ If successfully applied, the planning continues decomposing and insert the curre
 If it is a method, the path is different, we need to decompose into one of several cases with a valid unification for the free-variables.
 Each case unified is a list of tasks, subtasks, that may require decomposition too, occupying the same place the method that generated them once was.
 I exposed the unification only to methods, but it is possible to expose to operators too (which kinda kills the idea of what a primitive is to me).
-Now the methods take care of the heavy part (should the _agent_ **move** from _here_ to _there_ by **foot**[walking] or call a **cab**[call,enter,ride,pay,exit]) while the primitive operators just execute the effects when applicable.
+Now the methods take care of the heavy part (should the _agent_ **move** from _here_ to _there_ by **foot** ```[walking]``` or call a **cab** ```[call, enter, ride, pay, exit]```) while the primitive operators just execute the effects when applicable.
 If no decomposition happens, failure is returned.
 
 ```Ruby
