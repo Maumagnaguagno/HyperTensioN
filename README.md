@@ -16,10 +16,10 @@ The algorithm for HTN planning is quite simple and flexible, the hard part is in
 Our task list (input of planning) is decomposed until nothing remains, the base of recursion, returning an empty plan.
 The tail of recursion are the operator and method cases.
 The operator tests if the current task (the first in the list, since it decomposes in order here) can be applied to the current state (which is a visible structure to the other Ruby methods, but does not appear here).
-If successfully applied, the planning continues decomposing and insert the current task in the beginning of the plan, as it builds the plan during recursion from last to first.
+If successfully applied, the planning process continues decomposing and inserting the current task at the beginning of the plan, as it builds the plan during recursion from last to first.
 If it is a method, the path is different, we need to decompose into one of several cases with a valid unification for the free-variables.
 Each case unified is a list of tasks, subtasks, that may require decomposition too, occupying the same place the method that generated them once was.
-I exposed the unification only to methods, but it is possible to expose to operators too (which kinda kills the idea of what a primitive is to me).
+I exposed the unification only to methods, but it is possible to expose to operators too (which kills the idea of what a primitive is).
 Now the methods take care of the heavy part (should the _agent_ **move** from _here_ to _there_ by **foot** ```[walking]``` or call a **cab** ```[call, enter, ride, pay, exit]```) while the primitive operators just execute the effects when applicable.
 If no decomposition happens, failure is returned.
 
@@ -79,7 +79,7 @@ We need to match the movement pattern first, the trick part is to avoid repetiti
 Robby needs to remember which locations were visited, let us see this in a recursive format.
 The movement actions swap the position of Robby, predicate ```at```.
 The base of the recursion happens when the object (Robby) is already at the destination, otherwise use move, enter or exit, mark the position and call the recursion again.
-We need to remember to unvisit the locations once we reach our goal, otherwise Robby may be stuck:
+We need to remember to unvisit the locations once we reach our goal, otherwise Robby may be stuck. The following code illustrates the idea without HTN:
 
 ```Ruby
 def swap_at(object, goal)
@@ -100,7 +100,7 @@ end
 ```
 
 This example is hardcoded and abstracts most of the problem, it is time to build it in HTN.
-Remember to exploit the recursive nature of HTN to take the decisions for you, this make it simpler.
+Remember to exploit the recursive nature of HTN to take the decisions for you, this will make it simpler.
 
 ### Domain example
 
@@ -208,8 +208,8 @@ Be aware that all methods must have the same parameter list, other variables mus
 
 #### No preconditions
 
-This is the simplest case, the method **yields** a subtask list without test.
-The list may be empty.
+This is the simplest case, the method **yields** a subtask list without any test.
+The subtask list may be empty.
 This example is not part of the current implementation of Robby.
 
 ```Ruby
@@ -378,6 +378,7 @@ Here are some hints for everyone:
 - Unification is costly, avoid generate at any cost, match your values once and propagate them as long as possible.
 - Even if a precondition or effect is an empty set you need to declare, use ```[]```.
 - Empty predicate sets must be put in the initial state at the problem file. This avoids predicate typos, as all predicates must be previously defined.
+- Think like an [And-or Tree](http://en.wikipedia.org/wiki/And%E2%80%93or_tree), which decisions must be made before paths fork and which actions must be done in sequence?
 
 ## Execution
 
@@ -446,7 +447,7 @@ Compiler support:
 - [x] [Graphviz DOT](http://www.graphviz.org/) (generate a graph description to be compiled into an image)
 - [ ] HPDDL (methods and tasks may not be available if the input was PDDL)
 
-As any parser the ones provided by Hype are limited in one way or another, PDDL have far more features than supported by a fast planner and JSHOP have 2 ways to define methods.
+As any parser the ones provided by Hype are limited in one way or another, PDDL have far more features than supported by most planners and JSHOP have 2 different ways to define methods.
 Methods may be broken into several independent blocks or in the same block without the need to check the same preconditions again.
 We support both cases, but will evaluate the preconditions of each set independently always.
 JSHOP only evaluates the last if the first ones evaluated to false in the same block.
