@@ -518,7 +518,7 @@ end
 In the same sense of the parsers, it would be a better idea to handle the file here, which is still possible doing what you need and returning nil.
 The output filename is the input filename plus the new extension, therefore ```input.pddl``` to jshop would be ```input.pddl.jshop```, so that you do not lose the information about the source.
 Note that any compiler have access to the parser attributes, which means you can call one module to optimize before calling another to actually compile.
-In fact this is the core idea behinf Hype, be able to parse, modify and compile domains without having to worry about language support, any future language could be supported just adding a new parser and compiler.
+In fact this is the core idea behind Hype, be able to parse, modify and compile domains without having to worry about language support, any future language could be supported just adding a new parser and compiler.
 
 ## Advantages
 
