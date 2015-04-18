@@ -31,7 +31,8 @@
 # - Refactoring of generate
 #-----------------------------------------------
 # TODOs
-# - Testing (more problems, level testing)
+# - Automated tests with more problems
+# - Order predicates and test applicability by level (generate)
 # - Unordered tasks
 # - Anytime mode
 #-----------------------------------------------
@@ -118,7 +119,7 @@ module Hypertension
     match_objects = []
     precond_true.each {|name,*objs|
       next unless objs.include?('')
-      # Swap free variable with set to match
+      # Swap free variables with set to match or maintain constant
       pred = objs.map {|p| objects.find {|j| j.first.equal?(p)} or p}
       # Compare with current state
       @state[name].each {|terms|
