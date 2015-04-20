@@ -1,4 +1,4 @@
-# Patterns are closed for now
+# Patterns are closed now
 PATTERNS = File.exist?('../Patterns.rb')
 require '../Patterns' if PATTERNS
 
@@ -122,7 +122,7 @@ Problem #{@parser.problem_name} of #{@parser.problem_domain}
   #-----------------------------------------------
 
   def parse(domain, problem)
-    # TODO remove this limitation in the future (mix files)
+    # Mix files may result in incomplete data
     raise 'Incompatible extensions between domain and problem' if File.extname(domain) != File.extname(problem)
     case File.extname(domain)
     when '.jshop' then @parser = JSHOP_Parser
@@ -175,9 +175,9 @@ if $0 == __FILE__
       domain = ARGV[0]
       problem = ARGV[1]
       if not File.exist?(domain)
-        puts "File not found: #{domain}!"
+        puts "Domain file not found: #{domain}!"
       elsif not File.exist?(problem)
-        puts "File not found: #{problem}!"
+        puts "Problem file not found: #{problem}!"
       else
         t = Time.now.to_f
         Hype.parse(domain, problem)

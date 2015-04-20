@@ -95,7 +95,7 @@ module Hypertension
   end
 
   #-----------------------------------------------
-  # Apply Operator
+  # Apply operator
   #-----------------------------------------------
 
   def apply_operator(precond_true, precond_false, effect_add, effect_del)

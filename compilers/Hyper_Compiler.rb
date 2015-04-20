@@ -76,7 +76,7 @@ module Hyper_Compiler
       met.drop(2).each_with_index {|met_case,i|
         domain_str << "      '#{met_case.first}'#{',' if met.size - 3 != i}\n"
         define_methods << "\n  def #{met_case.first}#{"(#{met[1].join(', ')})" unless met[1].empty?}\n"
-        # No Preconditions
+        # No preconditions
         if met_case[2].empty? and met_case[3].empty?
           subtasks_to_hyper(define_methods, met_case[4], '    ')
         # Grounded
@@ -95,7 +95,7 @@ module Hyper_Compiler
   end
 
   #-----------------------------------------------
-  # Compile Problem
+  # Compile problem
   #-----------------------------------------------
 
   def compile_problem(domain_name, problem_name, operators, methods, predicates, state, tasks, goal_pos, goal_not, domain_filename)

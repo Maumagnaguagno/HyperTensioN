@@ -506,11 +506,11 @@ module Bar_Compiler
   extend self
 
   def compile_domain(domain_name, problem_name, operators, methods, predicates, state, tasks, goal_pos, goal_not)
-    # TODO return string or nil, nil means no output file is generated
+    # TODO return string or nil, nil generates no output file
   end
 
   def compile_problem(domain_name, problem_name, operators, methods, predicates, state, tasks, goal_pos, goal_not, domain_filename)
-    # TODO return string or nil, nil means no output file is generated
+    # TODO return string or nil, nil generates no output file
   end
 end
 ```

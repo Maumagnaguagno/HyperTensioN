@@ -33,7 +33,7 @@ module JSHOP_Compiler
   end
 
   #-----------------------------------------------
-  # Compile Domain
+  # Compile domain
   #-----------------------------------------------
 
   def compile_domain(domain_name, problem_name, operators, methods, predicates, state, tasks, goal_pos, goal_not)
@@ -69,7 +69,7 @@ module JSHOP_Compiler
   end
 
   #-----------------------------------------------
-  # Compile Problem
+  # Compile problem
   #-----------------------------------------------
 
   def compile_problem(domain_name, problem_name, operators, methods, predicates, state, tasks, goal_pos, goal_not, domain_filename)

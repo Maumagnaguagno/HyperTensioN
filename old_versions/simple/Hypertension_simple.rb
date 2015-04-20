@@ -38,7 +38,7 @@ module Hypertension_simple
   VALUATION   = 1
 
   #-----------------------------------------------
-  # Deterministic Planning
+  # Deterministic planning
   #-----------------------------------------------
 
   def deterministic_planning(state, actions, tasks, plan = [])
@@ -69,7 +69,7 @@ module Hypertension_simple
   end
 
   #-----------------------------------------------
-  # Probabilistic Planning
+  # Probabilistic planning
   #-----------------------------------------------
 
   def probabilistic_planning(state, actions, tasks, min_prob = 0, max_found = 0, plan = [1,0], plans_found = [])
@@ -119,7 +119,7 @@ module Hypertension_simple
   end
 
   #-----------------------------------------------
-  # State Copy
+  # State copy
   #-----------------------------------------------
 
   def state_copy(object)
@@ -127,7 +127,7 @@ module Hypertension_simple
   end
 
   #-----------------------------------------------
-  # State Valuation
+  # State valuation
   #-----------------------------------------------
 
   def state_valuation(state)
@@ -135,7 +135,7 @@ module Hypertension_simple
   end
 
   #-----------------------------------------------
-  # Print Deterministic Plan
+  # Print deterministic plan
   #-----------------------------------------------
 
   def print_deterministic_plan(plan, name = 'found')
@@ -147,7 +147,7 @@ module Hypertension_simple
   end
 
   #-----------------------------------------------
-  # Print Probabilistic Plan
+  # Print probabilistic plan
   #-----------------------------------------------
 
   def print_probabilistic_plan(plans)
