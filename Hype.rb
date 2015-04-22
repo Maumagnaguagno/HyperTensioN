@@ -43,18 +43,17 @@ module Hype
   # Propositions to string
   #-----------------------------------------------
 
-  def propositions_to_s(props, joiner)
+  def propositions_to_s(props, prefix)
     # TODO differentiate between free-variables and constants in terms
-    props.map {|i| "(#{i.join(' ')})"}.join(joiner)
+    props.map {|i| "#{prefix}(#{i.join(' ')})"}.join
   end
 
   #-----------------------------------------------
   # Subtasks to string
   #-----------------------------------------------
 
-  def subtasks_to_s(tasks, operators, joiner)
-    return 'empty' if tasks.empty?
-    tasks.map {|t| "#{operators.any? {|op| op.first == t.first} ? 'operator' : 'method  '} (#{t.first}#{t.drop(1).map {|i| " #{i}"}.join})"}.join(joiner)
+  def subtasks_to_s(tasks, operators, prefix)
+    tasks.empty? ? 'empty' : tasks.map {|t| "#{prefix}#{operators.any? {|op| op.first == t.first} ? 'operator' : 'method  '} (#{t.join(' ')})"}.join
   end
 
   #-----------------------------------------------
@@ -65,10 +64,10 @@ module Hype
     output = ''
     @parser.operators.each {|op|
       output << "    #{op.first}(#{op[1].join(' ')})\n"
-      output << "      Precond positive:\n        #{propositions_to_s(op[2], "\n        ")}\n" unless op[2].empty?
-      output << "      Precond negative:\n        #{propositions_to_s(op[3], "\n        ")}\n" unless op[3].empty?
-      output << "      Effect positive:\n        #{propositions_to_s(op[4], "\n        ")}\n" unless op[4].empty?
-      output << "      Effect negative:\n        #{propositions_to_s(op[5], "\n        ")}\n" unless op[5].empty?
+      output << "      Precond positive:#{propositions_to_s(op[2], "\n        ")}\n" unless op[2].empty?
+      output << "      Precond negative:#{propositions_to_s(op[3], "\n        ")}\n" unless op[3].empty?
+      output << "      Effect positive:#{propositions_to_s(op[4], "\n        ")}\n" unless op[4].empty?
+      output << "      Effect negative:#{propositions_to_s(op[5], "\n        ")}\n" unless op[5].empty?
       output << "\n"
     }
     output
@@ -84,10 +83,10 @@ module Hype
       output << "    #{met.first}(#{met[1].join(' ')})\n"
       met.drop(2).each {|met_decompose|
         output << "      Label: #{met_decompose.first}\n"
-        output << "        Free variables:\n          #{met_decompose[1].join("\n          ")}\n" unless met_decompose[1].empty?
-        output << "        Precond positive:\n          #{propositions_to_s(met_decompose[2], "\n          ")}\n" unless met_decompose[2].empty?
-        output << "        Precond negative:\n          #{propositions_to_s(met_decompose[3], "\n          ")}\n" unless met_decompose[3].empty?
-        output << "        Subtasks:\n          #{subtasks_to_s(met_decompose[4], @parser.operators, "\n          ")}\n"
+        output << "        Free variables:#{met_decompose[1].join("\n          ")}\n" unless met_decompose[1].empty?
+        output << "        Precond positive:#{propositions_to_s(met_decompose[2], "\n          ")}\n" unless met_decompose[2].empty?
+        output << "        Precond negative:#{propositions_to_s(met_decompose[3], "\n          ")}\n" unless met_decompose[3].empty?
+        output << "        Subtasks:#{subtasks_to_s(met_decompose[4], @parser.operators, "\n          ")}\n"
       }
       output << "\n"
     }
@@ -105,16 +104,12 @@ module Hype
   Methods:
 #{methods_to_s}
 Problem #{@parser.problem_name} of #{@parser.problem_domain}
-  State:
-    #{propositions_to_s(@parser.state, "\n    ")}
+  State:#{propositions_to_s(@parser.state, "\n    ")}
 
   Goal:
-    Tasks:
-      #{subtasks_to_s(@parser.tasks, @parser.operators, "\n      ")}
-    Positive:
-      #{@parser.goal_pos.empty? ? 'empty' : propositions_to_s(@parser.goal_pos, "\n      ")}
-    Negative:
-      #{@parser.goal_not.empty? ? 'empty' : propositions_to_s(@parser.goal_not, "\n      ")}"
+    Tasks:#{subtasks_to_s(@parser.tasks, @parser.operators, "\n      ")}
+    Positive:#{@parser.goal_pos.empty? ? "\n      empty" : propositions_to_s(@parser.goal_pos, "\n      ")}
+    Negative:#{@parser.goal_not.empty? ? "\n      empty" : propositions_to_s(@parser.goal_not, "\n      ")}"
   end
 
   #-----------------------------------------------
@@ -197,7 +192,7 @@ if $0 == __FILE__
         end
         puts Time.now.to_f - t
       end
-    else puts "Use #$0 domain_filename problem_filename output_type"
+    else puts "Use #$0 domain problem [output_type]"
     end
   rescue
     puts $!, $@
