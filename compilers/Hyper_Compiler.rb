@@ -26,7 +26,7 @@ module Hyper_Compiler
       output << "#{indentation}yield []\n"
     else
       output << "#{indentation}yield [\n"
-      subtasks.each_with_index {|t,i| output << "#{indentation}  ['#{t.first}'#{t.drop(1).map {|i| ", #{i}"}.join}]#{',' if subtasks.size.pred != i}\n"}
+      subtasks.each_with_index {|t,i| output << "#{indentation}  ['#{t.first}'#{t.drop(1).map {|v| ", #{v}"}.join}]#{',' if subtasks.size.pred != i}\n"}
       output << "#{indentation}]\n"
     end
   end
