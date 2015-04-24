@@ -20,23 +20,23 @@ module Hype
   #-----------------------------------------------
 
   def scan_tokens(str)
-    tokenize(str.scan(/[()]|[!?:]*[\w-]+/))
-  end
-
-  #-----------------------------------------------
-  # Tokenize
-  #-----------------------------------------------
-
-  def tokenize(tokens)
-    raise 'No more tokens found' if tokens.empty?
-    t = tokens.shift
-    if t == '('
-      list = []
-      list << tokenize(tokens) until tokens.first == ')'
-      tokens.shift
-      list
-    else t
-    end
+    stack = []
+    list = []
+    str.scan(/[()]|[!?:]*[\w-]+/) {|t|
+      case t
+      when '('
+        stack << list
+        list = []
+      when ')'
+        raise 'Missing open parentheses' if stack.empty?
+        list = stack.pop << list
+      else t
+        list << t
+      end
+    }
+    raise 'Missing close parentheses' unless stack.empty?
+    raise 'Malformed expression' if list.size != 1
+    list.first
   end
 
   #-----------------------------------------------
