@@ -79,14 +79,14 @@ module Hype
 
   def methods_to_s
     output = ''
-    @parser.methods.each {|met|
-      output << "    #{met.first}(#{met[1].join(' ')})\n"
-      met.drop(2).each {|met_decompose|
-        output << "      Label: #{met_decompose.first}\n"
-        output << "        Free variables:#{met_decompose[1].join("\n          ")}\n" unless met_decompose[1].empty?
-        output << "        Precond positive:#{propositions_to_s(met_decompose[2], "\n          ")}\n" unless met_decompose[2].empty?
-        output << "        Precond negative:#{propositions_to_s(met_decompose[3], "\n          ")}\n" unless met_decompose[3].empty?
-        output << "        Subtasks:#{subtasks_to_s(met_decompose[4], @parser.operators, "\n          ")}\n"
+    @parser.methods.each {|name,variables,*decompose|
+      output << "    #{name}(#{variables.join(' ')})\n"
+      decompose.each {|dec|
+        output << "      Label: #{dec.first}\n"
+        output << "        Free variables:#{dec[1].join("\n          ")}\n" unless dec[1].empty?
+        output << "        Precond positive:#{propositions_to_s(dec[2], "\n          ")}\n" unless dec[2].empty?
+        output << "        Precond negative:#{propositions_to_s(dec[3], "\n          ")}\n" unless dec[3].empty?
+        output << "        Subtasks:#{subtasks_to_s(dec[4], @parser.operators, "\n          ")}\n"
       }
       output << "\n"
     }
@@ -99,10 +99,8 @@ module Hype
 
   def to_s
 "Domain #{@parser.domain_name}
-  Operators:
-#{operators_to_s}
-  Methods:
-#{methods_to_s}
+  Operators:\n#{operators_to_s}
+  Methods:\n#{methods_to_s}
 Problem #{@parser.problem_name} of #{@parser.problem_domain}
   State:#{propositions_to_s(@parser.state, "\n    ")}
 
@@ -122,7 +120,7 @@ Problem #{@parser.problem_name} of #{@parser.problem_domain}
     case File.extname(domain)
     when '.jshop' then @parser = JSHOP_Parser
     when '.pddl' then @parser = PDDL_Parser
-    else raise "Unknown type #{File.extname(domain)} to parse"
+    else raise "Unknown extension #{File.extname(domain)} to parse"
     end
     @parser.parse_domain(domain)
     @parser.parse_problem(problem)
@@ -170,9 +168,9 @@ if $0 == __FILE__
       domain = ARGV[0]
       problem = ARGV[1]
       if not File.exist?(domain)
-        puts "Domain file not found: #{domain}!"
+        puts "Domain file #{domain} not found"
       elsif not File.exist?(problem)
-        puts "Problem file not found: #{problem}!"
+        puts "Problem file #{problem} not found"
       else
         t = Time.now.to_f
         Hype.parse(domain, problem)
