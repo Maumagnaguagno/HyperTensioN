@@ -37,14 +37,12 @@ module Hyper_Compiler
 
   def method_to_hyper(test, output, method)
     method[1].each {|free| output << "    #{free} = ''\n"}
-    output << "    #{test}("
-    method[2..3].each_with_index {|group,gi|
-      output << "\n      # " << (gi.zero? ? 'True' : 'False') << " preconditions"
-      propositions_to_hyper(output, group)
-      output << ',' if gi != 1
-    }
+    output << "    #{test}(\n      # True preconditions"
+    propositions_to_hyper(output, method[2])
+    output << ",\n      # False preconditions"
+    propositions_to_hyper(output, method[3])
     method[1].each {|free| output << ", #{free}"}
-    output << "\n    )#{' {' unless method[1].empty?}\n"
+    output << (method[1].empty? ? "\n    )\n" : "\n    ) {\n")
     subtasks_to_hyper(output, method[4], '      ')
     output << (method[1].empty? ? "    end\n" : "    }\n")
   end
