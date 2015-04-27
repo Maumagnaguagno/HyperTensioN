@@ -174,7 +174,7 @@ if $0 == __FILE__
       else
         t = Time.now.to_f
         Hype.parse(domain, problem)
-        if PATTERNS
+        if PATTERNS and [nil, 'rb', 'jshop'].include?(ARGV[2])
           Patterns.match(
             Hype.parser.operators,
             Hype.parser.methods,

@@ -7,8 +7,8 @@ module PDDL_Compiler
 
   def predicates_to_pddl(output, group = [], group_not = [], indentation = '    ')
     unless group.empty? and group_not.empty?
-      group.each {|pre| output << "#{indentation}(#{pre.first} #{pre.drop(1).map {|i| "?#{i}"}.join(' ')})\n"}
-      group_not.each {|pre| output << "#{indentation}(not (#{pre.first} #{pre.drop(1).map {|i| "?#{i}"}.join(' ')}))\n"}
+      group.each {|pre| output << "#{indentation}(#{pre.join(' ?')})\n"}
+      group_not.each {|pre| output << "#{indentation}(not (#{pre.join(' ?')}))\n"}
     end
   end
 
@@ -33,12 +33,9 @@ module PDDL_Compiler
       # Header
       domain_str << "\n  (:action #{op.first}\n    :parameters (#{op[1].map {|i| "?#{i}"}.join(' ')})\n"
       # Preconditions
-      domain_str << "    :precondition\n      (and\n"
-      predicates_to_pddl(domain_str, op[2], op[3], '        ')
-      domain_str << "      )\n"
+      predicates_to_pddl(domain_str << "    :precondition\n      (and\n", op[2], op[3], '        ')
       # Effects
-      domain_str << "    :effect\n      (and\n"
-      predicates_to_pddl(domain_str, op[4], op[5], '        ')
+      predicates_to_pddl(domain_str << "      )\n    :effect\n      (and\n", op[4], op[5], '        ')
       domain_str << "      )\n  )\n"
     }
     domain_str << ')'
@@ -53,16 +50,16 @@ module PDDL_Compiler
     start_str = ''
     state.each {|pre|
       objects.push(*pre.drop(1))
-      start_str << "    (#{pre.first} #{pre.drop(1).join(' ')})\n"
+      start_str << "    (#{pre.join(' ')})\n"
     }
     goal_str = ''
     goal_pos.each {|pre|
       objects.push(*pre.drop(1))
-      goal_str << "      (#{pre.first} #{pre.drop(1).join(' ')})\n"
+      goal_str << "      (#{pre.join(' ')})\n"
     }
     goal_not.each {|pre|
       objects.push(*pre.drop(1))
-      goal_str << "      (not (#{pre.first} #{pre.drop(1).join(' ')}))\n"
+      goal_str << "      (not (#{pre.join(' ')}))\n"
     }
     objects.uniq!
     negative_preconditions = operators.all? {|op| op[3].empty?} ? ''  : ' :negative-preconditions'
