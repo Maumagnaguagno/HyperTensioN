@@ -37,10 +37,9 @@ module Hyper_Compiler
 
   def method_to_hyper(test, output, method)
     method[1].each {|free| output << "    #{free} = ''\n"}
-    output << "    #{test}(\n      # True preconditions"
-    propositions_to_hyper(output, method[2])
-    output << ",\n      # False preconditions"
-    propositions_to_hyper(output, method[3])
+    output << "    #{test}("
+    propositions_to_hyper(output << "\n      # True preconditions", method[2])
+    propositions_to_hyper(output << ",\n      # False preconditions", method[3])
     method[1].each {|free| output << ", #{free}"}
     output << (method[1].empty? ? "\n    )\n" : "\n    ) {\n")
     subtasks_to_hyper(output, method[4], '      ')
@@ -59,11 +58,10 @@ module Hyper_Compiler
     operators.each_with_index {|op,i|
       domain_str << "\n    '#{op.first}' => true#{',' if operators.size.pred != i or not methods.empty?}"
       define_operators << "\n  def #{op.first}#{"(#{op[1].join(', ')})" unless op[1].empty?}\n    apply_operator("
-      op[2..5].each_with_index {|group,gi|
-        define_operators << "\n      # " << ['True preconditions', 'False preconditions', 'Add effects', 'Del effects'][gi]
-        propositions_to_hyper(define_operators, group)
-        define_operators << ',' if gi != 3
-      }
+      propositions_to_hyper(define_operators << "\n      # True preconditions", op[2])
+      propositions_to_hyper(define_operators << ",\n      # False preconditions", op[3])
+      propositions_to_hyper(define_operators << ",\n      # Add effects", op[4])
+      propositions_to_hyper(define_operators << ",\n      # Del effects", op[5])
       define_operators << "\n    )\n  end\n"
     }
     # Methods
