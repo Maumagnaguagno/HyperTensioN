@@ -122,6 +122,6 @@ module Hyper_Compiler
     problem_str << "\n#{domain_name.capitalize}.problem(\n  # Start\n  {\n#{start}\n  },\n  # Tasks\n  [\n"
     # Tasks
     tasks.each_with_index {|t,i| problem_str << "    ['#{t.first}', #{t.drop(1).join(', ')}]#{',' if tasks.size.pred != i}\n"}
-    problem_str << "  ]\n)"
+    problem_str << "  ],\n  # Debug\n  ARGV.first == '-d'\n)"
   end
 end
