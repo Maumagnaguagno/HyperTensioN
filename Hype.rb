@@ -1,4 +1,4 @@
-# Patterns are closed now
+# Patterns is a closed plugin
 PATTERNS = File.exist?('../Patterns.rb')
 require '../Patterns' if PATTERNS
 
@@ -164,7 +164,7 @@ end
 
 if $0 == __FILE__
   begin
-    if ARGV.size.between?(2,3)
+    if ARGV.size.between?(2,4)
       domain = ARGV[0]
       problem = ARGV[1]
       if not File.exist?(domain)
@@ -174,7 +174,7 @@ if $0 == __FILE__
       else
         t = Time.now.to_f
         Hype.parse(domain, problem)
-        if PATTERNS and [nil, 'rb', 'jshop'].include?(ARGV[2])
+        if PATTERNS and ARGV[3] == '-patterns'
           Patterns.match(
             Hype.parser.operators,
             Hype.parser.methods,
@@ -184,7 +184,7 @@ if $0 == __FILE__
             Hype.parser.goal_not
           )
         end
-        if ARGV[2]
+        if ARGV[2] != 'nil'
           Hype.compile(domain, problem, ARGV[2])
         else puts Hype.to_s
         end
