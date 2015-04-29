@@ -325,9 +325,10 @@ end
 With your domain ready all you need is to define the initial state and the task list.
 The initial state is defined as a Hash table in which the keys are the predicates while the value is an array of possible terms.
 The task list follows the same principle, an array of each task to be solved.
-Note that he names must match the ones defined in the domain and tasks will be decomposed in the same order they are described.
+Note that the names must match the ones defined in the domain and tasks will be decomposed in the same order they are described.
 Even if a predicate has no true terms associated in the initial state you must declare them, as ```reported => []``` is declared in the example.
 If your problem does not generate objects during run-time a speed improvement can be obtained moving them to variables, therefore the comparisons will be pointer-based.
+An interesting idea is to have debug being activated by a command line argument, in this case ```ruby pb1.rb -d``` activates debug mode.
 
 ```Ruby
 require './Robby'
@@ -365,7 +366,7 @@ Robby.problem(
     ['swap_at', robby, right]
   ],
   # Debug
-  true
+  ARGV.first == '-d'
 )
 ```
 
