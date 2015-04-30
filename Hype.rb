@@ -174,15 +174,18 @@ if $0 == __FILE__
       else
         t = Time.now.to_f
         Hype.parse(domain, problem)
-        if PATTERNS and ARGV[3] == '-patterns'
-          Patterns.match(
-            Hype.parser.operators,
-            Hype.parser.methods,
-            Hype.parser.predicates,
-            Hype.parser.tasks,
-            Hype.parser.goal_pos,
-            Hype.parser.goal_not
-          )
+        if ARGV[3] == 'patterns'
+          if PATTERNS
+            Patterns.match(
+              Hype.parser.operators,
+              Hype.parser.methods,
+              Hype.parser.predicates,
+              Hype.parser.tasks,
+              Hype.parser.goal_pos,
+              Hype.parser.goal_not
+            )
+          else raise 'Patterns not supported'
+          end
         end
         if ARGV[2] != 'nil'
           Hype.compile(domain, problem, ARGV[2])
