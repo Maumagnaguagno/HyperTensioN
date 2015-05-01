@@ -1,7 +1,7 @@
 module JSHOP_Compiler
   extend self
 
-  SPACER = '=' * 30
+  SPACER = '-' * 30
 
   #-----------------------------------------------
   # Predicates to JSHOP
@@ -12,8 +12,8 @@ module JSHOP_Compiler
       output << "    nil\n"
     else
       output << "    (\n"
-      group.each {|pre| output << "      (#{pre.first} #{pre.drop(1).map {|i| "?#{i}"}.join(' ')})\n"}
-      group_not.each {|pre| output << "      (not (#{pre.first} #{pre.drop(1).map {|i| "?#{i}"}.join(' ')}))\n"}
+      group.each {|pre| output << "      (#{pre.join(' ')})\n"}
+      group_not.each {|pre| output << "      (not (#{pre.join(' ')}))\n"}
       output << "    )\n"
     end
   end
@@ -22,12 +22,12 @@ module JSHOP_Compiler
   # Subtasks to JSHOP
   #-----------------------------------------------
 
-  def subtasks_to_jshop(output, tasks, operators, indentation, joiner)
+  def subtasks_to_jshop(output, tasks, operators, indentation)
     if tasks.empty?
       output << "#{indentation}nil\n"
     else
       output << "#{indentation}(\n"
-      tasks.each {|t| output << "#{indentation}  (#{'!' if operators.any? {|op| op.first == t.first}}#{t.first}#{t.drop(1).map {|i| " #{joiner}#{i}"}.join})\n"}
+      tasks.each {|t| output << "#{indentation}  (#{'!' if operators.any? {|op| op.first == t.first}}#{t.join(' ')})\n"}
       output << "#{indentation})\n"
     end
   end
@@ -42,7 +42,7 @@ module JSHOP_Compiler
     # Operators
     operators.each {|op|
       # Header
-      domain_str << "  (:operator (!#{op.first} #{op[1].map {|i| "?#{i}"}.join(' ')})\n"
+      domain_str << "  (:operator (!#{op.first} #{op[1].join(' ')})\n"
       # Preconditions
       predicates_to_jshop(domain_str, op[2], op[3])
       # Delete effects
@@ -54,14 +54,14 @@ module JSHOP_Compiler
     # Methods
     domain_str << "  ;#{SPACER}\n  ; Methods\n  ;#{SPACER}\n\n"
     methods.each {|met|
-      header = "  (:method (#{met.first}#{met[1].map {|i| " ?#{i}"}.join})\n"
+      header = "  (:method (#{met.first}#{met[1].join(' ')})\n"
       met.drop(2).each {|met_decompose|
         # Header and label
         domain_str << header << "    #{met_decompose.first}\n"
         # Preconditions
         predicates_to_jshop(domain_str, met_decompose[2], met_decompose[3])
         # Subtasks
-        subtasks_to_jshop(domain_str, met_decompose[4], operators, '    ', '?')
+        subtasks_to_jshop(domain_str, met_decompose[4], operators, '    ')
         domain_str << "  )\n\n"
       }
     }
@@ -78,7 +78,7 @@ module JSHOP_Compiler
     state.each {|pre| problem_str << "    (#{pre.first} #{pre.drop(1).join(' ')})\n"}
     # Tasks
     problem_str << "  )\n\n  ;#{SPACER}\n  ; Tasks\n  ;#{SPACER}\n\n"
-    subtasks_to_jshop(problem_str, tasks, operators, '  ', '')
+    subtasks_to_jshop(problem_str, tasks, operators, '  ')
     problem_str << ")\n"
   end
 end

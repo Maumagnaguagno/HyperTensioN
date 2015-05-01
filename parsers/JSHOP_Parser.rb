@@ -11,8 +11,7 @@ module JSHOP_Parser
     op.shift
     raise "Operator #{op.first.first} have #{op.size} groups instead of 4" if op.size != 4
     # Header
-    group = op.shift
-    group.each {|i| i.sub!(/^[?!]+/,'')}
+    op.shift.each {|i| i.sub!(/^!+/,'')}
     @operators << [name = group.shift, group, pos = [], neg = [], add = [], del = []]
     # Preconditions
     group = op.shift
@@ -27,7 +26,6 @@ module JSHOP_Parser
           proposition = pro
           pos << proposition
         end
-        proposition.each {|i| i.sub!(/^\?/,'')}
         @predicates[proposition.first] = true if @predicates[proposition.first].nil?
       }
     end
@@ -38,7 +36,6 @@ module JSHOP_Parser
       group.each {|proposition|
         raise "Error with #{name} del effects" if proposition.first == 'not'
         del << proposition
-        proposition.each {|i| i.sub!(/^\?/,'')}
         @predicates[proposition.first] = false
       }
     end
@@ -48,7 +45,6 @@ module JSHOP_Parser
       group.each {|proposition|
         raise "Error with #{name} add effects" if proposition.first == 'not'
         add << proposition
-        proposition.each {|i| i.sub!(/^\?/,'')}
         @predicates[proposition.first] = false
       }
     end
@@ -62,7 +58,7 @@ module JSHOP_Parser
     met.shift
     # Header
     group = met.first
-    group.each {|i| i.sub!(/^[?!]+/,'')}
+    group.each {|i| i.sub!(/^!+/,'')}
     name = group.shift
     # Already defined
     method = @methods.find {|m| m.first == name}
@@ -88,7 +84,7 @@ module JSHOP_Parser
             proposition = pro
             pos << proposition
           end
-          free_variables.push(*proposition.find_all {|i| i.sub!(/^\?/,'') and not method[1].include?(i)})
+          free_variables.push(*proposition.find_all {|i| i =~ /^\?/ and not method[1].include?(i)})
           @predicates[proposition.first] = true if @predicates[proposition.first].nil?
         }
         free_variables.uniq!
@@ -97,7 +93,7 @@ module JSHOP_Parser
       group = met.shift
       if group != 'nil'
         raise "Error with #{name} subtasks" unless group.instance_of?(Array)
-        group.each {|pro| pro.each {|i| i.sub!(/^[?!]+/,'')}}
+        group.each {|pro| pro.each {|i| i.sub!(/^!+/,'')}}
         decompose << group
       else decompose << []
       end

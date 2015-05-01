@@ -6,8 +6,8 @@ module Dot_Compiler
   #-----------------------------------------------
 
   def predicates_to_dot(output, group, group_not)
-    group.each {|p| output << "(#{p.join(' ?')})\\l"}
-    group_not.each {|p| output << "not (#{p.join(' ?')})\\l"}
+    group.each {|p| output << "(#{p.join(' ')})\\l"}
+    group_not.each {|p| output << "not (#{p.join(' ')})\\l"}
   end
 
   #-----------------------------------------------
@@ -19,7 +19,7 @@ module Dot_Compiler
     # Operators
     operators.each {|op|
       # Header
-      domain_str << "  #{op.first} [\n    shape=record\n    label=\"{{#{op.first}|#{op[1].map {|i| "?#{i}"}.join(' ')}}|{"
+      domain_str << "  #{op.first} [\n    shape=record\n    label=\"{{#{op.first}|#{op[1].join(' ')}}|{"
       # Preconditions
       predicates_to_dot(domain_str, op[2], op[3])
       # Effects
@@ -30,14 +30,14 @@ module Dot_Compiler
     # Methods
     methods.each {|met|
       decompose = met.drop(2)
-      domain_str << "  #{met.first} [\n    shape=Mrecord\n    style=bold\n    label=\"{{#{met.first}|#{met[1].map {|i| "?#{i}"}.join(' ')}}|{#{decompose.each_with_index.map {|d,i| "<n#{i}>#{d.first}"}.join('|')}}}\"];\n"
+      domain_str << "  #{met.first} [\n    shape=Mrecord\n    style=bold\n    label=\"{{#{met.first}|#{met[1].join(' ')}}|{#{decompose.each_with_index.map {|d,i| "<n#{i}>#{d.first}"}.join('|')}}}\"];\n"
       decompose.each_with_index {|d,i|
         # Label
-        domain_str << "  #{d.first} [\n    shape=Mrecord\n    label=\"{{#{d.first}|#{d[1].map {|t| "?#{t}"}.join(' ')}}|"
+        domain_str << "  #{d.first} [\n    shape=Mrecord\n    label=\"{{#{d.first}|#{d[1].join(' ')}}|"
         # Preconditions
         predicates_to_dot(domain_str, d[2], d[3])
         # Subtasks
-        d[4].each_with_index {|subtask,j| domain_str << "|<n#{j}>#{subtask.join(' ?')}"}
+        d[4].each_with_index {|subtask,j| domain_str << "|<n#{j}>#{subtask.join(' ')}"}
         # Connections
         domain_str << "}\"\n  ];\n  #{met.first}:n#{i} -> #{d.first};\n"
         d[4].each_with_index {|subtask,j| domain_str << "  #{d.first}:n#{j} -> #{subtask.first};\n" if operators.any? {|op| op.first == subtask.first}}

@@ -23,7 +23,6 @@ module PDDL_Parser
         parameters = []
         until group.empty?
           o = group.shift
-          o.sub!(/^\?/,'')
           parameters << o
           free_variables << o
           # Make "ob1 ob2 - type" become [type, ob1] [type, ob2]
@@ -50,7 +49,6 @@ module PDDL_Parser
               proposition = pro
               pos << proposition
             end
-            proposition.each {|i| i.sub!(/^\?/,'')}
             @predicates[proposition.first] = true if @predicates[proposition.first].nil?
           }
         # TODO Atom
@@ -72,7 +70,6 @@ module PDDL_Parser
               proposition = pro
               add << proposition
             end
-            proposition.each {|i| i.sub!(/^\?/,'')}
             @predicates[proposition.first] = false
           }
         # TODO Atom

@@ -44,7 +44,6 @@ module Hype
   #-----------------------------------------------
 
   def propositions_to_s(props, prefix)
-    # TODO differentiate between free-variables and constants in terms
     props.map {|i| "#{prefix}(#{i.join(' ')})"}.join
   end
 
