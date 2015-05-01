@@ -53,7 +53,7 @@ module Hype
   #-----------------------------------------------
 
   def subtasks_to_s(tasks, operators, prefix)
-    tasks.empty? ? 'empty' : tasks.map {|t| "#{prefix}#{operators.any? {|op| op.first == t.first} ? 'operator' : 'method  '} (#{t.join(' ')})"}.join
+    tasks.empty? ? "#{prefix}empty" : tasks.map {|t| "#{prefix}#{operators.any? {|op| op.first == t.first} ? 'operator' : 'method  '} (#{t.join(' ')})"}.join
   end
 
   #-----------------------------------------------
@@ -83,7 +83,7 @@ module Hype
       output << "    #{name}(#{variables.join(' ')})\n"
       decompose.each {|dec|
         output << "      Label: #{dec.first}\n"
-        output << "        Free variables:#{dec[1].join("\n          ")}\n" unless dec[1].empty?
+        output << "        Free variables:\n          #{dec[1].join("\n          ")}\n" unless dec[1].empty?
         output << "        Precond positive:#{propositions_to_s(dec[2], "\n          ")}\n" unless dec[2].empty?
         output << "        Precond negative:#{propositions_to_s(dec[3], "\n          ")}\n" unless dec[3].empty?
         output << "        Subtasks:#{subtasks_to_s(dec[4], @parser.operators, "\n          ")}\n"
