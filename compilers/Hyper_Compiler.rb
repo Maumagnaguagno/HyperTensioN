@@ -54,9 +54,10 @@ module Hyper_Compiler
     domain_str << "\n    # Methods"
     methods.each_with_index {|met,mi|
       domain_str << "\n    '#{met.first}' => [\n"
+      variables = met[1].empty? ? '' : "(#{met[1].map {|i| i.sub(/^\?/,'')}.join(', ')})"
       met.drop(2).each_with_index {|met_case,i|
         domain_str << "      '#{met_case.first}'#{',' if met.size - 3 != i}\n"
-        define_methods << "\n  def #{met_case.first}#{"(#{met[1].map {|i| i.sub(/^\?/,'')}.join(', ')})" unless met[1].empty?}\n"
+        define_methods << "\n  def #{met_case.first}#{variables}\n"
         # No preconditions
         if met_case[2].empty? and met_case[3].empty?
           subtasks_to_hyper(define_methods, met_case[4], '    ')
