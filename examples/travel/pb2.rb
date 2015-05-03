@@ -38,5 +38,5 @@ Travel.problem(
     ['travel','me','home','friend']
   ],
   # Debug
-  true
+  ARGV.first == '-d'
 )

@@ -514,5 +514,7 @@ Goldminer.problem(
   # Tasks
   [
     ['get_gold']
-  ]
+  ],
+  # Debug
+  ARGV.first == '-d'
 )
