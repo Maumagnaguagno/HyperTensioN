@@ -4,6 +4,38 @@ module PDDL_Parser
   attr_reader :domain_name, :problem_name, :problem_domain, :operators, :methods, :predicates, :state, :tasks, :goal_pos, :goal_not
 
   #-----------------------------------------------
+  # Define preconditions
+  #-----------------------------------------------
+
+  def define_preconditions(action_name, pro, pos, neg)
+    if pro.first == 'not'
+      raise "Error with #{action_name} precondition group" if pro.size != 2
+      proposition = pro.last
+      neg << proposition
+    else
+      proposition = pro
+      pos << proposition
+    end
+    @predicates[proposition.first] = true if @predicates[proposition.first].nil?
+  end
+
+  #-----------------------------------------------
+  # Define effects
+  #-----------------------------------------------
+
+  def define_effects(action_name, pro, add, del)
+    if pro.first == 'not'
+      raise "Error with #{action_name} effect group" if pro.size != 2
+      proposition = pro.last
+      del << proposition
+    else
+      proposition = pro
+      add << proposition
+    end
+    @predicates[proposition.first] = false
+  end
+
+  #-----------------------------------------------
   # Parse action
   #-----------------------------------------------
 
@@ -40,40 +72,19 @@ module PDDL_Parser
         # TODO equality support
         if group.first == 'and'
           group.shift
-          group.each {|pro|
-            if pro.first == 'not'
-              raise "Error with #{name} precondition group" if pro.size != 2
-              proposition = pro.last
-              neg << proposition
-            else
-              proposition = pro
-              pos << proposition
-            end
-            @predicates[proposition.first] = true if @predicates[proposition.first].nil?
-          }
-        # TODO Atom
-        else raise 'Single group not implemented'
+          group.each {|pro| define_preconditions(name, pro, pos, neg)}
+        # Atom
+        else define_preconditions(name, group, pos, neg)
         end
       when ':effect'
         group = op.shift
         raise "Error with #{name} effect" unless group.instance_of?(Array)
         # Conjunction
-        # TODO equality support
         if group.first == 'and'
           group.shift
-          group.each {|pro|
-            if pro.first == 'not'
-              raise "Error with #{name} effect group" if pro.size != 2
-              proposition = pro.last
-              del << proposition
-            else
-              proposition = pro
-              add << proposition
-            end
-            @predicates[proposition.first] = false
-          }
-        # TODO Atom
-        else raise 'Single group not implemented'
+          group.each {|pro| define_effects(name, pro, add, del)}
+        # Atom
+        else define_effects(name, group, add, del)
         end
       end
     end
