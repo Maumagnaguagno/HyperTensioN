@@ -9,7 +9,7 @@ module PDDL_Parser
 
   def define_preconditions(action_name, pro, pos, neg)
     if pro.first == 'not'
-      raise "Error with #{action_name} precondition group" if pro.size != 2
+      raise "Error with #{action_name} preconditions" if pro.size != 2
       proposition = pro.last
       neg << proposition
     else
@@ -25,7 +25,7 @@ module PDDL_Parser
 
   def define_effects(action_name, pro, add, del)
     if pro.first == 'not'
-      raise "Error with #{action_name} effect group" if pro.size != 2
+      raise "Error with #{action_name} effects" if pro.size != 2
       proposition = pro.last
       del << proposition
     else
@@ -33,6 +33,18 @@ module PDDL_Parser
       add << proposition
     end
     @predicates[proposition.first] = false
+  end
+
+  #-----------------------------------------------
+  # Define goals
+  #-----------------------------------------------
+
+  def define_goals(pro)
+    if pro.first == 'not'
+      raise "Error with goals" if pro.size != 2
+      @goal_not << pro.last
+    else @goal_pos << pro
+    end
   end
 
   #-----------------------------------------------
@@ -151,10 +163,8 @@ module PDDL_Parser
         group = tokens.shift
         case group.first
         when 'problem'
-          # TODO raise
           @problem_name = group.last
         when ':domain'
-          # TODO raise
           @problem_domain = group.last
         when ':requirements'
           # TODO take advantage of requirements definition
@@ -186,27 +196,21 @@ module PDDL_Parser
             end
           end
         when ':init'
-          # TODO raise
           group.shift
           @state.push(*group)
           @state.each {|proposition| @predicates[proposition.first] = nil unless @predicates.include?(proposition.first)}
         when ':goal'
           group.shift
-          # TODO raise
           @goal_pos = []
           @goal_not = []
           @tasks = []
           group = group.shift
+          # Conjunction
           if group.first == 'and'
             group.shift
-            group.each {|pro|
-              if pro.first == 'not'
-                @goal_not << pro.last
-              else @goal_pos << pro
-              end
-            }
-          # TODO Atom
-          else raise 'Single group not implemented'
+            group.each {|pro| define_goals(pro)}
+          # Atom
+          else define_goals(group)
           end
         end
       end
