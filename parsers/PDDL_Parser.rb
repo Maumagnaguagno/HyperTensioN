@@ -130,8 +130,8 @@ module PDDL_Parser
         when ':types'
           # Type hierarchy
           group.shift
+          raise 'Error with types' if group.first == '-'
           subtypes = []
-          raise "Error with types" if group.first == '-'
           until group.empty?
             subtypes << group.shift
             if group.first == '-'
@@ -171,8 +171,8 @@ module PDDL_Parser
         when ':objects'
           # Move types to initial state
           group.shift
+          raise 'Error with typed objects' if group.first == '-'
           objects = []
-          raise "Error with #{name} typed objects" if group.first == '-'
           until group.empty?
             objects << group.shift
             if group.first == '-'
