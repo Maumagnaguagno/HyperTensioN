@@ -462,10 +462,10 @@ You can always not believe the **Hype** and convert descriptions by yourself, fo
 ## Execution
 
 Hype requires a domain and problem file to be compiled to a certain output type.
-If no output type is provided, the system only prints out what was understood from the files and the time to parse.
+If no output type is provided or 'print' is provided, the system only prints out what was understood from the files and the time taken to parse.
 
 ```
-ruby Hype.rb path/domain_filename path/problem_filename [rb|pddl|jshop|dot]
+ruby Hype.rb path/domain_filename path/problem_filename [rb|pddl|jshop|dot|print]
 ```
 
 ### Parsers

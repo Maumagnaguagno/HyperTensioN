@@ -185,7 +185,7 @@ if $0 == __FILE__
           else raise 'Patterns not supported'
           end
         end
-        if ARGV[2] != 'nil'
+        if ARGV[2] and ARGV[2] != 'print'
           Hype.compile(domain, problem, ARGV[2])
         else puts Hype.to_s
         end
