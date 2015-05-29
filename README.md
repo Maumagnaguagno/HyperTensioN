@@ -6,7 +6,7 @@ This is very alike to how humans think, taking mental steps further into primiti
 HTN is used as an acronym for Hypertension in medical context, therefore the name was given.
 
 The current version has most of its algorithm inspired by PyHop, with backtracking and unification added.
-It is being developed with **Ruby 2.0**.
+It is being developed with **Ruby 2.0** in mind, if you find some feature that does not work with your environment you can report an issue.
 
 In order to support other planning languages a module named [Hype](#hype) will take care of the conversion process.
 
@@ -377,7 +377,7 @@ Here are some hints for everyone:
 - Order the methods decomposition wisely, otherwise you may test a lot before actually going to the correct path.
 - Use the precondition in you favor, you do not need to test things twice using a smart method decomposition.
 - Unification is costly, avoid generate at any cost, match your values once and propagate them as long as possible.
-- Even if a precondition or effect is an empty set you need to declare, use ```[]```.
+- Even if a precondition or effect is an empty set you need to declare it, use ```[]```.
 - Empty predicate sets must be put in the initial state at the problem file. This avoids predicate typos, as all predicates must be previously defined.
 - Think like an [And-or Tree](http://en.wikipedia.org/wiki/And%E2%80%93or_tree), which decisions must be made before paths fork and which actions must be done in sequence?
 
@@ -405,7 +405,8 @@ Hypertension is a Ruby module and have a few instance variables:
 They were defined as instance variables to be mixed in other classes if needed, that is why they are not class variables.
 Having the state and domain as separate variables also means we do not need to propagate them all the time, this makes the source more declarative.
 This also means you can, at any point, change more than the state.
-This may be usefull to reorder method decompositions in the domain to modify the behavior without touching the methods.
+This may be usefull to reorder method decompositions in the domain to modify the behavior without touching the methods or set the debug option only after an specific operator is called.
+You will notice that the plan is not a variable, as it is created during the backtracking, which means you can not reorder actions in the planning process using this algorithm, but is possible if you create the plan during decomposition and costs more CPU.
 
 The methods are few and simple to use:
 - ```planning(tasks, level = 0)``` receives a task list to decompose and the nesting level to help debug.
@@ -436,12 +437,12 @@ The **Hype** is the framework for parsers and compilers of planning languages an
 It will save time and avoid errors during conversions of domains and problems for comparison results with other planners.
 This conversion step is not uncommon, as JSHOP itself compiles the description to Java code, trying to achieve the best performance possible.
 
-Parser support:
+**Parser support**:
 - [x] [PDDL](http://en.wikipedia.org/wiki/Planning_Domain_Definition_Language)
 - [x] [JSHOP](http://www.cs.umd.edu/projects/shop/description.html)
 - [ ] [HPDDL](https://github.com/ronwalf/HTN-Translation)
 
-Compiler support:
+**Compiler support**:
 - [x] Hypertension (methods and tasks may not be available if the input was PDDL)
 - [x] PDDL (methods are ignored, goal must be manually converted from the tasks)
 - [x] JSHOP (methods and tasks may not be available if the input was PDDL)
