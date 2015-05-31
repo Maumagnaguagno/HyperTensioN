@@ -1,4 +1,4 @@
-require './Robby'
+require File.expand_path('../Robby', __FILE__)
 
 # Objects
 robby = 'robby'

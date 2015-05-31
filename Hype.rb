@@ -1,14 +1,17 @@
+FILEPATH = File.expand_path('..', __FILE__)
+
 # Patterns is a closed plugin
-PATTERNS = File.exist?('../Patterns.rb')
-require '../Patterns' if PATTERNS
+PATTERNS = File.exist?("#{FILEPATH}/../Patterns.rb")
 
-require './parsers/JSHOP_Parser'
-require './parsers/PDDL_Parser'
+require "#{FILEPATH}/../Patterns" if PATTERNS
 
-require './compilers/Dot_Compiler'
-require './compilers/Hyper_Compiler'
-require './compilers/JSHOP_Compiler'
-require './compilers/PDDL_Compiler'
+require "#{FILEPATH}/parsers/JSHOP_Parser"
+require "#{FILEPATH}/parsers/PDDL_Parser"
+
+require "#{FILEPATH}/compilers/Dot_Compiler"
+require "#{FILEPATH}/compilers/Hyper_Compiler"
+require "#{FILEPATH}/compilers/JSHOP_Compiler"
+require "#{FILEPATH}/compilers/PDDL_Compiler"
 
 module Hype
   extend self

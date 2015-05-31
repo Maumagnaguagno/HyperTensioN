@@ -1,4 +1,4 @@
-require '../../Hypertension'
+require File.expand_path('../../../Hypertension', __FILE__)
 
 module Goldminer
   include Hypertension

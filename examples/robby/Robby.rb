@@ -1,4 +1,4 @@
-require '../../Hypertension'
+require File.expand_path('../../../Hypertension', __FILE__)
 
 module Robby
   include Hypertension

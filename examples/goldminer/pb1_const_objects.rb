@@ -1,4 +1,4 @@
-require './Goldminer'
+require File.expand_path('../Goldminer', __FILE__)
 
 # Objects
 ag1 = 'ag1'
