@@ -200,13 +200,12 @@ module Hypertension
     plan = planning(tasks)
     puts "Time: #{Time.now.to_f - t}s", 'Plan'.center(50,'-')
     if plan
-      print_data(plan)
+      if plan.empty?
+        puts 'Empty plan'
+      else print_data(plan)
+      end
     else puts 'Planning failed'
     end
-    #if RUBY_VERSION >= '2.0'
-    #  GC.stat.each {|i| p i}
-    #  ObjectSpace.count_objects.each {|i| p i}
-    #end
   rescue Interrupt
     puts 'Interrupted'
   rescue

@@ -19,7 +19,7 @@ module Goldminer
     'unvisit_at' => false,
     # Methods
     'travel' => [
-      #'travel__bfs', # Optimal
+      'travel__bfs', # Optimal
       'travel__base',
       'travel__recursion'
     ],
@@ -186,33 +186,65 @@ module Goldminer
   end
 
   def travel__bfs(agent, from, to)
-    # TODO test if 'to' is blocked
-    # TODO use generate as a generic method of unification
+    # Unreachable
+    blocked = @state['blocked']
+    return if blocked.include?([to])
+    adjacent = @state['adjacent']
     frontier = [from]
     visited = {}
-    place = ''
-    adjacent = @state['adjacent']
-    blocked = @state['blocked']
     until frontier.empty?
       current = frontier.shift
       plan = frontier.shift
       adjacent.each {|c,place|
-        if c == current and not blocked.include?([place])
-          unless visited.include?(place)
-            if place == to
-              solution = [['move', agent, current, to]]
-              while plan
-                to = current
-                current, plan = plan
-                solution.unshift(['move', agent, current, to])
-              end
-              yield solution
-              return
+        if c == current and not blocked.include?([place]) and not visited.include?(place)
+          if place == to
+            solution = [['move', agent, current, to]]
+            while plan
+              to = current
+              current, plan = plan
+              solution.unshift(['move', agent, current, to])
             end
-            visited[place] = nil
-            frontier.push(place, [current, plan])
+            yield solution
+            return
           end
+          visited[place] = nil
+          frontier.push(place, [current, plan])
         end
+      }
+    end
+  end
+
+  def travel__bfs_generate(agent, from, to)
+    # Unreachable
+    return if @state['blocked'].include?([to])
+    frontier = [from]
+    visited = {}
+    # Generate as a generic method of unification
+    until frontier.empty?
+      current = frontier.shift
+      plan = frontier.shift
+      place = ''
+      generate(
+        [
+          ['adjacent', current, place]
+        ],
+        [
+          ['blocked', place]
+        ], place
+      ) {
+        next if visited.include?(place)
+        if place == to
+          solution = [['move', agent, current, to]]
+          while plan
+            to = current
+            current, plan = plan
+            solution.unshift(['move', agent, current, to])
+          end
+          yield solution
+          return
+        end
+        visited[place] = nil
+        frontier.push(place.dup, [current, plan])
       }
     end
   end
