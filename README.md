@@ -451,11 +451,10 @@ This conversion step is not uncommon, as JSHOP itself compiles the description t
 
 As any parser the ones provided by Hype are limited in one way or another, PDDL have far more features than supported by most planners and JSHOP have 2 different ways to define methods.
 Methods may be broken into several independent blocks or in the same block without the need to check the same preconditions again.
-We support both cases, but will evaluate the preconditions of each set independently always.
-JSHOP only evaluates the last if the first ones evaluated to false in the same block.
+We support both cases, but we evaluate the preconditions of each set independently while JSHOP only evaluates the last if the previous ones evaluated to false in the same block.
 In order to copy the behavior we can not simply copy the positive preconditions in the negative set and vice-versa.
 Sometimes only one proposition in the set is false, if we copied in the other set for the other methods it would never work.
-Declare the methods in the same Ruby method is possible (losing label definition), but kills the simplicity and declaration independence we are trying to achieve.
+Declare the methods in the same Ruby method is possible (losing label definition), but kills the simplicity and declaration independence we are trying to achieve. We also do not support axioms yet.
 
 You can always not believe the **Hype** and convert descriptions by yourself, following a style that achieves a better or faster solution with the indentation that makes you happy.
 
