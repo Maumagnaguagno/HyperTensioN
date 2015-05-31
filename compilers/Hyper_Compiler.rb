@@ -96,6 +96,7 @@ module Hyper_Compiler
       start_hash[pred] << terms
       objects.push(*terms)
     }
+    tasks.each {|pred,*terms| objects.push(*terms)}
     # Objects
     objects.uniq!
     objects.each {|i| problem_str << "#{i} = '#{i}'\n"}
