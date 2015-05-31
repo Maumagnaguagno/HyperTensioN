@@ -9,10 +9,11 @@ module JSHOP_Parser
 
   def parse_operator(op)
     op.shift
-    raise "Operator #{op.first.first} have #{op.size} groups instead of 4" if op.size != 4
+    name = op.first.shift
+    name.sub!(/^!+/,'')
+    raise "Operator #{name} have #{op.size} groups instead of 4" if op.size != 4
     # Header
-    op.shift.each {|i| i.sub!(/^!+/,'')}
-    @operators << [name = group.shift, group, pos = [], neg = [], add = [], del = []]
+    @operators << [name, op.shift, pos = [], neg = [], add = [], del = []]
     # Preconditions
     group = op.shift
     if group != 'nil'
@@ -65,12 +66,8 @@ module JSHOP_Parser
     @methods << method = [name, group] unless method
     met.shift
     until met.empty?
-      # Optional label
-      if met.first.instance_of?(String)
-        decompose = [met.shift, free_variables = [], pos = [], neg = []]
-      # Add numbers as labels for the unlabeled cases
-      else decompose = ["unlabeled_#{method.size - 2}"]
-      end
+      # Optional label, add index for the unlabeled cases
+      decompose = [met.first.instance_of?(String) ? met.shift : "#{name}_#{method.size - 2}", free_variables = [], pos = [], neg = []]
       # Preconditions
       group = met.shift
       if group != 'nil'
