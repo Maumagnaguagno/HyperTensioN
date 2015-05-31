@@ -386,8 +386,16 @@ Here are some hints for everyone:
 The problem acts as the main function since the problems include the domain, and the domain include the planner.
 
 ```
-cd HyperTensioN/examples/project
-ruby pb1.rb
+cd HyperTensioN
+ruby examples/project/pb1.rb
+```
+
+If you described your domain and problem in another language you must convert it to Ruby before execution.
+
+```
+cd HyperTensioN
+ruby Hype.rb examples/project/domain.ext examples/project/pb1.ext rb  
+ruby examples/project/pb1.ext.rb
 ```
 
 ## API
