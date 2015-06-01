@@ -59,7 +59,6 @@ module JSHOP_Parser
     met.shift
     # Header
     group = met.first
-    group.each {|i| i.sub!(/^!+/,'')}
     name = group.shift
     # Already defined
     method = @methods.find {|m| m.first == name}
