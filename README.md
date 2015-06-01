@@ -385,15 +385,18 @@ Here are some hints for everyone:
 
 The problem acts as the main function since the problems include the domain, and the domain include the planner.
 
-```
+```Shell
 cd HyperTensioN
 ruby examples/project/pb1.rb
 ```
 
 If you described your domain and problem in another language you must convert it to Ruby before execution.
+Hype requires a domain and problem file to be compiled to a certain output type.
+If no output type is provided or 'print' is provided, the system only prints out what was understood from the files and the time taken to parse.
 
-```
+```Shell
 cd HyperTensioN
+# ruby Hype.rb path/domain_filename path/problem_filename [rb|pddl|jshop|dot|print]
 ruby Hype.rb examples/project/domain.ext examples/project/pb1.ext rb  
 ruby examples/project/pb1.ext.rb
 ```
@@ -465,16 +468,6 @@ Sometimes only one proposition in the set is false, if we copied in the other se
 Declare the methods in the same Ruby method is possible (losing label definition), but kills the simplicity and declaration independence we are trying to achieve. We also do not support axioms yet.
 
 You can always not believe the **Hype** and convert descriptions by yourself, following a style that achieves a better or faster solution with the indentation that makes you happy.
-
-
-## Execution
-
-Hype requires a domain and problem file to be compiled to a certain output type.
-If no output type is provided or 'print' is provided, the system only prints out what was understood from the files and the time taken to parse.
-
-```
-ruby Hype.rb path/domain_filename path/problem_filename [rb|pddl|jshop|dot|print]
-```
 
 ### Parsers
 
