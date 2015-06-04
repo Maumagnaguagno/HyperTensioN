@@ -196,7 +196,7 @@ if $0 == __FILE__
         if type and type != 'print'
           if type == 'run' or type == 'debug'
             Hype.compile(domain, problem, 'rb')
-            ARGV.clear << '-d' if type == 'debug'
+            ARGV[0] = '-d' if type == 'debug'
             require "#{Hype::FILEPATH}/#{problem}"
           else Hype.compile(domain, problem, type)
           end
