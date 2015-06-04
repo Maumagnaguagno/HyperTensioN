@@ -1,6 +1,6 @@
 FILEPATH = File.expand_path('..', __FILE__)
 
-# Patterns is a closed plugin
+# Patterns is a closed extension
 PATTERNS = File.exist?("#{FILEPATH}/../Patterns.rb")
 
 require "#{FILEPATH}/../Patterns" if PATTERNS
@@ -166,8 +166,7 @@ end
 if $0 == __FILE__
   begin
     if ARGV.size.between?(2,4)
-      domain = ARGV[0]
-      problem = ARGV[1]
+      domain, problem, type, extension = ARGV
       if not File.exist?(domain)
         puts "Domain file #{domain} not found"
       elsif not File.exist?(problem)
@@ -175,7 +174,7 @@ if $0 == __FILE__
       else
         t = Time.now.to_f
         Hype.parse(domain, problem)
-        if ARGV[3] == 'patterns'
+        if extension == 'patterns'
           if PATTERNS
             Patterns.match(
               Hype.parser.operators,
@@ -188,11 +187,14 @@ if $0 == __FILE__
           else raise 'Patterns not supported'
           end
         end
-        if ARGV[2] and ARGV[2] != 'print'
-          Hype.compile(domain, problem, ARGV[2])
-        else puts Hype.to_s
+        if type and type != 'print'
+          if type == 'run'
+            Hype.compile(domain, problem, 'rb')
+            require "#{FILEPATH}/#{problem}"
+          else Hype.compile(domain, problem, type)
+          end
+        else puts Hype.to_s, Time.now.to_f - t
         end
-        puts Time.now.to_f - t
       end
     else puts "Use #$0 domain problem [output_type]"
     end

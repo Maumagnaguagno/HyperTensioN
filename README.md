@@ -79,7 +79,7 @@ We need to match the movement pattern first, the trick part is to avoid repetiti
 Robby needs to remember which locations were visited, let us see this in a recursive format.
 The movement actions swap the position of Robby, predicate ```at```.
 The base of the recursion happens when the object (Robby) is already at the destination, otherwise use move, enter or exit, mark the position and call the recursion again.
-We need to remember to unvisit the locations once we reach our goal, otherwise Robby may be stuck. The following code illustrates the idea without HTN:
+We need to remember to unvisit the locations once we reach our goal, otherwise Robby may be stuck. The following code illustrates the idea without HTN constructions:
 
 ```Ruby
 def swap_at(object, goal)
@@ -387,7 +387,7 @@ The problem acts as the main function since the problems include the domain, and
 
 ```Shell
 cd HyperTensioN
-ruby examples/project/pb1.rb
+ruby examples/robby/pb1.rb
 ```
 
 If you described your domain and problem in another language you must convert it to Ruby before execution.
@@ -396,9 +396,15 @@ If no output type is provided or 'print' is provided, the system only prints out
 
 ```Shell
 cd HyperTensioN
-# ruby Hype.rb path/domain_filename path/problem_filename [rb|pddl|jshop|dot|print]
-ruby Hype.rb examples/project/domain.ext examples/project/pb1.ext rb  
-ruby examples/project/pb1.ext.rb
+# ruby Hype.rb path/domain_filename path/problem_filename [rb|pddl|jshop|dot|print|run]
+ruby Hype.rb examples/basic_jshop/basic.jshop examples/basic_jshop/pb1.jshop rb
+ruby examples/basic_jshop/pb1.jshop.rb
+```
+
+You can also compile and execute with a single command with 'run', the system compile as 'rb' and require the generated files.
+
+```Shell
+ruby Hype.rb examples/basic_jshop/basic.jshop examples/basic_jshop/problem.jshop run
 ```
 
 ## API
