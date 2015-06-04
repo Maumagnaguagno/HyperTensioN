@@ -396,12 +396,13 @@ If no output type is provided or 'print' is provided, the system only prints out
 
 ```Shell
 cd HyperTensioN
-# ruby Hype.rb path/domain_filename path/problem_filename [rb|pddl|jshop|dot|print|run]
+# ruby Hype.rb path/domain_filename path/problem_filename [rb|pddl|jshop|dot|print|run|debug]
 ruby Hype.rb examples/basic_jshop/basic.jshop examples/basic_jshop/pb1.jshop rb
 ruby examples/basic_jshop/pb1.jshop.rb
 ```
 
-You can also compile and execute with a single command with 'run', the system compile as 'rb' and require the generated files.
+You can also compile and execute with a single command with **run** or **debug**, the system compile as **rb** and require the generated files.
+Debug mode shows the explored paths while run mode only shows the planning result.
 
 ```Shell
 ruby Hype.rb examples/basic_jshop/basic.jshop examples/basic_jshop/problem.jshop run
@@ -450,7 +451,7 @@ Domain methods must yield a task list or are nullified, having no decomposition.
 
 ## Hype
 
-The **Hype** is the framework for parsers and compilers of planning languages and common representations.
+The **Hype** is the framework for parsers and compilers of planning descriptions.
 It will save time and avoid errors during conversions of domains and problems for comparison results with other planners.
 This conversion step is not uncommon, as JSHOP itself compiles the description to Java code, trying to achieve the best performance possible.
 
@@ -553,10 +554,10 @@ Those versions also let you express your state in any way you want, but you need
 - **Probabilistic planning** is useful if you need to know what may happen and the different probabilities of each scenario. It takes much longer to execute, as many branches may happen.
 
 ## ToDo's
-- Parsers with more features support
-- Compilers with more features support
+- Parsers with more features
+- Compilers with more features
 - Define the standard interface for parsers and compilers, the current ones require several attributes instead of a Hash ```{:attr => data}``` and there is an inconsistency about file handling (Hype should do all IO).
 - Tests
 - Examples
 - Maybe ```applicable?(precond_true, precond_false)``` in generate does not need to test precond_true
-  - ```applicable?([], precond_false)``` appears to be enough
+  - ```applicable?([], precond_false)``` appears to be enough for some cases
