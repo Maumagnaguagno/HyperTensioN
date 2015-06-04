@@ -1,22 +1,28 @@
-FILEPATH = File.expand_path('..', __FILE__)
-
-# Patterns is a closed extension
-PATTERNS = File.exist?("#{FILEPATH}/../Patterns.rb")
-
-require "#{FILEPATH}/../Patterns" if PATTERNS
-
-require "#{FILEPATH}/parsers/JSHOP_Parser"
-require "#{FILEPATH}/parsers/PDDL_Parser"
-
-require "#{FILEPATH}/compilers/Dot_Compiler"
-require "#{FILEPATH}/compilers/Hyper_Compiler"
-require "#{FILEPATH}/compilers/JSHOP_Compiler"
-require "#{FILEPATH}/compilers/PDDL_Compiler"
+#!/usr/bin/env ruby
+#-----------------------------------------------
+# Hype
+#-----------------------------------------------
+# Mau Magnaguagno
+#-----------------------------------------------
+# Planning description converter
+#-----------------------------------------------
 
 module Hype
   extend self
 
   attr_reader :parser
+
+  FILEPATH = File.expand_path('..', __FILE__)
+  # Parsers
+  require "#{FILEPATH}/parsers/JSHOP_Parser"
+  require "#{FILEPATH}/parsers/PDDL_Parser"
+  # Compilers
+  require "#{FILEPATH}/compilers/Dot_Compiler"
+  require "#{FILEPATH}/compilers/Hyper_Compiler"
+  require "#{FILEPATH}/compilers/JSHOP_Compiler"
+  require "#{FILEPATH}/compilers/PDDL_Compiler"
+  # Extensions
+  require "#{FILEPATH}/../Patterns" if File.exist?("#{FILEPATH}/../Patterns.rb")
 
   #-----------------------------------------------
   # Scan tokens
@@ -175,7 +181,7 @@ if $0 == __FILE__
         t = Time.now.to_f
         Hype.parse(domain, problem)
         if extension == 'patterns'
-          if PATTERNS
+          if defined?(Patterns)
             Patterns.match(
               Hype.parser.operators,
               Hype.parser.methods,
@@ -190,7 +196,7 @@ if $0 == __FILE__
         if type and type != 'print'
           if type == 'run'
             Hype.compile(domain, problem, 'rb')
-            require "#{FILEPATH}/#{problem}"
+            require "#{Hype::FILEPATH}/#{problem}"
           else Hype.compile(domain, problem, type)
           end
         else puts Hype.to_s, Time.now.to_f - t
