@@ -4,14 +4,14 @@
 Hypertension is an Hierarchical Task Network Planner written in Ruby, which means you have to describe how tasks can be accomplished using method decomposition to achieve a plan, but in Ruby.
 This is very alike to how humans think, taking mental steps further into primitive operators. When all operators in the plan are satisfied, the plan found is a valid one.
 HTN is used as an acronym for Hypertension in medical context, therefore the name was given.
-
-The current version has most of its algorithm inspired by PyHop, with backtracking and unification added.
-It is being developed with **Ruby 2.0** in mind, if you find some feature that does not work with your environment you can report an issue.
-
 In order to support other planning languages a module named [Hype](#hype) will take care of the conversion process.
 
-## Algorithm
+The current version has most of its algorithm inspired by PyHop/SHOP, with backtracking and unification added.
+It is being developed with **Ruby 2.0**, if you find some feature that does not work with your environment you can report an issue.
 
+**Contents:** [Algorithm](#algorithm) | [How it works](#how-it-works) | [Hints](#hints) | [Execution](#execution) | [API](#api) | [Hype](#hype) | [Advantages](#advantages) | [Old versions](#old-versions) | [ToDo's](#todos) 
+
+## Algorithm
 The algorithm for HTN planning is quite simple and flexible, the hard part is in the structure that decomposes and the unification engine.
 Our task list (input of planning) is decomposed until nothing remains, the base of recursion, returning an empty plan.
 The tail of recursion are the operator and method cases.
@@ -48,7 +48,6 @@ end
 ```
 
 ## How it works
-
 The idea is to **include** Hypertension in your domain module, define the methods and primitive operators, and use this domain module with your different problems for this domain.
 Your problems may be in a separate file or be generated during run-time.
 Since Hypertension uses **metaprogramming**, you need to specify which Ruby methods are used and how.
@@ -56,7 +55,6 @@ The other way to define this would be the unit test way, using certain method na
 I chose the explicit way, therefore you need to specify operator visibility and the subtasks of each method by hand.
 
 ### Example
-
 There is nothing better than an example to understand the behavior of something.
 We will start with the **Robby domain**.
 Our rescue robot Robby is called to action, the robot is inside an office building trying to check the status of certain locations.
@@ -71,6 +69,7 @@ This is the set of primitive operators, not enough to HTN planning.
 We need to expand it.
 We know Robby must move, enter and exit zero or more times to reach any beacon, report the beacon, and repeat this process for every beacon.
 If you are used to regular expressions the result is similar to this:
+
 ```Ruby
 /((move|enter|exit)*report)*/
 ```
@@ -84,8 +83,8 @@ We need to remember to unvisit the locations once we reach our goal, otherwise R
 ```Ruby
 def swap_at(object, goal)
   if swap_at__base(object, goal)
-    return []
     unvisit(object)
+    return []
   elsif swap_at__enter(object, goal)
     visited(object.position)
     return [enter] + swap_at(object, goal)
@@ -102,8 +101,7 @@ end
 This example is hardcoded and abstracts most of the problem, it is time to build it in HTN.
 Remember to exploit the recursive nature of HTN to take the decisions for you, this will make it simpler.
 
-### Domain example
-
+### Domain
 Better start with code:
 
 ```Ruby
@@ -144,7 +142,7 @@ I prefer to handle them in a table, easier to see what is changing:
 
 | Preconditions | Effects |
 | ---: | ---: |
-| robot(bot) | |
+| robot(bot) ||
 | hallway(source) ||
 | room(destination) ||
 | connected(source, destination) ||
@@ -207,7 +205,6 @@ This approach solves the problem of returning several unifications per method ca
 Be aware that all methods must have the same parameter list, other variables must be bounded during run-time (**Lifted preconditions**).
 
 #### No preconditions
-
 This is the simplest case, the method **yields** a subtask list without any test.
 The subtask list may be empty.
 This example is not part of the current implementation of Robby.
@@ -222,7 +219,6 @@ end
 ```
 
 #### Grounded preconditions
-
 Sometimes we have preconditions in the last operator of the subtask list, we want to discover if the precondition is satisfied now instead of executing a lot of steps to discover this decomposition leads to a failure.
 Use preconditions as look-aheads, this may create a redundancy with the operators, but saves quite a lot of time if used wisely.
 
@@ -244,7 +240,6 @@ end
 ```
 
 #### Lifted preconditions
-
 It is impossible to propagate variables all the time, some variables must be bounded during run-time.
 Free-variables are created as empty strings, being used as pointers to their future values.
 A ```generate([positive],[negative],free-variables)``` method will do the hard job, using positive preconditions to find possible values and unify accordingly, only yielding values that satisfy the preconditions requested.
@@ -283,7 +278,6 @@ end
 ```
 
 #### Free Variables?
-
 Free variables are not supported by Ruby, we need to simulate their behavior.
 A free variable works like a placeholder, once bounded it will have a value like any common variable.
 The bounding process requires the context to dictate possible values to the variable.
@@ -321,7 +315,6 @@ end
 ```
 
 ### Problem
-
 With your domain ready all you need is to define the initial state and the task list.
 The initial state is defined as a Hash table in which the keys are the predicates while the value is an array of possible terms.
 The task list follows the same principle, an array of each task to be solved.
@@ -371,18 +364,16 @@ Robby.problem(
 ```
 
 ## Hints
-
-Here are some hints for everyone:
-- Having an a common object in a variable being reused is faster to compare (pointer comparison), instead of String == String, only works for constant objects.
+Here are some hints to describe your domain:
+- Having the objects in variables being reused is faster to compare (pointer comparison), instead of String == String, only works for constant objects.
 - Order the methods decomposition wisely, otherwise you may test a lot before actually going to the correct path.
 - Use the precondition in you favor, you do not need to test things twice using a smart method decomposition.
-- Unification is costly, avoid generate at any cost, match your values once and propagate them as long as possible.
+- Unification is costly, avoid generate, match your values once and propagate them.
 - Even if a precondition or effect is an empty set you need to declare it, use ```[]```.
 - Empty predicate sets must be put in the initial state at the problem file. This avoids predicate typos, as all predicates must be previously defined.
-- Think like an [And-or Tree](http://en.wikipedia.org/wiki/And%E2%80%93or_tree), which decisions must be made before paths fork and which actions must be done in sequence?
+- Check out the [And-or Tree](http://en.wikipedia.org/wiki/And%E2%80%93or_tree), which decisions must be made before paths fork and which actions must be done in sequence?
 
 ## Execution
-
 The problem acts as the main function since the problems include the domain, and the domain include the planner.
 
 ```Shell
@@ -409,12 +400,6 @@ ruby Hype.rb examples/basic_jshop/basic.jshop examples/basic_jshop/problem.jshop
 ```
 
 ## API
-
-Here are the descriptions to use and extend Hypertension and Hype functionality.
-Hypertension being the module with the planning engine and Hype being a collection of parsers and compilers to generate code from/to several planning formats.
-
-### Planner
-
 Hypertension is a Ruby module and have a few instance variables:
 - ```@state``` with the current state.
 - ```@domain``` with the decomposition rules that can be applied to the operators and methods.
@@ -450,7 +435,6 @@ Domain operators can be defined without ```apply_operator``` and will have the r
 Domain methods must yield a task list or are nullified, having no decomposition.
 
 ## Hype
-
 The **Hype** is the framework for parsers and compilers of planning descriptions.
 It will save time and avoid errors during conversions of domains and problems for comparison results with other planners.
 This conversion step is not uncommon, as JSHOP itself compiles the description to Java code, trying to achieve the best performance possible.
@@ -477,7 +461,6 @@ Declare the methods in the same Ruby method is possible (losing label definition
 You can always not believe the **Hype** and convert descriptions by yourself, following a style that achieves a better or faster solution with the indentation that makes you happy.
 
 ### Parsers
-
 Parsers are modules to be used to read planning descriptions, they are being developed now and still require a standard interface.
 The prototype interface is a module with the domain attributes and two methods to parse problem and domain files:
 
@@ -506,7 +489,6 @@ Maybe the file reading is common enough to be read outside the parsers, but then
 - Problem generators (common)
 
 ### Compilers
-
 Compilers are modules to be used to write planning descriptions, they are being developed now and still require a standard interface.
 The prototype interface is a module with two methods to compile problem and domain files to text:
 
@@ -530,7 +512,6 @@ Note that any compiler have access to the parser attributes, which means you can
 In fact this is the core idea behind Hype, be able to parse, modify and compile domains without having to worry about language support, any future language could be supported just adding a new parser and compiler.
 
 ## Advantages
-
 The main advantage is to be able to define behavior in the core language, if you wish, without losing clarity, this alone gives a lot of power.
 JSHOP requires you to dive into a very complex structure if you want to unlock this power.
 PyHop is based in this feature, everything is Python, but does not support backtracking and unification, which means you will have to create your own unification system and define your domain so no backtracking is required.
@@ -542,7 +523,6 @@ This also means that any update in the implementation of Ruby will benefit this 
 The only feature that we lack is unordered execution of tasks, a feature that JSHOP supports and is extremely important to achieve good plans in some cases.
 
 ## Old Versions
-
 You may notice an [old_versions](old_versions) folder with incompatible variations of Hypertension.
 This folder contains the RubyHop (PyHop remade in Ruby) and Simple (Hypertension without unification).
 Simple shares the core of Hypertension, but builds the plan while searching, while Hypertension builds the plan after, and support probability planning to show all outcomes that may happen.
