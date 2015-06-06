@@ -76,30 +76,8 @@ If you are used to regular expressions the result is similar to this:
 
 We need to match the movement pattern first, the trick part is to avoid repetitions or our robot may be stuck in a loop of A to B and B to A again.
 Robby needs to remember which locations were visited, let us see this in a recursive format.
-The movement actions swap the position of Robby, predicate ```at```.
 The base of the recursion happens when the object (Robby) is already at the destination, otherwise use move, enter or exit, mark the position and call the recursion again.
-We need to remember to unvisit the locations once we reach our goal, otherwise Robby may be stuck. The following code illustrates the idea without HTN constructions:
-
-```Ruby
-def swap_at(object, goal)
-  if swap_at__base(object, goal)
-    unvisit(object)
-    return []
-  elsif swap_at__enter(object, goal)
-    visited(object.position)
-    return [enter] + swap_at(object, goal)
-  elsif swap_at__recursion_exit(object, goal)
-    visited(object.position)
-    return [exit] + swap_at(object, goal)
-  elsif swap_at__recursion_move(object, goal)
-    visited(object.position)
-    return [move] + swap_at(object, goal)
-  end
-end
-```
-
-This example is hardcoded and abstracts most of the problem, it is time to build it in HTN.
-Remember to exploit the recursive nature of HTN to take the decisions for you, this will make it simpler.
+We need to remember to unvisit the locations once we reach our goal, otherwise Robby may be stuck.
 
 ### Domain
 Better start with code:
@@ -131,9 +109,8 @@ end
 ```
 
 The operators are the same as before, but visit and unvisit are not really important outside the planning stage, therefore they are not visible (```false```), while the others are visible (```true```).
-Our swap_at method is there, without any code describing its behavior.
+Our movement method swap_at is there, without any code describing its behavior.
 You could compare this with the header file holding the prototypes of functions as in C.
-And yes, I did not created the outerside pattern ```/((swap_at)*report)*/```, one step at a time.
 
 The enter operator appears to be a good starting point, we need to define our preconditions and effects.
 I prefer to handle them in a table, easier to see what is changing:
