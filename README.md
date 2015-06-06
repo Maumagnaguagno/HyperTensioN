@@ -52,11 +52,11 @@ The idea is to **include** Hypertension in your domain module, define the method
 Your problems may be in a separate file or be generated during run-time.
 Since Hypertension uses **metaprogramming**, you need to specify which Ruby methods are used and how.
 The other way to define this would be the unit test way, using certain method names as type filters.
-I chose the explicit way, therefore you need to specify operator visibility and the subtasks of each method by hand.
+I chose the explicit way, therefore you need to specify operator visibility and the subtasks of each method in the structure.
 
 ### Example
 There is nothing better than an example to understand the behavior of something.
-We will start with the **Robby domain**.
+We will start with the [Robby domain](examples/robby).
 Our rescue robot Robby is called to action, the robot is inside an office building trying to check the status of certain locations.
 Those locations are defined by the existence of a beacon, and the robot must be in the same hallway or room to check the status.
 Robby has a small set of actions available:
