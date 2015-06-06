@@ -22,7 +22,7 @@ module Hype
   require "#{FILEPATH}/compilers/JSHOP_Compiler"
   require "#{FILEPATH}/compilers/PDDL_Compiler"
   # Extensions
-  require "#{FILEPATH}/../Patterns" if File.exist?("#{FILEPATH}/../Patterns.rb")
+  require "#{FILEPATH}/Patterns" if File.exist?("#{FILEPATH}/Patterns.rb")
 
   #-----------------------------------------------
   # Scan tokens
