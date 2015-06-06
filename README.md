@@ -9,8 +9,6 @@ In order to support other planning languages a module named [Hype](#hype) will t
 The current version has most of its algorithm inspired by PyHop/SHOP, with backtracking and unification added.
 It is being developed with **Ruby 2.0**, if you find some feature that does not work with your environment you can report an issue.
 
-**Contents:** [Algorithm](#algorithm) | [How it works](#how-it-works) | [Hints](#hints) | [Execution](#execution) | [API](#api) | [Hype](#hype) | [Advantages](#advantages) | [Old versions](#old-versions) | [ToDo's](#todos) 
-
 ## Algorithm
 The algorithm for HTN planning is quite simple and flexible, the hard part is in the structure that decomposes and the unification engine.
 Our task list (input of planning) is decomposed until nothing remains, the base of recursion, returning an empty plan.
