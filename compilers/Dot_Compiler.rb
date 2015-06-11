@@ -33,14 +33,14 @@ module Dot_Compiler
       domain_str << "  #{met.first} [\n    shape=Mrecord\n    style=bold\n    label=\"{{#{met.first}|#{met[1].join(' ')}}|{#{decompose.each_with_index.map {|d,i| "<n#{i}>#{d.first}"}.join('|')}}}\"];\n"
       decompose.each_with_index {|d,i|
         # Label
-        domain_str << "  #{d.first} [\n    shape=Mrecord\n    label=\"{{#{d.first}|#{d[1].join(' ')}}|"
+        domain_str << "  label_#{d.first} [\n    shape=Mrecord\n    label=\"{{#{d.first}|#{d[1].join(' ')}}|"
         # Preconditions
         predicates_to_dot(domain_str, d[2], d[3])
         # Subtasks
         d[4].each_with_index {|subtask,j| domain_str << "|<n#{j}>#{subtask.join(' ')}"}
         # Connections
-        domain_str << "}\"\n  ];\n  #{met.first}:n#{i} -> #{d.first};\n"
-        d[4].each_with_index {|subtask,j| domain_str << "  #{d.first}:n#{j} -> #{subtask.first};\n" if operators.any? {|op| op.first == subtask.first}}
+        domain_str << "}\"\n  ];\n  #{met.first}:n#{i} -> label_#{d.first};\n"
+        d[4].each_with_index {|subtask,j| domain_str << "  label_#{d.first}:n#{j} -> #{subtask.first};\n" if operators.any? {|op| op.first == subtask.first}}
       }
     }
     domain_str << '}'
