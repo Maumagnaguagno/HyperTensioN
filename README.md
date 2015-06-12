@@ -381,6 +381,25 @@ Hypertension is a Ruby module and have a few instance variables:
 - ```@debug``` as a flag to print intermediary data during planning.
 
 They were defined as instance variables to be mixed in other classes if needed, that is why they are not class variables.
+
+```Ruby
+# Require and use
+require './Hypertension.rb'
+Hypertension.state = {...}
+Hypertension.applicable?(...)
+
+# Mix in
+require './Hypertension.rb'
+class Foo < Bar
+  include Hypertension
+
+  def method(...)
+    @state = {...}
+    applicable?(...)
+  end
+end
+```
+
 Having the state and domain as separate variables also means we do not need to propagate them all the time, this makes the source more declarative.
 This also means you can, at any point, change more than the state.
 This may be usefull to reorder method decompositions in the domain to modify the behavior without touching the methods or set the debug option only after an specific operator is called.
