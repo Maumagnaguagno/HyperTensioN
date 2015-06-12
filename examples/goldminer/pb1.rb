@@ -9,7 +9,7 @@ Goldminer.problem(
     'next' => [
       ['ag1', 'ag1']
     ],
-    'deposit' =>[
+    'deposit' => [
       ['p8_6']
     ],
     'on' => [
