@@ -40,7 +40,7 @@
 module Hypertension
   extend self
 
-  attr_accessor :domain, :debug
+  attr_accessor :domain, :state, :debug
 
   #-----------------------------------------------
   # Planning
