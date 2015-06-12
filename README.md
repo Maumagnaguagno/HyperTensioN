@@ -387,7 +387,8 @@ They were defined as instance variables to be mixed in other classes if needed, 
 require './Hypertension.rb'
 Hypertension.state = {...}
 Hypertension.applicable?(...)
-
+```
+```Ruby
 # Mix in
 require './Hypertension.rb'
 class Foo < Bar
