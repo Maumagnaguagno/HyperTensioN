@@ -529,6 +529,7 @@ Those versions also let you express your state in any way you want, but you need
 - **Probabilistic planning** is useful if you need to know what may happen and the different probabilities of each scenario. It takes much longer to execute, as many branches may happen.
 
 ## ToDo's
+- JSHOP operators that appear in the task list being converted to ```!op``` instead of ```op```.
 - Parsers with more features
 - Compilers with more features
 - Define the standard interface for parsers and compilers, the current ones require several attributes instead of a Hash ```{:attr => data}``` and there is an inconsistency about file handling (Hype should do all IO).
