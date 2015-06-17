@@ -89,7 +89,7 @@ module JSHOP_Parser
       group = met.shift
       if group != 'nil'
         raise "Error with #{name} subtasks" unless group.instance_of?(Array)
-        group.each {|pro| pro.each {|i| i.sub!(/^!+/,'')}}
+        group.each {|pro| pro.first.sub!(/^!+/,'')}
         decompose << group
       else decompose << []
       end
@@ -139,6 +139,7 @@ module JSHOP_Parser
       @state = tokens.shift
       @state.each {|proposition| @predicates[proposition.first] = nil unless @predicates.include?(proposition.first)}
       @tasks = tokens.shift
+      @tasks.each {|pro| pro.first.sub!(/^!+/,'')}
       @goal_pos = []
       @goal_not = []
     else raise "File #{problem_filename} does not match problem pattern"
