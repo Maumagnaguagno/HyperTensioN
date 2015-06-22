@@ -54,7 +54,7 @@ module JSHOP_Compiler
     # Methods
     domain_str << "  ;#{SPACER}\n  ; Methods\n  ;#{SPACER}\n\n"
     methods.each {|met|
-      header = "  (:method (#{met.first}#{met[1].join(' ')})\n"
+      header = "  (:method (#{met.first} #{met[1].join(' ')})\n"
       met.drop(2).each {|met_decompose|
         # Header and label
         domain_str << header << "    #{met_decompose.first}\n"
