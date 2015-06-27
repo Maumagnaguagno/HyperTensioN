@@ -29,6 +29,8 @@
 # - Deep copy only used at operator application
 # Mar 2014
 # - Refactoring of generate
+# Jun 2015
+# - Unordered tasks with explicit goal check
 #-----------------------------------------------
 # TODOs
 # - Automated tests with more problems
@@ -217,7 +219,7 @@ module Hypertension
   # Problem unordered
   #-----------------------------------------------
 
-  def problem_unordered(start, unordered_tasks, goal_pos, goal_not, debug = false)
+  def problem_unordered(start, unordered_tasks, debug = false, goal_pos = [], goal_not = [])
     # Debug information
     @debug = debug
     # Planning

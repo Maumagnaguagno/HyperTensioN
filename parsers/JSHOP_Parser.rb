@@ -139,7 +139,11 @@ module JSHOP_Parser
       @state = tokens.shift
       @state.each {|proposition| @predicates[proposition.first] = nil unless @predicates.include?(proposition.first)}
       @tasks = tokens.shift
+      # Tasks may be ordered or unordered
+      order = (@tasks.first != ':unordered')
+      @tasks.shift unless order
       @tasks.each {|pro| pro.first.sub!(/^!+/,'')}
+      @tasks.unshift(order)
       @goal_pos = []
       @goal_not = []
     else raise "File #{problem_filename} does not match problem pattern"

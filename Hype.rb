@@ -61,7 +61,11 @@ module Hype
   #-----------------------------------------------
 
   def subtasks_to_s(tasks, operators, prefix)
-    tasks.empty? ? "#{prefix}empty" : tasks.map {|t| "#{prefix}#{operators.any? {|op| op.first == t.first} ? 'operator' : 'method  '} (#{t.join(' ')})"}.join
+    if tasks.empty?
+      "#{prefix}empty"
+    else
+      "#{prefix}#{'un' unless tasks.first}ordered" << tasks.drop(1).map! {|t| "#{prefix}#{operators.any? {|op| op.first == t.first} ? 'operator' : 'method  '} (#{t.join(' ')})"}.join
+    end
   end
 
   #-----------------------------------------------

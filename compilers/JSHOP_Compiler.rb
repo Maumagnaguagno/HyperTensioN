@@ -22,11 +22,11 @@ module JSHOP_Compiler
   # Subtasks to JSHOP
   #-----------------------------------------------
 
-  def subtasks_to_jshop(output, tasks, operators, indentation)
+  def subtasks_to_jshop(output, tasks, operators, indentation, order = true)
     if tasks.empty?
       output << "#{indentation}nil\n"
     else
-      output << "#{indentation}(\n"
+      output << "#{indentation}(#{':unordered' unless order}\n"
       tasks.each {|t| output << "#{indentation}  (#{'!' if operators.any? {|op| op.first == t.first}}#{t.join(' ')})\n"}
       output << "#{indentation})\n"
     end
@@ -78,7 +78,7 @@ module JSHOP_Compiler
     state.each {|pre| problem_str << "    (#{pre.first} #{pre.drop(1).join(' ')})\n"}
     # Tasks
     problem_str << "  )\n\n  ;#{SPACER}\n  ; Tasks\n  ;#{SPACER}\n\n"
-    subtasks_to_jshop(problem_str, tasks, operators, '  ')
+    subtasks_to_jshop(problem_str, tasks.drop(1), operators, '  ', tasks.first)
     problem_str << ")\n"
   end
 end

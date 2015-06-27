@@ -96,11 +96,14 @@ module Hyper_Compiler
       start_hash[pred] << terms
       objects.push(*terms)
     }
+    ordered, *tasks = tasks
     tasks.each {|pred,*terms| objects.push(*terms)}
+    goal_pos.each {|pred,*terms| objects.push(*terms)}
+    goal_not.each {|pred,*terms| objects.push(*terms)}
     # Objects
     objects.uniq!
     objects.each {|i| problem_str << "#{i} = '#{i}'\n"}
-    problem_str << "\n#{domain_name.capitalize}.problem(\n  # Start\n  {\n"
+    problem_str << "\n#{domain_name.capitalize}.problem#{'_unordered' unless ordered}(\n  # Start\n  {\n"
     # Start
     start_hash.each_with_index {|(k,v),i|
       if v.empty?
@@ -115,6 +118,15 @@ module Hyper_Compiler
     # Tasks
     problem_str << "\n  },\n  # Tasks\n  [\n"
     tasks.each_with_index {|t,i| problem_str << "    ['#{t.first}', #{t.drop(1).join(', ')}]#{',' if tasks.size.pred != i}\n"}
-    problem_str << "  ],\n  # Debug\n  ARGV.first == '-d'\n)"
+    problem_str << "  ],\n  # Debug\n  ARGV.first == '-d'"
+    if ordered
+      problem_str << "\n)"
+    else
+      problem_str << ",\n  # Goals\n  [\n"
+      goal_pos.each_with_index {|g,i| problem_str << "    ['#{g.first}', #{g.drop(1).join(', ')}]#{',' if goal_pos.size.pred != i}\n"}
+      problem_str << "  ],\n  [\n"
+      goal_not.each_with_index {|g,i| problem_str << "    ['#{g.first}', #{g.drop(1).join(', ')}]#{',' if goal_pos.size.pred != i}\n"}
+      problem_str << "  ]\n)"
+    end
   end
 end

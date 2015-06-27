@@ -56,7 +56,7 @@ module PDDL_Compiler
       objects.push(*pre.drop(1))
       start_str << "    (#{pre.join(' ')})\n"
     }
-    tasks.each {|pred,*terms| objects.push(*terms)}
+    tasks.drop(1).each {|pred,*terms| objects.push(*terms)}
     goal_str = ''
     goal_pos.each {|pre|
       objects.push(*pre.drop(1))
