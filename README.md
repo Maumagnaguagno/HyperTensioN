@@ -47,7 +47,7 @@ end
 
 ## How it works
 The idea is to **include** Hypertension in your domain module, define the methods and primitive operators, and use this domain module with your different problems for this domain.
-Your problems may be in a separate file or be generated during run-time.
+Your problems may be in a separate file or generated during run-time.
 Since Hypertension uses **metaprogramming**, you need to specify which Ruby methods are used and how.
 The other way to define this would be the unit test way, using certain method names as type filters.
 I chose the explicit way, therefore you need to specify operator visibility and the subtasks of each method in the structure.
