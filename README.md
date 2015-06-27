@@ -421,7 +421,7 @@ It returns true if applicable and false otherwise.
 - ```apply_operator(precond_true, precond_false, effect_add, effect_del)``` extends this idea applying effects if ```applicable?```. Returns true if applied, false otherwise.
 - ```generate(precond_true, precond_false, *free)``` yields all possible unifications to the free-variables defined, therefore you need a block to capture the unifications. The return value is undetermined.
 - ```print_data(data)``` can be used to print task lists and proposition lists, usefull for debug.
-- ```problem(start, tasks, debug = false)``` can be used to simplify the creation of a problem instance. Use it as a template to see how to add Hypertension in your project.
+- ```problem(start, tasks, debug = false, goal_pos = [], goal_not = [])``` can be used to simplify the creation of a problem instance. Use it as a template to see how to add Hypertension in your project. Add explicit goals to try different permutations of tasks until goals are reached.
 
 Domain operators can be defined without ```apply_operator``` and will have the return value considered.
   - ```false``` or ```nil``` means the operator has failed.
@@ -515,7 +515,7 @@ JSHOP and PyHop live in their own world, with their own language acting as a bar
 Perhaps the most invisible advantage is the lack of classes, every object used during planning is defined as one of the core objects.
 Once the designer understands Strings, Arrays and Hashes the entire Hypertension module is just a few methods away from complete understanding.
 This also means that any update in the implementation of Ruby will benefit this project directly, as those objects are always target of optimizations.
-The only feature that we lack is unordered execution of tasks, a feature that JSHOP supports and is extremely important to achieve good plans in some cases.
+The only feature that we lack is interleaved/unordered execution of tasks, a feature that JSHOP supports and is extremely important to achieve good plans in some cases. We only support unordered tasks at the problem level and do not interleave them during decomposition.
 
 ## Old Versions
 You may notice an [old_versions](old_versions) folder with incompatible variations of Hypertension.
@@ -530,8 +530,7 @@ Those versions also let you express your state in any way you want, but you need
 
 ## ToDo's
 - Parser/Compiler features
-- Define the standard interface for parsers and compilers, the current ones require several attributes instead of a Hash ```{:attr => data}``` and there is an inconsistency about file handling (Hype should do all IO).
+  - Operator visibility (some operators are internally important, but not usefull in the plan).
+  - Define the standard interface for parsers and compilers, the current ones require several attributes instead of a Hash ```{:attr => data}``` and there is an inconsistency about file handling (Hype should do all IO).
 - Tests
 - Examples
-- Maybe ```applicable?(precond_true, precond_false)``` in generate does not need to test precond_true
-  - ```applicable?([], precond_false)``` appears to be enough for some cases
