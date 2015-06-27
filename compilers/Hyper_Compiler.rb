@@ -103,7 +103,7 @@ module Hyper_Compiler
     # Objects
     objects.uniq!
     objects.each {|i| problem_str << "#{i} = '#{i}'\n"}
-    problem_str << "\n#{domain_name.capitalize}.problem#{'_unordered' unless ordered}(\n  # Start\n  {\n"
+    problem_str << "\n#{domain_name.capitalize}.problem(\n  # Start\n  {\n"
     # Start
     start_hash.each_with_index {|(k,v),i|
       if v.empty?

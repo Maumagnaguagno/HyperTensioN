@@ -190,7 +190,7 @@ module Hypertension
   # Problem
   #-----------------------------------------------
 
-  def problem(start, tasks, debug = false)
+  def problem(start, tasks, debug = false, goal_pos = [], goal_not = [])
     # Debug information
     @debug = debug
     # Planning
@@ -198,42 +198,20 @@ module Hypertension
     print_data(tasks)
     puts 'Planning'.center(50,'-')
     t = Time.now.to_f
-    @state = start
-    plan = planning(tasks)
-    puts "Time: #{Time.now.to_f - t}s", 'Plan'.center(50,'-')
-    if plan
-      if plan.empty?
-        puts 'Empty plan'
-      else print_data(plan)
-      end
-    else puts 'Planning failed'
-    end
-  rescue Interrupt
-    puts 'Interrupted'
-  rescue
-    puts $!, $@
-    STDIN.gets
-  end
-
-  #-----------------------------------------------
-  # Problem unordered
-  #-----------------------------------------------
-
-  def problem_unordered(start, unordered_tasks, debug = false, goal_pos = [], goal_not = [])
-    # Debug information
-    @debug = debug
-    # Planning
-    puts 'Tasks'.center(50,'-')
-    print_data(unordered_tasks)
-    puts 'Planning'.center(50,'-')
-    t = Time.now.to_f
-    plan = nil
-    unordered_tasks.permutation {|tasks|
+    # Ordered
+    if goal_pos.empty? and goal_not.empty?
       @state = start
       plan = planning(tasks)
-      break if applicable?(goal_pos, goal_not)
+    # Unordered
+    else
       plan = nil
-    }
+      tasks.permutation {|task_list|
+        @state = start
+        plan = planning(task_list)
+        break if applicable?(goal_pos, goal_not)
+        plan = nil
+      }
+    end
     puts "Time: #{Time.now.to_f - t}s", 'Plan'.center(50,'-')
     if plan
       if plan.empty?
