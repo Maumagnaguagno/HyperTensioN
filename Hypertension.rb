@@ -208,7 +208,7 @@ module Hypertension
       tasks.permutation {|task_list|
         @state = start
         plan = planning(task_list)
-        break if applicable?(goal_pos, goal_not)
+        break if plan and applicable?(goal_pos, goal_not)
         plan = nil
       }
     end
