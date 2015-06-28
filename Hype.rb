@@ -207,7 +207,7 @@ if $0 == __FILE__
         else puts Hype.to_s, Time.now.to_f - t
         end
       end
-    else puts "Use #$0 domain problem [output_type]"
+    else puts "Use #$0 domain problem [output=rb|pddl|jshop|dot|print|run|debug]"
     end
   rescue
     puts $!, $@
