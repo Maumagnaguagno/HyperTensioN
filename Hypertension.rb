@@ -204,7 +204,7 @@ module Hypertension
       plan = planning(tasks)
     # Unordered
     else
-      plan = task_permutations(start, [], tasks, goal_pos, goal_not)
+      plan = task_permutations(start, tasks, goal_pos, goal_not)
     end
     puts "Time: #{Time.now.to_f - t}s", 'Plan'.center(50,'-')
     if plan
@@ -225,14 +225,14 @@ module Hypertension
   # Task permutations
   #-----------------------------------------------
 
-  def task_permutations(state, plan, remain, goal_pos, goal_not)
+  def task_permutations(state, remain, goal_pos, goal_not, plan = [])
     if remain.empty?
       return plan if applicable?(goal_pos, goal_not)
     else
       remain.each {|t|
         @state = state
         if p = planning([t])
-          return p if p = task_permutations(@state, plan + p, remain - [t], goal_pos, goal_not)
+          return p if p = task_permutations(@state, remain - [t], goal_pos, goal_not, plan + p)
         end
       }
       false
