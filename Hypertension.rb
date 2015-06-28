@@ -204,7 +204,17 @@ module Hypertension
       plan = planning(tasks)
     # Unordered
     else
+<<<<<<< HEAD
       plan = task_permutations(start, [], tasks, goal_pos, goal_not)
+=======
+      plan = nil
+      tasks.permutation {|task_list|
+        @state = start
+        plan = planning(task_list)
+        break if plan and applicable?(goal_pos, goal_not)
+        plan = nil
+      }
+>>>>>>> origin/master
     end
     puts "Time: #{Time.now.to_f - t}s", 'Plan'.center(50,'-')
     if plan
@@ -220,6 +230,7 @@ module Hypertension
     puts $!, $@
     STDIN.gets
   end
+<<<<<<< HEAD
 
   #-----------------------------------------------
   # Task permutations
@@ -239,3 +250,6 @@ module Hypertension
     end
   end
 end
+=======
+end
+>>>>>>> origin/master
