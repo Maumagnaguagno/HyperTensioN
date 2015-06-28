@@ -35,7 +35,7 @@
 # TODOs
 # - Automated tests with more problems
 # - Order predicates and test applicability by level (generate)
-# - Unordered tasks
+# - Unordered subtasks
 # - Anytime mode
 #-----------------------------------------------
 
@@ -204,13 +204,7 @@ module Hypertension
       plan = planning(tasks)
     # Unordered
     else
-      plan = nil
-      tasks.permutation {|task_list|
-        @state = start
-        plan = planning(task_list)
-        break if applicable?(goal_pos, goal_not)
-        plan = nil
-      }
+      plan = task_permutations(start, [], tasks, goal_pos, goal_not)
     end
     puts "Time: #{Time.now.to_f - t}s", 'Plan'.center(50,'-')
     if plan
@@ -225,5 +219,23 @@ module Hypertension
   rescue
     puts $!, $@
     STDIN.gets
+  end
+
+  #-----------------------------------------------
+  # Task permutations
+  #-----------------------------------------------
+
+  def task_permutations(state, plan, remain, goal_pos, goal_not)
+    if remain.empty?
+      return plan if applicable?(goal_pos, goal_not)
+    else
+      remain.each {|t|
+        @state = state
+        if p = planning([t])
+          return p if p = task_permutations(@state, plan + p, remain - [t], goal_pos, goal_not)
+        end
+      }
+      false
+    end
   end
 end
