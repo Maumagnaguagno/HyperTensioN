@@ -158,7 +158,7 @@ module Hypertension
     stack = []
     level = obj = 0
     while level
-      # Replace pointer value with usefull object to affect variables
+      # Replace pointer value with useful object to affect variables
       free[level].replace(objects[level][obj])
       if level != free.size.pred
         # Stack backjump position
