@@ -109,6 +109,7 @@ module PDDL_Parser
   def parse_domain(domain_filename)
     description = IO.read(domain_filename)
     description.gsub!(/;.*$|\n/,'')
+    description.downcase!
     tokens = Hype.scan_tokens(description)
     if tokens.instance_of?(Array) and tokens.shift == 'define'
       @operators = []
@@ -154,6 +155,7 @@ module PDDL_Parser
   def parse_problem(problem_filename)
     description = IO.read(problem_filename)
     description.gsub!(/;.*$|\n/,'')
+    description.downcase!
     tokens = Hype.scan_tokens(description)
     if tokens.instance_of?(Array) and tokens.shift == 'define'
       @problem_name = 'unknown'
