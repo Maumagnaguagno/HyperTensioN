@@ -60,11 +60,11 @@ module Hype
   # Subtasks to string
   #-----------------------------------------------
 
-  def subtasks_to_s(tasks, operators, prefix)
+  def subtasks_to_s(tasks, operators, prefix, order = true)
     if tasks.empty?
       "#{prefix}empty"
     else
-      "#{prefix}#{'un' unless tasks.first}ordered" << tasks.drop(1).map! {|t| "#{prefix}#{operators.any? {|op| op.first == t.first} ? 'operator' : 'method  '} (#{t.join(' ')})"}.join
+      "#{prefix}#{'un' unless order}ordered" << tasks.map {|t| "#{prefix}#{operators.any? {|op| op.first == t.first} ? 'operator' : 'method  '} (#{t.join(' ')})"}.join
     end
   end
 
@@ -117,7 +117,7 @@ Problem #{@parser.problem_name} of #{@parser.problem_domain}
   State:#{propositions_to_s(@parser.state, "\n    ")}
 
   Goal:
-    Tasks:#{subtasks_to_s(@parser.tasks, @parser.operators, "\n      ")}
+    Tasks:#{subtasks_to_s(@parser.tasks.drop(1), @parser.operators, "\n      ", @parser.tasks.first)}
     Positive:#{@parser.goal_pos.empty? ? "\n      empty" : propositions_to_s(@parser.goal_pos, "\n      ")}
     Negative:#{@parser.goal_not.empty? ? "\n      empty" : propositions_to_s(@parser.goal_not, "\n      ")}"
   end
