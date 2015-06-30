@@ -117,7 +117,7 @@ module Hyper_Compiler
     }
     # Tasks
     problem_str << "\n  },\n  # Tasks\n  [\n"
-    tasks.each_with_index {|t,i| problem_str << "    ['#{t.first}', #{t.drop(1).join(', ')}]#{',' if tasks.size.pred != i}\n"}
+    tasks.each_with_index {|t,i| problem_str << "    ['#{t.first}#{', ' if t.size > 1}#{t.drop(1).join(', ')}]#{',' if tasks.size.pred != i}\n"}
     problem_str << "  ],\n  # Debug\n  ARGV.first == '-d'"
     if ordered
       problem_str << "\n)"
