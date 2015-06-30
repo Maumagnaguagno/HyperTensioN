@@ -515,7 +515,8 @@ JSHOP and PyHop live in their own world, with their own language acting as a bar
 Perhaps the most invisible advantage is the lack of classes, every object used during planning is defined as one of the core objects.
 Once the designer understands Strings, Arrays and Hashes the entire Hypertension module is just a few methods away from complete understanding.
 This also means that any update in the implementation of Ruby will benefit this project directly, as those objects are always target of optimizations.
-The only feature that we lack is interleaved/unordered execution of tasks, a feature that JSHOP supports and is extremely important to achieve good plans in some cases. We only support unordered tasks at the problem level and do not interleave them during decomposition.
+
+The only feature that we lack and it impossible to force without changing the algorithm is interleaved/unordered execution of tasks, a feature that JSHOP supports and is extremely important to achieve good plans in some cases. We only support unordered tasks at the problem level and do not interleave them during decomposition. Since we test for explicit goals only after the plan has been found with a sequence of tasks, a failure is considered enough proof to try other sequences, not other unifications with the same sequence of tasks. You need to be extra careful with unordered tasks for some problems that rely on unification.
 
 ## Old Versions
 You may notice an [old_versions](old_versions) folder with incompatible variations of Hypertension.
