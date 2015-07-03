@@ -16,7 +16,9 @@ module PDDL_Parser
       proposition = pro
       pos << proposition
     end
-    @predicates[proposition.first] = true if @predicates[proposition.first].nil?
+    pro = proposition.first
+    pro.replace('equal') if pro == '='
+    @predicates[pro] = true if @predicates[pro].nil?
   end
 
   #-----------------------------------------------
@@ -81,7 +83,6 @@ module PDDL_Parser
         group = op.shift
         raise "Error with #{name} precondition" unless group.instance_of?(Array)
         # Conjunction
-        # TODO equality support
         if group.first == 'and'
           group.shift
           group.each {|pro| define_preconditions(name, pro, pos, neg)}
@@ -117,6 +118,7 @@ module PDDL_Parser
       @domain_name = 'unknown'
       @predicates = {}
       @types = []
+      @requirements = []
       until tokens.empty?
         group = tokens.shift
         case group.first
@@ -124,12 +126,14 @@ module PDDL_Parser
           raise 'Domain group has size different of 2' if group.size != 2
           @domain_name = group.last
         when ':requirements'
-          # TODO take advantage of requirements definition
+          group.shift
+          @requirements.push(*group)
         when ':predicates'
           # TODO take advantage of predicates definition
         when ':action' then parse_action(group)
         when ':types'
           # Type hierarchy
+          raise 'Typing not required' unless @requirements.include?(':typing')
           group.shift
           raise 'Error with types' if group.first == '-'
           subtypes = []
@@ -169,14 +173,18 @@ module PDDL_Parser
         when ':domain'
           @problem_domain = group.last
         when ':requirements'
-          # TODO take advantage of requirements definition
+          group.shift
+          @requirements.push(*group)
+          @requirements.uniq!
         when ':objects'
           # Move types to initial state
           group.shift
           raise 'Error with typed objects' if group.first == '-'
           objects = []
           until group.empty?
-            objects << group.shift
+            o = group.shift
+            objects << o
+            @state << ['equal', o, o] if @requirements.include?(':equality')
             if group.first == '-'
               group.shift
               type = group.shift
@@ -202,11 +210,11 @@ module PDDL_Parser
           @state.push(*group)
           @state.each {|proposition| @predicates[proposition.first] = nil unless @predicates.include?(proposition.first)}
         when ':goal'
-          group.shift
           @goal_pos = []
           @goal_not = []
           @tasks = []
-          group = group.shift
+          group = group[1]
+          return unless group
           # Conjunction
           if group.first == 'and'
             group.shift
