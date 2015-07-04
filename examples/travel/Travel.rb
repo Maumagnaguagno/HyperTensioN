@@ -38,12 +38,12 @@ module Travel
 
   def walk(agent, source, destination)
     apply_operator(
-      # True preconditions
+      # Positive preconditions
       [
         ['connected', source, destination],
         ['at', agent, source]
       ],
-      # False preconditions
+      # Negative preconditions
       [
         ['at', agent, destination]
       ],
@@ -60,11 +60,11 @@ module Travel
 
   def call_taxi(taxi_position, here)
     apply_operator(
-      # True preconditions
+      # Positive preconditions
       [
         ['at', 'taxi', taxi_position]
       ],
-      # False preconditions
+      # Negative preconditions
       [
         ['at', 'taxi', here]
       ],
@@ -81,13 +81,13 @@ module Travel
 
   def ride_taxi(agent, source, destination, cost)
     apply_operator(
-      # True preconditions
+      # Positive preconditions
       [
         ['connected', source, destination],
         ['at', 'taxi', source],
         ['at', agent, source]
       ],
-      # False preconditions
+      # Negative preconditions
       [],
       # Add effects
       [
@@ -105,12 +105,12 @@ module Travel
 
   def pay_driver(agent, amount_of_money, cost)
     apply_operator(
-      # True preconditions
+      # Positive preconditions
       [
         ['cash', agent, amount_of_money],
         ['owe', agent, cost]
       ],
-      # False preconditions
+      # Negative preconditions
       [],
       # Add effects
       [
@@ -131,12 +131,12 @@ module Travel
 
   def stay_here(agent, source, destination)
     if applicable?(
-      # True preconditions
+      # Positive preconditions
       [
         ['at', agent, source],
         ['at', agent, destination]
       ],
-      # False preconditions
+      # Negative preconditions
       []
     )
       yield []
@@ -150,14 +150,14 @@ module Travel
     distance = ''
     # Generate unifications
     generate(
-      # True preconditions
+      # Positive preconditions
       [
         ['at', agent, source],
         ['at', 'taxi', taxi_position],
         ['cash', agent, amount_of_money],
         ['distance', source, destination, distance]
       ],
-      # False preconditions
+      # Negative preconditions
       [
         ['at', agent, destination]
       ], amount_of_money, taxi_position, distance
@@ -179,11 +179,11 @@ module Travel
 
   def travel_by_foot(agent, source, destination)
     if applicable?(
-      # True preconditions
+      # Positive preconditions
       [
         ['at', agent, source]
       ],
-      # False preconditions
+      # Negative preconditions
       [
         ['at', agent, destination]
       ]

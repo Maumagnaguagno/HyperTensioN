@@ -129,7 +129,7 @@ This translates to:
 ```Ruby
 def enter(bot, source, destination)
   apply_operator(
-    # True preconditions
+    # Positive preconditions
     [
       ['robot', bot],
       ['hallway', source],
@@ -137,7 +137,7 @@ def enter(bot, source, destination)
       ['at', bot, source],
       ['connected', source, destination]
     ],
-    # False preconditions
+    # Negative preconditions
     [
       ['at', bot, destination]
     ],
@@ -200,11 +200,11 @@ Use preconditions as look-aheads, this may create a redundancy with the operator
 ```Ruby
 def swap_at__base(object, goal)
   if applicable?(
-    # True preconditions
+    # Positive preconditions
     [
       ['at', object, goal]
     ],
-    # False preconditions
+    # Negative preconditions
     []
   )
     yield [
@@ -231,12 +231,12 @@ def swap_at__recursion_enter(object, goal)
   intermediary = ''
   # Generate unifications
   generate(
-    # True preconditions
+    # Positive preconditions
     [
       ['at', object, current],
       ['connected', current, intermediary]
     ],
-    # False preconditions
+    # Negative preconditions
     [
       ['at', object, goal]
     ], current, intermediary
@@ -274,12 +274,12 @@ The example refactored looks like this:
 def swap_at__recursion_enter(object, goal, current = free_variable, intermediary = free_variable)
   # Generate unifications
   generate(
-    # True preconditions
+    # Positive preconditions
     [
       ['at', object, current],
       ['connected', current, intermediary]
     ],
-    # False preconditions
+    # Negative preconditions
     [
       ['at', object, goal]
     ], current, intermediary
@@ -416,10 +416,10 @@ Therefore no plan actually exists before reaching an empty task list.
 task_list = [['task1', 'term1', 'term2'], ['task2', 'term3']]
 empty_task_list = []
   ```
-- ```applicable?(precond_true, precond_false)``` is used to test if all true preconditions are found and no false precondition is present at the current state.
+- ```applicable?(precond_pos, precond_not)``` is used to test if the current state have all positive preconditions and not a single negative precondition.
 It returns true if applicable and false otherwise.
-- ```apply_operator(precond_true, precond_false, effect_add, effect_del)``` extends this idea applying effects if ```applicable?```. Returns true if applied, false otherwise.
-- ```generate(precond_true, precond_false, *free)``` yields all possible unifications to the free-variables defined, therefore you need a block to capture the unifications. The return value is undetermined.
+- ```apply_operator(precond_pos, precond_not, effect_add, effect_del)``` extends this idea applying effects if ```applicable?```. Returns true if applied, false otherwise.
+- ```generate(precond_pos, precond_not, *free)``` yields all possible unifications to the free-variables defined, therefore you need a block to capture the unifications. The return value is undetermined.
 - ```print_data(data)``` can be used to print task lists and proposition lists, usefull for debug.
 - ```problem(start, tasks, debug = false, goal_pos = [], goal_not = [])``` can be used to simplify the creation of a problem instance. Use it as a template to see how to add Hypertension in your project. Add explicit goals to try different permutations of tasks until goals are reached.
 

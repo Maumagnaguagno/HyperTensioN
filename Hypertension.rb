@@ -91,18 +91,18 @@ module Hypertension
   # Applicable?
   #-----------------------------------------------
 
-  def applicable?(precond_true, precond_false)
+  def applicable?(precond_pos, precond_not)
     # All positive preconditions and no negative preconditions are found in the state
-    precond_true.all? {|name,*objs| @state[name].include?(objs)} and precond_false.none? {|name,*objs| @state[name].include?(objs)}
+    precond_pos.all? {|name,*objs| @state[name].include?(objs)} and precond_not.none? {|name,*objs| @state[name].include?(objs)}
   end
 
   #-----------------------------------------------
   # Apply operator
   #-----------------------------------------------
 
-  def apply_operator(precond_true, precond_false, effect_add, effect_del)
+  def apply_operator(precond_pos, precond_not, effect_add, effect_del)
     # Apply effects on new state if operator applicable
-    if applicable?(precond_true, precond_false)
+    if applicable?(precond_pos, precond_not)
       @state = Marshal.load(Marshal.dump(@state))
       effect_del.each {|name,*objs| @state[name].delete(objs)}
       effect_add.each {|name,*objs| @state[name] << objs}
@@ -114,12 +114,12 @@ module Hypertension
   # Generate
   #-----------------------------------------------
 
-  def generate(precond_true, precond_false, *free)
+  def generate(precond_pos, precond_not, *free)
     # Free variable to set of values
     objects = free.map {|i| [i]}
-    # Unification by true preconditions
+    # Unification by positive preconditions
     match_objects = []
-    precond_true.each {|name,*objs|
+    precond_pos.each {|name,*objs|
       next unless objs.include?('')
       # Swap free variables with set to match or maintain constant
       pred = objs.map {|p| objects.find {|j| j.first.equal?(p)} or p}
@@ -166,7 +166,7 @@ module Hypertension
         level += 1
         obj = 0
       else
-        yield if applicable?(precond_true, precond_false)
+        yield if applicable?(precond_pos, precond_not)
         # Load next object or restore
         if obj.succ != objects[level].size
           obj += 1

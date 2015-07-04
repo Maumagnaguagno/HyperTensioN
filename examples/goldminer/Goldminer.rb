@@ -38,12 +38,12 @@ module Goldminer
 
   def move(agent, from, to)
     apply_operator(
-      # True preconditions
+      # Positive preconditions
       [
         ['at', agent, from],
         ['adjacent', from, to]
       ],
-      # False preconditions
+      # Negative preconditions
       [
         ['blocked', to]
       ],
@@ -60,12 +60,12 @@ module Goldminer
 
   def pick(agent, gold, where)
     apply_operator(
-      # True preconditions
+      # Positive preconditions
       [
         ['at', agent, where],
         ['on', gold, where]
       ],
-      # False preconditions
+      # Negative preconditions
       [],
       # Add effects
       [
@@ -80,11 +80,11 @@ module Goldminer
 
   def drop(agent, gold, where)
     apply_operator(
-      # True preconditions
+      # Positive preconditions
       [
         ['at', agent, where]
       ],
-      # False preconditions
+      # Negative preconditions
       [],
       # Add effects
       [
@@ -99,9 +99,9 @@ module Goldminer
 
   def see(gold)
     apply_operator(
-      # True preconditions
+      # Positive preconditions
       [],
-      # False preconditions
+      # Negative preconditions
       [],
       # Add effects
       [
@@ -114,9 +114,9 @@ module Goldminer
 
   def shift(agent, other)
     apply_operator(
-      # True preconditions
+      # Positive preconditions
       [],
-      # False preconditions
+      # Negative preconditions
       [],
       # Add effects
       [
@@ -145,11 +145,11 @@ module Goldminer
 
   def travel__base(agent, from, to)
     if applicable?(
-      # True preconditions
+      # Positive preconditions
       [
         ['at', agent, to]
       ],
-      # False preconditions
+      # Negative preconditions
       []
     )
       yield [
@@ -163,12 +163,12 @@ module Goldminer
     place = ''
     # Generate unifications
     generate(
-      # True preconditions
+      # Positive preconditions
       [
         ['at', agent, from],
         ['adjacent', from, place]
       ],
-      # False preconditions
+      # Negative preconditions
       [
         ['at', agent, to],
         ['blocked', place],
@@ -259,7 +259,7 @@ module Goldminer
     deposit_pos = ''
     # Generate unifications
     generate(
-      # True preconditions
+      # Positive preconditions
       [
         ['duty', agent],
         ['at', agent, agent_pos],
@@ -267,7 +267,7 @@ module Goldminer
         ['deposit', deposit_pos],
         ['next', agent, other]
       ],
-      # False preconditions
+      # Negative preconditions
       [
         ['dibs', gold]
       ], agent, agent_pos, other, gold, gold_pos, deposit_pos

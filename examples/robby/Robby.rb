@@ -33,7 +33,7 @@ module Robby
 
   def enter(bot, source, destination)
     apply_operator(
-      # True preconditions
+      # Positive preconditions
       [
         ['robot', bot],
         ['hallway', source],
@@ -41,7 +41,7 @@ module Robby
         ['at', bot, source],
         ['connected', source, destination]
       ],
-      # False preconditions
+      # Negative preconditions
       [
         ['at', bot, destination]
       ],
@@ -58,7 +58,7 @@ module Robby
 
   def exit(bot, source, destination)
     apply_operator(
-      # True preconditions
+      # Positive preconditions
       [
         ['robot', bot],
         ['room', source],
@@ -66,7 +66,7 @@ module Robby
         ['at', bot, source],
         ['connected', source, destination]
       ],
-      # False preconditions
+      # Negative preconditions
       [
         ['at', bot, destination]
       ],
@@ -83,7 +83,7 @@ module Robby
 
   def move(bot, source, destination)
     apply_operator(
-      # True preconditions
+      # Positive preconditions
       [
         ['robot', bot],
         ['hallway', source],
@@ -91,7 +91,7 @@ module Robby
         ['at', bot, source],
         ['connected', source, destination]
       ],
-      # False preconditions
+      # Negative preconditions
       [
         ['at', bot, destination]
       ],
@@ -108,7 +108,7 @@ module Robby
 
   def report(bot, source, thing)
     apply_operator(
-      # True preconditions
+      # Positive preconditions
       [
         ['robot', bot],
         ['location', source],
@@ -116,7 +116,7 @@ module Robby
         ['at', bot, source],
         ['in', thing, source]
       ],
-      # False preconditions
+      # Negative preconditions
       [
         ['reported', bot, thing]
       ],
@@ -145,11 +145,11 @@ module Robby
 
   def swap_at__base(object, goal)
     if applicable?(
-      # True preconditions
+      # Positive preconditions
       [
         ['at', object, goal]
       ],
-      # False preconditions
+      # Negative preconditions
       []
     )
       yield [
@@ -164,12 +164,12 @@ module Robby
     intermediary = ''
     # Generate unifications
     generate(
-      # True preconditions
+      # Positive preconditions
       [
         ['at', object, current],
         ['connected', current, intermediary]
       ],
-      # False preconditions
+      # Negative preconditions
       [
         ['at', object, goal]
       ], current, intermediary
@@ -190,12 +190,12 @@ module Robby
     intermediary = ''
     # Generate unifications
     generate(
-      # True preconditions
+      # Positive preconditions
       [
         ['at', object, current],
         ['connected', current, intermediary]
       ],
-      # False preconditions
+      # Negative preconditions
       [
         ['at', object, goal]
       ], current, intermediary
@@ -216,12 +216,12 @@ module Robby
     intermediary = ''
     # Generate unifications
     generate(
-      # True preconditions
+      # Positive preconditions
       [
         ['at', object, current],
         ['connected', current, intermediary]
       ],
-      # False preconditions
+      # Negative preconditions
       [
         ['at', object, goal]
       ], current, intermediary
