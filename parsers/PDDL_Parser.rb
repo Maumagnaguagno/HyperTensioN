@@ -7,16 +7,15 @@ module PDDL_Parser
   # Define preconditions
   #-----------------------------------------------
 
-  def define_preconditions(action_name, pro, pos, neg)
+  def define_preconditions(name, pro, pos, neg)
+    raise "Error with #{name} preconditions" unless pro.instance_of?(Array)
     if pro.first == 'not'
-      raise "Error with #{action_name} preconditions" if pro.size != 2
-      proposition = pro.last
-      neg << proposition
-    else
-      proposition = pro
-      pos << proposition
+      raise "Error with #{name} negative preconditions" if pro.size != 2
+      pro = pro.last
+      neg << pro
+    else pos << pro
     end
-    pro = proposition.first
+    pro = pro.first
     pro.replace('equal') if pro == '='
     @predicates[pro] = true if @predicates[pro].nil?
   end
@@ -25,16 +24,15 @@ module PDDL_Parser
   # Define effects
   #-----------------------------------------------
 
-  def define_effects(action_name, pro, add, del)
+  def define_effects(name, pro, add, del)
+    raise "Error with #{name} effects" unless pro.instance_of?(Array)
     if pro.first == 'not'
-      raise "Error with #{action_name} effects" if pro.size != 2
-      proposition = pro.last
-      del << proposition
-    else
-      proposition = pro
-      add << proposition
+      raise "Error with #{name} negative effects" if pro.size != 2
+      pro = pro.last
+      del << pro
+    else add << pro
     end
-    @predicates[proposition.first] = false
+    @predicates[pro.first] = false
   end
 
   #-----------------------------------------------

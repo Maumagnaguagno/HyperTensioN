@@ -4,6 +4,19 @@ module JSHOP_Parser
   attr_reader :domain_name, :problem_name, :problem_domain, :operators, :methods, :predicates, :state, :tasks, :goal_pos, :goal_not
 
   #-----------------------------------------------
+  # Define effects
+  #-----------------------------------------------
+
+  def define_effects(name, type, group, effects)
+    raise "Error with #{name} #{type} effects" unless group.instance_of?(Array)
+    group.each {|pro|
+      raise "Error with negated #{name} #{type} effects" if pro.first == 'not'
+      effects << pro
+      @predicates[pro.first] = false
+    }
+  end
+
+  #-----------------------------------------------
   # Parse operator
   #-----------------------------------------------
 
@@ -21,34 +34,18 @@ module JSHOP_Parser
       group.each {|pro|
         if pro.first == 'not'
           raise "Error with #{name} negative precondition group" if pro.size != 2
-          proposition = pro.last
-          neg << proposition
-        else
-          proposition = pro
-          pos << proposition
+          pro = pro.last
+          neg << pro
+        else pos << pro
         end
-        @predicates[proposition.first] = true if @predicates[proposition.first].nil?
+        @predicates[pro.first] = true if @predicates[pro.first].nil?
       }
     end
     # Effects
     group = op.shift
-    if group != 'nil'
-      raise "Error with #{name} del effects" unless group.instance_of?(Array)
-      group.each {|proposition|
-        raise "Error with #{name} del effects" if proposition.first == 'not'
-        del << proposition
-        @predicates[proposition.first] = false
-      }
-    end
+    define_effects(name, 'del', group, del) if group != 'nil'
     group = op.shift
-    if group != 'nil'
-      raise "Error with #{name} add effects" unless group.instance_of?(Array)
-      group.each {|proposition|
-        raise "Error with #{name} add effects" if proposition.first == 'not'
-        add << proposition
-        @predicates[proposition.first] = false
-      }
-    end
+    define_effects(name, 'add', group, add) if group != 'nil'
   end
 
   #-----------------------------------------------
@@ -74,14 +71,12 @@ module JSHOP_Parser
         group.each {|pro|
           if pro.first == 'not'
             raise "Error with #{name} negative precondition group" if pro.size != 2
-            proposition = pro.last
-            neg << proposition
-          else
-            proposition = pro
-            pos << proposition
+            pro = pro.last
+            neg << pro
+          else pos << pro
           end
-          free_variables.push(*proposition.find_all {|i| i =~ /^\?/ and not method[1].include?(i)})
-          @predicates[proposition.first] = true if @predicates[proposition.first].nil?
+          @predicates[pro.first] = true if @predicates[pro.first].nil?
+          free_variables.push(*pro.find_all {|i| i =~ /^\?/ and not method[1].include?(i)})
         }
         free_variables.uniq!
       end
@@ -139,7 +134,7 @@ module JSHOP_Parser
       @problem_name = tokens.shift
       @problem_domain = tokens.shift
       @state = tokens.shift
-      @state.each {|proposition| @predicates[proposition.first] = nil unless @predicates.include?(proposition.first)}
+      @state.each {|pro| @predicates[pro.first] = nil unless @predicates.include?(pro.first)}
       @tasks = tokens.shift
       # Tasks may be ordered or unordered
       order = (@tasks.first != ':unordered')
