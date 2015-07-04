@@ -13,6 +13,19 @@ module Hype
   attr_reader :parser
 
   FILEPATH = File.expand_path('..', __FILE__)
+
+  HELP = "Hype
+  Use #$0 domain problem [options]
+
+  Options:
+    [print] to print data parsed(default)
+    [rb] to generate Ruby files to Hypertension
+    [pddl] to generate PDDL files
+    [jshop] to generate JSHOP files
+    [dot] to generate DOT file
+    [run] to generate Ruby files and execute them
+    [debug] the same as run with search log"
+
   # Parsers
   require "#{FILEPATH}/parsers/JSHOP_Parser"
   require "#{FILEPATH}/parsers/PDDL_Parser"
@@ -207,7 +220,7 @@ if $0 == __FILE__
         else puts Hype.to_s, Time.now.to_f - t
         end
       end
-    else puts "Use #$0 domain problem [output=rb|pddl|jshop|dot|print|run|debug]"
+    else puts Hype::HELP
     end
   rescue
     puts $!, $@
