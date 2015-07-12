@@ -52,8 +52,7 @@ module Hype
       when ')'
         raise 'Missing open parentheses' if stack.empty?
         list = stack.pop << list
-      else t
-        list << t
+      else list << t
       end
     }
     raise 'Missing close parentheses' unless stack.empty?

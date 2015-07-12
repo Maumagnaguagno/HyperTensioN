@@ -6,10 +6,8 @@ module PDDL_Compiler
   #-----------------------------------------------
 
   def predicates_to_pddl(output, group = [], group_not = [], indentation = '    ')
-    unless group.empty? and group_not.empty?
-      group.each {|pre| output << "#{indentation}(#{pre.join(' ')})\n"}
-      group_not.each {|pre| output << "#{indentation}(not (#{pre.join(' ')}))\n"}
-    end
+    group.each {|pre| output << "#{indentation}(#{pre.join(' ')})\n"}
+    group_not.each {|pre| output << "#{indentation}(not (#{pre.join(' ')}))\n"}
   end
 
   #-----------------------------------------------

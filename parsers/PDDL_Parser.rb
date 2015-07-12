@@ -55,6 +55,7 @@ module PDDL_Parser
     op.shift
     name = op.shift
     raise 'Action without name definition' unless name.instance_of?(String)
+    raise "Action #{name} redefined" if @operators.assoc(name)
     raise "Action #{name} have groups missing" if op.size != 6
     @operators << [name, free_variables = [], pos = [], neg = [], add = [], del = []]
     until op.empty?
@@ -77,6 +78,7 @@ module PDDL_Parser
             @predicates[type] = true if @predicates[type].nil?
           end
         end
+        raise "Action #{name} with repeated parameters" if free_variables.uniq!
       when ':precondition'
         group = op.shift
         raise "Error with #{name} precondition" unless group.instance_of?(Array)
@@ -163,6 +165,7 @@ module PDDL_Parser
       @problem_name = 'unknown'
       @problem_domain = 'unknown'
       @state = []
+      @objects = []
       until tokens.empty?
         group = tokens.shift
         case group.first
@@ -182,7 +185,7 @@ module PDDL_Parser
           until group.empty?
             o = group.shift
             objects << o
-            @state << ['equal', o, o] if @requirements.include?(':equality')
+            @objects << o
             if group.first == '-'
               group.shift
               type = group.shift
@@ -203,6 +206,7 @@ module PDDL_Parser
               end
             end
           end
+          @objects.each {|o| @state << ['equal', o, o]} if @requirements.include?(':equality')
         when ':init'
           group.shift
           @state.push(*group)

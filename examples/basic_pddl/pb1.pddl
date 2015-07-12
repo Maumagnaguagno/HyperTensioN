@@ -1,6 +1,6 @@
 (define (problem problem)
   (:domain basic)
-  (:requirements :strips)
+  (:requirements :strips :negative-preconditions)
   (:objects
     kiwi banjo
   )
