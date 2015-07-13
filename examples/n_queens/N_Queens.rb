@@ -12,9 +12,7 @@ module N_Queens
     # Operators
     'put_piece' => true,
     # Methods
-    'solve' => [
-      'try_next'
-    ]
+    'solve' => ['try_next']
   }
 
   #-----------------------------------------------
@@ -50,7 +48,7 @@ module N_Queens
     end
     # Free variables
     x = ''
-    y = ''
+    y = c.pred.to_s # Closed collumn boost
     # Generate unifications
     generate(
       # Positive preconditions
@@ -58,7 +56,7 @@ module N_Queens
         ['board', x, y, '.'],
       ],
       # Negative preconditions
-      [], x, y
+      [], x
     ) {
       xi = x.to_i
       yi = y.to_i
