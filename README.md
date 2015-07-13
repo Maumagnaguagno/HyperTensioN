@@ -15,7 +15,7 @@ Our task list (input of planning) is decomposed until nothing remains, the base 
 The tail of recursion are the operator and method cases.
 The operator tests if the current task (the first in the list, since it decomposes in order here) can be applied to the current state (which is a visible structure to the other Ruby methods, but does not appear here).
 If successfully applied, the planning process continues decomposing and inserting the current task at the beginning of the plan, as it builds the plan during recursion from last to first.
-If it is a method, the path is different, we need to decompose into one of several cases with a valid unification for the free-variables.
+If it is a method, the path is different, we need to decompose into one of several cases with a valid unification for the free variables.
 Each case unified is a list of tasks, subtasks, that may require decomposition too, occupying the same place the method that generated them once was.
 I exposed the unification only to methods, but it is possible to expose to operators too (which kills the idea of what a primitive is).
 Now the methods take care of the heavy part (should the _agent_ **move** from _here_ to _there_ by **foot** ```[walking]``` or call a **cab** ```[call, enter, ride, pay, exit]```) while the primitive operators just execute the effects when applicable.
@@ -173,7 +173,7 @@ The order they appear in the domain definition implies the order of evaluation.
 Methods may appear in 3 different scenarios:
 - **No preconditions**, direct application of subtasks.
 - **Grounded preconditions**, apply subtasks if satisfied, every variable is [grounded](http://en.wikipedia.org/wiki/Ground_expression).
-- **Lifted preconditions**, unify [free-variables](http://en.wikipedia.org/wiki/Free_variables_and_bound_variables) according to the preconditions. [See how it works](#free-variables).
+- **Lifted preconditions**, unify [free variables](http://en.wikipedia.org/wiki/Free_variables_and_bound_variables) according to the preconditions. [See how it works](#free-variables).
 
 Instead of returning, the methods yield a subtask list.
 This approach solves the problem of returning several unifications per method call, yielding them as required.
@@ -216,8 +216,8 @@ end
 
 #### Lifted preconditions
 It is impossible to propagate variables all the time, some variables must be bounded during run-time.
-Free-variables are created as empty strings, being used as pointers to their future values.
-A ```generate([positive],[negative],free-variables)``` method will do the hard job, using positive preconditions to find possible values and unify accordingly, only yielding values that satisfy the preconditions requested.
+Free variables are created as empty strings, being used as pointers to their future values.
+A ```generate([positive],[negative],free variables)``` method will do the hard job, using positive preconditions to find possible values and unify accordingly, only yielding values that satisfy the preconditions requested.
 The following example goes beyond this specification, using an instance variable to avoid cached positions created by other decomposition paths.
 You can always use ```if-else``` constructs to speed-up problem solving.
 Here it is clear that no state memory is created by Hypertension, that is why we use ```@visited_at```.
@@ -419,7 +419,7 @@ empty_task_list = []
 - ```applicable?(precond_pos, precond_not)``` is used to test if the current state have all positive preconditions and not a single negative precondition.
 It returns true if applicable and false otherwise.
 - ```apply_operator(precond_pos, precond_not, effect_add, effect_del)``` extends this idea applying effects if ```applicable?```. Returns true if applied, false otherwise.
-- ```generate(precond_pos, precond_not, *free)``` yields all possible unifications to the free-variables defined, therefore you need a block to capture the unifications. The return value is undetermined.
+- ```generate(precond_pos, precond_not, *free)``` yields all possible unifications to the free variables defined, therefore you need a block to capture the unifications. The return value is undetermined.
 - ```print_data(data)``` can be used to print task lists and proposition lists, usefull for debug.
 - ```problem(start, tasks, debug = false, goal_pos = [], goal_not = [])``` can be used to simplify the creation of a problem instance. Use it as a template to see how to add Hypertension in your project. Add explicit goals to try different permutations of tasks until goals are reached.
 
