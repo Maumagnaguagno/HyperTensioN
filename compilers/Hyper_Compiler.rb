@@ -4,16 +4,16 @@ module Hyper_Compiler
   SPACER = '-' * 47
 
   #-----------------------------------------------
-  # Propositions to Hyper
+  # Predicates to Hyper
   #-----------------------------------------------
 
-  def propositions_to_hyper(output, group)
-    if group.empty?
+  def predicates_to_hyper(output, predicates)
+    if predicates.empty?
       output << "\n      []"
     else
-      output << "\n      [\n"
-      group.each_with_index {|g,i| output << "        [#{g.map {|i| i =~ /^\?/ ? i.sub(/^\?/,'') : "'#{i}'"}.join(', ')}]#{',' if group.size.pred != i}\n"}
-      output << '      ]'
+      group = []
+      predicates.each {|g| group << g.map {|i| i =~ /^\?/ ? i.sub(/^\?/,'') : "'#{i}'"}.join(', ')}
+      output << "\n      [\n        [" << group.join("],\n        [") << "]\n      ]"
     end
   end
 
@@ -25,9 +25,9 @@ module Hyper_Compiler
     if subtasks.empty?
       output << "#{indentation}yield []\n"
     else
-      output << "#{indentation}yield [\n"
-      subtasks.each_with_index {|t,i| output << "#{indentation}  [#{t.map {|i| i =~ /^\?/ ? i.sub(/^\?/,'') : "'#{i}'"}.join(', ')}]#{',' if subtasks.size.pred != i}\n"}
-      output << "#{indentation}]\n"
+      group = []
+      subtasks.each {|t| group << t.map {|i| i =~ /^\?/ ? i.sub(/^\?/,'') : "'#{i}'"}.join(', ')}
+      output << "#{indentation}yield [\n#{indentation}  [" << group.join("],\n#{indentation}  [") << "]\n#{indentation}]\n"
     end
   end
 
@@ -43,10 +43,10 @@ module Hyper_Compiler
     operators.each_with_index {|op,i|
       domain_str << "\n    '#{op.first}' => true#{',' if operators.size.pred != i or not methods.empty?}"
       define_operators << "\n  def #{op.first}#{"(#{op[1].map {|i| i.sub(/^\?/,'')}.join(', ')})" unless op[1].empty?}\n    apply_operator("
-      propositions_to_hyper(define_operators << "\n      # Positive preconditions", op[2])
-      propositions_to_hyper(define_operators << ",\n      # Negative preconditions", op[3])
-      propositions_to_hyper(define_operators << ",\n      # Add effects", op[4])
-      propositions_to_hyper(define_operators << ",\n      # Del effects", op[5])
+      predicates_to_hyper(define_operators << "\n      # Positive preconditions", op[2])
+      predicates_to_hyper(define_operators << ",\n      # Negative preconditions", op[3])
+      predicates_to_hyper(define_operators << ",\n      # Add effects", op[4])
+      predicates_to_hyper(define_operators << ",\n      # Del effects", op[5])
       define_operators << "\n    )\n  end\n"
     }
     # Methods
@@ -66,8 +66,8 @@ module Hyper_Compiler
           grounded = met_case[1].empty?
           met_case[1].each {|free| define_methods << "    #{free.sub(/^\?/,'')} = ''\n"}
           define_methods << (grounded ? '    if applicable?(' : '    generate(')
-          propositions_to_hyper(define_methods << "\n      # Positive preconditions", met_case[2])
-          propositions_to_hyper(define_methods << ",\n      # Negative preconditions", met_case[3])
+          predicates_to_hyper(define_methods << "\n      # Positive preconditions", met_case[2])
+          predicates_to_hyper(define_methods << ",\n      # Negative preconditions", met_case[3])
           met_case[1].each {|free| define_methods << ", #{free.sub(/^\?/,'')}"}
           define_methods << (grounded ? "\n    )\n" : "\n    ) {\n")
           subtasks_to_hyper(define_methods, met_case[4], '      ')
