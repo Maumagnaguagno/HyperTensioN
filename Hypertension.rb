@@ -162,7 +162,7 @@ module Hypertension
       free[level].replace(objects[level][obj])
       if level != free.size.pred
         # Stack backjump position
-        stack.unshift(level.succ,0) if obj.succ != objects[level].size
+        stack.unshift(level, obj.succ) if obj.succ != objects[level].size
         level += 1
         obj = 0
       else
