@@ -203,8 +203,7 @@ module Hypertension
       @state = start
       plan = planning(tasks)
     # Unordered
-    else
-      plan = task_permutations(start, tasks, goal_pos, goal_not)
+    else plan = task_permutations(start, tasks, goal_pos, goal_not)
     end
     puts "Time: #{Time.now.to_f - t}s", 'Plan'.center(50,'-')
     if plan
@@ -214,6 +213,7 @@ module Hypertension
       end
     else puts 'Planning failed'
     end
+    plan
   rescue Interrupt
     puts 'Interrupted'
   rescue
