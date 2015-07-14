@@ -18,13 +18,13 @@ module Hype
   Use #$0 domain problem [options]
 
   Options:
-    [print] to print data parsed(default)
-    [rb] to generate Ruby files to Hypertension
-    [pddl] to generate PDDL files
-    [jshop] to generate JSHOP files
-    [dot] to generate DOT file
-    [run] to generate Ruby files and execute them
-    [debug] the same as run with search log"
+    print - print data parsed(default)
+    rb    - generate Ruby files to Hypertension
+    pddl  - generate PDDL files
+    jshop - generate JSHOP files
+    dot   - generate DOT file
+    run   - generate Ruby files and execute them
+    debug - same as run with search log"
 
   # Parsers
   require "#{FILEPATH}/parsers/JSHOP_Parser"
