@@ -59,8 +59,7 @@ module N_Queens
       # Negative preconditions
       [], x
     ) {
-      # No need to test x == i, free collumn test
-      # No need to test y == j, every piece has their row
+      # No need to test x == i, free collumn test, or y == j, every piece has their row
       xi = x.to_i
       next if @state['queen'].any? {|i,j| (xi - i.to_i).abs == (yi - j.to_i).abs}
       yield [
@@ -85,12 +84,10 @@ begin
       ['solve', size]
     ]
   )
-  # Draw
-  queens = N_Queens.state['queen']
-  size.times {|j|
-    size.times {|i|
-      print queens.include?([i.to_s, j.to_s]) ? 'Q' : '.'
-    }
-    puts
+  # Draw from row size - 1 to 0
+  N_Queens.state['queen'].reverse_each {|i,j|
+    row = '.' * size
+    row[i.to_i] = 'Q'
+    puts row
   }
 end
