@@ -41,7 +41,7 @@ module PDDL_Parser
 
   def define_goals(pro)
     if pro.first == 'not'
-      raise "Error with goals" if pro.size != 2
+      raise 'Error with goals' if pro.size != 2
       @goal_not << pro.last
     else @goal_pos << pro
     end

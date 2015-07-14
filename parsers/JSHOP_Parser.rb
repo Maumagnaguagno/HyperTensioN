@@ -23,7 +23,9 @@ module JSHOP_Parser
   def parse_operator(op)
     op.shift
     name = op.first.shift
+    raise 'Action without name definition' unless name.instance_of?(String)
     name.sub!(/^!+/,'')
+    raise "Action #{name} redefined" if @operators.assoc(name)
     raise "Operator #{name} have #{op.size} groups instead of 4" if op.size != 4
     # Header
     @operators << [name, op.shift, pos = [], neg = [], add = [], del = []]
