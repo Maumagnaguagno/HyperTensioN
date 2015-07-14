@@ -4,9 +4,6 @@ module N_Queens
   include Hypertension
   extend self
 
-  CLEAR = ?.
-  QUEEN = ?Q
-
   #-----------------------------------------------
   # Domain
   #-----------------------------------------------
@@ -30,11 +27,10 @@ module N_Queens
       [],
       # Add effects
       [
-        ['board', x, y, QUEEN]
+        ['queen', x, y]
       ],
       # Del effects
       [
-        ['board', x, y, CLEAR],
         ['free_collumn', x]
       ]
     )
@@ -58,8 +54,7 @@ module N_Queens
     generate(
       # Positive preconditions
       [
-        ['free_collumn', x], # Check this first to limit faster the possible values
-        ['board', x, y, CLEAR]
+        ['free_collumn', x]
       ],
       # Negative preconditions
       [], x
@@ -67,7 +62,7 @@ module N_Queens
       # No need to test x == i, free collumn test
       # No need to test y == j, every piece has their row
       xi = x.to_i
-      next if @state['board'].any? {|i,j,p| p == QUEEN and (xi - i.to_i).abs == (yi - j.to_i).abs}
+      next if @state['queen'].any? {|i,j| (xi - i.to_i).abs == (yi - j.to_i).abs}
       yield [
         ['put_piece', x, y],
         ['solve', yi]
@@ -77,14 +72,12 @@ module N_Queens
 end
 
 begin
-  # NxN board
+  # Size input
   size = ARGV.first ? ARGV.first.to_i : 8
-  board = []
-  size.times {|i| size.times {|j| board << [i.to_s, j.to_s, N_Queens::CLEAR]}}
   N_Queens.problem(
     # Start
     {
-      'board' => board,
+      'queen' => [],
       'free_collumn' => Array.new(size) {|i| [i.to_s]}
     },
     # Tasks
@@ -93,11 +86,11 @@ begin
     ]
   )
   # Draw
-  board = []
-  N_Queens.state['board'].each {|x,y,p| board[x.to_i + y.to_i * size] = p}
-  index = -1
-  size.times {
-    size.times {print board[index += 1]}
+  queens = N_Queens.state['queen']
+  size.times {|j|
+    size.times {|i|
+      print queens.include?([i.to_s, j.to_s]) ? 'Q' : '.'
+    }
     puts
   }
 end
