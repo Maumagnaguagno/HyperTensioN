@@ -197,10 +197,10 @@ module Hypertension
     puts 'Tasks'.center(50,'-')
     print_data(tasks)
     puts 'Planning'.center(50,'-')
+    @state = start
     t = Time.now.to_f
     # Ordered
     if goal_pos.empty? and goal_not.empty?
-      @state = start
       plan = planning(tasks)
     # Unordered
     else plan = task_permutations(start, tasks, goal_pos, goal_not)
