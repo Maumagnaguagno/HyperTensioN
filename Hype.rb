@@ -23,7 +23,7 @@ module Hype
     pddl  - generate PDDL files
     jshop - generate JSHOP files
     dot   - generate DOT file
-    run   - generate Ruby files and execute them
+    run   - same as rb with execution
     debug - same as run with search log"
 
   # Parsers
