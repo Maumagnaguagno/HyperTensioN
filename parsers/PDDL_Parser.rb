@@ -17,7 +17,7 @@ module PDDL_Parser
     end
     pro = pro.first
     pro.replace('equal') if pro == '='
-    @predicates[pro] = true if @predicates[pro].nil?
+    @predicates[pro] = false unless @predicates.include?(pro)
   end
 
   #-----------------------------------------------
@@ -32,7 +32,7 @@ module PDDL_Parser
       del << pro
     else add << pro
     end
-    @predicates[pro.first] = false
+    @predicates[pro.first] = true
   end
 
   #-----------------------------------------------
@@ -75,7 +75,7 @@ module PDDL_Parser
             group.shift
             type = group.shift
             pos << [type, parameters.shift] until parameters.empty?
-            @predicates[type] = true if @predicates[type].nil?
+            @predicates[type] = false unless @predicates.include?(type)
           end
         end
         raise "Action #{name} with repeated parameters" if free_variables.uniq!
@@ -210,7 +210,6 @@ module PDDL_Parser
         when ':init'
           group.shift
           @state.push(*group)
-          @state.each {|proposition| @predicates[proposition.first] = nil unless @predicates.include?(proposition.first)}
         when ':goal'
           @goal_pos = []
           @goal_not = []

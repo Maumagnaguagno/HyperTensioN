@@ -12,7 +12,7 @@ module JSHOP_Parser
     group.each {|pro|
       raise "Error with negated #{name} #{type} effects" if pro.first == 'not'
       effects << pro
-      @predicates[pro.first] = false
+      @predicates[pro.first] = true
     }
   end
 
@@ -40,7 +40,7 @@ module JSHOP_Parser
           neg << pro
         else pos << pro
         end
-        @predicates[pro.first] = true if @predicates[pro.first].nil?
+        @predicates[pro.first] = false unless @predicates.include?(pro.first)
       }
     end
     # Effects
@@ -77,7 +77,7 @@ module JSHOP_Parser
             neg << pro
           else pos << pro
           end
-          @predicates[pro.first] = true if @predicates[pro.first].nil?
+          @predicates[pro.first] = false unless @predicates.include?(pro.first)
           free_variables.push(*pro.find_all {|i| i =~ /^\?/ and not method[1].include?(i)})
         }
         free_variables.uniq!
@@ -136,7 +136,6 @@ module JSHOP_Parser
       @problem_name = tokens.shift
       @problem_domain = tokens.shift
       @state = tokens.shift
-      @state.each {|pro| @predicates[pro.first] = nil unless @predicates.include?(pro.first)}
       @tasks = tokens.shift
       # Tasks may be ordered or unordered
       order = (@tasks.first != ':unordered')
