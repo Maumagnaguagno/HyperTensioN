@@ -115,24 +115,23 @@ module Hyper_Compiler
       if v.empty?
         problem_str << "    '#{k}' => []"
       else
-        problem_str << "    '#{k}' => [\n"
-        v.each_with_index {|obj,j| problem_str << "      [#{obj.join(', ')}]#{',' if v.size.pred != j}\n"}
-        problem_str << '    ]'
+        problem_str << "    '#{k}' => [\n      [" << v.map! {|obj| obj.join(', ')}.join("],\n      [") << "]\n    ]"
       end
       problem_str << ",\n" if start_hash.size.pred != i
     }
     # Tasks
-    problem_str << "\n  },\n  # Tasks\n  [\n"
-    tasks.each_with_index {|t,i| problem_str << "    ['#{t.first}'#{', ' if t.size > 1}#{t.drop(1).join(', ')}]#{',' if tasks.size.pred != i}\n"}
-    problem_str << "  ],\n  # Debug\n  ARGV.first == '-d'"
+    group = []
+    tasks.each {|t| group << "    ['#{t.first}'#{', ' if t.size > 1}#{t.drop(1).join(', ')}]"}
+    problem_str << "\n  },\n  # Tasks\n  [\n" << group .join(",\n") << "\n  ],\n  # Debug\n  ARGV.first == '-d'"
     if ordered
       problem_str << "\n)"
     else
-      problem_str << ",\n  # Positive goals\n  [\n"
-      goal_pos.each_with_index {|g,i| problem_str << "    ['#{g.first}', #{g.drop(1).join(', ')}]#{',' if goal_pos.size.pred != i}\n"}
-      problem_str << "  ],\n  # Negative goals\n  [\n"
-      goal_not.each_with_index {|g,i| problem_str << "    ['#{g.first}', #{g.drop(1).join(', ')}]#{',' if goal_pos.size.pred != i}\n"}
-      problem_str << "  ]\n)"
+      group.clear
+      goal_pos.each {|g| group << "    ['#{g.first}', #{g.drop(1).join(', ')}]"}
+      problem_str << ",\n  # Positive goals\n  [\n" << group.join(",\n") << "\n  ],\n  # Negative goals\n  [\n"
+      group.clear
+      goal_not.each {|g| group << "    ['#{g.first}', #{g.drop(1).join(', ')}]"}
+      problem_str << group.join(",\n") << "\n  ]\n)"
     end
   end
 end
