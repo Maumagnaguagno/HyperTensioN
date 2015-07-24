@@ -15,7 +15,7 @@ module Hype
   FILEPATH = File.expand_path('..', __FILE__)
 
   HELP = "Hype
-  Use #$0 domain problem [options]
+  Use #$0 domain problem [option]
 
   Options:
     print - print data parsed(default)
@@ -24,7 +24,7 @@ module Hype
     jshop - generate JSHOP files
     dot   - generate DOT file
     run   - same as rb with execution
-    debug - same as run with search log"
+    debug - same as run with execution log"
 
   # Parsers
   require "#{FILEPATH}/parsers/JSHOP_Parser"
@@ -196,8 +196,8 @@ if $0 == __FILE__
       else
         t = Time.now.to_f
         Hype.parse(domain, problem)
-        if extension == 'patterns'
-          if defined?(Patterns)
+        if extension
+          if extension == 'patterns' and defined?(Patterns)
             Patterns.match(
               Hype.parser.operators,
               Hype.parser.methods,
@@ -206,7 +206,7 @@ if $0 == __FILE__
               Hype.parser.goal_pos,
               Hype.parser.goal_not
             )
-          else raise 'Patterns not supported'
+          else raise "Extension #{extension} not supported"
           end
         end
         if type and type != 'print'
