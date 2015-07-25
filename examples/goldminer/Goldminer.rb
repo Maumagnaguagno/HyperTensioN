@@ -32,6 +32,24 @@ module Goldminer
   # Memory
   @visited_at = Hash.new {|h,k| h[k] = []}
 
+  def generate_grid(width, height)
+    adjacent = []
+    height.times {|j|
+      width.times {|i|
+        center = "p#{i}_#{j}"
+        if i != width.pred
+          right = "p#{i.succ}_#{j}"
+          adjacent.push([center, right], [right, center])
+        end
+        if j != height.pred
+          bottom = "p#{i}_#{j.succ}"
+          adjacent.push([center,bottom], [bottom,center])
+        end
+      }
+    }
+    adjacent
+  end
+
   #-----------------------------------------------
   # Operators
   #-----------------------------------------------
