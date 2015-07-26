@@ -1,7 +1,7 @@
 module PDDL_Parser
   extend self
 
-  attr_reader :domain_name, :problem_name, :problem_domain, :operators, :methods, :predicates, :state, :tasks, :goal_pos, :goal_not
+  attr_reader :domain_name, :problem_name, :problem_domain, :operators, :methods, :predicates, :state, :tasks, :goal_pos, :goal_not, :objects
 
   #-----------------------------------------------
   # Define preconditions
@@ -11,13 +11,11 @@ module PDDL_Parser
     raise "Error with #{name} preconditions" unless pro.instance_of?(Array)
     if pro.first == 'not'
       raise "Error with #{name} negative preconditions" if pro.size != 2
-      pro = pro.last
-      neg << pro
+      neg << (pro = pro.last)
     else pos << pro
     end
-    pro = pro.first
-    pro.replace('equal') if pro == '='
-    @predicates[pro] = false unless @predicates.include?(pro)
+    pro.replace('equal') if (pro = pro.first) == '='
+    @predicates[pro.freeze] = false unless @predicates.include?(pro)
   end
 
   #-----------------------------------------------
@@ -28,11 +26,10 @@ module PDDL_Parser
     raise "Error with #{name} effects" unless pro.instance_of?(Array)
     if pro.first == 'not'
       raise "Error with #{name} negative effects" if pro.size != 2
-      pro = pro.last
-      del << pro
+      del << (pro = pro.last)
     else add << pro
     end
-    @predicates[pro.first] = true
+    @predicates[pro.first.freeze] = true
   end
 
   #-----------------------------------------------
@@ -75,7 +72,7 @@ module PDDL_Parser
             group.shift
             type = group.shift
             pos << [type, parameters.shift] until parameters.empty?
-            @predicates[type] = false unless @predicates.include?(type)
+            @predicates[type] = false unless @predicates.include?(type.freeze)
           end
         end
         raise "Action #{name} with repeated parameters" if free_variables.uniq!
@@ -115,10 +112,8 @@ module PDDL_Parser
     if tokens.instance_of?(Array) and tokens.shift == 'define'
       @operators = []
       @methods = []
-      @domain_name = 'unknown'
       @predicates = {}
       @types = []
-      @requirements = []
       until tokens.empty?
         group = tokens.shift
         case group.first
@@ -127,7 +122,7 @@ module PDDL_Parser
           @domain_name = group.last
         when ':requirements'
           group.shift
-          @requirements.push(*group)
+          @requirements = group
         when ':predicates'
           # TODO take advantage of predicates definition
         when ':action' then parse_action(group)
@@ -148,6 +143,8 @@ module PDDL_Parser
         else puts "#{group.first} is not recognized"
         end
       end
+      @domain_name ||= 'unknown'
+      @requirements ||= []
     else raise "File #{domain_filename} does not match domain pattern"
     end
   end
@@ -162,10 +159,11 @@ module PDDL_Parser
     description.downcase!
     tokens = Hype.scan_tokens(description)
     if tokens.instance_of?(Array) and tokens.shift == 'define'
-      @problem_name = 'unknown'
-      @problem_domain = 'unknown'
       @state = []
       @objects = []
+      @goal_pos = []
+      @goal_not = []
+      @tasks = []
       until tokens.empty?
         group = tokens.shift
         case group.first
@@ -181,6 +179,7 @@ module PDDL_Parser
           # Move types to initial state
           group.shift
           raise 'Error with typed objects' if group.first == '-'
+          # TODO support either
           objects = []
           until group.empty?
             o = group.shift
@@ -206,14 +205,12 @@ module PDDL_Parser
               end
             end
           end
+          raise 'Repeated object definition' if @objects.uniq!
           @objects.each {|o| @state << ['equal', o, o]} if @requirements.include?(':equality')
         when ':init'
           group.shift
           @state.push(*group)
         when ':goal'
-          @goal_pos = []
-          @goal_not = []
-          @tasks = []
           group = group[1]
           return unless group
           # Conjunction
@@ -227,5 +224,7 @@ module PDDL_Parser
       end
     else raise "File #{problem_filename} does not match problem pattern"
     end
+    @problem_name ||= 'unknown'
+    @problem_domain ||= 'unknown'
   end
 end

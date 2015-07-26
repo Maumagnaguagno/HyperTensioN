@@ -12,7 +12,7 @@ module JSHOP_Parser
     group.each {|pro|
       raise "Error with negated #{name} #{type} effects" if pro.first == 'not'
       effects << pro
-      @predicates[pro.first] = true
+      @predicates[pro.first.freeze] = true
     }
   end
 
@@ -36,11 +36,10 @@ module JSHOP_Parser
       group.each {|pro|
         if pro.first == 'not'
           raise "Error with #{name} negative precondition group" if pro.size != 2
-          pro = pro.last
-          neg << pro
+          neg << (pro = pro.last)
         else pos << pro
         end
-        @predicates[pro.first] = false unless @predicates.include?(pro.first)
+        @predicates[pro.first.freeze] = false unless @predicates.include?(pro.first)
       }
     end
     # Effects
@@ -73,11 +72,10 @@ module JSHOP_Parser
         group.each {|pro|
           if pro.first == 'not'
             raise "Error with #{name} negative precondition group" if pro.size != 2
-            pro = pro.last
-            neg << pro
+            neg << (pro = pro.last)
           else pos << pro
           end
-          @predicates[pro.first] = false unless @predicates.include?(pro.first)
+          @predicates[pro.first.freeze] = false unless @predicates.include?(pro.first)
           free_variables.push(*pro.find_all {|i| i =~ /^\?/ and not method[1].include?(i)})
         }
         free_variables.uniq!
