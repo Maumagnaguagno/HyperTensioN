@@ -3,18 +3,21 @@ module PDDL_Parser
 
   attr_reader :domain_name, :problem_name, :problem_domain, :operators, :methods, :predicates, :state, :tasks, :goal_pos, :goal_not, :objects
 
+  AND = 'and'
+  NOT = 'not'
+
   #-----------------------------------------------
   # Define preconditions
   #-----------------------------------------------
 
   def define_preconditions(name, pro, pos, neg)
     raise "Error with #{name} preconditions" unless pro.instance_of?(Array)
-    if pro.first == 'not'
+    if pro.first == NOT
       raise "Error with #{name} negative preconditions" if pro.size != 2
       neg << (pro = pro.last)
     else pos << pro
     end
-    pro.replace('equal') if (pro = pro.first) == '='
+    pro.replace('equal') if (pro = pro.first) == ?=
     @predicates[pro.freeze] = false unless @predicates.include?(pro)
   end
 
@@ -24,7 +27,7 @@ module PDDL_Parser
 
   def define_effects(name, pro, add, del)
     raise "Error with #{name} effects" unless pro.instance_of?(Array)
-    if pro.first == 'not'
+    if pro.first == NOT
       raise "Error with #{name} negative effects" if pro.size != 2
       del << (pro = pro.last)
     else add << pro
@@ -37,7 +40,7 @@ module PDDL_Parser
   #-----------------------------------------------
 
   def define_goals(pro)
-    if pro.first == 'not'
+    if pro.first == NOT
       raise 'Error with goals' if pro.size != 2
       @goal_not << pro.last
     else @goal_pos << pro
@@ -61,14 +64,14 @@ module PDDL_Parser
       when ':parameters'
         raise "Error with #{name} parameters" unless op.first.instance_of?(Array)
         group = op.shift
-        raise "Error with #{name} typed parameters" if group.first == '-'
+        raise "Error with #{name} typed parameters" if group.first == ?-
         parameters = []
         until group.empty?
           o = group.shift
           parameters << o
           free_variables << o
           # Make "ob1 ob2 - type" become [type, ob1] [type, ob2]
-          if group.first == '-'
+          if group.first == ?-
             group.shift
             type = group.shift
             pos << [type, parameters.shift] until parameters.empty?
@@ -80,7 +83,7 @@ module PDDL_Parser
         group = op.shift
         raise "Error with #{name} precondition" unless group.instance_of?(Array)
         # Conjunction
-        if group.first == 'and'
+        if group.first == AND
           group.shift
           group.each {|pro| define_preconditions(name, pro, pos, neg)}
         # Atom
@@ -90,7 +93,7 @@ module PDDL_Parser
         group = op.shift
         raise "Error with #{name} effect" unless group.instance_of?(Array)
         # Conjunction
-        if group.first == 'and'
+        if group.first == AND
           group.shift
           group.each {|pro| define_effects(name, pro, add, del)}
         # Atom
@@ -117,6 +120,7 @@ module PDDL_Parser
       until tokens.empty?
         group = tokens.shift
         case group.first
+        when ':action' then parse_action(group)
         when 'domain'
           raise 'Domain group has size different of 2' if group.size != 2
           @domain_name = group.last
@@ -125,16 +129,15 @@ module PDDL_Parser
           @requirements = group
         when ':predicates'
           # TODO take advantage of predicates definition
-        when ':action' then parse_action(group)
         when ':types'
           # Type hierarchy
           raise 'Typing not required' unless @requirements.include?(':typing')
           group.shift
-          raise 'Error with types' if group.first == '-'
+          raise 'Error with types' if group.first == ?-
           subtypes = []
           until group.empty?
             subtypes << group.shift
-            if group.first == '-'
+            if group.first == ?-
               group.shift
               type = group.shift
               @types << [subtypes.shift, type] until subtypes.empty?
@@ -178,14 +181,14 @@ module PDDL_Parser
         when ':objects'
           # Move types to initial state
           group.shift
-          raise 'Error with typed objects' if group.first == '-'
+          raise 'Error with typed objects' if group.first == ?-
           # TODO support either
           objects = []
           until group.empty?
             o = group.shift
             objects << o
             @objects << o
-            if group.first == '-'
+            if group.first == ?-
               group.shift
               type = group.shift
               until objects.empty?
@@ -194,13 +197,13 @@ module PDDL_Parser
                 # Convert type hierarchy to propositions of initial state
                 types = [type]
                 until types.empty?
+                  subtype = types.shift
                   @types.each {|sub,t|
-                    if sub == types.first
+                    if sub == subtype
                       @state << [t, o]
                       types << t
                     end
                   }
-                  types.shift
                 end
               end
             end
@@ -214,7 +217,7 @@ module PDDL_Parser
           group = group[1]
           return unless group
           # Conjunction
-          if group.first == 'and'
+          if group.first == AND
             group.shift
             group.each {|pro| define_goals(pro)}
           # Atom

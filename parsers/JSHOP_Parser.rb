@@ -3,6 +3,9 @@ module JSHOP_Parser
 
   attr_reader :domain_name, :problem_name, :problem_domain, :operators, :methods, :predicates, :state, :tasks, :goal_pos, :goal_not
 
+  NOT = 'not'
+  NIL = 'nil'
+
   #-----------------------------------------------
   # Define effects
   #-----------------------------------------------
@@ -10,7 +13,7 @@ module JSHOP_Parser
   def define_effects(name, type, group, effects)
     raise "Error with #{name} #{type} effects" unless group.instance_of?(Array)
     group.each {|pro|
-      raise "Error with negated #{name} #{type} effects" if pro.first == 'not'
+      raise "Error with negated #{name} #{type} effects" if pro.first == NOT
       effects << pro
       @predicates[pro.first.freeze] = true
     }
@@ -31,10 +34,10 @@ module JSHOP_Parser
     @operators << [name, op.shift, pos = [], neg = [], add = [], del = []]
     # Preconditions
     group = op.shift
-    if group != 'nil'
+    if group != NIL
       raise "Error with #{name} preconditions" unless group.instance_of?(Array)
       group.each {|pro|
-        if pro.first == 'not'
+        if pro.first == NOT
           raise "Error with #{name} negative precondition group" if pro.size != 2
           neg << (pro = pro.last)
         else pos << pro
@@ -44,9 +47,9 @@ module JSHOP_Parser
     end
     # Effects
     group = op.shift
-    define_effects(name, 'del', group, del) if group != 'nil'
+    define_effects(name, 'del', group, del) if group != NIL
     group = op.shift
-    define_effects(name, 'add', group, add) if group != 'nil'
+    define_effects(name, 'add', group, add) if group != NIL
   end
 
   #-----------------------------------------------
@@ -67,10 +70,10 @@ module JSHOP_Parser
       decompose = [met.first.instance_of?(String) ? met.shift : "#{name}_#{method.size - 2}", free_variables = [], pos = [], neg = []]
       # Preconditions
       group = met.shift
-      if group != 'nil'
+      if group != NIL
         raise "Error with #{name} preconditions" unless group.instance_of?(Array)
         group.each {|pro|
-          if pro.first == 'not'
+          if pro.first == NOT
             raise "Error with #{name} negative precondition group" if pro.size != 2
             neg << (pro = pro.last)
           else pos << pro
@@ -82,7 +85,7 @@ module JSHOP_Parser
       end
       # Subtasks
       group = met.shift
-      if group != 'nil'
+      if group != NIL
         raise "Error with #{name} subtasks" unless group.instance_of?(Array)
         group.each {|pro| pro.first.sub!(/^!+/,'')}
         decompose << group
