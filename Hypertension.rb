@@ -50,17 +50,17 @@ module Hypertension
 
   def planning(tasks, level = 0)
     return [] if tasks.empty?
-    current_task = tasks.first
+    current_task = tasks.shift
     decompose = @domain[current_task.first]
     case decompose
     # Operator (true: visible, false: invisible)
     when true, false
-      puts "#{'  ' * level}#{current_task.first}(#{current_task.drop(1).join(', ')})" if @debug
+      puts "#{'  ' * level}#{current_task.first}(#{current_task.drop(1).join(?,)})" if @debug
       old_state = @state
       # If operator applied
       if send(*current_task)
         # Keep decomposing the hierarchy
-        plan = planning(tasks.drop(1), level)
+        plan = planning(tasks, level)
         if plan
           # Some operators are not visible
           plan.unshift(current_task) if decompose
@@ -71,10 +71,9 @@ module Hypertension
     # Method
     when Array
       # Keep decomposing the hierarchy
-      current_task = current_task.drop(1)
-      tasks = tasks.drop(1)
+      current_task.shift
       decompose.each {|method|
-        puts "#{'  ' * level}#{method}(#{current_task.join(', ')})" if @debug
+        puts "#{'  ' * level}#{method}(#{current_task.join(?,)})" if @debug
         # Every unification is tested
         send(method, *current_task) {|subtasks|
           plan = planning(subtasks.push(*tasks), level.succ)
