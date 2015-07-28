@@ -230,7 +230,7 @@ module Hypertension
     else
       remain.each {|t|
         @state = state
-        if p = planning([t])
+        if p = planning([t.dup])
           return p if p = task_permutations(@state, remain - [t], goal_pos, goal_not, plan + p)
         end
       }
