@@ -82,7 +82,9 @@ begin
     # Tasks
     [
       ['solve', size]
-    ]
+    ],
+    # Debug
+    ARGV.last == '-d'
   )
   # Draw from row size - 1 to 0
   N_Queens.state['queen'].reverse_each {|i,j|
