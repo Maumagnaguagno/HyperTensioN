@@ -23,8 +23,7 @@ module Dot_Compiler
       # Preconditions
       predicates_to_dot(domain_str, op[2], op[3])
       # Effects
-      domain_str << '|'
-      predicates_to_dot(domain_str, op[4], op[5])
+      predicates_to_dot(domain_str << '|', op[4], op[5])
       domain_str << "}}\"\n  ];\n"
     }
     # Methods
