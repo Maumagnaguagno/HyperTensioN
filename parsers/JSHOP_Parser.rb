@@ -79,7 +79,7 @@ module JSHOP_Parser
           else pos << pro
           end
           @predicates[pro.first.freeze] = false unless @predicates.include?(pro.first)
-          free_variables.push(*pro.find_all {|i| i =~ /^\?/ and not method[1].include?(i)})
+          free_variables.concat(pro.find_all {|i| i =~ /^\?/ and not method[1].include?(i)})
         }
         free_variables.uniq!
       end
