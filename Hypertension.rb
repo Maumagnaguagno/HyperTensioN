@@ -55,7 +55,7 @@ module Hypertension
     case decompose
     # Operator (true: visible, false: invisible)
     when true, false
-      puts "#{'  ' * level}#{current_task.first}(#{current_task.drop(1).join(?,)})" if @debug
+      puts "#{'  ' * level}#{current_task.first}(#{current_task.drop(1).join(',')})" if @debug
       old_state = @state
       # If operator applied
       if send(*current_task)
@@ -72,11 +72,12 @@ module Hypertension
     when Array
       # Keep decomposing the hierarchy
       current_task.shift
+      level += 1
       decompose.each {|method|
-        puts "#{'  ' * level}#{method}(#{current_task.join(?,)})" if @debug
+        puts "#{'  ' * level.pred}#{method}(#{current_task.join(',')})" if @debug
         # Every unification is tested
         send(method, *current_task) {|subtasks|
-          plan = planning(subtasks.push(*tasks), level.succ)
+          plan = planning(subtasks.concat(tasks), level)
           return plan if plan
         }
       }
@@ -213,6 +214,7 @@ module Hypertension
     else puts 'Planning failed'
     end
     plan
+    p *GC.stat
   rescue Interrupt
     puts 'Interrupted'
   rescue
