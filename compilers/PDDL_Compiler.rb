@@ -51,17 +51,17 @@ module PDDL_Compiler
     objects = []
     start_str = ''
     state.each {|pre|
-      objects.push(*pre.drop(1))
+      objects.concat(pre.drop(1))
       start_str << "    (#{pre.join(' ')})\n"
     }
-    tasks.drop(1).each {|pred,*terms| objects.push(*terms)}
+    tasks.drop(1).each {|pred,*terms| objects.concat(terms)}
     goal_str = ''
     goal_pos.each {|pre|
-      objects.push(*pre.drop(1))
+      objects.concat(pre.drop(1))
       goal_str << "      (#{pre.join(' ')})\n"
     }
     goal_not.each {|pre|
-      objects.push(*pre.drop(1))
+      objects.concat(pre.drop(1))
       goal_str << "      (not (#{pre.join(' ')}))\n"
     }
     objects.uniq!

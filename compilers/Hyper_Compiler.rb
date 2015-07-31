@@ -42,7 +42,7 @@ module Hyper_Compiler
     define_operators = ''
     operators.each_with_index {|op,i|
       domain_str << "\n    '#{op.first}' => true#{',' if operators.size.pred != i or not methods.empty?}"
-      define_operators << "\n  def #{op.first}#{"(#{op[1].map {|i| i.sub(/^\?/,'')}.join(', ')})" unless op[1].empty?}\n    apply_operator("
+      define_operators << "\n  def #{op.first}#{"(#{op[1].map {|j| j.sub(/^\?/,'')}.join(', ')})" unless op[1].empty?}\n    apply_operator("
       predicates_to_hyper(define_operators << "\n      # Positive preconditions", op[2])
       predicates_to_hyper(define_operators << ",\n      # Negative preconditions", op[3])
       predicates_to_hyper(define_operators << ",\n      # Add effects", op[4])
@@ -94,18 +94,18 @@ module Hyper_Compiler
     predicates.each_key {|i| start_hash[i] = []}
     state.each {|pred,*terms|
       start_hash[pred] << terms
-      objects.push(*terms)
+      objects.concat(terms)
     }
     goal_pos.each {|pred,*terms|
       start_hash[pred]
-      objects.push(*terms)
+      objects.concat(terms)
     }
     goal_not.each {|pred,*terms|
       start_hash[pred]
-      objects.push(*terms)
+      objects.concat(terms)
     }
     ordered, *tasks = tasks
-    tasks.each {|pred,*terms| objects.push(*terms)}
+    tasks.each {|pred,*terms| objects.concat(terms)}
     # Objects
     objects.uniq!
     objects.each {|i| problem_str << "#{i} = '#{i}'\n"}
