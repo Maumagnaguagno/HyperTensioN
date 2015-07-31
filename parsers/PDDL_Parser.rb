@@ -5,6 +5,8 @@ module PDDL_Parser
 
   AND = 'and'
   NOT = 'not'
+  EQUAL = '='
+  HYPHEN = '-'
 
   #-----------------------------------------------
   # Define preconditions
@@ -17,7 +19,7 @@ module PDDL_Parser
       neg << (pro = pro.last)
     else pos << pro
     end
-    pro.replace('equal') if (pro = pro.first) == ?=
+    pro.replace('equal') if (pro = pro.first) == EQUAL
     @predicates[pro.freeze] = false unless @predicates.include?(pro)
   end
 
@@ -64,14 +66,14 @@ module PDDL_Parser
       when ':parameters'
         raise "Error with #{name} parameters" unless op.first.instance_of?(Array)
         group = op.shift
-        raise "Error with #{name} typed parameters" if group.first == ?-
+        raise "Error with #{name} typed parameters" if group.first == HYPHEN
         parameters = []
         until group.empty?
           o = group.shift
           parameters << o
           free_variables << o
-          # Make "ob1 ob2 - type" become [type, ob1] [type, ob2]
-          if group.first == ?-
+          # Make "?ob1 ?ob2 - type" become [type, ?ob1] [type, ?ob2]
+          if group.first == HYPHEN
             group.shift
             type = group.shift
             pos << [type, parameters.shift] until parameters.empty?
@@ -133,11 +135,11 @@ module PDDL_Parser
           # Type hierarchy
           raise 'Typing not required' unless @requirements.include?(':typing')
           group.shift
-          raise 'Error with types' if group.first == ?-
+          raise 'Error with types' if group.first == HYPHEN
           subtypes = []
           until group.empty?
             subtypes << group.shift
-            if group.first == ?-
+            if group.first == HYPHEN
               group.shift
               type = group.shift
               @types << [subtypes.shift, type] until subtypes.empty?
@@ -176,19 +178,18 @@ module PDDL_Parser
           @problem_domain = group.last
         when ':requirements'
           group.shift
-          @requirements.push(*group)
-          @requirements.uniq!
+          @requirements.concat(group).uniq!
         when ':objects'
           # Move types to initial state
           group.shift
-          raise 'Error with typed objects' if group.first == ?-
+          raise 'Error with typed objects' if group.first == HYPHEN
           # TODO support either
           objects = []
           until group.empty?
             o = group.shift
             objects << o
             @objects << o
-            if group.first == ?-
+            if group.first == HYPHEN
               group.shift
               type = group.shift
               until objects.empty?
@@ -209,10 +210,10 @@ module PDDL_Parser
             end
           end
           raise 'Repeated object definition' if @objects.uniq!
-          @objects.each {|o| @state << ['equal', o, o]} if @requirements.include?(':equality')
+          @objects.each {|obj| @state << ['equal', obj, obj]} if @requirements.include?(':equality')
         when ':init'
           group.shift
-          @state.push(*group)
+          @state.concat(group)
         when ':goal'
           group = group[1]
           return unless group
