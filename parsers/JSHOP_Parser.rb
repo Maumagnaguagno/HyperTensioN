@@ -103,7 +103,7 @@ module JSHOP_Parser
     description = IO.read(domain_filename)
     description.gsub!(/;.*$|\n/,'')
     description.downcase!
-    tokens = Hype.scan_tokens(description)
+    tokens = PDDL_Parser.scan_tokens(description)
     if tokens.instance_of?(Array) and tokens.shift == 'defdomain'
       @operators = []
       @methods = []
@@ -132,7 +132,7 @@ module JSHOP_Parser
     description = IO.read(problem_filename)
     description.gsub!(/;.*$|\n/,'')
     description.downcase!
-    tokens = Hype.scan_tokens(description)
+    tokens = PDDL_Parser.scan_tokens(description)
     if tokens.instance_of?(Array) and tokens.size == 5 and tokens.shift == 'defproblem'
       @problem_name = tokens.shift
       @problem_domain = tokens.shift

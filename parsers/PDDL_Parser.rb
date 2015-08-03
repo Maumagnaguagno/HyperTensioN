@@ -9,6 +9,29 @@ module PDDL_Parser
   HYPHEN = '-'
 
   #-----------------------------------------------
+  # Scan tokens
+  #-----------------------------------------------
+
+  def scan_tokens(str)
+    stack = []
+    list = []
+    str.scan(/[()]|[!?:]*[\w-]+/) {|t|
+      case t
+      when '('
+        stack << list
+        list = []
+      when ')'
+        raise 'Missing open parentheses' if stack.empty?
+        list = stack.pop << list
+      else list << t
+      end
+    }
+    raise 'Missing close parentheses' unless stack.empty?
+    raise 'Malformed expression' if list.size != 1
+    list.first
+  end
+
+  #-----------------------------------------------
   # Define preconditions
   #-----------------------------------------------
 
@@ -113,7 +136,7 @@ module PDDL_Parser
     description = IO.read(domain_filename)
     description.gsub!(/;.*$|\n/,'')
     description.downcase!
-    tokens = Hype.scan_tokens(description)
+    tokens = scan_tokens(description)
     if tokens.instance_of?(Array) and tokens.shift == 'define'
       @operators = []
       @methods = []
@@ -162,7 +185,7 @@ module PDDL_Parser
     description = IO.read(problem_filename)
     description.gsub!(/;.*$|\n/,'')
     description.downcase!
-    tokens = Hype.scan_tokens(description)
+    tokens = scan_tokens(description)
     if tokens.instance_of?(Array) and tokens.shift == 'define'
       @state = []
       @objects = []

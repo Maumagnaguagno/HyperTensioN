@@ -38,29 +38,6 @@ module Hype
   require "#{FILEPATH}/Patterns" if File.exist?("#{FILEPATH}/Patterns.rb")
 
   #-----------------------------------------------
-  # Scan tokens
-  #-----------------------------------------------
-
-  def scan_tokens(str)
-    stack = []
-    list = []
-    str.scan(/[()]|[!?:]*[\w-]+/) {|t|
-      case t
-      when '('
-        stack << list
-        list = []
-      when ')'
-        raise 'Missing open parentheses' if stack.empty?
-        list = stack.pop << list
-      else list << t
-      end
-    }
-    raise 'Missing close parentheses' unless stack.empty?
-    raise 'Malformed expression' if list.size != 1
-    list.first
-  end
-
-  #-----------------------------------------------
   # Propositions to string
   #-----------------------------------------------
 
