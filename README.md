@@ -429,8 +429,8 @@ task_list = [['task1', 'term1', 'term2'], ['task2', 'term3']]
 empty_task_list = []
   ```
 - ```applicable?(precond_pos, precond_not)``` is used to test if the current state have all positive preconditions and not a single negative precondition.
-It returns true if applicable and false/nil otherwise.
-- ```apply_operator(precond_pos, precond_not, effect_add, effect_del)``` extends this idea applying effects if ```applicable?```. Returns true if applied, false otherwise.
+It returns true if applicable and false otherwise.
+- ```apply_operator(precond_pos, precond_not, effect_add, effect_del)``` extends this idea applying effects if ```applicable?```. Returns true if applied, false or nil otherwise.
 - ```generate(precond_pos, precond_not, *free)``` yields all possible unifications to the free variables defined, therefore you need a block to capture the unifications. The return value is undetermined.
 - ```print_data(data)``` can be used to print task lists and proposition lists, usefull for debug.
 - ```problem(start, tasks, debug = false, goal_pos = [], goal_not = [])``` can be used to simplify the creation of a problem instance. Use it as a template to see how to add Hypertension in your project. Add explicit goals to try different permutations of tasks until all goals are satisfied.
