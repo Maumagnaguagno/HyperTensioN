@@ -214,7 +214,6 @@ module Hypertension
     else puts 'Planning failed'
     end
     plan
-    p *GC.stat
   rescue Interrupt
     puts 'Interrupted'
   rescue
