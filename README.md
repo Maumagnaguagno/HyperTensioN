@@ -429,7 +429,7 @@ task_list = [['task1', 'term1', 'term2'], ['task2', 'term3']]
 empty_task_list = []
   ```
 - ```applicable?(precond_pos, precond_not)``` is used to test if the current state have all positive preconditions and not a single negative precondition.
-It returns true if applicable and false otherwise.
+It returns true if applicable and false/nil otherwise.
 - ```apply_operator(precond_pos, precond_not, effect_add, effect_del)``` extends this idea applying effects if ```applicable?```. Returns true if applied, false otherwise.
 - ```generate(precond_pos, precond_not, *free)``` yields all possible unifications to the free variables defined, therefore you need a block to capture the unifications. The return value is undetermined.
 - ```print_data(data)``` can be used to print task lists and proposition lists, usefull for debug.
