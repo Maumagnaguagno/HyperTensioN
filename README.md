@@ -1,4 +1,4 @@
-# HyperTensioN
+# HyperTensioN [![Build Status](https://travis-ci.org/Maumagnaguagno/HyperTensioN.svg)](https://travis-ci.org/Maumagnaguagno/HyperTensioN)
 **Hierarchical Task Network planning in Ruby**
 
 Hypertension is an Hierarchical Task Network Planner written in Ruby, which means you have to describe how tasks can be accomplished using method decomposition to achieve a plan, but in Ruby.
