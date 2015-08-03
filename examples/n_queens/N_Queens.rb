@@ -15,6 +15,23 @@ module N_Queens
     'solve' => ['try_next']
   }
 
+  def solve(size, debug, verbose)
+    start = {
+      'queen' => [],
+      'free_collumn' => Array.new(size) {|i| [i.to_s]}
+    }
+    tasks = [
+      ['solve', size]
+    ]
+    if verbose
+      problem(start, tasks, debug)
+    else
+      @debug = debug
+      @state = start
+      planning(tasks)
+    end
+  end
+
   #-----------------------------------------------
   # Operators
   #-----------------------------------------------
@@ -70,22 +87,13 @@ module N_Queens
   end
 end
 
-begin
+#-----------------------------------------------
+# Main
+#-----------------------------------------------
+if $0 == __FILE__
   # Size input
   size = ARGV.first ? ARGV.first.to_i : 8
-  N_Queens.problem(
-    # Start
-    {
-      'queen' => [],
-      'free_collumn' => Array.new(size) {|i| [i.to_s]}
-    },
-    # Tasks
-    [
-      ['solve', size]
-    ],
-    # Debug
-    ARGV.last == '-d'
-  )
+  N_Queens.solve(size, ARGV.last == '-d', true)
   # Draw from row size - 1 to 0
   N_Queens.state['queen'].reverse_each {|i,j|
     row = '.' * size
