@@ -413,7 +413,7 @@ class Foo < Bar
 end
 ```
 
-Having the state and domain as separate variables also means we do not need to propagate them all the time.
+Having the state and domain as separate variables also means there is no need to propagate them.
 This also means you can, at any point, change more than the state.
 This may be usefull to reorder method decompositions in the domain to modify the behavior without touching the methods or set the debug option only after an specific operator is called.
 You will notice that the plan is not a variable, as it is created during the backtracking, which means you can not reorder actions in the planning process using this algorithm, but is possible if you create the plan during decomposition.
@@ -423,6 +423,7 @@ The methods are few and simple to use:
 Only call this method after domain and state were defined.
 This method is called recursively until it finds an empty task list, then it starts to build the plan during backtracking to save CPU.
 Therefore no plan actually exists before reaching an empty task list.
+In case of failure ```false``` is returned
 
   ```Ruby
 task_list = [['task1', 'term1', 'term2'], ['task2', 'term3']]
@@ -430,7 +431,7 @@ empty_task_list = []
   ```
 - ```applicable?(precond_pos, precond_not)``` is used to test if the current state have all positive preconditions and not a single negative precondition.
 It returns true if applicable and false otherwise.
-- ```apply_operator(precond_pos, precond_not, effect_add, effect_del)``` extends this idea applying effects if ```applicable?```. Returns true if applied, false or nil otherwise.
+- ```apply_operator(precond_pos, precond_not, effect_add, effect_del)``` extends this idea applying effects if ```applicable?```. Returns true if applied, nil otherwise.
 - ```generate(precond_pos, precond_not, *free)``` yields all possible unifications to the free variables defined, therefore you need a block to capture the unifications. The return value is undetermined.
 - ```print_data(data)``` can be used to print task lists and proposition lists, usefull for debug.
 - ```problem(start, tasks, debug = false, goal_pos = [], goal_not = [])``` can be used to simplify the creation of a problem instance. Use it as a template to see how to add Hypertension in your project. Add explicit goals to try different permutations of tasks until all goals are satisfied.
