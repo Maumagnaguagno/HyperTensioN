@@ -55,7 +55,7 @@ class Sphygmomanometer < Test::Unit::TestCase
   def test_planning_exception
     Hypertension.state = simple_state
     Hypertension.domain = {}
-    assert_raise(RuntimeError) {Hypertension.planning([['exception_rise']])}
+    assert_raises(RuntimeError) {Hypertension.planning([['exception_rise']])}
   end
 
   #-----------------------------------------------
@@ -112,7 +112,7 @@ class Sphygmomanometer < Test::Unit::TestCase
   def test_apply_operator_failure
     Hypertension.state = original_state = simple_state
     # Precondition failure
-    assert_equal(nil, Hypertension.apply_operator([],[['a','2']],[['a','y']],[]))
+    assert_nil(Hypertension.apply_operator([],[['a','2']],[['a','y']],[]))
     # No state was created
     assert_same(original_state, Hypertension.state)
   end
