@@ -42,6 +42,7 @@ module Hypertension
   extend self
 
   attr_accessor :domain, :state, :debug
+  attr_reader :plan
 
   #-----------------------------------------------
   # Planning
@@ -190,6 +191,7 @@ module Hypertension
     puts 'Planning'.center(50,'-')
     @debug = debug
     @state = start
+    @plan = nil
     t = Time.now.to_f
     # Ordered
     if goal_pos.empty? and goal_not.empty?
@@ -205,7 +207,7 @@ module Hypertension
       end
     else puts 'Planning failed'
     end
-    plan
+    @plan = plan
   rescue Interrupt
     puts 'Interrupted'
   rescue

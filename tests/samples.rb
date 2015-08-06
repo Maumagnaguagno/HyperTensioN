@@ -2,16 +2,15 @@ require 'test/unit'
 require 'stringio'
 require './Hypertension'
 
-# Save last plan with output supressed
+# Output supressed
 module Hypertension
   extend self
 
-  attr_reader :plan
-  alias_method :original_problem, :problem
+  alias_method :loud_problem, :problem
 
   def problem(*args)
     $stdout = StringIO.new
-    @plan = original_problem(*args)
+    loud_problem(*args)
   ensure
     $stdout = STDOUT
   end
