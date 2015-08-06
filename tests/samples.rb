@@ -6,11 +6,12 @@ require './Hypertension'
 module Hypertension
   extend self
 
+  attr_reader :plan
   alias_method :loud_problem, :problem
 
   def problem(*args)
     $stdout = StringIO.new
-    loud_problem(*args)
+    self.plan = loud_problem(*args)
   ensure
     $stdout = STDOUT
   end
