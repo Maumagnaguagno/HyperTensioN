@@ -1,6 +1,6 @@
 require File.expand_path('../Goldminer', __FILE__)
 
-Goldminer.problem(
+plan = Goldminer.problem(
   # Start
   {
     'duty' => [

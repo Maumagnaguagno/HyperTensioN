@@ -1,6 +1,6 @@
 require File.expand_path('../Travel', __FILE__)
 
-Travel.problem(
+plan = Travel.problem(
   # Start
   {
     'at' => [
