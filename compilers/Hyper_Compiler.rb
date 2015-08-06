@@ -80,6 +80,8 @@ module Hyper_Compiler
     # Definitions
     domain_str << "\n  }\n\n  ##{SPACER}\n  # Operators\n  ##{SPACER}\n#{define_operators}"
     domain_str << "\n  ##{SPACER}\n  # Methods\n  ##{SPACER}\n#{define_methods}end"
+    domain_str.gsub!(/\b-\b/,'_')
+    domain_str
   end
 
   #-----------------------------------------------
@@ -133,5 +135,7 @@ module Hyper_Compiler
       goal_not.each {|g| group << "    ['#{g.first}', #{g.drop(1).join(', ')}]"}
       problem_str << group.join(",\n") << "\n  ]\n)"
     end
+    problem_str.gsub!(/\b-\b/,'_')
+    problem_str
   end
 end
