@@ -1,6 +1,6 @@
 require File.expand_path('../Travel', __FILE__)
 
-Travel.problem(
+plan = Travel.problem(
   # Start
   {
     'at' => [
@@ -36,3 +36,7 @@ Travel.problem(
   # Debug
   ARGV.first == '-d'
 )
+
+expected = [['walk', 'me', 'home', 'park']]
+
+exit(plan == expected ? 0 : 1)

@@ -8,7 +8,7 @@ right = 'right'
 room1 = 'room1'
 beacon1 = 'beacon1'
 
-Robby.problem(
+plan = Robby.problem(
   # Start
   {
     'at' => [
@@ -60,3 +60,13 @@ Robby.problem(
   # Debug
   true
 )
+
+expected = [
+  ['move', 'robby', 'left', 'middle'],
+  ['enter', 'robby', 'middle', 'room1'],
+  ['report', 'robby', 'room1', 'beacon1'],
+  ['exit', 'robby', 'room1', 'middle'],
+  ['move', 'robby', 'middle', 'right']
+]
+
+exit(plan == expected ? 0 : 1)

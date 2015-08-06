@@ -7,4 +7,5 @@ rvm:
   - 2.2.0
 script:
   - ruby tests/sphygmomanometer.rb
-  - ruby tests/samples.rb
+  - ruby examples/travel/pb1.rb
+  - ruby examples/robby/pb1.rb
