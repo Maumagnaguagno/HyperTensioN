@@ -33,7 +33,6 @@
 # - Unordered tasks with explicit goal check
 #-----------------------------------------------
 # TODOs
-# - Automated tests with more problems
 # - Order predicates and test applicability by level (generate)
 # - Unordered subtasks
 # - Anytime mode
@@ -50,8 +49,7 @@ module Hypertension
 
   def planning(tasks, level = 0)
     return [] if tasks.empty?
-    current_task = tasks.shift
-    decompose = @domain[current_task.first]
+    decompose = @domain[(current_task = tasks.shift).first]
     case decompose
     # Operator (true: visible, false: invisible)
     when true, false
@@ -60,8 +58,7 @@ module Hypertension
       # If operator applied
       if send(*current_task)
         # Keep decomposing the hierarchy
-        plan = planning(tasks, level)
-        if plan
+        if plan = planning(tasks, level)
           # Some operators are not visible
           plan.unshift(current_task) if decompose
           return plan
@@ -76,10 +73,7 @@ module Hypertension
       decompose.each {|method|
         puts "#{'  ' * level.pred}#{method}(#{current_task.join(',')})" if @debug
         # Every unification is tested
-        send(method, *current_task) {|subtasks|
-          plan = planning(subtasks.concat(tasks), level)
-          return plan if plan
-        }
+        send(method, *current_task) {|subtasks| return plan if plan = planning(subtasks.concat(tasks), level)}
       }
     # Error
     else raise "Decomposition problem with #{current_task.first}"
@@ -179,7 +173,7 @@ module Hypertension
   end
 
   #-----------------------------------------------
-  # Print Data
+  # Print data
   #-----------------------------------------------
 
   def print_data(data)
@@ -191,12 +185,10 @@ module Hypertension
   #-----------------------------------------------
 
   def problem(start, tasks, debug = false, goal_pos = [], goal_not = [])
-    # Debug information
-    @debug = debug
-    # Planning
     puts 'Tasks'.center(50,'-')
     print_data(tasks)
     puts 'Planning'.center(50,'-')
+    @debug = debug
     @state = start
     t = Time.now.to_f
     # Ordered
@@ -232,10 +224,7 @@ module Hypertension
       remain.each {|t|
         @state = state
         p = planning([t.dup])
-        if p
-          p = task_permutations(@state, remain - [t], goal_pos, goal_not, plan + p)
-          return p if p
-        end
+        return p if p and (p = task_permutations(@state, remain - [t], goal_pos, goal_not, plan + p))
       }
       false
     end

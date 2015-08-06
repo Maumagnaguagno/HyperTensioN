@@ -5,8 +5,9 @@ module PDDL_Parser
 
   AND = 'and'
   NOT = 'not'
-  EQUAL = '='
   HYPHEN = '-'
+  EQUAL = '='
+  EQUAL_SUB = 'equal'
 
   #-----------------------------------------------
   # Scan tokens
@@ -42,7 +43,7 @@ module PDDL_Parser
       neg << (pro = pro.last)
     else pos << pro
     end
-    pro.replace('equal') if (pro = pro.first) == EQUAL
+    pro.replace(EQUAL_SUB) if (pro = pro.first) == EQUAL
     @predicates[pro.freeze] = false unless @predicates.include?(pro)
   end
 
@@ -78,35 +79,31 @@ module PDDL_Parser
 
   def parse_action(op)
     op.shift
-    name = op.shift
-    raise 'Action without name definition' unless name.instance_of?(String)
+    raise 'Action without name definition' unless (name = op.shift).instance_of?(String)
     raise "Action #{name} redefined" if @operators.assoc(name)
     raise "Action #{name} have groups missing" if op.size != 6
     @operators << [name, free_variables = [], pos = [], neg = [], add = [], del = []]
     until op.empty?
-      group = op.shift
-      case group
+      case group = op.shift
       when ':parameters'
         raise "Error with #{name} parameters" unless op.first.instance_of?(Array)
         group = op.shift
         raise "Error with #{name} typed parameters" if group.first == HYPHEN
         parameters = []
         until group.empty?
-          o = group.shift
-          parameters << o
+          parameters << o = group.shift
           free_variables << o
           # Make "?ob1 ?ob2 - type" become [type, ?ob1] [type, ?ob2]
           if group.first == HYPHEN
             group.shift
             type = group.shift
             pos << [type, parameters.shift] until parameters.empty?
-            @predicates[type] = false unless @predicates.include?(type.freeze)
+            @predicates[type.freeze] = false unless @predicates.include?(type)
           end
         end
         raise "Action #{name} with repeated parameters" if free_variables.uniq!
       when ':precondition'
-        group = op.shift
-        raise "Error with #{name} precondition" unless group.instance_of?(Array)
+        raise "Error with #{name} precondition" unless (group = op.shift).instance_of?(Array)
         # Conjunction
         if group.first == AND
           group.shift
@@ -115,8 +112,7 @@ module PDDL_Parser
         else define_preconditions(name, group, pos, neg)
         end
       when ':effect'
-        group = op.shift
-        raise "Error with #{name} effect" unless group.instance_of?(Array)
+        raise "Error with #{name} effect" unless (group = op.shift).instance_of?(Array)
         # Conjunction
         if group.first == AND
           group.shift
@@ -124,6 +120,7 @@ module PDDL_Parser
         # Atom
         else define_effects(name, group, add, del)
         end
+      else puts "#{group.first} is not recognized in action"
       end
     end
   end
@@ -133,18 +130,15 @@ module PDDL_Parser
   #-----------------------------------------------
 
   def parse_domain(domain_filename)
-    description = IO.read(domain_filename)
-    description.gsub!(/;.*$|\n/,'')
+    (description = IO.read(domain_filename)).gsub!(/;.*$|\n/,'')
     description.downcase!
-    tokens = scan_tokens(description)
-    if tokens.instance_of?(Array) and tokens.shift == 'define'
+    if (tokens = scan_tokens(description)).instance_of?(Array) and tokens.shift == 'define'
       @operators = []
       @methods = []
       @predicates = {}
       @types = []
       until tokens.empty?
-        group = tokens.shift
-        case group.first
+        case (group = tokens.shift).first
         when ':action' then parse_action(group)
         when 'domain'
           raise 'Domain group has size different of 2' if group.size != 2
@@ -168,7 +162,7 @@ module PDDL_Parser
               @types << [subtypes.shift, type] until subtypes.empty?
             end
           end
-        else puts "#{group.first} is not recognized"
+        else puts "#{group.first} is not recognized in domain"
         end
       end
       @domain_name ||= 'unknown'
@@ -182,23 +176,18 @@ module PDDL_Parser
   #-----------------------------------------------
 
   def parse_problem(problem_filename)
-    description = IO.read(problem_filename)
-    description.gsub!(/;.*$|\n/,'')
+    (description = IO.read(problem_filename)).gsub!(/;.*$|\n/,'')
     description.downcase!
-    tokens = scan_tokens(description)
-    if tokens.instance_of?(Array) and tokens.shift == 'define'
+    if (tokens = scan_tokens(description)).instance_of?(Array) and tokens.shift == 'define'
       @state = []
       @objects = []
       @goal_pos = []
       @goal_not = []
       @tasks = []
       until tokens.empty?
-        group = tokens.shift
-        case group.first
-        when 'problem'
-          @problem_name = group.last
-        when ':domain'
-          @problem_domain = group.last
+        case (group = tokens.shift).first
+        when 'problem' then @problem_name = group.last
+        when ':domain' then @problem_domain = group.last
         when ':requirements'
           group.shift
           @requirements.concat(group).uniq!
@@ -209,15 +198,13 @@ module PDDL_Parser
           # TODO support either
           objects = []
           until group.empty?
-            o = group.shift
-            objects << o
+            objects << o = group.shift
             @objects << o
             if group.first == HYPHEN
               group.shift
               type = group.shift
               until objects.empty?
-                o = objects.shift
-                @state << [type, o]
+                @state << [type, o = objects.shift]
                 # Convert type hierarchy to propositions of initial state
                 types = [type]
                 until types.empty?
@@ -233,13 +220,12 @@ module PDDL_Parser
             end
           end
           raise 'Repeated object definition' if @objects.uniq!
-          @objects.each {|obj| @state << ['equal', obj, obj]} if @requirements.include?(':equality')
+          @objects.each {|obj| @state << [EQUAL_SUB, obj, obj]} if @requirements.include?(':equality')
         when ':init'
           group.shift
           @state.concat(group)
         when ':goal'
-          group = group[1]
-          return unless group
+          return unless group = group[1]
           # Conjunction
           if group.first == AND
             group.shift
@@ -247,6 +233,7 @@ module PDDL_Parser
           # Atom
           else define_goals(group)
           end
+        else puts "#{group.first} is not recognized in problem"
         end
       end
     else raise "File #{problem_filename} does not match problem pattern"
