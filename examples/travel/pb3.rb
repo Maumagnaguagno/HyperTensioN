@@ -36,3 +36,6 @@ Travel.problem(
   # Debug
   ARGV.first == '-d'
 )
+
+# Test
+abort('Test failed') if plan != []

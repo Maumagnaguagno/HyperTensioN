@@ -37,6 +37,6 @@ plan = Travel.problem(
   ARGV.first == '-d'
 )
 
+# Test
 expected = [['walk', 'me', 'home', 'park']]
-
-exit(plan == expected ? 0 : 1)
+abort('Test failed') if plan != expected

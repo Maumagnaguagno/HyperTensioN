@@ -61,6 +61,7 @@ plan = Robby.problem(
   true
 )
 
+# Test
 expected = [
   ['move', 'robby', 'left', 'middle'],
   ['enter', 'robby', 'middle', 'room1'],
@@ -68,5 +69,4 @@ expected = [
   ['exit', 'robby', 'room1', 'middle'],
   ['move', 'robby', 'middle', 'right']
 ]
-
-exit(plan == expected ? 0 : 1)
+abort('Test failed') if plan != expected

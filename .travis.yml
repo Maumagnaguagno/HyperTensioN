@@ -8,4 +8,8 @@ rvm:
 script:
   - ruby tests/sphygmomanometer.rb
   - ruby examples/travel/pb1.rb
+  - ruby examples/travel/pb2.rb
+  - ruby examples/travel/pb3.rb
+  - ruby examples/travel/pb4.rb
   - ruby examples/robby/pb1.rb
+  - ruby examples/goldminer/pb1.rb
