@@ -6,7 +6,7 @@ require './Hypertension'
 module Hypertension
   extend self
 
-  attr_reader :plan
+  attr_accessor :plan
   alias_method :loud_problem, :problem
 
   def problem(*args)
