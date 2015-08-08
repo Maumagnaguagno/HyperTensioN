@@ -480,7 +480,7 @@ The prototype interface is a module with the domain attributes and two methods t
 module Foo_Parser
   extend self
 
-  attr_reader :domain_name, :problem_name, :problem_domain, :operators, :methods, :predicates, :state, :tasks, :goal_pos, :goal_not
+  attr_reader :domain_name, :problem_name, :operators, :methods, :predicates, :state, :tasks, :goal_pos, :goal_not
 
   def parse_domain(domain_filename)
     description = IO.read(domain_filename)

@@ -1,7 +1,7 @@
 module JSHOP_Parser
   extend self
 
-  attr_reader :domain_name, :problem_name, :problem_domain, :operators, :methods, :predicates, :state, :tasks, :goal_pos, :goal_not
+  attr_reader :domain_name, :problem_name, :operators, :methods, :predicates, :state, :tasks, :goal_pos, :goal_not
 
   NOT = 'not'
   NIL = 'nil'
@@ -123,7 +123,7 @@ module JSHOP_Parser
     description.downcase!
     if (tokens = PDDL_Parser.scan_tokens(description)).instance_of?(Array) and tokens.size == 5 and tokens.shift == 'defproblem'
       @problem_name = tokens.shift
-      @problem_domain = tokens.shift
+      raise 'Different domain specified in problem file' if @domain_name != tokens.shift
       @state = tokens.shift
       @tasks = tokens.shift
       # Tasks may be ordered or unordered

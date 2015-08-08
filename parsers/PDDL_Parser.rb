@@ -1,7 +1,7 @@
 module PDDL_Parser
   extend self
 
-  attr_reader :domain_name, :problem_name, :problem_domain, :operators, :methods, :predicates, :state, :tasks, :goal_pos, :goal_not, :objects
+  attr_reader :domain_name, :problem_name, :operators, :methods, :predicates, :state, :tasks, :goal_pos, :goal_not, :objects
 
   AND = 'and'
   NOT = 'not'
@@ -187,7 +187,7 @@ module PDDL_Parser
       until tokens.empty?
         case (group = tokens.shift).first
         when 'problem' then @problem_name = group.last
-        when ':domain' then @problem_domain = group.last
+        when ':domain' then raise 'Different domain specified in problem file' if @domain_name != group.last
         when ':requirements'
           group.shift
           @requirements.concat(group).uniq!
@@ -239,6 +239,5 @@ module PDDL_Parser
     else raise "File #{problem_filename} does not match problem pattern"
     end
     @problem_name ||= 'unknown'
-    @problem_domain ||= 'unknown'
   end
 end

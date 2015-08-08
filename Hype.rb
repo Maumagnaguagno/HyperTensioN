@@ -104,7 +104,7 @@ module Hype
 "Domain #{@parser.domain_name}
   Operators:\n#{operators_to_s}
   Methods:\n#{methods_to_s}
-Problem #{@parser.problem_name} of #{@parser.problem_domain}
+Problem #{@parser.problem_name}
   State:#{propositions_to_s(@parser.state, "\n    ")}
 
   Goal:
