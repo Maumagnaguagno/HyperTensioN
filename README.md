@@ -3,7 +3,7 @@
 
 Hypertension is an Hierarchical Task Network Planner written in Ruby, which means you have to describe how tasks can be accomplished using method decomposition to achieve a plan, but in Ruby.
 HTN is used as an acronym for Hypertension in medical context, therefore the name was given.
-In order to support other planning languages a module named [Hype](#hype) will take care of the conversion process.
+In order to support other planning languages a module named **[Hype](#hype)** will take care of the conversion process.
 With hierarchical planning it is possible to describe a strategy to obtain a sequence of actions that executes a certain task.
 It works based on decomposition, which is very alike to how humans think, taking mental steps further into primitive operators.
 The current version has most of its algorithm inspired by PyHop/SHOP, with backtracking and unification added.
@@ -416,12 +416,12 @@ end
 Having the state and domain as separate variables also means there is no need to propagate them.
 This also means you can, at any point, change more than the state.
 This may be usefull to reorder method decompositions in the domain to modify the behavior without touching the methods or set the debug option only after an specific operator is called.
-You will notice that the plan is not a variable, as it is created during the backtracking, which means you can not reorder actions in the planning process using this algorithm, but is possible if you create the plan during decomposition.
+You will notice that the plan is not a variable, as it is created during the backtracking, which means you cannot reorder actions in the planning process using this algorithm, but it is possible with a variation of this algorithm that creates the plan during decomposition.
 
 The methods are few and simple to use:
 - ```planning(tasks, level = 0)``` receives a task list to decompose and the nesting level to help debug.
 Only call this method after domain and state were defined.
-This method is called recursively until it finds an empty task list, then it starts to build the plan during backtracking to save CPU.
+This method is called recursively until it finds an empty task list, then it starts to build the plan during backtracking to save CPU (avoid creating intermediary plans).
 Therefore no plan actually exists before reaching an empty task list.
 In case of failure ```false``` is returned
 
@@ -459,13 +459,14 @@ This conversion step is not uncommon, as JSHOP itself compiles the description t
 - [x] [Graphviz DOT](http://www.graphviz.org/) (generate a graph description to be compiled into an image)
 - [ ] HPDDL (methods and tasks may not be available if the input was PDDL)
 
-As any parser the ones provided by Hype are limited in one way or another, PDDL have far more features than supported by most planners and JSHOP have 2 different ways to define methods.
+As any parser, the ones provided by Hype are limited in one way or another.
+PDDL have far more features than supported by most planners and JSHOP have 2 different ways to define methods.
 Methods may be broken into several independent blocks or in the same block without the need to check the same preconditions again.
 Both cases are supported, but we evaluate the preconditions of each set independently while JSHOP only evaluates the last if the first ones evaluated to false in the same block.
-In order to copy the behavior we can not simply copy the positive preconditions in the negative set and vice-versa.
+In order to copy the behavior we cannot simply copy the positive preconditions in the negative set and vice-versa.
 Sometimes only one proposition in the set is false, if we copied in the other set for the other methods it would never work.
-Declare the methods in the same Ruby method is possible (losing label definition), but kills the simplicity and declaration independence we are trying to achieve.
-We also do not support axioms yet.
+It is possible to declare the methods in the same Ruby method (losing label definition), but kills the simplicity we are trying to achieve.
+We also do not support JSHOP axioms, yet.
 
 You can always not believe the **Hype** and convert descriptions by yourself, following a style that achieves a better or faster solution with the indentation that makes you happy.
 You could add flags or counters in the methods and return after generate unified one or more times a specific value.
@@ -546,8 +547,6 @@ Those versions also let you express your state in any way you want, but you need
 
 ## ToDo's
 - Parser/Compiler features
-  - Operator visibility (some operators are internally important, but not usefull in the plan).
+  - Operator visibility (some operators are internally important, but not usefull in the plan, JSHOP uses ``!`` and ``!!`` for each case).
   - Define the standard interface for parsers and compilers, the current ones require several attributes instead of a Hash ```{:attr => data}``` and there is an inconsistency about file handling (Hype should do all or no IO).
-- Tests
-- Examples
 - Problem generators
