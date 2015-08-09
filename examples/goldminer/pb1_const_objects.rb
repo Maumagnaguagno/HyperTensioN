@@ -106,7 +106,7 @@ p7_9 = 'p7_9'
 p8_9 = 'p8_9'
 p9_9 = 'p9_9'
 
-Goldminer.problem(
+plan = Goldminer.problem(
   # Start
   {
     'duty' => [
@@ -518,3 +518,67 @@ Goldminer.problem(
   # Debug
   ARGV.first == '-d'
 )
+
+# Test
+expected = [
+  ['move', 'ag1', 'p1_6', 'p0_6'],
+  ['move', 'ag1', 'p0_6', 'p0_5'],
+  ['move', 'ag1', 'p0_5', 'p0_4'],
+  ['move', 'ag1', 'p0_4', 'p0_3'],
+  ['move', 'ag1', 'p0_3', 'p0_2'],
+  ['move', 'ag1', 'p0_2', 'p0_1'],
+  ['move', 'ag1', 'p0_1', 'p0_0'],
+  ['move', 'ag1', 'p0_0', 'p1_0'],
+  ['move', 'ag1', 'p1_0', 'p2_0'],
+  ['move', 'ag1', 'p2_0', 'p3_0'],
+  ['move', 'ag1', 'p3_0', 'p4_0'],
+  ['pick', 'ag1', 'g1', 'p4_0'],
+  ['move', 'ag1', 'p4_0', 'p5_0'],
+  ['move', 'ag1', 'p5_0', 'p6_0'],
+  ['move', 'ag1', 'p6_0', 'p7_0'],
+  ['move', 'ag1', 'p7_0', 'p8_0'],
+  ['move', 'ag1', 'p8_0', 'p9_0'],
+  ['move', 'ag1', 'p9_0', 'p9_1'],
+  ['move', 'ag1', 'p9_1', 'p9_2'],
+  ['move', 'ag1', 'p9_2', 'p8_2'],
+  ['move', 'ag1', 'p8_2', 'p8_3'],
+  ['move', 'ag1', 'p8_3', 'p8_4'],
+  ['move', 'ag1', 'p8_4', 'p8_5'],
+  ['move', 'ag1', 'p8_5', 'p8_6'],
+  ['drop', 'ag1', 'g1', 'p8_6'],
+  ['move', 'ag1', 'p8_6', 'p7_6'],
+  ['move', 'ag1', 'p7_6', 'p7_5'],
+  ['move', 'ag1', 'p7_5', 'p6_5'],
+  ['move', 'ag1', 'p6_5', 'p5_5'],
+  ['move', 'ag1', 'p5_5', 'p4_5'],
+  ['move', 'ag1', 'p4_5', 'p4_4'],
+  ['move', 'ag1', 'p4_4', 'p4_3'],
+  ['pick', 'ag1', 'g2', 'p4_3'],
+  ['move', 'ag1', 'p4_3', 'p5_3'],
+  ['move', 'ag1', 'p5_3', 'p6_3'],
+  ['move', 'ag1', 'p6_3', 'p7_3'],
+  ['move', 'ag1', 'p7_3', 'p8_3'],
+  ['move', 'ag1', 'p8_3', 'p8_4'],
+  ['move', 'ag1', 'p8_4', 'p8_5'],
+  ['move', 'ag1', 'p8_5', 'p8_6'],
+  ['drop', 'ag1', 'g2', 'p8_6'],
+  ['move', 'ag1', 'p8_6', 'p7_6'],
+  ['move', 'ag1', 'p7_6', 'p7_5'],
+  ['move', 'ag1', 'p7_5', 'p6_5'],
+  ['move', 'ag1', 'p6_5', 'p5_5'],
+  ['move', 'ag1', 'p5_5', 'p5_6'],
+  ['move', 'ag1', 'p5_6', 'p5_7'],
+  ['move', 'ag1', 'p5_7', 'p5_8'],
+  ['move', 'ag1', 'p5_8', 'p5_9'],
+  ['pick', 'ag1', 'g3', 'p5_9'],
+  ['move', 'ag1', 'p5_9', 'p6_9'],
+  ['move', 'ag1', 'p6_9', 'p7_9'],
+  ['move', 'ag1', 'p7_9', 'p8_9'],
+  ['move', 'ag1', 'p8_9', 'p9_9'],
+  ['move', 'ag1', 'p9_9', 'p9_8'],
+  ['move', 'ag1', 'p9_8', 'p9_7'],
+  ['move', 'ag1', 'p9_7', 'p8_7'],
+  ['move', 'ag1', 'p8_7', 'p8_6'],
+  ['drop', 'ag1', 'g3', 'p8_6']
+]
+abort('Test failed') if plan != expected
