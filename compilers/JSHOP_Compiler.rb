@@ -79,6 +79,6 @@ module JSHOP_Compiler
     # Tasks
     problem_str << "  )\n\n  ;#{SPACER}\n  ; Tasks\n  ;#{SPACER}\n\n"
     subtasks_to_jshop(problem_str, tasks.drop(1), operators, '  ', tasks.first)
-    problem_str << ")\n"
+    problem_str << ')'
   end
 end
