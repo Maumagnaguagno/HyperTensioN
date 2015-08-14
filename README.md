@@ -419,22 +419,17 @@ This may be usefull to reorder method decompositions in the domain to modify the
 You will notice that the plan is not a variable, as it is created during the backtracking, which means you cannot reorder actions in the planning process using this algorithm, but it is possible with a variation of this algorithm that creates the plan during decomposition.
 
 The methods are few and simple to use:
-- ```planning(tasks, level = 0)``` receives a task list to decompose and the nesting level to help debug.
+- ```planning(tasks, level = 0)``` receives a task_list, ```[['task1', 'term1', 'term2'], ['task2', 'term3']]```, to decompose and the nesting level to help debug.
 Only call this method after domain and state were defined.
-This method is called recursively until it finds an empty task list, then it starts to build the plan during backtracking to save CPU (avoid creating intermediary plans).
+This method is called recursively until it finds an empty task list, ```[]```, then it starts to build the plan while backtracking to save CPU (avoid intermediary plan creation).
 Therefore no plan actually exists before reaching an empty task list.
-In case of failure ```false``` is returned
+In case of failure, ```nil``` is returned.
 
-  ```Ruby
-task_list = [['task1', 'term1', 'term2'], ['task2', 'term3']]
-empty_task_list = []
-  ```
-- ```applicable?(precond_pos, precond_not)``` is used to test if the current state have all positive preconditions and not a single negative precondition.
-It returns true if applicable and false otherwise.
+- ```applicable?(precond_pos, precond_not)``` is used to test if the current state have all positive preconditions and not a single negative precondition. It returns true if applicable and false otherwise.
 - ```apply_operator(precond_pos, precond_not, effect_add, effect_del)``` extends this idea applying effects if ```applicable?```. Returns true if applied, nil otherwise.
 - ```generate(precond_pos, precond_not, *free)``` yields all possible unifications to the free variables defined, therefore you need a block to capture the unifications. The return value is undetermined.
 - ```print_data(data)``` can be used to print task lists and proposition lists, usefull for debug.
-- ```problem(start, tasks, debug = false, goal_pos = [], goal_not = [])``` can be used to simplify the creation of a problem instance. Use it as a template to see how to add Hypertension in your project. Add explicit goals to try different permutations of tasks until all goals are satisfied.
+- ```problem(start, tasks, debug = false, goal_pos = [], goal_not = [])``` can be used to simplify the creation of a problem instance, returns the value of planning. Use problem as a template to see how to add Hypertension in your project. Add explicit goals to try different permutations of tasks until all goals are satisfied.
 
 Domain operators can be defined without ```apply_operator``` and will have the return value considered.
   - ```false``` or ```nil``` means the operator has failed.

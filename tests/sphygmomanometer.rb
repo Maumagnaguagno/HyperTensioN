@@ -49,7 +49,7 @@ class Sphygmomanometer < Test::Unit::TestCase
 
   def test_planning_failure
     N_Queens.solve(8, false, false)
-    assert_equal(false, N_Queens.planning([['solve',1]]))
+    assert_equal(nil, N_Queens.planning([['solve',1]]))
   end
 
   def test_planning_exception

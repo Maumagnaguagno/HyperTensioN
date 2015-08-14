@@ -49,8 +49,8 @@ module Hypertension
 
   def planning(tasks, level = 0)
     return [] if tasks.empty?
-    decompose = @domain[(current_task = tasks.shift).first]
-    case decompose
+    decomposition = @domain[(current_task = tasks.shift).first]
+    case decomposition
     # Operator (true: visible, false: invisible)
     when true, false
       puts "#{'  ' * level}#{current_task.first}(#{current_task.drop(1).join(',')})" if @debug
@@ -60,7 +60,7 @@ module Hypertension
         # Keep decomposing the hierarchy
         if plan = planning(tasks, level)
           # Some operators are not visible
-          plan.unshift(current_task) if decompose
+          plan.unshift(current_task) if decomposition
           return plan
         end
         @state = old_state
@@ -70,7 +70,7 @@ module Hypertension
       # Keep decomposing the hierarchy
       current_task.shift
       level += 1
-      decompose.each {|method|
+      decomposition.each {|method|
         puts "#{'  ' * level.pred}#{method}(#{current_task.join(',')})" if @debug
         # Every unification is tested
         send(method, *current_task) {|subtasks| return plan if plan = planning(subtasks.concat(tasks), level)}
@@ -78,7 +78,7 @@ module Hypertension
     # Error
     else raise "Decomposition problem with #{current_task.first}"
     end
-    false
+    nil
   end
 
   #-----------------------------------------------
@@ -226,7 +226,7 @@ module Hypertension
         p = planning([t.dup])
         return p if p and (p = task_permutations(@state, remain - [t], goal_pos, goal_not, plan + p))
       }
-      false
+      nil
     end
   end
 end
