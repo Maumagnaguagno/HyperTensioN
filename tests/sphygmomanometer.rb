@@ -94,7 +94,7 @@ class Sphygmomanometer < Test::Unit::TestCase
     # New state was created
     assert_not_same(original_state, Hypertension.state)
     # Same content
-    assert_equal(true, original_state == Hypertension.state)
+    assert_equal(original_state, Hypertension.state)
   end
 
   def test_apply_operator_success
