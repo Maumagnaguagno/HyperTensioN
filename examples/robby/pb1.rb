@@ -58,7 +58,7 @@ plan = Robby.problem(
     ['swap_at', robby, right]
   ],
   # Debug
-  true
+  ARGV.first == '-d'
 )
 
 # Test
