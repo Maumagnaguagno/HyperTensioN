@@ -88,10 +88,10 @@ module PDDL_Parser
       when ':parameters'
         raise "Error with #{name} parameters" unless op.first.instance_of?(Array)
         raise "Unexpected hyphen in #{name} parameters" if (group = op.shift).first == HYPHEN
+        # "?ob1 ?ob2 - type" to [type, ?ob1] [type, ?ob2]
         index = 0
         until group.empty?
           free_variables << group.shift
-          # Make "?ob1 ?ob2 - type" become [type, ?ob1] [type, ?ob2]
           if group.first == HYPHEN
             group.shift
             type = group.shift
@@ -196,7 +196,6 @@ module PDDL_Parser
           # Move types to initial state
           group.shift
           raise 'Unexpected hyphen in objects' if group.first == HYPHEN
-          # TODO support either
           index = 0
           until group.empty?
             @objects << group.shift
