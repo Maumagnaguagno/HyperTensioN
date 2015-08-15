@@ -49,8 +49,7 @@ module Hypertension
 
   def planning(tasks, level = 0)
     return [] if tasks.empty?
-    decomposition = @domain[(current_task = tasks.shift).first]
-    case decomposition
+    case decomposition = @domain[(current_task = tasks.shift).first]
     # Operator (true: visible, false: invisible)
     when true, false
       puts "#{'  ' * level}#{current_task.first}(#{current_task.drop(1).join(',')})" if @debug
