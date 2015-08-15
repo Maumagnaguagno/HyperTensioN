@@ -87,17 +87,18 @@ module PDDL_Parser
       case group = op.shift
       when ':parameters'
         raise "Error with #{name} parameters" unless op.first.instance_of?(Array)
-        group = op.shift
-        raise "Error with #{name} typed parameters" if group.first == HYPHEN
-        parameters = []
+        raise "Unexpected hyphen in #{name} parameters" if (group = op.shift).first == HYPHEN
+        index = 0
         until group.empty?
-          parameters << o = group.shift
-          free_variables << o
+          free_variables << group.shift
           # Make "?ob1 ?ob2 - type" become [type, ?ob1] [type, ?ob2]
           if group.first == HYPHEN
             group.shift
             type = group.shift
-            pos << [type, parameters.shift] until parameters.empty?
+            until index == free_variables.size
+              pos << [type, free_variables[index]]
+              index += 1
+            end
             @predicates[type.freeze] = false unless @predicates.include?(type)
           end
         end
@@ -152,7 +153,7 @@ module PDDL_Parser
           # Type hierarchy
           raise 'Typing not required' unless @requirements.include?(':typing')
           group.shift
-          raise 'Error with types' if group.first == HYPHEN
+          raise 'Unexpected hyphen in types' if group.first == HYPHEN
           subtypes = []
           until group.empty?
             subtypes << group.shift
@@ -194,17 +195,17 @@ module PDDL_Parser
         when ':objects'
           # Move types to initial state
           group.shift
-          raise 'Error with typed objects' if group.first == HYPHEN
+          raise 'Unexpected hyphen in objects' if group.first == HYPHEN
           # TODO support either
-          objects = []
+          index = 0
           until group.empty?
-            objects << o = group.shift
-            @objects << o
+            @objects << group.shift
             if group.first == HYPHEN
               group.shift
               type = group.shift
-              until objects.empty?
-                @state << [type, o = objects.shift]
+              until index == @objects.size
+                @state << [type, o = @objects[index]]
+                index += 1
                 # Convert type hierarchy to propositions of initial state
                 types = [type]
                 until types.empty?
