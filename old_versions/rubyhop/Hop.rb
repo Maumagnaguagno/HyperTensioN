@@ -48,7 +48,7 @@ module Hop
       if subtasks
         tasks.shift
         tasks.unshift(*subtasks)
-        solution = seek_plan(state, tasks, plan, depth+1, verbose)
+        solution = seek_plan(state, tasks, plan, depth.succ, verbose)
         return solution if solution
       end
     }

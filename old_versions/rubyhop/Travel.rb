@@ -1,6 +1,4 @@
-$: << '.'
-
-require 'Hop'
+require './Hop'
 
 def taxi_rate(dist)
   dist * 0.5 + 1.5
