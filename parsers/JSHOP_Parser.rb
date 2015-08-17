@@ -10,10 +10,10 @@ module JSHOP_Parser
   # Define effects
   #-----------------------------------------------
 
-  def define_effects(name, type, group, effects)
-    raise "Error with #{name} #{type} effects" unless group.instance_of?(Array)
+  def define_effects(name, group, effects)
+    raise "Error with #{name} effects" unless group.instance_of?(Array)
     group.each {|pro|
-      raise "Error with negated #{name} #{type} effects" if pro.first == NOT
+      raise 'Unexpected not in effects' if pro.first == NOT
       effects << pro
       @predicates[pro.first.freeze] = true
     }
@@ -45,8 +45,8 @@ module JSHOP_Parser
       }
     end
     # Effects
-    define_effects(name, 'del', group, del) if (group = op.shift) != NIL
-    define_effects(name, 'add', group, add) if (group = op.shift) != NIL
+    define_effects(name, group, del) if (group = op.shift) != NIL
+    define_effects(name, group, add) if (group = op.shift) != NIL
   end
 
   #-----------------------------------------------
