@@ -33,47 +33,6 @@ module PDDL_Parser
   end
 
   #-----------------------------------------------
-  # Define preconditions
-  #-----------------------------------------------
-
-  def define_preconditions(name, pro, pos, neg)
-    raise "Error with #{name} preconditions" unless pro.instance_of?(Array)
-    if pro.first == NOT
-      raise "Error with #{name} negative preconditions" if pro.size != 2
-      neg << (pro = pro.last)
-    else pos << pro
-    end
-    pro.replace(EQUAL_SUB) if (pro = pro.first) == EQUAL
-    @predicates[pro.freeze] = false unless @predicates.include?(pro)
-  end
-
-  #-----------------------------------------------
-  # Define effects
-  #-----------------------------------------------
-
-  def define_effects(name, pro, add, del)
-    raise "Error with #{name} effects" unless pro.instance_of?(Array)
-    if pro.first == NOT
-      raise "Error with #{name} negative effects" if pro.size != 2
-      del << (pro = pro.last)
-    else add << pro
-    end
-    @predicates[pro.first.freeze] = true
-  end
-
-  #-----------------------------------------------
-  # Define goals
-  #-----------------------------------------------
-
-  def define_goals(pro)
-    if pro.first == NOT
-      raise 'Error with goals' if pro.size != 2
-      @goal_not << pro.last
-    else @goal_pos << pro
-    end
-  end
-
-  #-----------------------------------------------
   # Parse action
   #-----------------------------------------------
 
@@ -105,22 +64,31 @@ module PDDL_Parser
         raise "Action #{name} with repeated parameters" if free_variables.uniq!
       when ':precondition'
         raise "Error with #{name} precondition" unless (group = op.shift).instance_of?(Array)
-        # Conjunction
-        if group.first == AND
-          group.shift
-          group.each {|pro| define_preconditions(name, pro, pos, neg)}
-        # Atom
-        else define_preconditions(name, group, pos, neg)
-        end
+        # Conjunction or atom
+        group.first == AND ? group.shift : group = [group]
+        group.each {|pro|
+          raise "Error with #{name} preconditions" unless pro.instance_of?(Array)
+          if pro.first == NOT
+            raise "Error with #{name} negative preconditions" if pro.size != 2
+            neg << (pro = pro.last)
+          else pos << pro
+          end
+          pro.replace(EQUAL_SUB) if (pro = pro.first) == EQUAL
+          @predicates[pro.freeze] = false unless @predicates.include?(pro)
+        }
       when ':effect'
         raise "Error with #{name} effect" unless (group = op.shift).instance_of?(Array)
-        # Conjunction
-        if group.first == AND
-          group.shift
-          group.each {|pro| define_effects(name, pro, add, del)}
-        # Atom
-        else define_effects(name, group, add, del)
-        end
+        # Conjunction or atom
+        group.first == AND ? group.shift : group = [group]
+        group.each {|pro|
+          raise "Error with #{name} effects" unless pro.instance_of?(Array)
+          if pro.first == NOT
+            raise "Error with #{name} negative effects" if pro.size != 2
+            del << (pro = pro.last)
+          else add << pro
+          end
+          @predicates[pro.first.freeze] = true
+        }
       else puts "#{group.first} is not recognized in action"
       end
     end
@@ -226,13 +194,15 @@ module PDDL_Parser
           @state.concat(group)
         when ':goal'
           return unless group = group[1]
-          # Conjunction
-          if group.first == AND
-            group.shift
-            group.each {|pro| define_goals(pro)}
-          # Atom
-          else define_goals(group)
-          end
+          # Conjunction or atom
+          group.first == AND ? group.shift : group = [group]
+          group.each {|pro|
+            if pro.first == NOT
+              raise 'Error with goals' if pro.size != 2
+              @goal_not << pro.last
+            else @goal_pos << pro
+            end
+          }
         else puts "#{group.first} is not recognized in problem"
         end
       end
