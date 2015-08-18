@@ -59,7 +59,7 @@ module JSHOP_Parser
     name = (group = met.first).shift
     met.shift
     # Already defined
-    method = @methods.find {|m| m.first == name}
+    method = @methods.assoc(name)
     @methods << method = [name, group] unless method
     until met.empty?
       # Optional label, add index for the unlabeled cases
