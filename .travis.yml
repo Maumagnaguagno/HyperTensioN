@@ -1,10 +1,14 @@
 language: ruby
 rvm:
+  # MRI
   - 1.8.7
   - 1.9.3
   - 2.0.0
   - 2.1.5
   - 2.2.0
+  # JRuby
+  - jruby-18mode
+  - jruby-19mode
 script:
   - ruby tests/sphygmomanometer.rb
   - ruby tests/frenesi.rb
