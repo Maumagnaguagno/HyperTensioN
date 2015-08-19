@@ -228,6 +228,10 @@ end
 It is impossible to propagate variables all the time, some variables must be bounded during run-time.
 Free variables are created as empty strings, being used as pointers to their future values.
 A ```generate([positive], [negative], free_variables)``` method will do the hard job, using positive preconditions to find possible values and unify accordingly, only yielding values that satisfy the preconditions requested.
+Therefore a positive precondition set that does not mention all free variables will generate zero unifications.
+In classical planning it is possible to try the entire list of objects as values, but in HTN there may be an infinite number of values.
+It is possible to solve this problem adding each object possible to be used to the initial state, ``(object kiwi) (object banjo)``, in the initial state and add them in the preconditions, ``(object ?x)``.
+This was done with the [basic_pddl](examples/basic_pddl/basic.pddl) example to avoid an empty set as positive preconditions.
 The following example goes beyond this specification, using an instance variable to avoid cached positions created by other decomposition paths.
 You can always use ```if-else``` constructs to speed-up problem solving.
 Here it is clear that no state memory is created by Hypertension, that is why we use ```@visited_at```.
