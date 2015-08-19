@@ -111,7 +111,7 @@ class Frenesi < Test::Unit::TestCase
       :operators => [
         ['pickup', ['?a'],
           # Preconditions
-          [],
+          [['object', '?a']],
           [['have', '?a']],
           # Effects
           [['have', '?a']],
@@ -127,8 +127,8 @@ class Frenesi < Test::Unit::TestCase
         ]
       ],
       :methods => [],
-      :predicates => {'have' => true},
-      :state => [],
+      :predicates => {'have' => true, 'object' => false},
+      :state => [['object', 'kiwi'], ['object', 'banjo']],
       :tasks => [],
       :goal_pos => [['have', 'banjo']],
       :goal_not => []
