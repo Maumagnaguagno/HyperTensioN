@@ -3,12 +3,14 @@
 
   (:predicates
     (have ?a)
+    (object ?a)
   )
 
   (:action pickup
     :parameters (?a)
     :precondition
       (and
+        (object ?a)
         (not (have ?a))
       )
     :effect

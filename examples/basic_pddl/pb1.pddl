@@ -5,6 +5,8 @@
     kiwi banjo
   )
   (:init
+    (object kiwi)
+    (object banjo)
   )
   (:goal
     (and
