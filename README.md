@@ -3,7 +3,7 @@
 
 Hypertension is an Hierarchical Task Network Planner written in Ruby, which means you have to describe how tasks can be accomplished using method decomposition to achieve a plan, but in Ruby.
 HTN is used as an acronym for Hypertension in medical context, therefore the name was given.
-In order to support other planning languages a module named **[Hype](#hype)** will take care of the conversion process.
+In order to support other planning languages a module named **[Hype](#hype "Jump to Hype section")** will take care of the conversion process.
 With hierarchical planning it is possible to describe a strategy to obtain a sequence of actions that executes a certain task.
 It works based on decomposition, which is very alike to how humans think, taking mental steps further into primitive operators.
 The current version has most of its algorithm inspired by PyHop/SHOP, with backtracking and unification added.
@@ -52,7 +52,7 @@ You will need to specify operator visibility and the subtasks of each method in 
 
 ### Example
 There is nothing better than an example to understand the behavior of something.
-We will start with the [Robby domain](examples/robby).
+We will start with the [Robby domain](examples/robby "Robby folder").
 Our rescue robot Robby is called to action, the robot is inside an office building trying to check the status of certain locations.
 Those locations are defined by the existence of a beacon, and the robot must be in the same hallway or room to check the status.
 Robby has a small set of actions available:
@@ -183,7 +183,7 @@ The order they appear in the domain definition implies the order of evaluation.
 Methods may appear in 3 different scenarios:
 - **No preconditions**, direct application of subtasks.
 - **Grounded preconditions**, apply subtasks if satisfied, every variable is [grounded](http://en.wikipedia.org/wiki/Ground_expression).
-- **Lifted preconditions**, unify [free variables](http://en.wikipedia.org/wiki/Free_variables_and_bound_variables) according to the preconditions. [See how it works](#free-variables).
+- **Lifted preconditions**, unify [free variables](http://en.wikipedia.org/wiki/Free_variables_and_bound_variables) according to the preconditions. [Check how it works](#free-variables).
 
 Instead of returning, the methods yield a subtask list.
 This approach solves the problem of returning several unifications per method call, yielding them as required.
