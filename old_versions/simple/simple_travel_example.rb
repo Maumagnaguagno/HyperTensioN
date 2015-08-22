@@ -1,4 +1,4 @@
-require './Hypertension_simple'
+require File.expand_path('../Hypertension_simple', __FILE__)
 
 #-----------------------------------------------
 # State Valuation

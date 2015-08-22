@@ -1,4 +1,4 @@
-require './Hop'
+require File.expand_path('../Hop', __FILE__)
 
 def taxi_rate(dist)
   dist * 0.5 + 1.5

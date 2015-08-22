@@ -1,5 +1,5 @@
-# http://www.se16.info/hgb/tictactoe.htm
-require './Hypertension_simple'
+require File.expand_path('../Hypertension_simple', __FILE__)
+# check http://www.se16.info/hgb/tictactoe.htm
 
 #-----------------------------------------------
 # State Copy
