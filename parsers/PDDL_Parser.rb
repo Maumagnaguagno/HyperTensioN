@@ -58,7 +58,7 @@ module PDDL_Parser
               pos << [type, free_variables[index]]
               index += 1
             end
-            @predicates[type.freeze] = false unless @predicates.include?(type)
+            @predicates[type.freeze] ||= false
           end
         end
         raise "Action #{name} with repeated parameters" if free_variables.uniq!
@@ -74,7 +74,7 @@ module PDDL_Parser
           else pos << pro
           end
           pro.replace(EQUAL_SUB) if (pro = pro.first) == EQUAL
-          @predicates[pro.freeze] = false unless @predicates.include?(pro)
+          @predicates[pro.freeze] ||= false
         }
       when ':effect'
         raise "Error with #{name} effect" unless (group = op.shift).instance_of?(Array)

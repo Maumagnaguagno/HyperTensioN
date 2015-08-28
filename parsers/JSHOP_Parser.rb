@@ -41,7 +41,7 @@ module JSHOP_Parser
           neg << (pro = pro.last)
         else pos << pro
         end
-        @predicates[pro.first.freeze] = false unless @predicates.include?(pro.first)
+        @predicates[pro.first.freeze] ||= false
       }
     end
     # Effects
@@ -73,7 +73,7 @@ module JSHOP_Parser
             neg << (pro = pro.last)
           else pos << pro
           end
-          @predicates[pro.first.freeze] = false unless @predicates.include?(pro.first)
+          @predicates[pro.first.freeze] ||= false
           free_variables.concat(pro.find_all {|i| i =~ /^\?/ and not method[1].include?(i)})
         }
         free_variables.uniq!
