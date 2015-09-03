@@ -67,13 +67,14 @@ module Hypertension
     # Method
     when Array
       # Keep decomposing the hierarchy
-      current_task.shift
+      task_name = current_task.shift
       level += 1
       decomposition.each {|method|
         puts "#{'  ' * level.pred}#{method}(#{current_task.join(',')})" if @debug
         # Every unification is tested
         send(method, *current_task) {|subtasks| return plan if plan = planning(subtasks.concat(tasks), level)}
       }
+      current_task.unshift(task_name)
     # Error
     else raise "Decomposition problem with #{current_task.first}"
     end
