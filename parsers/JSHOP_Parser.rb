@@ -13,8 +13,7 @@ module JSHOP_Parser
   def define_effects(name, group, effects)
     raise "Error with #{name} effects" unless group.instance_of?(Array)
     group.each {|pro|
-      raise 'Unexpected not in effects' if pro.first == NOT
-      effects << pro
+      pro.first == NOT ? raise('Unexpected not in effects') : effects << pro
       @predicates[pro.first.freeze] = true
     }
   end
@@ -37,8 +36,7 @@ module JSHOP_Parser
       raise "Error with #{name} preconditions" unless group.instance_of?(Array)
       group.each {|pro|
         if pro.first == NOT
-          raise "Error with #{name} negative precondition group" if pro.size != 2
-          neg << (pro = pro.last)
+          pro.size == 2 ? neg << (pro = pro.last) : raise("Error with #{name} negative precondition group")
         else pos << pro
         end
         @predicates[pro.first.freeze] ||= false
@@ -69,8 +67,7 @@ module JSHOP_Parser
         raise "Error with #{name} preconditions" unless group.instance_of?(Array)
         group.each {|pro|
           if pro.first == NOT
-            raise "Error with #{name} negative precondition group" if pro.size != 2
-            neg << (pro = pro.last)
+            pro.size == 2 ? neg << (pro = pro.last) : raise("Error with #{name} negative precondition group")
           else pos << pro
           end
           @predicates[pro.first.freeze] ||= false

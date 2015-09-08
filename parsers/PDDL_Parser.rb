@@ -22,8 +22,7 @@ module PDDL_Parser
         stack << list
         list = []
       when ')'
-        raise 'Missing open parentheses' if stack.empty?
-        list = stack.pop << list
+        stack.empty? ? raise('Missing open parentheses') : list = stack.pop << list
       else list << t
       end
     }
@@ -69,8 +68,7 @@ module PDDL_Parser
         group.each {|pro|
           raise "Error with #{name} preconditions" unless pro.instance_of?(Array)
           if pro.first == NOT
-            raise "Error with #{name} negative preconditions" if pro.size != 2
-            neg << (pro = pro.last)
+            pro.size == 2 ? neg << (pro = pro.last) : raise("Error with #{name} negative preconditions")
           else pos << pro
           end
           pro.replace(EQUAL_SUB) if (pro = pro.first) == EQUAL
@@ -83,8 +81,7 @@ module PDDL_Parser
         group.each {|pro|
           raise "Error with #{name} effects" unless pro.instance_of?(Array)
           if pro.first == NOT
-            raise "Error with #{name} negative effects" if pro.size != 2
-            del << (pro = pro.last)
+            pro.size == 2 ? del << (pro = pro.last) : raise("Error with #{name} negative effects")
           else add << pro
           end
           @predicates[pro.first.freeze] = true
@@ -198,8 +195,7 @@ module PDDL_Parser
           group.first == AND ? group.shift : group = [group]
           group.each {|pro|
             if pro.first == NOT
-              raise 'Error with goals' if pro.size != 2
-              @goal_not << pro.last
+              pro.size == 2 ? @goal_not << pro.last : raise('Error with goals')
             else @goal_pos << pro
             end
           }
