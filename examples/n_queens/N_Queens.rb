@@ -37,11 +37,7 @@ module N_Queens
   #-----------------------------------------------
 
   def put_piece(x, y)
-    apply_operator(
-      # Positive preconditions
-      [],
-      # Negative preconditions
-      [],
+    apply(
       # Add effects
       [
         ['queen', x, y]
@@ -96,8 +92,8 @@ if $0 == __FILE__
   N_Queens.solve(size, ARGV.last == '-d', true)
   # Draw from row size - 1 to 0
   N_Queens.state['queen'].reverse_each {|i,j|
-    row = '.' * size
-    row[i.to_i] = 'Q'
+    row = '[ ]' * size
+    row[i.to_i * 3 + 1] = 'Q'
     puts row
   }
 end
