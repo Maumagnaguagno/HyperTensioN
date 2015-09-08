@@ -14,11 +14,10 @@ module Hype
 
   FILEPATH = File.expand_path('..', __FILE__)
 
-  HELP = "Hype
-  Use #$0 domain problem [option]
-
+  HELP = "  Usage:
+    Hype domain problem [option]\n
   Options:
-    print - print data parsed(default)
+    print - print parsed data(default)
     rb    - generate Ruby files to Hypertension
     pddl  - generate PDDL files
     jshop - generate JSHOP files
@@ -134,7 +133,7 @@ Problem #{@parser.problem_name}
   #-----------------------------------------------
 
   def compile(domain, problem, type)
-    raise "No data to compile" unless @parser
+    raise 'No data to compile' unless @parser
     case type
     when 'rb' then compiler = Hyper_Compiler
     when 'jshop' then compiler = JSHOP_Compiler
