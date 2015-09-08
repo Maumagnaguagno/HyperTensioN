@@ -25,7 +25,8 @@ Algorithm planning(list tasks)
   return empty plan if tasks = empty
   current_task <- pop first element of tasks
   if current_task is an Operator
-    if apply_operator(current_task)
+    if applicable(current_task)
+      apply(current_task)
       plan <- planning(tasks)
       if plan
         plan <- current_task + plan
@@ -117,10 +118,9 @@ It is also possible to avoid listing all of them and filter based on their name 
 The enter operator appears to be a good starting point, we need to define our preconditions and effects.
 I prefer to handle them in a table, easier to see what is changing:
 
-**enter(bot, source, destination)**
-
-| Preconditions | Effects |
-| ---: | ---: |
+| enter | bot, source, destination |
+| ----: | ---: |
+| **Preconditions** | **Effects** |
 | robot(bot) ||
 | hallway(source) ||
 | room(destination) ||
@@ -128,7 +128,7 @@ I prefer to handle them in a table, easier to see what is changing:
 | at(bot, source) | **not** at(bot, source) |
 | **not** at(bot, source) | at(bot, destination) |
 
-This operator translates to:
+Which translates to:
 
 ```Ruby
 def enter(bot, source, destination)
@@ -400,13 +400,14 @@ They were defined as instance variables to be mixed in other classes if needed, 
 
 ```Ruby
 # Require and use
-require './Hypertension.rb'
+# require_relative 'Hypertension' if RUBY_VERSION >= 1.9
+require './Hypertension'
 Hypertension.state = {...}
 Hypertension.applicable?(...)
 ```
 ```Ruby
 # Mix in
-require './Hypertension.rb'
+require './Hypertension'
 class Foo < Bar
   include Hypertension
 
@@ -429,7 +430,8 @@ This method is called recursively until it finds an empty task list, ```[]```, t
 Therefore no plan actually exists before reaching an empty task list.
 In case of failure, ```nil``` is returned.
 
-- ```applicable?(precond_pos, precond_not)``` is used to test if the current state have all positive preconditions and not a single negative precondition. It returns true if applicable and false otherwise.
+- ```applicable?(precond_pos, precond_not)``` tests if the current state have all positive preconditions and not a single negative precondition. It returns true if applicable and false otherwise.
+- ```apply(effect_add, effect_del)``` modifies the current state, add or remove the propositions specified. Returns true.
 - ```apply_operator(precond_pos, precond_not, effect_add, effect_del)``` extends this idea applying effects if ```applicable?```. Returns true if applied, nil otherwise.
 - ```generate(precond_pos, precond_not, *free)``` yields all possible unifications to the free variables defined, therefore you need a block to capture the unifications. The return value is undetermined.
 - ```print_data(data)``` can be used to print task lists and proposition lists, usefull for debug.

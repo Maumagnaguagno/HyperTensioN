@@ -67,13 +67,14 @@ module Hypertension
     # Method
     when Array
       # Keep decomposing the hierarchy
-      current_task.shift
+      task_name = current_task.shift
       level += 1
       decomposition.each {|method|
         puts "#{'  ' * level.pred}#{method}(#{current_task.join(',')})" if @debug
         # Every unification is tested
         send(method, *current_task) {|subtasks| return plan if plan = planning(subtasks.concat(tasks), level)}
       }
+      current_task.unshift(task_name)
     # Error
     else raise "Decomposition problem with #{current_task.first}"
     end
@@ -90,17 +91,24 @@ module Hypertension
   end
 
   #-----------------------------------------------
+  # Apply
+  #-----------------------------------------------
+
+  def apply(effect_add, effect_del)
+    # Create new state with added or deleted propositions
+    @state = Marshal.load(Marshal.dump(@state))
+    effect_del.each {|name,*objs| @state[name].delete(objs)}
+    effect_add.each {|name,*objs| @state[name] << objs}
+    true
+  end
+
+  #-----------------------------------------------
   # Apply operator
   #-----------------------------------------------
 
   def apply_operator(precond_pos, precond_not, effect_add, effect_del)
-    # Apply effects on new state if operator applicable
-    if applicable?(precond_pos, precond_not)
-      @state = Marshal.load(Marshal.dump(@state))
-      effect_del.each {|name,*objs| @state[name].delete(objs)}
-      effect_add.each {|name,*objs| @state[name] << objs}
-      true
-    end
+    # Apply effects if preconditions satisfied
+    apply(effect_add, effect_del) if applicable?(precond_pos, precond_not)
   end
 
   #-----------------------------------------------
@@ -147,7 +155,7 @@ module Hypertension
       return if i.empty?
       i.uniq!
     }
-    # Depth-first search with constraint backtracking
+    # Depth-first search
     stack = []
     level = obj = 0
     while level
@@ -184,11 +192,11 @@ module Hypertension
   #-----------------------------------------------
 
   def problem(start, tasks, debug = false, goal_pos = [], goal_not = [])
+    @debug = debug
+    @state = start
     puts 'Tasks'.center(50,'-')
     print_data(tasks)
     puts 'Planning'.center(50,'-')
-    @debug = debug
-    @state = start
     t = Time.now.to_f
     # Ordered
     if goal_pos.empty? and goal_not.empty?
