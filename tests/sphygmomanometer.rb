@@ -84,10 +84,61 @@ class Sphygmomanometer < Test::Unit::TestCase
   end
 
   #-----------------------------------------------
+  # Applicable?
+  #-----------------------------------------------
+
+  def test_applicable_empty
+    Hypertension.state = original_state = simple_state
+    assert_equal(true, Hypertension.applicable?([],[]))
+    # No state was created
+    assert_same(original_state, Hypertension.state)
+  end
+
+  def test_applicable_success
+    Hypertension.state = original_state = simple_state
+    assert_equal(true, Hypertension.applicable?([['a','1']],[['a','x']]))
+    # No state was created
+    assert_same(original_state, Hypertension.state)
+  end
+
+  def test_applicable_failure
+    Hypertension.state = original_state = simple_state
+    assert_equal(false, Hypertension.applicable?([['a','1']],[['a','2']]))
+    # No state was created
+    assert_same(original_state, Hypertension.state)
+  end
+
+  #-----------------------------------------------
+  # Apply
+  #-----------------------------------------------
+
+  def test_apply_empty_effects
+    Hypertension.state = original_state = simple_state
+    # Successfully applied
+    assert_equal(true, Hypertension.apply([],[]))
+    # New state was created
+    assert_not_same(original_state, Hypertension.state)
+    # Same content
+    assert_equal(original_state, Hypertension.state)
+  end
+
+  def test_apply_success
+    Hypertension.state = original_state = simple_state
+    # Successfully applied
+    assert_equal(true, Hypertension.apply([['a','y']],[['a','y']]))
+    # New state was created
+    assert_not_same(original_state, Hypertension.state)
+    # Delete effects must happen before addition, otherwise the effect nullifies itself
+    expected = simple_state
+    expected['a'] << ['y']
+    assert_equal(expected, Hypertension.state)
+  end
+
+  #-----------------------------------------------
   # Apply operator
   #-----------------------------------------------
 
-  def test_apply_operator_empty
+  def test_apply_operator_empty_effects
     Hypertension.state = original_state = simple_state
     # Successfully applied
     assert_equal(true, Hypertension.apply_operator([['a','1']],[['a','x']],[],[]))
@@ -113,31 +164,6 @@ class Sphygmomanometer < Test::Unit::TestCase
     Hypertension.state = original_state = simple_state
     # Precondition failure
     assert_nil(Hypertension.apply_operator([],[['a','2']],[['a','y']],[]))
-    # No state was created
-    assert_same(original_state, Hypertension.state)
-  end
-
-  #-----------------------------------------------
-  # Applicable?
-  #-----------------------------------------------
-
-  def test_applicable_empty
-    Hypertension.state = original_state = simple_state
-    assert_equal(true, Hypertension.applicable?([],[]))
-    # No state was created
-    assert_same(original_state, Hypertension.state)
-  end
-
-  def test_applicable_success
-    Hypertension.state = original_state = simple_state
-    assert_equal(true, Hypertension.applicable?([['a','1']],[['a','x']]))
-    # No state was created
-    assert_same(original_state, Hypertension.state)
-  end
-
-  def test_applicable_failure
-    Hypertension.state = original_state = simple_state
-    assert_equal(false, Hypertension.applicable?([['a','1']],[['a','2']]))
     # No state was created
     assert_same(original_state, Hypertension.state)
   end
