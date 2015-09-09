@@ -17,5 +17,3 @@ script:
   - ruby examples/travel/pb3.rb
   - ruby examples/travel/pb4.rb
   - ruby examples/robby/pb1.rb
-  - ruby examples/goldminer/pb1.rb
-  - ruby examples/goldminer/pb1_const_objects.rb
