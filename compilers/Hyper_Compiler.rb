@@ -44,9 +44,9 @@ module Hyper_Compiler
       domain_str << "\n    '#{op.first}' => true#{',' if operators.size.pred != i or not methods.empty?}"
       define_operators << "\n  def #{op.first}#{"(#{op[1].map {|j| j.sub(/^\?/,'')}.join(', ')})" unless op[1].empty?}\n"
       if op[2].empty? and op[3].empty?
-        define_operators << "    apply("
+        define_operators << '    apply('
       else
-        define_operators << "    apply_operator("
+        define_operators << '    apply_operator('
         predicates_to_hyper(define_operators << "\n      # Positive preconditions", op[2])
         predicates_to_hyper(define_operators << ",\n      # Negative preconditions", op[3])
         define_operators << ','
@@ -81,7 +81,8 @@ module Hyper_Compiler
         end
         define_methods << "  end\n"
       }
-      domain_str << "    ]#{',' if methods.size.pred != mi}"
+      domain_str << '    ]'
+      domain_str << ',' if methods.size.pred != mi
     }
     # Definitions
     domain_str << "\n  }\n\n  ##{SPACER}\n  # Operators\n  ##{SPACER}\n#{define_operators}"
@@ -120,27 +121,24 @@ module Hyper_Compiler
     problem_str << "\n#{domain_name.capitalize}.problem(\n  # Start\n  {\n"
     # Start
     start_hash.each_with_index {|(k,v),i|
-      if v.empty?
-        problem_str << "    '#{k}' => []"
-      else
-        problem_str << "    '#{k}' => [\n      [" << v.map! {|obj| obj.join(', ')}.join("],\n      [") << "]\n    ]"
-      end
+      problem_str << "    '#{k}' => ["
+      problem_str << "\n      [" << v.map! {|obj| obj.join(', ')}.join("],\n      [") << "]\n    " unless v.empty?
+      problem_str << ']'
       problem_str << ",\n" if start_hash.size.pred != i
     }
     # Tasks
     group = []
     tasks.each {|t| group << "    ['#{t.first}'#{', ' if t.size > 1}#{t.drop(1).join(', ')}]"}
     problem_str << "\n  },\n  # Tasks\n  [\n" << group .join(",\n") << "\n  ],\n  # Debug\n  ARGV.first == '-d'"
-    if ordered
-      problem_str << "\n)"
-    else
+    unless ordered
       group.clear
       goal_pos.each {|g| group << "    ['#{g.first}', #{g.drop(1).join(', ')}]"}
       problem_str << ",\n  # Positive goals\n  [\n" << group.join(",\n") << "\n  ],\n  # Negative goals\n  [\n"
       group.clear
       goal_not.each {|g| group << "    ['#{g.first}', #{g.drop(1).join(', ')}]"}
-      problem_str << group.join(",\n") << "\n  ]\n)"
+      problem_str << group.join(",\n") << "\n  ]"
     end
+    problem_str << "\n)"
     problem_str.gsub!(/\b-\b/,'_')
     problem_str
   end
