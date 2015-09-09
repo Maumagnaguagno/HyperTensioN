@@ -31,6 +31,8 @@
 # - Refactoring of generate
 # Jun 2015
 # - Unordered tasks with explicit goal check
+# Sep 2015
+# - Apply method extracted from apply_operator
 #-----------------------------------------------
 # TODOs
 # - Order predicates and test applicability by level (generate)
