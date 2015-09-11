@@ -104,8 +104,7 @@ module Hype
   Operators:\n#{operators_to_s}
   Methods:\n#{methods_to_s}
 Problem #{@parser.problem_name}
-  State:#{propositions_to_s(@parser.state, "\n    ")}
-
+  State:#{propositions_to_s(@parser.state, "\n    ")}\n
   Goal:
     Tasks:#{subtasks_to_s(@parser.tasks.drop(1), @parser.operators, "\n      ", @parser.tasks.first)}
     Positive:#{@parser.goal_pos.empty? ? "\n      empty" : propositions_to_s(@parser.goal_pos, "\n      ")}
@@ -194,7 +193,7 @@ if $0 == __FILE__
             require "#{Hype::FILEPATH}/#{problem}"
           else Hype.compile(domain, problem, type)
           end
-        else puts Hype.to_s, Time.now.to_f - t
+        else puts Hype.to_s, "\nTime: #{Time.now.to_f - t}s"
         end
       end
     else puts Hype::HELP
