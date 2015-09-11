@@ -55,10 +55,7 @@ module N_Queens
 
   def try_next(c)
     # Base of recursion
-    if c.zero?
-      yield []
-      return
-    end
+    return yield [] if c.zero?
     yi = c.pred
     # Free variables
     x = ''
