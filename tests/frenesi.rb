@@ -1,30 +1,6 @@
-require 'test/unit'
-require './Hype'
+require './tests/hypest'
 
-class Frenesi < Test::Unit::TestCase
-
-  def parser_tests(domain, problem, expected_parser, expected)
-    Hype.parse(domain, problem)
-    parser = Hype.parser
-    assert_equal(expected_parser, parser)
-    expected.each {|att,value| assert_equal(value, parser.send(att))}
-  end
-
-  def compiler_tests(domain, problem, type, expected_domain, expected_problem)
-    domain_type = "#{domain}.#{type}"
-    problem_type = "#{problem}.#{type}"
-    File.delete(domain_type) if File.exist?(domain_type)
-    File.delete(problem_type) if File.exist?(problem_type)
-    Hype.parse(domain, problem)
-    Hype.compile(domain, problem, type)
-    assert_equal(true, File.exist?(domain_type))
-    assert_equal(true, File.exist?(problem_type))
-    domain_generated = IO.read(domain_type)
-    problem_generated = IO.read(problem_type)
-    assert_equal(expected_domain, domain_generated)
-    assert_equal(expected_problem, problem_generated)
-    File.delete(domain_type, problem_type)
-  end
+class Frenesi < Hypest
 
   #-----------------------------------------------
   # Extension
@@ -47,8 +23,8 @@ class Frenesi < Test::Unit::TestCase
       # Files
       './examples/basic_jshop/basic.jshop',
       './examples/basic_jshop/pb1.jshop',
-      # Parser
-      JSHOP_Parser,
+      # Parser and patterns
+      JSHOP_Parser, false,
       # Attributes
       :domain_name => 'basic',
       :problem_name => 'problem',
@@ -103,8 +79,8 @@ class Frenesi < Test::Unit::TestCase
       # Files
       './examples/basic_pddl/basic.pddl',
       './examples/basic_pddl/pb1.pddl',
-      # Parser
-      PDDL_Parser,
+      # Parser and patterns
+      PDDL_Parser, false,
       # Attributes
       :domain_name => 'basic',
       :problem_name => 'problem',
@@ -140,8 +116,8 @@ class Frenesi < Test::Unit::TestCase
       # Files
       './examples/dependency_pddl/dependency.pddl',
       './examples/dependency_pddl/pb1.pddl',
-      # Parser
-      PDDL_Parser,
+      # Parser amd patterns
+      PDDL_Parser, false,
       # Attributes
       :domain_name => 'dependency',
       :problem_name => 'problem',
@@ -200,6 +176,8 @@ class Frenesi < Test::Unit::TestCase
       # Files
       './examples/basic_jshop/basic.jshop',
       './examples/basic_jshop/pb1.jshop',
+      # Parser and patterns
+      JSHOP_Parser, false,
       # Type
       'pddl',
       # Domain
