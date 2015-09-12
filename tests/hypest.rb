@@ -1,7 +1,7 @@
 require 'test/unit'
 require './Hype'
 
-class Hypest < Test::Unit::TestCase
+module Hypest
 
   def parser_tests(domain, problem, expected_parser, execute_patterns, expected)
     Hype.parse(domain, problem)

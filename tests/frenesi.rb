@@ -1,6 +1,7 @@
 require './tests/hypest'
 
-class Frenesi < Hypest
+class Frenesi < Test::Unit::TestCase
+  include Hypest
 
   #-----------------------------------------------
   # Extension
