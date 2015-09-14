@@ -24,10 +24,12 @@
     :parameters (?a - agent ?x - object)
     :precondition
       (and
+        (got_money ?a)
         (not (have ?a ?x))
       )
     :effect
       (and
+        (not (got_money ?a))
         (have ?a ?x)
       )
   )
