@@ -133,11 +133,11 @@ class Frenesi < Test::Unit::TestCase
         ],
         ['buy', ['?a', '?x'],
           # Preconditions
-          [['agent', '?a'], ['object', '?x']],
+          [['agent', '?a'], ['object', '?x'], ['got_money', '?a']],
           [['have', '?a', '?x']],
           # Effects
           [['have', '?a', '?x']],
-          []
+          [['got_money', '?a']]
         ],
         ['give', ['?a', '?b', '?x'],
           # Preconditions
