@@ -376,6 +376,7 @@ ruby examples/robby/pb1.rb
 If you described your domain and problem in another language you must convert it to Ruby before execution.
 Hype can do it for you, it requires a domain and a problem file to be compiled to a certain output type, like ```rb```.
 If no output type is provided or 'print' is provided, the system only prints out what was understood from the files and the time taken to parse.
+Hype expects the domain and problem files to be in the examples folder when requiring Hypertension for ```rb``` outputs.
 
 ```Shell
 cd HyperTensioN
@@ -468,7 +469,7 @@ Both cases are supported, but we evaluate the preconditions of each set independ
 In order to copy the behavior we cannot simply copy the positive preconditions in the negative set and vice-versa.
 Sometimes only one proposition in the set is false, if we copied in the other set for the other methods it would never work.
 It is possible to declare the methods in the same Ruby method (losing label definition), but kills the simplicity we are trying to achieve.
-We also do not support JSHOP axioms, yet.
+We also do not support JSHOP axioms and external calls, yet.
 
 You can always not believe the **Hype** and convert descriptions by yourself, following a style that achieves a better or faster solution with the indentation that makes you happy.
 You could add flags or counters in the methods and return after generate unified one or more times a specific value.
