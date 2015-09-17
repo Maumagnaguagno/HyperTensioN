@@ -39,7 +39,7 @@ module Dot_Compiler
         d[4].each_with_index {|subtask,j| domain_str << "|<n#{j}>#{subtask.join(' ')}"}
         # Connections
         domain_str << "}\"\n  ];\n  #{met.first}:n#{i} -> label_#{d.first};\n"
-        d[4].each_with_index {|subtask,j| domain_str << "  label_#{d.first}:n#{j} -> #{subtask.first};\n" if operators.any? {|op| op.first == subtask.first}}
+        d[4].each_with_index {|subtask,j| domain_str << "  label_#{d.first}:n#{j} -> #{subtask.first};\n" if operators.assoc(subtask.first)}
       }
     }
     domain_str << '}'
