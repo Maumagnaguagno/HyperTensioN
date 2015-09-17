@@ -12,7 +12,7 @@ module Hyper_Compiler
       output << "\n      []"
     else
       group = []
-      predicates.each {|g| group << g.map {|i| i =~ /^\?/ ? i.sub(/^\?/,'') : "'#{i}'"}.join(', ')}
+      predicates.each {|g| group << g.map {|i| i.start_with?('?') ? i.sub(/^\?/,'') : "'#{i}'"}.join(', ')}
       output << "\n      [\n        [" << group.join("],\n        [") << "]\n      ]"
     end
   end
@@ -26,7 +26,7 @@ module Hyper_Compiler
       output << "#{indentation}yield []\n"
     else
       group = []
-      subtasks.each {|t| group << t.map {|i| i =~ /^\?/ ? i.sub(/^\?/,'') : "'#{i}'"}.join(', ')}
+      subtasks.each {|t| group << t.map {|i| i.start_with?('?') ? i.sub(/^\?/,'') : "'#{i}'"}.join(', ')}
       output << "#{indentation}yield [\n#{indentation}  [" << group.join("],\n#{indentation}  [") << "]\n#{indentation}]\n"
     end
   end
