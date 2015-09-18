@@ -1,4 +1,4 @@
-(define (problem pb1)
+(define (problem pb4)
   (:domain dependency)
   (:requirements :strips :typing :negative-preconditions)
   (:objects
@@ -6,11 +6,10 @@
     gift - object
   )
   (:init
-    (have ana gift)
   )
   (:goal
     (and
-      (happy bob)
+      (have bob gift)
     )
   )
 )

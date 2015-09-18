@@ -112,62 +112,6 @@ class Frenesi < Test::Unit::TestCase
     )
   end
 
-  def test_dependency_pddl_parsing
-    parser_tests(
-      # Files
-      './examples/dependency_pddl/dependency.pddl',
-      './examples/dependency_pddl/pb1.pddl',
-      # Parser amd patterns
-      PDDL_Parser, false,
-      # Attributes
-      :domain_name => 'dependency',
-      :problem_name => 'problem',
-      :operators => [
-        ['work', ['?a'],
-          # Preconditions
-          [['agent', '?a']],
-          [['got_money', '?a']],
-          # Effects
-          [['got_money', '?a']],
-          [['happy', '?a']]
-        ],
-        ['buy', ['?a', '?x'],
-          # Preconditions
-          [['agent', '?a'], ['object', '?x'], ['got_money', '?a']],
-          [['have', '?a', '?x']],
-          # Effects
-          [['have', '?a', '?x']],
-          [['got_money', '?a']]
-        ],
-        ['give', ['?a', '?b', '?x'],
-          # Preconditions
-          [['agent', '?a'], ['agent', '?b'], ['object', '?x'], ['have', '?a', '?x']],
-          [['have', '?b', '?x']],
-          # Effects
-          [['have', '?b', '?x'], ['happy', '?b']],
-          [['have', '?a', '?x']]
-        ]
-      ],
-      :methods => [],
-      :predicates => {
-        'agent' => false,
-        'object' => false,
-        'have' => true,
-        'got_money' => true,
-        'happy' => true
-      },
-      :state => [
-        ['agent', 'ana'],
-        ['agent', 'bob'],
-        ['object', 'gift'],
-        ['have', 'ana', 'gift']
-      ],
-      :tasks => [],
-      :goal_pos => [['happy', 'bob']],
-      :goal_not => []
-    )
-  end
-
   #-----------------------------------------------
   # Compilation
   #-----------------------------------------------
