@@ -12,8 +12,6 @@ module Hype
 
   attr_reader :parser
 
-  FILEPATH = File.expand_path('..', __FILE__)
-
   HELP = "  Usage:
     Hype domain problem [option]\n
   Options:
@@ -25,16 +23,9 @@ module Hype
     run   - same as rb with execution
     debug - same as run with execution log"
 
-  # Parsers
-  require "#{FILEPATH}/parsers/JSHOP_Parser"
-  require "#{FILEPATH}/parsers/PDDL_Parser"
-  # Compilers
-  require "#{FILEPATH}/compilers/Dot_Compiler"
-  require "#{FILEPATH}/compilers/Hyper_Compiler"
-  require "#{FILEPATH}/compilers/JSHOP_Compiler"
-  require "#{FILEPATH}/compilers/PDDL_Compiler"
-  # Extensions
-  require "#{FILEPATH}/Patterns" if File.exist?("#{FILEPATH}/Patterns.rb")
+  # Require parsers, compilers and extensions found
+  FILEPATH = File.expand_path('..', __FILE__)
+  Dir.glob("#{FILEPATH}/{parsers,compilers,extensions}/*.rb") {|file| require file}
 
   #-----------------------------------------------
   # Propositions to string
@@ -48,11 +39,14 @@ module Hype
   # Subtasks to string
   #-----------------------------------------------
 
-  def subtasks_to_s(tasks, operators, prefix, order = true)
+  def subtasks_to_s(tasks, prefix, order = true)
     if tasks.empty?
       "#{prefix}empty"
     else
-      "#{prefix}#{'un' unless order}ordered" << tasks.map {|t| "#{prefix}#{operators.any? {|op| op.first == t.first} ? 'operator' : 'method  '} (#{t.join(' ')})"}.join
+      operators = @parser.operators
+      output = "#{prefix}#{'un' unless order}ordered"
+      tasks.each {|t| output << prefix << (operators.assoc(t.first) ? 'operator' : 'method  ') << " (#{t.join(' ')})"}
+      output
     end
   end
 
@@ -88,7 +82,7 @@ module Hype
         output << "        Free variables:\n          #{dec[1].join(indent)}\n" unless dec[1].empty?
         output << "        Precond positive:#{propositions_to_s(dec[2], indent)}\n" unless dec[2].empty?
         output << "        Precond negative:#{propositions_to_s(dec[3], indent)}\n" unless dec[3].empty?
-        output << "        Subtasks:#{subtasks_to_s(dec[4], @parser.operators, indent)}\n"
+        output << "        Subtasks:#{subtasks_to_s(dec[4], indent)}\n"
       }
       output << "\n"
     }
@@ -106,7 +100,7 @@ module Hype
 Problem #{@parser.problem_name}
   State:#{propositions_to_s(@parser.state, "\n    ")}\n
   Goal:
-    Tasks:#{subtasks_to_s(@parser.tasks.drop(1), @parser.operators, "\n      ", @parser.tasks.first)}
+    Tasks:#{subtasks_to_s(@parser.tasks.drop(1), "\n      ", @parser.tasks.first)}
     Positive:#{@parser.goal_pos.empty? ? "\n      empty" : propositions_to_s(@parser.goal_pos, "\n      ")}
     Negative:#{@parser.goal_not.empty? ? "\n      empty" : propositions_to_s(@parser.goal_not, "\n      ")}"
   end
