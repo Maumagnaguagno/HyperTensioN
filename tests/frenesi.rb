@@ -24,8 +24,8 @@ class Frenesi < Test::Unit::TestCase
       # Files
       './examples/basic_jshop/basic.jshop',
       './examples/basic_jshop/pb1.jshop',
-      # Parser and patterns
-      JSHOP_Parser, false,
+      # Parser and extensions
+      JSHOP_Parser, [],
       # Attributes
       :domain_name => 'basic',
       :problem_name => 'problem',
@@ -80,8 +80,8 @@ class Frenesi < Test::Unit::TestCase
       # Files
       './examples/basic_pddl/basic.pddl',
       './examples/basic_pddl/pb1.pddl',
-      # Parser and patterns
-      PDDL_Parser, false,
+      # Parser and extensions
+      PDDL_Parser, [],
       # Attributes
       :domain_name => 'basic',
       :problem_name => 'problem',
@@ -121,8 +121,8 @@ class Frenesi < Test::Unit::TestCase
       # Files
       './examples/basic_jshop/basic.jshop',
       './examples/basic_jshop/pb1.jshop',
-      # Parser and patterns
-      JSHOP_Parser, false,
+      # Parser and extensions
+      JSHOP_Parser, [],
       # Type
       'pddl',
       # Domain
