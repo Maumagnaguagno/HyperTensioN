@@ -13,15 +13,17 @@ module Hype
   attr_reader :parser
 
   HELP = "  Usage:
-    Hype domain problem [option]\n
-  Options:
+    Hype domain problem [extensions*] [output]\n
+  Output:
     print - print parsed data(default)
     rb    - generate Ruby files to Hypertension
     pddl  - generate PDDL files
     jshop - generate JSHOP files
     dot   - generate DOT file
     run   - same as rb with execution
-    debug - same as run with execution log"
+    debug - same as run with execution log\n
+  Extensions:
+    fast  - optimize hierarchical structure"
 
   # Require parsers, compilers and extensions found
   FILEPATH = File.expand_path('..', __FILE__)
@@ -113,12 +115,35 @@ Problem #{@parser.problem_name}
     # Mix files may result in incomplete data
     raise 'Incompatible extensions between domain and problem' if File.extname(domain) != File.extname(problem)
     case File.extname(domain)
+    when '.rb' then @parser = Hyper_Parser
     when '.jshop' then @parser = JSHOP_Parser
     when '.pddl' then @parser = PDDL_Parser
-    else raise "Unknown extension #{File.extname(domain)} to parse"
+    else raise "Unknown file extension #{File.extname(domain)}"
     end
     @parser.parse_domain(domain)
     @parser.parse_problem(problem)
+  end
+
+  #-----------------------------------------------
+  # Extend
+  #-----------------------------------------------
+
+  def extend(extension)
+    raise 'No data to extend' unless @parser
+    case extension
+    when 'patterns' then extender = Patterns
+    when 'fast' then extender = Fast
+    else raise "Unknown extension #{extension}"
+    end
+    extender.match(
+      @parser.operators,
+      @parser.methods,
+      @parser.predicates,
+      @parser.state,
+      @parser.tasks,
+      @parser.goal_pos,
+      @parser.goal_not
+    )
   end
 
   #-----------------------------------------------
@@ -132,7 +157,7 @@ Problem #{@parser.problem_name}
     when 'jshop' then compiler = JSHOP_Compiler
     when 'pddl' then compiler = PDDL_Compiler
     when 'dot' then compiler = Dot_Compiler
-    else raise "Unknown type #{type} to save"
+    else raise "Unknown type #{type}"
     end
     args = [
       @parser.domain_name,
@@ -158,8 +183,11 @@ end
 #-----------------------------------------------
 if $0 == __FILE__
   begin
-    if ARGV.size.between?(2,4)
-      domain, problem, type, extension = ARGV
+    if ARGV.size >= 2
+      domain = ARGV.shift
+      problem = ARGV.shift
+      type = ARGV.pop
+      extensions = ARGV
       if not File.exist?(domain)
         puts "Domain file #{domain} not found"
       elsif not File.exist?(problem)
@@ -167,19 +195,7 @@ if $0 == __FILE__
       else
         t = Time.now.to_f
         Hype.parse(domain, problem)
-        if extension
-          if extension == 'patterns' and defined?(Patterns)
-            Patterns.match(
-              Hype.parser.operators,
-              Hype.parser.methods,
-              Hype.parser.predicates,
-              Hype.parser.tasks,
-              Hype.parser.goal_pos,
-              Hype.parser.goal_not
-            )
-          else raise "Extension #{extension} not supported"
-          end
-        end
+        extensions.each {|e| Hype.extend(e)}
         if type and type != 'print'
           if type == 'run' or type == 'debug'
             Hype.compile(domain, problem, 'rb')
