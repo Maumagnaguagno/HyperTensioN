@@ -135,7 +135,7 @@ Problem #{@parser.problem_name}
     when 'fast' then extender = Fast
     else raise "Unknown extension #{extension}"
     end
-    extender.match(
+    extender.apply(
       @parser.operators,
       @parser.methods,
       @parser.predicates,

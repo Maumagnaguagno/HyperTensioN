@@ -1,7 +1,7 @@
 module Fast
   extend self
 
-  def match(operators, methods, predicates, state, tasks, goal_pos, goal_not, debug = true)
+  def apply(operators, methods, predicates, state, tasks, goal_pos, goal_not, debug = true)
     puts 'Fast'.center(50,'-'), 'Removing unused propositions from initial state' if debug
     state.reject! {|pro|
       unless predicates.include?(pro.first)
