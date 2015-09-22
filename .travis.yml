@@ -10,7 +10,7 @@ rvm:
   - jruby-18mode
   - jruby-19mode
   # Rubinius
-  - rbx
+  - rbx-2
 script:
   # Tests
   - ruby tests/sphygmomanometer.rb
