@@ -90,9 +90,7 @@ module JSHOP_Parser
   #-----------------------------------------------
 
   def parse_domain(domain_filename)
-    (description = IO.read(domain_filename)).gsub!(/;.*$|\n/,'')
-    description.downcase!
-    if (tokens = PDDL_Parser.scan_tokens(description)).instance_of?(Array) and tokens.shift == 'defdomain'
+    if (tokens = PDDL_Parser.scan_tokens(domain_filename)).instance_of?(Array) and tokens.shift == 'defdomain'
       @operators = []
       @methods = []
       raise 'Found group instead of domain name' if tokens.first.instance_of?(Array)
@@ -116,9 +114,7 @@ module JSHOP_Parser
   #-----------------------------------------------
 
   def parse_problem(problem_filename)
-    (description = IO.read(problem_filename)).gsub!(/;.*$|\n/,'')
-    description.downcase!
-    if (tokens = PDDL_Parser.scan_tokens(description)).instance_of?(Array) and tokens.size == 5 and tokens.shift == 'defproblem'
+    if (tokens = PDDL_Parser.scan_tokens(problem_filename)).instance_of?(Array) and tokens.size == 5 and tokens.shift == 'defproblem'
       @problem_name = tokens.shift
       raise 'Different domain specified in problem file' if @domain_name != tokens.shift
       @state = tokens.shift

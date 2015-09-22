@@ -13,7 +13,9 @@ module PDDL_Parser
   # Scan tokens
   #-----------------------------------------------
 
-  def scan_tokens(str)
+  def scan_tokens(filename)
+    (str = IO.read(filename)).gsub!(/;.*$|\n/,'')
+    str.downcase!
     stack = []
     list = []
     str.scan(/[()]|[!?:]*[\w-]+/) {|t|
@@ -96,9 +98,7 @@ module PDDL_Parser
   #-----------------------------------------------
 
   def parse_domain(domain_filename)
-    (description = IO.read(domain_filename)).gsub!(/;.*$|\n/,'')
-    description.downcase!
-    if (tokens = scan_tokens(description)).instance_of?(Array) and tokens.shift == 'define'
+    if (tokens = scan_tokens(domain_filename)).instance_of?(Array) and tokens.shift == 'define'
       @operators = []
       @methods = []
       @predicates = {}
@@ -142,9 +142,7 @@ module PDDL_Parser
   #-----------------------------------------------
 
   def parse_problem(problem_filename)
-    (description = IO.read(problem_filename)).gsub!(/;.*$|\n/,'')
-    description.downcase!
-    if (tokens = scan_tokens(description)).instance_of?(Array) and tokens.shift == 'define'
+    if (tokens = scan_tokens(problem_filename)).instance_of?(Array) and tokens.shift == 'define'
       @state = []
       @objects = []
       @goal_pos = []
