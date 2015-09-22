@@ -171,9 +171,7 @@ module Hypertension
       else
         yield if applicable?(precond_pos, precond_not)
         # Load next object or restore
-        if obj.succ != objects[level].size
-          obj += 1
-        else
+        if (obj += 1) == objects[level].size
           level = stack.shift
           obj = stack.shift
         end
