@@ -9,9 +9,13 @@ rvm:
   # JRuby
   - jruby-18mode
   - jruby-19mode
+  # Rubinius
+  - rbx
 script:
+  # Tests
   - ruby tests/sphygmomanometer.rb
   - ruby tests/frenesi.rb
+  # Examples
   - ruby examples/travel/pb1.rb
   - ruby examples/travel/pb2.rb
   - ruby examples/travel/pb3.rb
