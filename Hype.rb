@@ -157,6 +157,7 @@ Problem #{@parser.problem_name}
     when 'jshop' then compiler = JSHOP_Compiler
     when 'pddl' then compiler = PDDL_Compiler
     when 'dot' then compiler = Dot_Compiler
+    when 'md' then compiler = Markdown_Compiler
     else raise "Unknown type #{type}"
     end
     args = [

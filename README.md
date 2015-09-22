@@ -116,19 +116,19 @@ It is also possible to avoid listing all of them and filter based on their name 
 ```
 
 The enter operator appears to be a good starting point, we need to define our preconditions and effects.
-I prefer to handle them in a table, easier to see what is changing:
+I prefer to handle operators with tables, easier to see what is changing:
 
-| enter | bot, source, destination |
-| ----: | ---: |
-| **Preconditions** | **Effects** |
-| robot(bot) ||
-| hallway(source) ||
-| room(destination) ||
-| connected(source, destination) ||
-| at(bot, source) | **not** at(bot, source) |
-| **not** at(bot, source) | at(bot, destination) |
+Enter | bot source destination
+--- | ---
+***Preconditions*** | ***Effects***
+(robot bot) |
+(hallway source) |
+(room destination) |
+(connected source destination) |
+(at bot source) | **not** (at bot source)
+**not** (at bot source) | (at bot destination)
 
-Which translates to:
+Which translates to the following Ruby code:
 
 ```Ruby
 def enter(bot, source, destination)
@@ -451,6 +451,7 @@ It will save time and avoid errors during conversions of domains and problems fo
 This conversion step is not uncommon, as JSHOP itself compiles the description to Java code, trying to achieve the best performance possible.
 
 **Parser support**:
+- [x] Ruby
 - [x] [PDDL](http://en.wikipedia.org/wiki/Planning_Domain_Definition_Language)
 - [x] [JSHOP](http://www.cs.umd.edu/projects/shop/description.html)
 - [ ] [HPDDL](https://github.com/ronwalf/HTN-Translation)
@@ -461,6 +462,8 @@ This conversion step is not uncommon, as JSHOP itself compiles the description t
 - [x] JSHOP (methods and tasks may not be available if the input was PDDL)
 - [x] [Graphviz DOT](http://www.graphviz.org/) (generate a graph description to be compiled into an image)
 - [ ] HPDDL (methods and tasks may not be available if the input was PDDL)
+- [x] [Markdown](http://daringfireball.net/projects/markdown/) (only operators available)
+- [ ] [LaTex](https://www.latex-project.org/)
 
 As any parser, the ones provided by Hype are limited in one way or another.
 PDDL have far more features than supported by most planners and JSHOP have 2 different ways to define methods.
