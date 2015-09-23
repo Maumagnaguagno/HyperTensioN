@@ -41,7 +41,6 @@ module PDDL_Parser
     op.shift
     raise 'Action without name definition' unless (name = op.shift).instance_of?(String)
     raise "Action #{name} redefined" if @operators.assoc(name)
-    raise "Action #{name} have groups missing" if op.size != 6
     @operators << [name, free_variables = [], pos = [], neg = [], add = [], del = []]
     until op.empty?
       case group = op.shift
@@ -106,9 +105,7 @@ module PDDL_Parser
       until tokens.empty?
         case (group = tokens.shift).first
         when ':action' then parse_action(group)
-        when 'domain'
-          raise 'Domain group has size different of 2' if group.size != 2
-          @domain_name = group.last
+        when 'domain' then @domain_name = group.last
         when ':requirements'
           group.shift
           @requirements = group
