@@ -380,8 +380,8 @@ Hype expects the domain and problem files to be in the examples folder when requ
 
 ```Shell
 cd HyperTensioN
-# ruby Hype.rb path/domain_filename path/problem_filename [extensions*] [output]
-# Multiple extensions can be defined before the output type, more to come.
+# ruby Hype.rb path/domain_filename path/problem_filename {extensions} [output]
+# Multiple extensions can be executed before the output happens, more on that to come.
 # The output can be print(default), rb, pddl, jshop, dot, md, run or debug.
 ruby Hype.rb examples/basic_jshop/basic.jshop examples/basic_jshop/pb1.jshop rb
 ruby examples/basic_jshop/pb1.jshop.rb

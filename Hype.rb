@@ -13,7 +13,7 @@ module Hype
   attr_reader :parser
 
   HELP = "  Usage:
-    Hype domain problem [extensions*] [output]\n
+    Hype domain problem {extensions} [output]\n
   Output:
     print - print parsed data(default)
     rb    - generate Ruby files to Hypertension
@@ -23,7 +23,7 @@ module Hype
     run   - same as rb with execution
     debug - same as run with execution log\n
   Extensions:
-    fast  - optimize hierarchical structure"
+    wise  - optimize hierarchical structure"
 
   # Require parsers, compilers and extensions found
   FILEPATH = File.expand_path('..', __FILE__)
@@ -132,7 +132,7 @@ Problem #{@parser.problem_name}
     raise 'No data to extend' unless @parser
     case extension
     when 'patterns' then extender = Patterns
-    when 'fast' then extender = Fast
+    when 'wise' then extender = Wise
     else raise "Unknown extension #{extension}"
     end
     extender.apply(
