@@ -1,4 +1,4 @@
-module Fast
+module Wise
   extend self
 
   def apply(operators, methods, predicates, state, tasks, goal_pos, goal_not, debug = true)
