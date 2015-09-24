@@ -11,7 +11,7 @@ module Hypest
     expected.each {|att,value| assert_equal(value, parser.send(att))}
   end
 
-  def compiler_tests(domain, problem, expected_parser, extensions, type, expected_domain, expected_problem)
+  def compiler_tests(domain, problem, expected_parser, extensions, type, domain_expected, problem_expected)
     domain_type = "#{domain}.#{type}"
     problem_type = "#{problem}.#{type}"
     File.delete(domain_type) if File.exist?(domain_type)
@@ -20,10 +20,10 @@ module Hypest
     Hype.compile(domain, problem, type)
     assert_equal(true, File.exist?(domain_type))
     assert_equal(true, File.exist?(problem_type))
-    domain_generated = IO.read(domain_type)
-    problem_generated = IO.read(problem_type)
-    assert_equal(expected_domain, domain_generated)
-    assert_equal(expected_problem, problem_generated)
+    generated = IO.readlines(domain_type)
+    domain_expected.each_line.with_index {|l,i| assert_equal(l, generated[i])}
+    generated = IO.readlines(problem_type)
+    problem_expected.each_line.with_index {|l,i| assert_equal(l, generated[i])}
     File.delete(domain_type, problem_type)
   end
 end
