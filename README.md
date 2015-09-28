@@ -556,5 +556,4 @@ Those versions also let you express your state in any way you want, but you need
 ## ToDo's
 - Parser/Compiler features
   - Operator visibility (some operators are internally important, but not usefull in the plan, JSHOP uses ``!`` and ``!!`` for each case).
-  - Define the standard interface for parsers and compilers, the current ones require several attributes instead of a Hash ```{:attr => data}``` and there is an inconsistency about file handling (Hype should do all or no IO).
-- Problem generators
+- More tests
