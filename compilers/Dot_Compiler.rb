@@ -44,7 +44,7 @@ module Dot_Compiler
           connections << "  label_#{d.first}:n#{j} -> #{subtask.first};\n" if all_connections or operators.assoc(subtask.first)
         }
         # Connections
-        method_str << "}\"\n  ];\n  #{met.first}:n#{i} -> label_#{d.first};\n#{connections}"
+        method_str << "}\"\n  ];\n  #{met.first}:n#{i} -> label_#{d.first} [style=dotted];\n#{connections}"
       }
       domain_str << "  #{met.first} [\n    shape=Mrecord\n    style=bold\n    label=\"{{#{met.first}|#{met[1].join(' ')}}|{#{decompositions.join('|')}}}\"\n  ];\n#{method_str}"
     }
