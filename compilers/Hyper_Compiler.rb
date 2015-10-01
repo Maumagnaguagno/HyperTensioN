@@ -85,8 +85,7 @@ module Hyper_Compiler
       domain_str << ',' if methods.size.pred != mi
     }
     # Definitions
-    domain_str << "\n  }\n\n  ##{SPACER}\n  # Operators\n  ##{SPACER}\n#{define_operators}"
-    domain_str << "\n  ##{SPACER}\n  # Methods\n  ##{SPACER}\n#{define_methods}end"
+    domain_str << "\n  }\n\n  ##{SPACER}\n  # Operators\n  ##{SPACER}\n#{define_operators}\n  ##{SPACER}\n  # Methods\n  ##{SPACER}\n#{define_methods}end"
     domain_str.gsub!(/\b-\b/,'_')
     domain_str
   end
