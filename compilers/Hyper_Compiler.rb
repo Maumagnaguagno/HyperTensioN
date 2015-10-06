@@ -43,17 +43,21 @@ module Hyper_Compiler
     operators.each_with_index {|op,i|
       domain_str << "\n    '#{op.first}' => true#{',' if operators.size.pred != i or not methods.empty?}"
       define_operators << "\n  def #{op.first}#{"(#{op[1].map {|j| j.sub(/^\?/,'')}.join(', ')})" unless op[1].empty?}\n"
-      if op[2].empty? and op[3].empty?
-        define_operators << '    apply('
+      if op[4].empty? and op[5].empty?
+        define_operators << "    true\n  end\n"
       else
-        define_operators << '    apply_operator('
-        predicates_to_hyper(define_operators << "\n      # Positive preconditions", op[2])
-        predicates_to_hyper(define_operators << ",\n      # Negative preconditions", op[3])
-        define_operators << ','
+        if op[2].empty? and op[3].empty?
+          define_operators << '    apply('
+        else
+          define_operators << '    apply_operator('
+          predicates_to_hyper(define_operators << "\n      # Positive preconditions", op[2])
+          predicates_to_hyper(define_operators << ",\n      # Negative preconditions", op[3])
+          define_operators << ','
+        end
+        predicates_to_hyper(define_operators << "\n      # Add effects", op[4])
+        predicates_to_hyper(define_operators << ",\n      # Del effects", op[5])
+        define_operators << "\n    )\n  end\n"
       end
-      predicates_to_hyper(define_operators << "\n      # Add effects", op[4])
-      predicates_to_hyper(define_operators << ",\n      # Del effects", op[5])
-      define_operators << "\n    )\n  end\n"
     }
     # Methods
     define_methods = ''
