@@ -44,11 +44,22 @@ module Hyper_Compiler
       domain_str << "\n    '#{op.first}' => true#{',' if operators.size.pred != i or not methods.empty?}"
       define_operators << "\n  def #{op.first}#{"(#{op[1].map {|j| j.sub(/^\?/,'')}.join(', ')})" unless op[1].empty?}\n"
       if op[4].empty? and op[5].empty?
-        define_operators << "    true\n  end\n"
+        if op[2].empty? and op[3].empty?
+          # Empty
+          define_operators << "    true\n  end\n"
+        else
+          # Sensing
+          define_operators << "    applicable?("
+          predicates_to_hyper(define_operators << "\n      # Positive preconditions", op[2])
+          predicates_to_hyper(define_operators << ",\n      # Negative preconditions", op[3])
+          define_operators << "    )\n  end\n"
+        end
       else
         if op[2].empty? and op[3].empty?
+          # Effective
           define_operators << '    apply('
         else
+          # Effective if preconditions hold
           define_operators << '    apply_operator('
           predicates_to_hyper(define_operators << "\n      # Positive preconditions", op[2])
           predicates_to_hyper(define_operators << ",\n      # Negative preconditions", op[3])
