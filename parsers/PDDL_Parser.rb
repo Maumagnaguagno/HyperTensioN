@@ -18,7 +18,7 @@ module PDDL_Parser
     str.downcase!
     stack = []
     list = []
-    str.scan(/[()]|[!?:]*[\w-]+/) {|t|
+    str.scan(/[()]|[^\s()]+/) {|t|
       case t
       when '('
         stack << list
