@@ -14,7 +14,7 @@ module PDDL_Parser
   #-----------------------------------------------
 
   def scan_tokens(filename)
-    (str = IO.read(filename)).gsub!(/;.*$|\n/,'')
+    (str = IO.read(filename)).gsub!(/;.*$/,'')
     str.downcase!
     stack = []
     list = []
