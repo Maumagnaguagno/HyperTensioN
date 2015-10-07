@@ -26,8 +26,7 @@ module Hype
     wise  - optimize hierarchical structure"
 
   # Require parsers, compilers and extensions found
-  FILEPATH = File.expand_path('..', __FILE__)
-  Dir.glob("#{FILEPATH}/{parsers,compilers,extensions}/*.rb") {|file| require file}
+  Dir.glob("#{File.expand_path('..', __FILE__)}/{parsers,compilers,extensions}/*.rb") {|file| require file}
 
   #-----------------------------------------------
   # Propositions to string
@@ -184,7 +183,9 @@ end
 #-----------------------------------------------
 if $0 == __FILE__
   begin
-    if ARGV.size >= 2
+    if ARGV.size < 2 or ARGV.first == '-h'
+      puts Hype::HELP
+    else
       domain = ARGV.shift
       problem = ARGV.shift
       type = ARGV.pop
@@ -198,16 +199,14 @@ if $0 == __FILE__
         Hype.parse(domain, problem)
         extensions.each {|e| Hype.extend(e)}
         if type and type != 'print'
-          if type == 'run' or type == 'debug'
+          if type == 'run' or (type == 'debug' and ARGV[0] = '-d')
             Hype.compile(domain, problem, 'rb')
-            ARGV[0] = '-d' if type == 'debug'
-            require "#{Hype::FILEPATH}/#{problem}"
+            require File.expand_path(problem)
           else Hype.compile(domain, problem, type)
           end
         else puts Hype.to_s, "\nTime: #{Time.now.to_f - t}s"
         end
       end
-    else puts Hype::HELP
     end
   rescue
     puts $!, $@
