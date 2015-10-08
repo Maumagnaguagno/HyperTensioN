@@ -27,7 +27,12 @@ module JSHOP_Compiler
       output << "#{indentation}nil\n"
     else
       output << "#{indentation}(#{':unordered' unless order}\n"
-      tasks.each {|t| output << "#{indentation}  (#{'!' if operators.any? {|op| op.first == t.first}}#{t.join(' ')})\n"}
+      tasks.each {|t|
+        name = t.first
+        t[0] = "!#{name.sub(/^invisible_/,'!')}" if operators.assoc(name)
+        output << "#{indentation}  (#{t.join(' ')})\n"
+        t[0] = name
+      }
       output << "#{indentation})\n"
     end
   end
@@ -42,7 +47,7 @@ module JSHOP_Compiler
     # Operators
     operators.each {|op|
       # Header
-      domain_str << "  (:operator (!#{op.first} #{op[1].join(' ')})\n"
+      domain_str << "  (:operator (!#{op.first.sub(/^invisible_/,'!')} #{op[1].join(' ')})\n"
       # Preconditions
       predicates_to_jshop(domain_str, op[2], op[3])
       # Delete effects

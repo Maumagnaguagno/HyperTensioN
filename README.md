@@ -555,5 +555,4 @@ Those versions also let you express your state in any way you want, but you need
 
 ## ToDo's
 - Parser/Compiler features
-  - Operator visibility (some operators are internally important, but not usefull in the plan, JSHOP uses ``!`` and ``!!`` for each case).
 - More tests

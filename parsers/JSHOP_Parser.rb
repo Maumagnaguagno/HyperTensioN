@@ -26,7 +26,7 @@ module JSHOP_Parser
     op.shift
     name = op.first.shift
     raise 'Action without name definition' unless name.instance_of?(String)
-    name.sub!(/^!+/,'')
+    name.sub!(/^!!/,'invisible_') or name.sub!(/^!/,'')
     raise "Action #{name} redefined" if @operators.assoc(name)
     raise "Operator #{name} have #{op.size} groups instead of 4" if op.size != 4
     # Header

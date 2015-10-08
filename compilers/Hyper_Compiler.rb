@@ -41,7 +41,7 @@ module Hyper_Compiler
     # Operators
     define_operators = ''
     operators.each_with_index {|op,i|
-      domain_str << "\n    '#{op.first}' => true#{',' if operators.size.pred != i or not methods.empty?}"
+      domain_str << "\n    '#{op.first}' => #{!op.first.start_with?('invisible_')}#{',' if operators.size.pred != i or not methods.empty?}"
       define_operators << "\n  def #{op.first}#{"(#{op[1].map {|j| j.sub(/^\?/,'')}.join(', ')})" unless op[1].empty?}\n"
       if op[4].empty? and op[5].empty?
         if op[2].empty? and op[3].empty?
