@@ -78,7 +78,7 @@ module JSHOP_Parser
       # Subtasks
       if (group = met.shift) != NIL
         raise "Error with #{name} subtasks" unless group.instance_of?(Array)
-        group.each {|pro| pro.first.sub!(/^!+/,'')}
+        group.each {|pro| pro.first.sub!(/^!!/,'invisible_') or pro.first.sub!(/^!/,'')}
         method.last << group
       else method.last << []
       end
@@ -121,7 +121,7 @@ module JSHOP_Parser
       @tasks = tokens.shift
       # Tasks may be ordered or unordered
       @tasks.shift unless order = (@tasks.first != ':unordered')
-      @tasks.each {|pro| pro.first.sub!(/^!+/,'')}
+      @tasks.each {|pro| pro.first.sub!(/^!!/,'invisible_') or pro.first.sub!(/^!/,'')}
       @tasks.unshift(order)
       @goal_pos = []
       @goal_not = []
