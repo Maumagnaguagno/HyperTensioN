@@ -20,10 +20,12 @@ module Hype
     pddl  - generate PDDL files
     jshop - generate JSHOP files
     dot   - generate DOT file
+    md    - generate Markdown file
     run   - same as rb with execution
     debug - same as run with execution log\n
   Extensions:
-    wise  - optimize hierarchical structure"
+    wise        - static analysis of flat structure
+    refinements - refine hierarchical structure"
 
   # Require parsers, compilers and extensions found
   Dir.glob("#{File.expand_path('..', __FILE__)}/{parsers,compilers,extensions}/*.rb") {|file| require file}
@@ -113,10 +115,10 @@ Problem #{@parser.problem_name}
   def parse(domain, problem)
     # Mix files may result in incomplete data
     raise 'Incompatible extensions between domain and problem' if File.extname(domain) != File.extname(problem)
-    case File.extname(domain)
-    when '.rb' then @parser = Hyper_Parser
-    when '.jshop' then @parser = JSHOP_Parser
-    when '.pddl' then @parser = PDDL_Parser
+    @parser = case File.extname(domain)
+    when '.rb' then Hyper_Parser
+    when '.jshop' then JSHOP_Parser
+    when '.pddl' then PDDL_Parser
     else raise "Unknown file extension #{File.extname(domain)}"
     end
     @parser.parse_domain(domain)
@@ -129,9 +131,10 @@ Problem #{@parser.problem_name}
 
   def extend(extension)
     raise 'No data to extend' unless @parser
-    case extension
-    when 'patterns' then extender = Patterns
-    when 'wise' then extender = Wise
+    extender = case extension
+    when 'wise' then Wise
+    when 'patterns' then Patterns
+    when 'refinements' then Refinements
     else raise "Unknown extension #{extension}"
     end
     extender.apply(
@@ -151,12 +154,12 @@ Problem #{@parser.problem_name}
 
   def compile(domain, problem, type)
     raise 'No data to compile' unless @parser
-    case type
-    when 'rb' then compiler = Hyper_Compiler
-    when 'jshop' then compiler = JSHOP_Compiler
-    when 'pddl' then compiler = PDDL_Compiler
-    when 'dot' then compiler = Dot_Compiler
-    when 'md' then compiler = Markdown_Compiler
+    compiler = case type
+    when 'rb' then Hyper_Compiler
+    when 'jshop' then JSHOP_Compiler
+    when 'pddl' then PDDL_Compiler
+    when 'dot' then Dot_Compiler
+    when 'md' then Markdown_Compiler
     else raise "Unknown type #{type}"
     end
     args = [
