@@ -1,8 +1,8 @@
 # Intermediate Representation
 
-In order to parse and compile from/to different languages a common representation is required.
+In order to parse and compile from/to different languages, a common representation is required.
 All elements from the languages involved must be able to be represented or inferred from the selected common representation.
-The elemens considered for planning are:
+The elements considered for planning are:
 - domain name
 - problem_name
 - operators
@@ -91,29 +91,29 @@ And is represented by:
 
 ```Ruby
 methods = [
-  ["swap", ["?x", "?y"],
-    ; First case becomes 'swap_0' because no label was found in JSHOP
-    ["swap_0", [],
-      ; Positive preconditions
-      [["have", "?x"]],
-      ; Negative preconditions
-      [["have", "?y"]],
-      ; Subtasks
+  ['swap', ['?x', '?y'],
+    # First case becomes 'swap_0' because no label was found in JSHOP
+    ['swap_0', [],
+      # Positive preconditions
+      [['have', '?x']],
+      # Negative preconditions
+      [['have', '?y']],
+      # Subtasks
       [
-        ["drop", "?x"],
-        ["pickup", "?y"]
+        ['drop', '?x'],
+        ['pickup', '?y']
       ]
     ],
-    ; Second case becomes 'swap_1' because no label was found in JSHOP
-    ["swap_1", [],
-      ; Positive preconditions
-      [["have", "?y"]],
-      ; Negative preconditions
-      [["have", "?x"]],
-      ; Subtasks
+    # Second case becomes 'swap_1' because no label was found in JSHOP
+    ['swap_1', [],
+      # Positive preconditions
+      [['have', '?y']],
+      # Negative preconditions
+      [['have', '?x']],
+      # Subtasks
       [
-        ["drop", "?y"],
-        ["pickup", "?x"]
+        ['drop', '?y'],
+        ['pickup', '?x']
       ]
     ]
   ]
@@ -140,6 +140,9 @@ predicates = {
 ```
 
 ## State
+
+The state represents how the objects are in the world in a moment.
+Anything not declared here is considered false, we are using the closed world assumption.
 
 **TODO**
 
