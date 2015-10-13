@@ -1,0 +1,152 @@
+# Intermediate Representation
+
+In order to parse and compile from/to different languages a common representation is required.
+All elements from the languages involved must be able to be represented or inferred from the selected common representation.
+The elemens considered for planning are:
+- domain name
+- problem_name
+- operators
+- methods
+- predicates
+- initial state
+- goal state
+- tasks
+
+Domain and problem names are Strings representing the scenario and require no modification.
+The other elements require some work to be obtained in a common representation.
+
+## Operators
+
+Compare the following PDDL action and JSHOP operator:
+
+```Lisp
+(:action move
+  :parameters (?agent ?from ?to)
+  :precondition (and
+    (at ?agent ?from)
+    (adjacent ?from ?to)
+    (not (blocked ?to))
+  )
+  :effect (and
+    (at ?agent ?to)
+    (not (at ?agent ?from))
+  )
+)
+```
+
+```Lisp
+(:operator (!move ?agent ?from ?to)
+  ; Positive and negative preconditions
+  (
+    (at ?agent ?from)
+    (adjacent ?from ?to)
+    (not (blocked ?to))
+  )
+  ((at ?agent ?from)) ; Del effects
+  ((at ?agent ?to))   ; Add effects
+)
+```
+
+They represent the same data, with PDDL giving more tokens to clarify what each field represents.
+The following Ruby code is the intermediary representation obtained by one of the above representation.
+
+```Ruby
+operators = [
+  ['move', ['?agent', '?from', '?to'],
+    # Positive preconditions
+    [['at', '?agent', '?from'], ['adjacent', '?from', '?to']],
+    # Negative preconditions
+    [['blocked', '?to']],
+    # Add effects
+    [['at', '?agent', '?to']],
+    # Del effects
+    ['at', '?agent', '?from']]
+  ]
+]
+```
+
+Some elements may be simplified by the parser to make the common representation compatible with any language.
+PDDL types can be downgraded to positive preconditions, while disjunctions and conditionals would require an expansion from ```op``` to ```op1 op2 op3```.
+Quantifiers would require more work and we currently do not support them.
+Since Arrays are being used, there is no limit to add more data beyond the first 6 cells, like quantifier support or action costs.
+
+## Methods
+
+Sometimes we want to apply specific actions in a certain order to accomplish a task.
+Those tasks are made from methods and act as domain knowledge to be exploited by an HTN planner.
+The following method is the swap from the basic_jshop example, it contains two possible cases:
+
+```Lisp
+(:method (swap ?x ?y)
+  ; have X, but no Y
+  ((have ?x) (not (have ?y)))
+  ((!drop ?x) (!pickup ?y))
+  ; have Y, but no X
+  ((have ?y) (not (have ?x)))
+  ((!drop ?y) (!pickup ?x))))
+)
+```
+
+And is represented by:
+
+```Ruby
+methods = [
+  ["swap", ["?x", "?y"],
+    ; First case becomes 'swap_0' because no label was found in JSHOP
+    ["swap_0", [],
+      ; Positive preconditions
+      [["have", "?x"]],
+      ; Negative preconditions
+      [["have", "?y"]],
+      ; Subtasks
+      [
+        ["drop", "?x"],
+        ["pickup", "?y"]
+      ]
+    ],
+    ; Second case becomes 'swap_1' because no label was found in JSHOP
+    ["swap_1", [],
+      ; Positive preconditions
+      [["have", "?y"]],
+      ; Negative preconditions
+      [["have", "?x"]],
+      ; Subtasks
+      [
+        ["drop", "?y"],
+        ["pickup", "?x"]
+      ]
+    ]
+  ]
+]
+```
+
+## Predicates
+
+Predicates are partitioned in three types to both planners and compilers to decide which informations are important.
+Predicates that appear in effects are considered mutable while predicates that appear only in the preconditions are considered constant.
+Other predicates are considered irrelevant and may be pruned without any problem.
+In order to save this knowledge we use a Hash that maps predicate name to true, if mutable, or false, if constant.
+Irrelevant predicates are not stored.
+Remember to freeze the predicate to avoid key duplication by the Hash implementation.
+
+```Ruby
+pre_mutable = ['have','?x']
+pre_constant = ['object', '?x']
+pre_irrelevant = ['cookie', '?y']
+predicates = {
+  pre_mutable.first.freeze => true,
+  pre_constant.first.freeze => false
+}
+```
+
+## State
+
+**TODO**
+
+## Goal
+
+**TODO**
+
+## Tasks
+
+**TODO**
