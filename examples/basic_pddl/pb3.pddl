@@ -1,4 +1,4 @@
-(define (problem problem)
+(define (problem pb3)
   (:domain basic)
   (:requirements :strips :negative-preconditions)
   (:objects
