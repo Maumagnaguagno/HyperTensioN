@@ -540,18 +540,10 @@ Perhaps the most invisible advantage is the lack of custom classes, every object
 Once the designer understands Strings, Arrays and Hashes the entire Hypertension module is just a few methods away from complete understanding.
 This also means that any update in the implementation of Ruby will benefit this project directly, as those objects are always target of optimizations.
 
-The only feature that we lack and is impossible to force without changing the algorithm is interleaved/unordered execution of tasks, a feature that JSHOP2 supports and is extremely important to achieve good plans in some cases. We only support unordered tasks at the problem level and do not interleave them during decomposition. Since we test for explicit goals only after the plan has been found with a sequence of tasks, a failure is considered enough proof to try other sequences, not other unifications with the same sequence of tasks. You need to be extra careful with unordered tasks for some problems that rely on unification until we make the jump to the next version.
-
-## Old Versions
-You may notice an [old_versions](old_versions) folder with incompatible variations of Hypertension.
-This folder contains the RubyHop (PyHop remade in Ruby) and Simple (Hypertension without unification).
-Simple shares the core of Hypertension, but builds the plan while searching, while Hypertension builds the plan after, and support probability planning to show all outcomes that may happen.
-I left them in a separate folder as some of their features are now gone.
-I plan to create variations of the current core to support the plan built during search and probabilistic outcomes in the future, probably when I need those.
-Those versions also let you express your state in any way you want, but you need to take care of eveything, which is not the case now as unification and operator application require a standard structure.
-- **RubyHop** is interesting only if you want to port from PyHop.
-- **Plan built during search** is useful to interleave tasks and optimize the plan.
-- **Probabilistic planning** is useful if you need to know what may happen and the different probabilities of each scenario. It takes much longer to execute, as many branches may exist.
+The only feature that we lack and is impossible to force without changing the algorithm is interleaved/unordered execution of tasks, a feature that JSHOP2 supports and is extremely important to achieve good plans in some cases.
+We only support unordered tasks at the problem level and do not interleave them during decomposition.
+Since we test for explicit goals only after the plan has been found with a sequence of tasks, a failure is considered enough proof to try other sequences, not other unifications with the same sequence of tasks.
+You need to be extra careful with unordered tasks for some problems that rely on unification until we make the jump to the next version.
 
 ## ToDo's
 - Parser/Compiler features
