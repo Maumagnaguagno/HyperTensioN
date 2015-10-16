@@ -175,8 +175,7 @@ Problem #{@parser.problem_name}
     ]
     data = compiler.compile_domain(*args)
     open("#{domain}.#{type}",'w') {|file| file << data} if data
-    args << File.basename(domain)
-    data = compiler.compile_problem(*args)
+    data = compiler.compile_problem(*args << File.basename(domain))
     open("#{problem}.#{type}",'w') {|file| file << data} if data
   end
 end
