@@ -125,10 +125,10 @@ module Hypertension
     precond_pos.each {|name,*objs|
       next unless objs.include?('')
       # Swap free variables with set to match or maintain constant
-      pred = objs.map {|p| objects.find {|j| j.first.equal?(p)} or p}
+      objs.map! {|p| objects.find {|j| j.first.equal?(p)} or p}
       # Compare with current state
       @state[name].each {|terms|
-        next unless pred.each_with_index {|p,i|
+        next unless objs.each_with_index {|p,i|
           # Free variable
           if p.instance_of?(Array)
             # Not unified
@@ -149,7 +149,7 @@ module Hypertension
         match_objects.shift << terms[match_objects.shift] until match_objects.empty?
       }
       # Unification closed
-      pred.each {|i| i.first.replace('X') if i.instance_of?(Array) and i.first.empty?}
+      objs.each {|i| i.first.replace('X') if i.instance_of?(Array) and i.first.empty?}
     }
     # Remove pointer and duplicates
     objects.each {|i|
