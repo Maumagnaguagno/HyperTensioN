@@ -122,34 +122,34 @@ module Hypertension
     objects = free.map {|i| [i]}
     # Unification by positive preconditions
     match_objects = []
-    precond_pos.each {|name,*objs|
-      next unless objs.include?('')
+    precond_pos.each {|name,*terms|
+      next unless terms.include?('')
       # Swap free variables with set to match or maintain constant
-      objs.map! {|p| objects.find {|j| j.first.equal?(p)} or p}
+      terms.map! {|p| objects.find {|j| j.first.equal?(p)} or p}
       # Compare with current state
-      @state[name].each {|terms|
-        next unless objs.each_with_index {|p,i|
+      @state[name].each {|objs|
+        next unless terms.each_with_index {|t,i|
           # Free variable
-          if p.instance_of?(Array)
+          if t.instance_of?(Array)
             # Not unified
-            if p.first.empty?
-              match_objects.push(p, i)
+            if t.first.empty?
+              match_objects.push(t, i)
             # No match with previous unification
-            elsif not p.include?(terms[i])
+            elsif not t.include?(objs[i])
               match_objects.clear
               break
             end
           # No match with value
-          elsif p != terms[i]
+          elsif t != objs[i]
             match_objects.clear
             break
           end
         }
         # Add values to sets
-        match_objects.shift << terms[match_objects.shift] until match_objects.empty?
+        match_objects.shift << objs[match_objects.shift] until match_objects.empty?
       }
       # Unification closed
-      objs.each {|i| i.first.replace('X') if i.instance_of?(Array) and i.first.empty?}
+      terms.each {|i| i.first.replace('X') if i.instance_of?(Array) and i.first.empty?}
     }
     # Remove pointer and duplicates
     objects.each {|i|
