@@ -10,18 +10,18 @@ module N_Queens
 
   @domain = {
     # Operators
-    'put_piece' => true,
+    :put_piece => true,
     # Methods
-    'solve' => ['try_next']
-  }
+    :solve => [:try_next]
+  }.compare_by_identity
 
   def solve(size, debug, verbose)
     start = {
-      'queen' => [],
-      'free_collumn' => Array.new(size) {|i| [i.to_s]}
-    }
+      :queen => [],
+      :free_collumn => Array.new(size) {|i| [i.to_s]}
+    }.compare_by_identity
     tasks = [
-      ['solve', size]
+      [:solve, size]
     ]
     if verbose
       problem(start, tasks, debug)
@@ -40,11 +40,11 @@ module N_Queens
     apply(
       # Add effects
       [
-        ['queen', x, y]
+        [:queen, x, y]
       ],
       # Del effects
       [
-        ['free_collumn', x]
+        [:free_collumn, x]
       ]
     )
   end
@@ -64,17 +64,17 @@ module N_Queens
     generate(
       # Positive preconditions
       [
-        ['free_collumn', x]
+        [:free_collumn, x]
       ],
       # Negative preconditions
       [], x
     ) {
       # No need to test x == i, free collumn test, or y == j, every piece has their row
       xi = x.to_i
-      next if @state['queen'].any? {|i,j| (xi - i.to_i).abs == (yi - j.to_i).abs}
+      next if @state[:queen].any? {|i,j| (xi - i.to_i).abs == (yi - j.to_i).abs}
       yield [
-        ['put_piece', x, y],
-        ['solve', yi]
+        [:put_piece, x, y],
+        [:solve, yi]
       ]
     }
   end
@@ -88,9 +88,10 @@ if $0 == __FILE__
   size = ARGV.first ? ARGV.first.to_i : 8
   N_Queens.solve(size, ARGV.last == '-d', true)
   # Draw from row size - 1 to 0
-  N_Queens.state['queen'].reverse_each {|i,j|
+  N_Queens.state[:queen].reverse_each {|i,j|
     row = '[ ]' * size
     row[i.to_i * 3 + 1] = 'Q'
     puts row
   }
+  p *GC.stat
 end
