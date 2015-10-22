@@ -13,13 +13,13 @@ module N_Queens
     :put_piece => true,
     # Methods
     :solve => [:try_next]
-  }.compare_by_identity
+  }
 
   def solve(size, debug, verbose)
     start = {
       :queen => [],
       :free_collumn => Array.new(size) {|i| [i.to_s]}
-    }.compare_by_identity
+    }
     tasks = [
       [:solve, size]
     ]

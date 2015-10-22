@@ -363,7 +363,8 @@ Here are some hints to describe your domain:
 - Even if a precondition or effect is an empty set you need to declare it, use ```[]```.
 - Empty predicate sets must be put in the initial state at the problem file. This avoids predicate typos, as all predicates must be previously defined. Or you can use ```Hash.new {|h,k| h[k] = []}``` to create sets at run-time.
 - Check out [And-or Trees](http://en.wikipedia.org/wiki/And%E2%80%93or_tree). Which decisions must be made before paths fork and which actions must be done in sequence?
-- You can use Hash.compare_by_identity on domain and state, see the [N Queens example](examples/n_queens/n_queens.rb "N Queens"), but then your keys must always be the same object (like a Symbol or a frozen String in a constant).
+- Using Symbols or constant frozen strings can speed-up things a little, avoiding repeated strings in memory, this was used in the [N Queens example](examples/n_queens/n_queens.rb "N Queens").
+- You can explore further using Hash.compare_by_identity on domain and state in RUBY_VERSION >= 1.9.
 
 ## Execution
 The problem acts as the main function since the problems include the domain, and the domain include the planner.
