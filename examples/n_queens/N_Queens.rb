@@ -93,5 +93,4 @@ if $0 == __FILE__
     row[i.to_i * 3 + 1] = 'Q'
     puts row
   }
-  p *GC.stat
 end
