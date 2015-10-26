@@ -2,7 +2,7 @@
 Hype is able to generate a DOT output based on the domain provided that can be transformed into an image by Graphviz.
 There is a high chance of obtaining a complex graph from a complex HTN domain... or even a simple one.
 The output is based in the interaction between the methods, how they decompose, and not just the operators.
-Therefore we start with the [basic JSHOP domain description](examples/basic_jshop/basic.jshop "basic.jshop") in order to obtain our graph.
+Therefore we start with the [basic JSHOP domain description](../examples/basic_jshop/basic.jshop "basic.jshop") in order to obtain our graph.
 
 ```Lisp
 (defdomain basic (
