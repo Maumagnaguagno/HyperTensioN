@@ -36,8 +36,7 @@ module Hyper_Compiler
   #-----------------------------------------------
 
   def compile_domain(domain_name, problem_name, operators, methods, predicates, state, tasks, goal_pos, goal_not, hypertension_filename = File.expand_path('../../Hypertension', __FILE__))
-    domain_str = "module #{domain_name.capitalize}\n  include Hypertension\n  extend self\n\n"
-    domain_str << "  ##{SPACER}\n  # Domain\n  ##{SPACER}\n\n  @domain = {\n    # Operators"
+    domain_str = "module #{domain_name.capitalize}\n  include Hypertension\n  extend self\n\n  ##{SPACER}\n  # Domain\n  ##{SPACER}\n\n  @domain = {\n    # Operators"
     # Operators
     define_operators = ''
     operators.each_with_index {|op,i|
@@ -49,7 +48,7 @@ module Hyper_Compiler
           define_operators << "    true\n  end\n"
         else
           # Sensing
-          define_operators << "    applicable?("
+          define_operators << '    applicable?('
           predicates_to_hyper(define_operators << "\n      # Positive preconditions", op[2])
           predicates_to_hyper(define_operators << ",\n      # Negative preconditions", op[3])
           define_operators << "    )\n  end\n"
@@ -96,8 +95,7 @@ module Hyper_Compiler
         end
         define_methods << "  end\n"
       }
-      domain_str << '    ]'
-      domain_str << ',' if methods.size.pred != mi
+      domain_str << (methods.size.pred == mi ? '    ]' : '    ],')
     }
     # Definitions
     domain_str << "\n  }\n\n  ##{SPACER}\n  # Operators\n  ##{SPACER}\n#{define_operators}\n  ##{SPACER}\n  # Methods\n  ##{SPACER}\n#{define_methods}end"
@@ -137,8 +135,7 @@ module Hyper_Compiler
     start_hash.each_with_index {|(k,v),i|
       problem_str << "    '#{k}' => ["
       problem_str << "\n      [" << v.map! {|obj| obj.join(', ')}.join("],\n      [") << "]\n    " unless v.empty?
-      problem_str << ']'
-      problem_str << ",\n" if start_hash.size.pred != i
+      problem_str << (start_hash.size.pred == i ? ']' : "],\n")
     }
     # Tasks
     group = []
