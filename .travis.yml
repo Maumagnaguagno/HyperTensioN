@@ -21,3 +21,4 @@ script:
   - ruby examples/travel/pb3.rb
   - ruby examples/travel/pb4.rb
   - ruby examples/robby/pb1.rb
+  - ruby Hype.rb examples\basic_jshop\basic.jshop examples\basic_jshop\pb1.jshop run
