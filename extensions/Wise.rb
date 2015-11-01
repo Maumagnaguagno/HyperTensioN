@@ -22,9 +22,11 @@ module Wise
       2.upto(5) {|i|
         op[i].each {|pro|
           pro.drop(1).each {|term|
-            if term.start_with?('?') and not parameters.include?(term)
-              puts "#{name} never declared variable #{term} from (#{pro.join(sep)}), adding to parameters" if debug
-              parameters << term
+            if term.start_with?('?')
+              unless parameters.include?(term)
+                puts "#{name} never declared variable #{term} from (#{pro.join(sep)}), adding to parameters" if debug
+                parameters << term
+              end
             elsif parameters.include?("?#{term}")
               puts "#{name} contains probable variable #{term} from (#{pro.join(sep)}), modified to ?#{term}" if debug
               term.insert(0,'?')
