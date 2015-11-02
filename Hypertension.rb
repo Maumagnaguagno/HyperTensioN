@@ -198,19 +198,13 @@ module Hypertension
     print_data(tasks)
     puts 'Planning'.center(50,'-')
     t = Time.now.to_f
-    # Ordered
-    if goal_pos.empty? and goal_not.empty?
-      plan = planning(tasks)
-    # Unordered
-    else plan = task_permutations(start, tasks, goal_pos, goal_not)
-    end
+    # Ordered or unordered tasks
+    plan = goal_pos.empty? && goal_not.empty? ? planning(tasks) : task_permutations(start, tasks, goal_pos, goal_not)
     puts "Time: #{Time.now.to_f - t}s", 'Plan'.center(50,'-')
-    if plan
-      if plan.empty?
-        puts 'Empty plan'
-      else print_data(plan)
-      end
-    else puts 'Planning failed'
+    case plan
+    when nil then puts 'Planning failed'
+    when [] then puts 'Empty plan'
+    else print_data(plan)
     end
     plan
   rescue Interrupt
