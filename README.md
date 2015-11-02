@@ -126,7 +126,7 @@ Enter | bot source destination
 (room destination) |
 (connected source destination) |
 (at bot source) | **not** (at bot source)
-**not** (at bot source) | (at bot destination)
+**not** (at bot destination) | (at bot destination)
 
 Which translates to the following Ruby code:
 
