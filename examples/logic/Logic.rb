@@ -1,21 +1,17 @@
 require File.expand_path('../../../Hypertension', __FILE__)
+include Hypertension
 
-module Logic
-  include Hypertension
-  extend self
-
-  def forall?(precond_pos, precond_not, *free)
-    generate(precond_pos, precond_not, *free) {return false unless yield}
-    true
-  end
-
-  def exists?(precond_pos, precond_not, *free)
-    generate(precond_pos, precond_not, *free) {return true if yield}
-    false
-  end
+def forall?(precond_pos, precond_not, *free)
+  generate(precond_pos, precond_not, *free) {return false unless yield}
+  true
 end
 
-Logic.state = {:number => [['1'],['2'],['3']]}
+def exists?(precond_pos, precond_not, *free)
+  generate(precond_pos, precond_not, *free) {return true if yield}
+  false
+end
+
+@state = {:number => [['1'],['2'],['3']]}
 
 # Verbose methods
 def not_zero?(x)
@@ -32,27 +28,27 @@ end
 
 # Query forall
 x = ''
-puts "For all numbers x, x != 0: #{Logic.forall?([[:number, x]], [], x) {not_zero?(x)}}"
+puts "For all numbers x, x != 0: #{forall?([[:number, x]], [], x) {not_zero?(x)}}"
 x = ''
-puts "For all numbers x, x != 1: #{Logic.forall?([[:number, x]], [], x) {not_one?(x)}}"
+puts "For all numbers x, x != 1: #{forall?([[:number, x]], [], x) {not_one?(x)}}"
 x = ''
-puts "For all numbers x, x == 4: #{Logic.forall?([[:number, x]], [], x) {four?(x)}}"
+puts "For all numbers x, x == 4: #{forall?([[:number, x]], [], x) {four?(x)}}"
 x = ''
-puts "For all numbers x, x is odd or even: #{Logic.forall?([[:number, x]], [], x) {x.to_i.odd? or x.to_i.even?}}"
+puts "For all numbers x, x is odd or even: #{forall?([[:number, x]], [], x) {x.to_i.odd? or x.to_i.even?}}"
 
 # Query exists
 x = ''
-puts "There exists a number x, x != 0: #{Logic.exists?([[:number, x]], [], x) {not_zero?(x)}}"
+puts "There exists a number x, x != 0: #{exists?([[:number, x]], [], x) {not_zero?(x)}}"
 x = ''
-puts "There exists a number x, x != 1: #{Logic.exists?([[:number, x]], [], x) {not_one?(x)}}"
+puts "There exists a number x, x != 1: #{exists?([[:number, x]], [], x) {not_one?(x)}}"
 x = ''
-puts "There exists a number x, x == 4: #{Logic.exists?([[:number, x]], [], x) {four?(x)}}"
+puts "There exists a number x, x == 4: #{exists?([[:number, x]], [], x) {four?(x)}}"
 x = ''
-puts "There exists a number x, x is odd and even: #{Logic.exists?([[:number, x]], [], x) {x.to_i.odd? and x.to_i.even?}}"
+puts "There exists a number x, x is odd and even: #{exists?([[:number, x]], [], x) {x.to_i.odd? and x.to_i.even?}}"
 
-# Apply forall
+# Conditional effects
 puts 'Move briefcase and all its content, rotten cookie is left behind'
-Logic.state = {
+@state = {
   :at => [
     ['red_briefcase', 'a'],
     ['cookie', 'a'],
@@ -67,7 +63,7 @@ Logic.state = {
 }
 
 def move_briefcase(briefcase, from, to)
-  if Logic.applicable?(
+  if applicable?(
     # Positive preconditions
     [
       [:at, briefcase, from]
@@ -77,10 +73,12 @@ def move_briefcase(briefcase, from, to)
       [:at, briefcase, to]
     ]
   )
+    # Primary effects
     add_effects = [[:at, briefcase, to]]
     del_effects = [[:at, briefcase, from]]
+    # Conditional effects
     object = ''
-    Logic.forall?(
+    generate(
       # Positive preconditions
       [
         [:at, object, from],
@@ -93,10 +91,10 @@ def move_briefcase(briefcase, from, to)
       add_effects << [:at, obj_dup, to]
       del_effects << [:at, obj_dup, from]
     }
-    Logic.apply(add_effects, del_effects)
+    apply(add_effects, del_effects)
   end
 end
 
-p Logic.state[:at]
+p @state[:at]
 move_briefcase('red_briefcase','a','b')
-p Logic.state[:at]
+p @state[:at]
