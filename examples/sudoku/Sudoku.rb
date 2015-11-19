@@ -18,6 +18,7 @@ module Sudoku
   }
 
   def solve(board_str, width, height, box_width, box_height, debug, verbose)
+    # Parser
     total_width = width * box_width
     total_height = height * box_height
     counter = 0
@@ -38,6 +39,7 @@ module Sudoku
       else counter += 1
       end
     }
+    # Setup
     start = {
       :symbol => Array.new(total_width) {|i| [i.succ.to_s]},
       :at => board,
@@ -55,6 +57,7 @@ module Sudoku
       @state = start
       planning(tasks)
     end
+    # Output
     @state[:at].sort_by {|i| i.first(2).reverse}.map {|i| i.last}.each_slice(total_width) {|i| puts i.join}
   end
 
@@ -86,7 +89,7 @@ module Sudoku
     puts counter if @debug
     return yield [] if counter.zero?
     counter -= 1
-    # Check each cell
+    # Check each cell, row and collumn elimination
     rows.times {|r|
       y = r.to_s
       collumns.times {|c|
@@ -119,6 +122,7 @@ module Sudoku
         end
       }
     }
+    # Check each box, box elimination
     available = Hash.new {|h,k| h[k] = []}
     boxes.times {|b|
       box = "box_#{b}"
