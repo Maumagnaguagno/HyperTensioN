@@ -65,13 +65,9 @@ puts 'Move briefcase and all its content, rotten cookie is left behind'
 def move_briefcase(briefcase, from, to)
   if applicable?(
     # Positive preconditions
-    [
-      [:at, briefcase, from]
-    ],
+    [[:at, briefcase, from]],
     # Negative preconditions
-    [
-      [:at, briefcase, to]
-    ]
+    [[:at, briefcase, to]]
   )
     # Primary effects
     add_effects = [[:at, briefcase, to]]
