@@ -187,7 +187,7 @@ Methods may appear in 3 different scenarios:
 
 Instead of returning, the methods yield a subtask list.
 This approach solves the problem of returning several unifications per method call, yielding them as required.
-Be aware that all methods must have the same parameter list, other variables must be bounded during run-time (**Lifted preconditions**).
+Be aware that all methods must have the same parameter list, other variables must be bound during run-time (**Lifted preconditions**).
 
 #### No preconditions
 This is the simplest case, the method **yields** a subtask list without any test.
@@ -225,7 +225,7 @@ end
 ```
 
 #### Lifted preconditions
-It is impossible to propagate variables all the time, some variables must be bounded during run-time.
+It is impossible to propagate variables all the time, some variables must be bound during run-time.
 Free variables are created as empty strings, being used as pointers to their future values.
 A ```generate([positive], [negative], free_variables)``` method will do the hard job, using positive preconditions to find possible values and unify accordingly, only yielding values that satisfy the preconditions requested.
 Therefore a positive precondition set that does not mention all free variables will generate zero unifications.
@@ -268,9 +268,9 @@ end
 
 #### Free Variables?
 Free variables are not supported by Ruby, we need to create them.
-A free variable works like a placeholder, once bounded it will have a value like any common variable.
-The bounding process requires the context to dictate possible values to the variable.
-In Ruby we can replace the content of a string to the bounded value, but that requires the creation of the original string with any value to be used as a pointer, or a more complex solution involving ```method_missing``` to tell the interpreter to create variables if none is found.
+A free variable works like a placeholder, once bound it will have a value like any common variable.
+The binding process requires the context to dictate possible values to the variable.
+In Ruby we can replace the content of a string to a bound value, but that requires the creation of the original string with any value to be used as a pointer, or a more complex solution involving ```method_missing``` to tell the interpreter to create variables if none is found.
 I opted for empty strings as free variables, ```my_var = ''```.
 If you find my style a little misleading, you can add this little method for verbosity reasons with a minimal overhead due to the method call.
 
