@@ -1,8 +1,8 @@
 require File.expand_path('../../../Hypertension', __FILE__)
 include Hypertension
 
-# Conditional effects
-puts 'Move briefcase and all its content, rotten cookie is left behind'
+# Side-effects
+puts 'Move briefcase and all its contents as a side-effect while rotten cookie is left behind'
 @state = {
   :at => [
     ['red_briefcase', 'a'],
@@ -27,7 +27,7 @@ def move_briefcase(briefcase, from, to)
     # Primary effects
     add_effects = [[:at, briefcase, to]]
     del_effects = [[:at, briefcase, from]]
-    # Conditional effects
+    # Side-effects
     object = ''
     generate(
       # Positive preconditions
