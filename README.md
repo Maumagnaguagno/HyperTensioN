@@ -227,7 +227,7 @@ end
 #### Lifted preconditions
 It is impossible to propagate variables all the time, some variables must be bound during run-time.
 Free variables are created as empty strings, being used as pointers to their future values.
-A ```generate([positive], [negative], free_variables)``` method will do the hard job, using positive preconditions to find possible values and unify accordingly, only yielding values that satisfy the preconditions requested.
+A ```generate([positive], [negative], free_variables)``` method will do the hard work, using positive preconditions to find possible values and unify accordingly, only yielding values that satisfy the preconditions requested.
 Therefore a positive precondition set that does not mention all free variables will generate zero unifications.
 In classical planning it is possible to try the entire list of objects as values, but in HTN there may be an infinite number of values.
 It is possible to solve this problem adding each object possible to be used to the initial state, ``(object kiwi) (object banjo)``, in the initial state and add them in the preconditions, ``(object ?x)``.
