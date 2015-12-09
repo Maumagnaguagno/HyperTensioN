@@ -64,29 +64,33 @@ module PDDL_Parser
         raise "Action #{name} with repeated parameters" if free_variables.uniq!
       when ':precondition'
         raise "Error with #{name} precondition" unless (group = op.shift).instance_of?(Array)
-        # Conjunction or atom
-        group.first == AND ? group.shift : group = [group]
-        group.each {|pro|
-          raise "Error with #{name} preconditions" unless pro.instance_of?(Array)
-          if pro.first == NOT
-            pro.size == 2 ? neg << (pro = pro.last) : raise("Error with #{name} negative preconditions")
-          else pos << pro
-          end
-          pro.replace(EQUAL_SUB) if (pro = pro.first) == EQUAL
-          @predicates[pro.freeze] ||= false
-        }
+        unless group.empty?
+          # Conjunction or atom
+          group.first == AND ? group.shift : group = [group]
+          group.each {|pro|
+            raise "Error with #{name} preconditions" unless pro.instance_of?(Array)
+            if pro.first == NOT
+              pro.size == 2 ? neg << (pro = pro.last) : raise("Error with #{name} negative preconditions")
+            else pos << pro
+            end
+            pro.replace(EQUAL_SUB) if (pro = pro.first) == EQUAL
+            @predicates[pro.freeze] ||= false
+          }
+        end
       when ':effect'
         raise "Error with #{name} effect" unless (group = op.shift).instance_of?(Array)
-        # Conjunction or atom
-        group.first == AND ? group.shift : group = [group]
-        group.each {|pro|
-          raise "Error with #{name} effects" unless pro.instance_of?(Array)
-          if pro.first == NOT
-            pro.size == 2 ? del << (pro = pro.last) : raise("Error with #{name} negative effects")
-          else add << pro
-          end
-          @predicates[pro.first.freeze] = true
-        }
+        unless group.empty?
+          # Conjunction or atom
+          group.first == AND ? group.shift : group = [group]
+          group.each {|pro|
+            raise "Error with #{name} effects" unless pro.instance_of?(Array)
+            if pro.first == NOT
+              pro.size == 2 ? del << (pro = pro.last) : raise("Error with #{name} negative effects")
+            else add << pro
+            end
+            @predicates[pro.first.freeze] = true
+          }
+        end
       else puts "#{group.first} is not recognized in action"
       end
     end
