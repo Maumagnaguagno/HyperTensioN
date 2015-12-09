@@ -13,7 +13,7 @@ module JSHOP_Parser
   def define_effects(name, group, effects)
     raise "Error with #{name} effects" unless group.instance_of?(Array)
     group.each {|pro|
-      pro.first == NOT ? raise('Unexpected not in effects') : effects << pro
+      pro.first != NOT ? effects << pro : raise('Unexpected not in effects')
       @predicates[pro.first.freeze] = true
     }
   end
@@ -35,10 +35,7 @@ module JSHOP_Parser
     if (group = op.shift) != NIL
       raise "Error with #{name} preconditions" unless group.instance_of?(Array)
       group.each {|pro|
-        if pro.first == NOT
-          pro.size == 2 ? neg << (pro = pro.last) : raise("Error with #{name} negative precondition group")
-        else pos << pro
-        end
+        pro.first != NOT ? pos << pro : pro.size == 2 ? neg << (pro = pro.last) : raise("Error with #{name} negative precondition group")
         @predicates[pro.first.freeze] ||= false
       }
     end
@@ -66,10 +63,7 @@ module JSHOP_Parser
       if (group = met.shift) != NIL
         raise "Error with #{name} preconditions" unless group.instance_of?(Array)
         group.each {|pro|
-          if pro.first == NOT
-            pro.size == 2 ? neg << (pro = pro.last) : raise("Error with #{name} negative precondition group")
-          else pos << pro
-          end
+          pro.first != NOT ? pos << pro : pro.size == 2 ? neg << (pro = pro.last) : raise("Error with #{name} negative precondition group")
           @predicates[pro.first.freeze] ||= false
           free_variables.concat(pro.find_all {|i| i.start_with?('?') and not method[1].include?(i)})
         }

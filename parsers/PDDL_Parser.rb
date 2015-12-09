@@ -69,10 +69,7 @@ module PDDL_Parser
           group.first == AND ? group.shift : group = [group]
           group.each {|pro|
             raise "Error with #{name} preconditions" unless pro.instance_of?(Array)
-            if pro.first == NOT
-              pro.size == 2 ? neg << (pro = pro.last) : raise("Error with #{name} negative preconditions")
-            else pos << pro
-            end
+            pro.first != NOT ? pos << pro : pro.size == 2 ? neg << (pro = pro.last) : raise("Error with #{name} negative preconditions")
             pro.replace(EQUAL_SUB) if (pro = pro.first) == EQUAL
             @predicates[pro.freeze] ||= false
           }
@@ -84,10 +81,7 @@ module PDDL_Parser
           group.first == AND ? group.shift : group = [group]
           group.each {|pro|
             raise "Error with #{name} effects" unless pro.instance_of?(Array)
-            if pro.first == NOT
-              pro.size == 2 ? del << (pro = pro.last) : raise("Error with #{name} negative effects")
-            else add << pro
-            end
+            pro.first != NOT ? add << pro : pro.size == 2 ? del << (pro = pro.last) : raise("Error with #{name} negative effects")
             @predicates[pro.first.freeze] = true
           }
         end
@@ -189,15 +183,11 @@ module PDDL_Parser
           group.shift
           @state.concat(group)
         when ':goal'
-          return unless group = group[1]
-          # Conjunction or atom
-          group.first == AND ? group.shift : group = [group]
-          group.each {|pro|
-            if pro.first == NOT
-              pro.size == 2 ? @goal_not << pro.last : raise('Error with goals')
-            else @goal_pos << pro
-            end
-          }
+          if group = group[1] and not group.empty?
+            # Conjunction or atom
+            group.first == AND ? group.shift : group = [group]
+            group.each {|pro| pro.first != NOT ? @goal_pos << pro : pro.size == 2 ? @goal_not << pro.last : raise('Error with goals')}
+          end
         else puts "#{group.first} is not recognized in problem"
         end
       end
