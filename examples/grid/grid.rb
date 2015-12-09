@@ -1,19 +1,13 @@
 module Grid
   extend self
 
-  def generate(width, height)
+  def generate(width, height, prefix = 'p')
     adjacent = []
     height.times {|j|
       width.times {|i|
-        center = "p#{i}_#{j}"
-        if i != width.pred
-          right = "p#{i.succ}_#{j}"
-          adjacent.push([center, right], [right, center])
-        end
-        if j != height.pred
-          bottom = "p#{i}_#{j.succ}"
-          adjacent.push([center, bottom], [bottom, center])
-        end
+        center = "#{prefix}#{i}_#{j}"
+        adjacent.push([center, right = "#{prefix}#{i.succ}_#{j}"], [right, center]) if i != width.pred
+        adjacent.push([center, bottom = "#{prefix}#{i}_#{j.succ}"], [bottom, center]) if j != height.pred
       }
     }
     adjacent
@@ -24,10 +18,11 @@ end
 # Main
 #-----------------------------------------------
 if $0 == __FILE__
-  width, height, predicate = ARGV
-  width ||= 10
-  height ||= width
-  predicate ||= 'adjacent'
+  puts 'Grid [width=3] [height=3] [predicate=conn] [prefix=p]'
+  width, height, predicate, prefix = ARGV
+  predicate ||= 'conn'
   # Output propositions and objects created
-  puts Grid.generate(width, height).each {|a,b| puts "(#{predicate} #{a} #{b})"}.flatten!.sort!.uniq!.join(' ')
+  puts Grid.generate(width ? width.to_i : 3, height ? height.to_i : 3, prefix || 'p').each {|a,b|
+    puts "(#{predicate} #{a} #{b})"
+  }.flatten!.uniq!.sort!.join(' ')
 end
