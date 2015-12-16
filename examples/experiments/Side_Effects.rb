@@ -42,7 +42,7 @@ def move_briefcase(briefcase, from, to)
       add_effects << [:at, obj_dup, to]
       del_effects << [:at, obj_dup, from]
     }
-    # Apply effect only once, avoid intermediary state creation
+    # Apply effect only once, avoid intermediate state creation
     apply(add_effects, del_effects)
   end
 end

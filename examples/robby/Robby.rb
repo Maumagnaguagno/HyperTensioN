@@ -161,22 +161,22 @@ module Robby
   def swap_at__recursion_enter(object, goal)
     # Free variables
     current = ''
-    intermediary = ''
+    intermediate = ''
     # Generate unifications
     generate(
       # Positive preconditions
       [
         ['at', object, current],
-        ['connected', current, intermediary]
+        ['connected', current, intermediate]
       ],
       # Negative preconditions
       [
         ['at', object, goal]
-      ], current, intermediary
+      ], current, intermediate
     ) {
-      unless @visited_at[object].include?(intermediary)
+      unless @visited_at[object].include?(intermediate)
         yield [
-          ['enter', object, current, intermediary],
+          ['enter', object, current, intermediate],
           ['visit_at', object, current],
           ['swap_at', object, goal]
         ]
@@ -187,22 +187,22 @@ module Robby
   def swap_at__recursion_exit(object, goal)
     # Free variables
     current = ''
-    intermediary = ''
+    intermediate = ''
     # Generate unifications
     generate(
       # Positive preconditions
       [
         ['at', object, current],
-        ['connected', current, intermediary]
+        ['connected', current, intermediate]
       ],
       # Negative preconditions
       [
         ['at', object, goal]
-      ], current, intermediary
+      ], current, intermediate
     ) {
-      unless @visited_at[object].include?(intermediary)
+      unless @visited_at[object].include?(intermediate)
         yield [
-          ['exit', object, current, intermediary],
+          ['exit', object, current, intermediate],
           ['visit_at', object, current],
           ['swap_at', object, goal]
         ]
@@ -213,22 +213,22 @@ module Robby
   def swap_at__recursion_move(object, goal)
     # Free variables
     current = ''
-    intermediary = ''
+    intermediate = ''
     # Generate unifications
     generate(
       # Positive preconditions
       [
         ['at', object, current],
-        ['connected', current, intermediary]
+        ['connected', current, intermediate]
       ],
       # Negative preconditions
       [
         ['at', object, goal]
-      ], current, intermediary
+      ], current, intermediate
     ) {
-      unless @visited_at[object].include?(intermediary)
+      unless @visited_at[object].include?(intermediate)
         yield [
-          ['move', object, current, intermediary],
+          ['move', object, current, intermediate],
           ['visit_at', object, current],
           ['swap_at', object, goal]
         ]

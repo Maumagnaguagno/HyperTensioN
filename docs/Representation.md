@@ -1,5 +1,5 @@
 # Intermediate Representation
-In order to parse and compile from/to different languages, a common representation is required.
+In order to parse and compile from/to different languages, a [common representation](https://en.wikipedia.org/wiki/Intermediate_language) is required.
 All elements from the languages involved must be able to be represented or inferred from the selected common representation.
 The elements considered for planning are:
 - domain name
@@ -46,7 +46,7 @@ Compare the following PDDL action and JSHOP operator:
 ```
 
 They represent the same data, with PDDL giving more tokens to clarify what each field represents.
-The following Ruby code is the intermediary representation obtained by one of the above representations.
+The following Ruby code is the intermediate representation obtained by one of the above representations.
 
 ```Ruby
 operators = [

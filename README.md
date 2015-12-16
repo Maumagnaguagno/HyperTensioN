@@ -242,22 +242,22 @@ You could also define visit and unvisit as predicates, but then your memory woul
 def swap_at__recursion_enter(object, goal)
   # Free variables
   current = ''
-  intermediary = ''
+  intermediate = ''
   # Generate unifications
   generate(
     # Positive preconditions
     [
       ['at', object, current],
-      ['connected', current, intermediary]
+      ['connected', current, intermediate]
     ],
     # Negative preconditions
     [
       ['at', object, goal]
-    ], current, intermediary
+    ], current, intermediate
   ) {
-    unless @visited_at[object].include?(intermediary)
+    unless @visited_at[object].include?(intermediate)
       yield [
-        ['enter', object, current, intermediary],
+        ['enter', object, current, intermediate],
         ['visit_at', object, current],
         ['swap_at', object, goal]
       ]
@@ -287,18 +287,18 @@ You still need to define to generate the free variables being used, this avoids 
 The example refactored looks like this:
 
 ```Ruby
-def swap_at__recursion_enter(object, goal, current = free_variable, intermediary = free_variable)
+def swap_at__recursion_enter(object, goal, current = free_variable, intermediate = free_variable)
   # Generate unifications
   generate(
     # Positive preconditions
     [
       ['at', object, current],
-      ['connected', current, intermediary]
+      ['connected', current, intermediate]
     ],
     # Negative preconditions
     [
       ['at', object, goal]
-    ], current, intermediary
+    ], current, intermediate
   ) {
     block_removed
   }
@@ -399,7 +399,7 @@ ruby Hype.rb examples/basic_jshop/basic.jshop examples/basic_jshop/problem.jshop
 Hypertension is a Ruby module and have a few instance variables:
 - ```@state``` with the current state.
 - ```@domain``` with the decomposition rules that can be applied to the operators and methods.
-- ```@debug``` as a flag to print intermediary data during planning.
+- ```@debug``` as a flag to print intermediate data during planning.
 
 They were defined as instance variables to be mixed in other classes if needed, that is why they are not class variables.
 
@@ -431,7 +431,7 @@ You will notice that the plan is not a variable, as it is created during the bac
 The methods are few and simple to use:
 - ```planning(tasks, level = 0)``` receives a task_list, ```[['task1', 'term1', 'term2'], ['task2', 'term3']]```, to decompose and the nesting level to help debug.
 Only call this method after domain and state were defined.
-This method is called recursively until it finds an empty task list, ```[]```, then it starts to build the plan while backtracking to save CPU (avoid intermediary plan creation).
+This method is called recursively until it finds an empty task list, ```[]```, then it starts to build the plan while backtracking to save CPU (avoid intermediate plan creation).
 Therefore no plan actually exists before reaching an empty task list.
 In case of failure, ```nil``` is returned.
 
@@ -454,7 +454,7 @@ It will save time and avoid errors during conversions of domains and problems fo
 This conversion step is not uncommon, as JSHOP itself compiles the description to Java code, trying to achieve the best performance possible.
 
 **Parser support**:
-- [x] [Ruby](https://en.wikipedia.org/wiki/Ruby_%28programming_language%29) using an [intermediary representation](docs/Representation.md)
+- [x] [Ruby](https://en.wikipedia.org/wiki/Ruby_%28programming_language%29) using an [Intermediate Representation](docs/Representation.md)
 - [x] [PDDL](http://en.wikipedia.org/wiki/Planning_Domain_Definition_Language)
 - [x] [JSHOP](http://www.cs.umd.edu/projects/shop/description.html)
 - [ ] [HPDDL](https://github.com/ronwalf/HTN-Translation)
@@ -483,7 +483,7 @@ It is possible to support the JSHOP behavior putting several generators in one m
 Well, Hype can do most of the boring stuff for you and them you can play with the details.
 
 ### Parsers
-Parsers are modules that read planning descriptions and convert the information to an [intermediary representation](docs/Representation.md).
+Parsers are modules that read planning descriptions and convert the information to an [Intermediate Representation](docs/Representation.md).
 The basic parser is a module with two methods that fill the planning attributes:
 
 ```Ruby
@@ -509,7 +509,7 @@ Domain and problem files must have the same extension.
 Maybe the file reading is common enough to be read outside the parsers, but then no special files would be supported, like binary files (uncommon, but possible).
 
 ### Compilers
-Compilers are modules that write planning descriptions based on the information available in the [intermediary representation](docs/Representation.md) format.
+Compilers are modules that write planning descriptions based on the information available in the [Intermediate Representation](docs/Representation.md) format.
 The basic compiler is a module with two methods to compile problem and domain files to text:
 
 ```Ruby
