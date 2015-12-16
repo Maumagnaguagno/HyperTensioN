@@ -454,7 +454,7 @@ It will save time and avoid errors during conversions of domains and problems fo
 This conversion step is not uncommon, as JSHOP itself compiles the description to Java code, trying to achieve the best performance possible.
 
 **Parser support**:
-- [x] Ruby
+- [x] [Ruby](https://en.wikipedia.org/wiki/Ruby_%28programming_language%29) using an [intermediary representation](docs/Representation.md)
 - [x] [PDDL](http://en.wikipedia.org/wiki/Planning_Domain_Definition_Language)
 - [x] [JSHOP](http://www.cs.umd.edu/projects/shop/description.html)
 - [ ] [HPDDL](https://github.com/ronwalf/HTN-Translation)
@@ -463,7 +463,7 @@ This conversion step is not uncommon, as JSHOP itself compiles the description t
 - [x] Hypertension (methods and tasks may not be available if the input was PDDL)
 - [x] PDDL (methods are ignored, goal must be manually converted from the tasks)
 - [x] JSHOP (methods and tasks may not be available if the input was PDDL)
-- [x] [Graphviz DOT](http://www.graphviz.org/) (generate a graph description to be compiled into an image)
+- [x] [Graphviz DOT](http://www.graphviz.org/) (generate a [graph](docs/Graph.md) description to be compiled into an image)
 - [ ] HPDDL (methods and tasks may not be available if the input was PDDL)
 - [x] [Markdown](http://daringfireball.net/projects/markdown/) (only operators available)
 - [ ] [LaTex](https://www.latex-project.org/)
@@ -483,8 +483,8 @@ It is possible to support the JSHOP behavior putting several generators in one m
 Well, Hype can do most of the boring stuff for you and them you can play with the details.
 
 ### Parsers
-Parsers are modules that read planning descriptions, they are under development and still require a standard interface.
-The prototype interface is a module with the domain attributes and two methods to parse problem and domain files:
+Parsers are modules that read planning descriptions and convert the information to an [intermediary representation](docs/Representation.md).
+The basic parser is a module with two methods that fill the planning attributes:
 
 ```Ruby
 module Foo_Parser
@@ -509,8 +509,8 @@ Domain and problem files must have the same extension.
 Maybe the file reading is common enough to be read outside the parsers, but then no special files would be supported, like binary files (uncommon, but possible).
 
 ### Compilers
-Compilers are modules that write planning descriptions, they are under development and still require a standard interface.
-The prototype interface is a module with two methods to compile problem and domain files to text:
+Compilers are modules that write planning descriptions based on the information available in the [intermediary representation](docs/Representation.md) format.
+The basic compiler is a module with two methods to compile problem and domain files to text:
 
 ```Ruby
 module Bar_Compiler
@@ -548,4 +548,5 @@ You need to be extra careful with unordered tasks for some problems that rely on
 
 ## ToDo's
 - Parser/Compiler features
+- Debugger (why is the planner not returning this plan?)
 - More tests
