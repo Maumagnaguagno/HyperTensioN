@@ -454,19 +454,19 @@ It will save time and avoid errors during conversions of domains and problems fo
 This conversion step is not uncommon, as [JSHOP] itself compiles the description to Java code, trying to achieve the best performance possible.
 
 **Parser support**:
-- [x] [Ruby](https://en.wikipedia.org/wiki/Ruby_%28programming_language%29) using an [Intermediate Representation](docs/Representation.md)
-- [x] [PDDL]
-- [x] [JSHOP]
-- [ ] [HPDDL]
+-[x] [Ruby](https://en.wikipedia.org/wiki/Ruby_%28programming_language%29) using an [Intermediate Representation](docs/Representation.md)
+-[x] [PDDL]
+-[x] [JSHOP]
+-[ ] [HPDDL]
 
 **Compiler support**:
-- [x] Hypertension (methods and tasks may not be available if the input was PDDL)
-- [x] [PDDL] (methods are ignored, goal must be manually converted from the tasks)
-- [x] [JSHOP] (methods and tasks may not be available if the input was PDDL)
-- [x] [Graphviz DOT](http://www.graphviz.org/) (generate a [graph](docs/Graph.md) description to be compiled into an image)
-- [ ] [HPDDL] (methods and tasks may not be available if the input was PDDL)
-- [x] [Markdown](http://daringfireball.net/projects/markdown/) (only operators available)
-- [ ] [LaTex](https://www.latex-project.org/)
+-[x] Hypertension (methods and tasks may not be available if the input was PDDL)
+-[x] [PDDL] (methods are ignored, goal must be manually converted from the tasks)
+-[x] [JSHOP] (methods and tasks may not be available if the input was PDDL)
+-[x] [Graphviz DOT](http://www.graphviz.org/) (generate a [graph](docs/Graph.md) description to be compiled into an image)
+-[ ] [HPDDL] (methods and tasks may not be available if the input was PDDL)
+-[x] [Markdown](http://daringfireball.net/projects/markdown/) (only operators available)
+-[ ] [LaTex](https://www.latex-project.org/)
 
 As any parser, the ones provided by Hype are limited in one way or another.
 [PDDL] have far more features than supported by most planners and [JSHOP] have 2 different ways to define methods.
@@ -550,7 +550,6 @@ You need to be extra careful with unordered tasks for some problems that rely on
 - Parser/Compiler features
 - Debugger (why is the planner not returning this plan?)
 - More tests
-
 [PDDL]: http://en.wikipedia.org/wiki/Planning_Domain_Definition_Language
 [JSHOP]: http://www.cs.umd.edu/projects/shop/description.html
 [HPDDL]: https://github.com/ronwalf/HTN-Translation
