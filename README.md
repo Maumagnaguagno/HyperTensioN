@@ -9,7 +9,7 @@ It works based on decomposition, which is very alike to how humans think, taking
 The current version has most of its algorithm inspired by PyHop/SHOP, with backtracking and unification added.
 
 ## Algorithm
-The [SHOP/JSHOP][JSHOP] algorithm for HTN planning is quite simple and flexible, the hard part is in the structure that decomposes and the unification engine.
+The [SHOP/JSHOP](http://www.cs.umd.edu/projects/shop/description.html "SHOP/JSHOP project page") algorithm for HTN planning is quite simple and flexible, the hard part is in the structure that decomposes and the unification engine.
 The task list (input of planning) is decomposed until nothing remains, the base of recursion, returning an empty plan.
 The tail of recursion are the operator and method cases.
 The operator tests if the current task (the first in the list, since it decomposes in order here) can be applied to the current state (which is a visible structure to the other Ruby methods, but does not appear here).
@@ -451,7 +451,7 @@ Domain methods must yield a task list or are nullified, having no decomposition.
 ## Hype
 The **Hype** is the framework for parsers and compilers of planning descriptions.
 It will save time and avoid errors during conversions of domains and problems for comparison results with other planners.
-This conversion step is not uncommon, as [JSHOP] itself compiles the description to Java code, trying to achieve the best performance possible.
+This conversion step is not uncommon, as JSHOP itself compiles the description to Java code, trying to achieve the best performance possible.
 
 **Parser support**:
 - [x] [Ruby](https://en.wikipedia.org/wiki/Ruby_%28programming_language%29) using an [Intermediate Representation](docs/Representation.md)
@@ -469,17 +469,17 @@ This conversion step is not uncommon, as [JSHOP] itself compiles the description
 - [ ] [LaTex](https://www.latex-project.org/)
 
 As any parser, the ones provided by Hype are limited in one way or another.
-[PDDL](http://en.wikipedia.org/wiki/Planning_Domain_Definition_Language "PDDL at Wikipedia") have far more features than supported by most planners and [JSHOP] have 2 different ways to define methods.
+[PDDL](http://en.wikipedia.org/wiki/Planning_Domain_Definition_Language "PDDL at Wikipedia") have far more features than supported by most planners and JSHOP have 2 different ways to define methods.
 Methods may be broken into several independent blocks or in the same block without the need to check the same preconditions again.
-Both cases are supported, but we evaluate the preconditions of each set independently while [JSHOP] only evaluates the last if the first ones evaluated to false in the same block.
+Both cases are supported, but we evaluate the preconditions of each set independently while JSHOP only evaluates the last if the first ones evaluated to false in the same block.
 In order to copy the behavior we cannot simply copy the positive preconditions in the negative set and vice-versa.
 Sometimes only one proposition in the set is false, if we copied in the other set for the other methods it would never work.
 It is possible to declare the methods in the same Ruby method (losing label definition), but kills the simplicity we are trying to achieve.
-We also do not support [JSHOP] axioms and external calls, yet.
+We also do not support JSHOP axioms and external calls, yet.
 
 You can always not believe the **Hype** and convert descriptions by yourself, following a style that achieves a better or faster solution with the indentation that makes you happy.
 You could add flags or counters in the methods and return after generate unified one or more times a specific value.
-It is possible to support the [JSHOP] behavior putting several generators in one method and returning if the previous one ever unified.
+It is possible to support the JSHOP behavior putting several generators in one method and returning if the previous one ever unified.
 Well, Hype can do most of the boring stuff for you and them you can play with the details.
 
 ### Parsers
@@ -533,10 +533,10 @@ In fact this is the core idea behind Hype, be able to parse, modify and compile 
 
 ## Advantages
 The main advantage is to be able to define behavior in the core language, if you wish, without losing clarity, this alone gives a lot of power.
-[JSHOP] requires you to dive into a very complex structure if you want to unlock this power.
+JSHOP requires you to dive into a very complex structure if you want to unlock this power.
 PyHop is based in this feature, everything is Python, but does not support backtracking and unification, which means you will have to create your own unification system and define your domain so no backtracking is required.
 The biggest advantage is not the planning itself, but the parsers and compilers being built around it, so that your description can be converted automatically without breaking compatibility with other planners.
-[JSHOP] and PyHop live in their own world, with their own language acting as a barrier.
+JSHOP and PyHop live in their own world, with their own language acting as a barrier.
 Perhaps the most invisible advantage is the lack of custom classes, every object used during planning is defined as one of the core objects.
 Once the designer understands Strings, Arrays and Hashes the entire Hypertension module is just a few methods away from complete understanding.
 This also means that any update in the implementation of Ruby will benefit this project directly, as those objects are always target of optimizations.
@@ -550,4 +550,3 @@ You need to be extra careful with unordered tasks for some problems that rely on
 - Parser/Compiler features
 - Debugger (why is the planner not returning this plan?)
 - More tests
-[JSHOP]: http://www.cs.umd.edu/projects/shop/description.html "SHOP/JSHOP project page"
