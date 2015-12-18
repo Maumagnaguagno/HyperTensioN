@@ -455,21 +455,21 @@ This conversion step is not uncommon, as [JSHOP] itself compiles the description
 
 **Parser support**:
 - [x] [Ruby](https://en.wikipedia.org/wiki/Ruby_%28programming_language%29) using an [Intermediate Representation](docs/Representation.md)
-- [x] [PDDL][PDDL]
-- [x] [JSHOP][JSHOP]
-- [ ] [HPDDL][HPDDL]
+- [x] [PDDL](http://en.wikipedia.org/wiki/Planning_Domain_Definition_Language "PDDL at Wikipedia")
+- [x] [JSHOP](http://www.cs.umd.edu/projects/shop/description.html "SHOP/JSHOP project page")
+- [ ] [HPDDL](https://github.com/ronwalf/HTN-Translation "HTN-Translation GitHub repository")
 
 **Compiler support**:
 - [x] Hypertension (methods and tasks may not be available if the input was PDDL)
-- [x] [PDDL][PDDL] (methods are ignored, goal must be manually converted from the tasks)
-- [x] [JSHOP][JSHOP] (methods and tasks may not be available if the input was PDDL)
+- [x] [PDDL](http://en.wikipedia.org/wiki/Planning_Domain_Definition_Language "PDDL at Wikipedia") (methods are ignored, goal must be manually converted from the tasks)
+- [x] [JSHOP](http://www.cs.umd.edu/projects/shop/description.html "SHOP/JSHOP project page") (methods and tasks may not be available if the input was PDDL)
 - [x] [Graphviz DOT](http://www.graphviz.org/) (generate a [graph](docs/Graph.md) description to be compiled into an image)
-- [ ] [HPDDL][HPDDL] (methods and tasks may not be available if the input was PDDL)
+- [ ] [HPDDL](https://github.com/ronwalf/HTN-Translation "HTN-Translation GitHub repository") (methods and tasks may not be available if the input was PDDL)
 - [x] [Markdown](http://daringfireball.net/projects/markdown/) (only operators available)
 - [ ] [LaTex](https://www.latex-project.org/)
 
 As any parser, the ones provided by Hype are limited in one way or another.
-[PDDL] have far more features than supported by most planners and [JSHOP] have 2 different ways to define methods.
+[PDDL](http://en.wikipedia.org/wiki/Planning_Domain_Definition_Language "PDDL at Wikipedia") have far more features than supported by most planners and [JSHOP] have 2 different ways to define methods.
 Methods may be broken into several independent blocks or in the same block without the need to check the same preconditions again.
 Both cases are supported, but we evaluate the preconditions of each set independently while [JSHOP] only evaluates the last if the first ones evaluated to false in the same block.
 In order to copy the behavior we cannot simply copy the positive preconditions in the negative set and vice-versa.
@@ -550,6 +550,4 @@ You need to be extra careful with unordered tasks for some problems that rely on
 - Parser/Compiler features
 - Debugger (why is the planner not returning this plan?)
 - More tests
-[PDDL]: http://en.wikipedia.org/wiki/Planning_Domain_Definition_Language "PDDL at Wikipedia"
 [JSHOP]: http://www.cs.umd.edu/projects/shop/description.html "SHOP/JSHOP project page"
-[HPDDL]: https://github.com/ronwalf/HTN-Translation "HTN-Translation GitHub repository"
