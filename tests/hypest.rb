@@ -20,10 +20,8 @@ module Hypest
     Hype.compile(domain, problem, type)
     assert_equal(true, File.exist?(domain_type))
     assert_equal(true, File.exist?(problem_type))
-    generated = IO.readlines(domain_type)
-    domain_expected.each_line.with_index {|l,i| assert_equal(l, generated[i])}
-    generated = IO.readlines(problem_type)
-    problem_expected.each_line.with_index {|l,i| assert_equal(l, generated[i])}
+    assert_equal(domain_expected.split("\n"), IO.read(domain_type).split("\n"))
+    assert_equal(problem_expected.split("\n"), IO.read(problem_type).split("\n"))
     File.delete(domain_type, problem_type)
   end
 end
