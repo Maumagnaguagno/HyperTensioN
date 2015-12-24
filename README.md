@@ -465,7 +465,7 @@ This conversion step is not uncommon, as JSHOP itself compiles the description t
 - [x] [JSHOP](http://www.cs.umd.edu/projects/shop/description.html "SHOP/JSHOP project page") (methods and tasks may not be available if the input was PDDL)
 - [x] [Graphviz DOT](http://www.graphviz.org/) (generate a [graph](docs/Graph.md) description to be compiled into an image)
 - [ ] [HPDDL](https://github.com/ronwalf/HTN-Translation "HTN-Translation GitHub repository") (methods and tasks may not be available if the input was PDDL)
-- [x] [Markdown](http://daringfireball.net/projects/markdown/) (only operators available)
+- [x] [Markdown](http://daringfireball.net/projects/markdown/)
 - [ ] [LaTex](https://www.latex-project.org/)
 
 As any parser, the ones provided by Hype are limited in one way or another.
