@@ -81,7 +81,7 @@ The following method is the swap from the basic_jshop example, it contains two p
   ((!drop ?x) (!pickup ?y))
   ; have Y, but no X
   ((have ?y) (not (have ?x)))
-  ((!drop ?y) (!pickup ?x))))
+  ((!drop ?y) (!pickup ?x))
 )
 ```
 
