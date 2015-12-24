@@ -28,7 +28,7 @@ plan = Robby.problem(
     'robot' => [
       [robby]
     ],
-    'object'=> [
+    'object' => [
       [robby],
       [beacon1]
     ],
