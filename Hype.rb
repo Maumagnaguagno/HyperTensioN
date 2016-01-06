@@ -135,6 +135,7 @@ Problem #{@parser.problem_name}
     when 'wise' then Wise
     when 'patterns' then Patterns
     when 'refinements' then Refinements
+    when 'grammar' then Grammar
     else raise "Unknown extension #{extension}"
     end
     extender.apply(
