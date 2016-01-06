@@ -4,7 +4,7 @@ module Refinements
   INVISIBLE = true
 
   def apply(operators, methods, predicates, state, tasks, goal_pos, goal_not, debug = true)
-    puts 'Refinements'.center(50,'-')
+    puts 'Refinements'.center(50,'-') if debug
     # Cluster sequential operators
     cluster = []
     methods.each {|met|
