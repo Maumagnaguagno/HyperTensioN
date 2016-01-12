@@ -8,15 +8,15 @@ With hierarchical planning it is possible to describe a strategy to obtain a seq
 It works based on decomposition, which is very alike to how humans think, taking mental steps further into primitive operators.
 The current version has most of its algorithm inspired by PyHop/SHOP, with backtracking and unification added.
 
-You can [download the ZIP and play](archive/master.zip), or jump to each section of this README to learn more:
-- [Algorithm](#algorithm "Jump to Algorithm section"): planning algorithm explanation.
-- [How it works](#how-it-works "Jump to How it works section"): Features explained while describing a domain with Hypertension.
-- [Hints](#hints "Jump to Hints section"): a list of hints to keep in mind in order to keep things fast.
-- [Execution](#execution "Jump to Execution section"): Command line examples for the forgotten.
-- [API](#api "Jump to API section"): Variables and methods defined by Hypertension.
-- [Hype](#hype "Jump to Hype section"): Follow the Hype and let your domain and problem be converted and executed automagically.
-- [Comparison](#comparison "Jump to Comparison section"): A brief comparison with JSHOP and PyHop.
-- [ToDo's](#todos "Jump to ToDo's section"): a small list of things to be done.
+You can [download and play](../../archive/master.zip), or jump to each section of this README to learn more:
+- [**Algorithm**](#algorithm "Jump to Algorithm section"): planning algorithm explanation.
+- [**How it works**](#how-it-works "Jump to How it works section"): Features explained while describing a domain with Hypertension.
+- [**Hints**](#hints "Jump to Hints section"): a list of hints to keep in mind in order to keep things fast.
+- [**Execution**](#execution "Jump to Execution section"): Command line examples for the forgotten.
+- [**API**](#api "Jump to API section"): Variables and methods defined by Hypertension.
+- [**Hype**](#hype "Jump to Hype section"): Follow the Hype and let your domain and problem be converted and executed automagically.
+- [**Comparison**](#comparison "Jump to Comparison section"): A brief comparison with JSHOP and PyHop.
+- [**ToDo's**](#todos "Jump to ToDo's section"): a small list of things to be done.
 
 ## Algorithm
 The [SHOP/JSHOP](http://www.cs.umd.edu/projects/shop/description.html "SHOP/JSHOP project page") algorithm for HTN planning is quite simple and flexible, the hard part is in the structure that decomposes and the unification engine.
