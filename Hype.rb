@@ -7,6 +7,9 @@
 # Planning description converter
 #-----------------------------------------------
 
+# Require parsers, compilers and extensions found
+Dir.glob("#{File.expand_path('..', __FILE__)}/{parsers,compilers,extensions}/*.rb") {|file| require file}
+
 module Hype
   extend self
 
@@ -23,12 +26,10 @@ module Hype
     md    - generate Markdown file
     run   - same as rb with execution
     debug - same as run with execution log\n
+    nil   - avoid print parsed data
   Extensions:
     wise        - static analysis of flat structure
     refinements - refine hierarchical structure"
-
-  # Require parsers, compilers and extensions found
-  Dir.glob("#{File.expand_path('..', __FILE__)}/{parsers,compilers,extensions}/*.rb") {|file| require file}
 
   #-----------------------------------------------
   # Propositions to string
@@ -201,14 +202,15 @@ if $0 == __FILE__
         t = Time.now.to_f
         Hype.parse(domain, problem)
         extensions.each {|e| Hype.extend(e)}
-        if type and type != 'print'
-          if type == 'run' or (type == 'debug' and ARGV[0] = '-d')
-            Hype.compile(domain, problem, 'rb')
-            require File.expand_path(problem)
-          else Hype.compile(domain, problem, type)
-          end
-        else puts Hype.to_s, "\nTime: #{Time.now.to_f - t}s"
+        if not type or type == 'print'
+          puts Hype.to_s
+        elsif type == 'run' or (type == 'debug' and ARGV[0] = '-d')
+          Hype.compile(domain, problem, 'rb')
+          require File.expand_path(problem)
+        elsif type != 'nil'
+          Hype.compile(domain, problem, type)
         end
+        puts "Time: #{Time.now.to_f - t}s"
       end
     end
   rescue
