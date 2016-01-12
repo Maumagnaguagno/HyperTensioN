@@ -8,6 +8,16 @@ With hierarchical planning it is possible to describe a strategy to obtain a seq
 It works based on decomposition, which is very alike to how humans think, taking mental steps further into primitive operators.
 The current version has most of its algorithm inspired by PyHop/SHOP, with backtracking and unification added.
 
+You can [download the ZIP and play](archive/master.zip), or jump to each section of this README to learn more:
+- [Algorithm](#algorithm "Jump to Algorithm section"): planning algorithm explanation.
+- [How it works](#how-it-works "Jump to How it works section"): Features explained while describing a domain with Hypertension.
+- [Hints](#hints "Jump to Hints section"): a list of hints to keep in mind in order to keep things fast.
+- [Execution](#execution "Jump to Execution section"): Command line examples for the forgotten.
+- [API](#api "Jump to API section"): Variables and methods defined by Hypertension.
+- [Hype](#hype "Jump to Hype section"): Follow the Hype and let your domain and problem be converted and executed automagically.
+- [Comparison](#comparison "Jump to Comparison section"): A brief comparison with JSHOP and PyHop.
+- [ToDo's](#todos "Jump to ToDo's section"): a small list of things to be done.
+
 ## Algorithm
 The [SHOP/JSHOP](http://www.cs.umd.edu/projects/shop/description.html "SHOP/JSHOP project page") algorithm for HTN planning is quite simple and flexible, the hard part is in the structure that decomposes and the unification engine.
 The task list (input of planning) is decomposed until nothing remains, the base of recursion, returning an empty plan.
@@ -46,10 +56,10 @@ end
 ```
 
 ## How it works
-The idea is to **include** Hypertension in your domain module, define the methods and primitive operators, and use this domain module with your different problems for this domain.
+The idea is to [**include** Hypertension in your domain module](#api "Jump to API section"), define the methods and primitive operators, and use this domain module with your different problems for this domain.
 Your problems may be in a separate file or generated during run-time.
-Since Hypertension uses **metaprogramming**, you need to specify which Ruby methods may be used by the search engine.
-You will need to specify operator visibility and the subtasks of each method in the structure.
+Since Hypertension uses **metaprogramming**, you need to specify which Ruby methods may be used by the [planner](#algorithm "Jump to Algorithm section").
+You will need to specify operator visibility and the subtasks of each method in the domain structure.
 
 ### Example
 There is nothing better than an example to understand the behavior of something.
@@ -368,6 +378,7 @@ Here are some hints to describe your domain:
 
 ## Execution
 The problem acts as the main function since the problems include the domain, and the domain include the planner.
+Here we execute the problem 1 of Robby.
 
 ```Shell
 cd HyperTensioN
@@ -405,8 +416,7 @@ They were defined as instance variables to be mixed in other classes if needed, 
 
 ```Ruby
 # Require and use
-# require_relative 'Hypertension' if RUBY_VERSION >= 1.9
-require './Hypertension'
+require './Hypertension' # require_relative 'Hypertension' if RUBY_VERSION >= 1.9
 Hypertension.state = {...}
 Hypertension.applicable?(...)
 ```
@@ -450,7 +460,7 @@ Domain methods must yield a task list or are nullified, having no decomposition.
 
 ## Hype
 The **Hype** is the framework for parsers and compilers of planning descriptions.
-It will save time and avoid errors during conversions of domains and problems for comparison results with other planners.
+It will save time and avoid errors during conversion of domains and problems for comparison results with other planners.
 This conversion step is not uncommon, as JSHOP itself compiles the description to Java code, trying to achieve the best performance possible.
 
 **Parser support**:
@@ -531,22 +541,19 @@ The output filename is the input filename with the new extension, therefore ```i
 Note that any compiler have access to the parser attributes, which means you can call one module to optimize before calling another to actually compile.
 In fact this is the core idea behind Hype, be able to parse, modify and compile domains without having to worry about language support, any future language could be supported just adding a new parser and compiler.
 
-## Advantages
+## Comparison
 The main advantage is to be able to define behavior in the core language, if you wish, without losing clarity, this alone gives a lot of power.
 JSHOP requires you to dive into a very complex structure if you want to unlock this power.
-PyHop is based in this feature, everything is Python, but does not support backtracking and unification, which means you will have to create your own unification system and define your domain so no backtracking is required.
-The biggest advantage is not the planning itself, but the parsers and compilers being built around it, so that your description can be converted automatically without breaking compatibility with other planners.
-JSHOP and PyHop live in their own world, with their own language acting as a barrier.
+PyHop is based in this feature, everything defined in Python, but does not support backtracking and unification, which means you will have to create your own unification system and define your domain so no backtracking is required.
+The biggest advantage is not the planning itself, but the parsers and compilers being built around it, so that your JSHOP description can be converted automatically.
 Perhaps the most invisible advantage is the lack of custom classes, every object used during planning is defined as one of the core objects.
-Once the designer understands Strings, Arrays and Hashes the entire Hypertension module is just a few methods away from complete understanding.
-This also means that any update in the implementation of Ruby will benefit this project directly, as those objects are always target of optimizations.
+Once Strings, Arrays and Hashes are understood, the entire Hypertension module is just a few methods away from complete understanding.
 
-The only feature that we lack and is impossible to force without changing the algorithm is interleaved/unordered execution of tasks, a feature that JSHOP2 supports and is extremely important to achieve good plans in some cases.
+The only killer feature that we lack, which requires a more complex algorithm, is interleaved/unordered execution of tasks, a feature that JSHOP2 supports and is extremely important to achieve good plans in some cases.
 We only support unordered tasks at the problem level and do not interleave them during decomposition.
-Since we test for explicit goals only after the plan has been found with a sequence of tasks, a failure is considered enough proof to try other sequences, not other unifications with the same sequence of tasks.
-You need to be extra careful with unordered tasks for some problems that rely on unification until we make the jump to the next version.
+Since we test for explicit goals only after the plan has been found with a sequence of tasks, a failure is considered enough proof to try other orderings, not other unifications with the same sequence of tasks.
 
 ## ToDo's
-- Parser/Compiler features
 - Debugger (why is the planner not returning this plan?)
+- Extensions documentation
 - More tests
