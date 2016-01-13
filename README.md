@@ -10,9 +10,9 @@ The current version has most of its algorithm inspired by PyHop/SHOP, with backt
 
 You can [download and play](../../archive/master.zip), or jump to each section to learn more:
 - [**Algorithm**](#algorithm "Jump to Algorithm section"): planning algorithm explanation.
-- [**How it works**](#how-it-works "Jump to How it works section"): Features explained while describing a domain with Hypertension.
+- [**Getting started**](#getting-started "Jump to Getting started section"): Features explained while describing a domain with Hypertension.
 - [**Hints**](#hints "Jump to Hints section"): a list of hints to keep in mind in order to keep things fast.
-- [**Execution**](#execution "Jump to Execution section"): Command line examples for the forgotten.
+- [**Execution**](#execution "Jump to Execution section"): Command-line examples for the forgotten.
 - [**API**](#api "Jump to API section"): Variables and methods defined by Hypertension.
 - [**Hype**](#hype "Jump to Hype section"): Follow the Hype and let your domain and problem be converted and executed automagically.
 - [**Comparison**](#comparison "Jump to Comparison section"): A brief comparison with JSHOP and PyHop.
@@ -55,7 +55,7 @@ Algorithm planning(list tasks)
 end
 ```
 
-## How it works
+## Getting started
 The idea is to [**include** Hypertension in your domain module](#api "Jump to API section"), define the methods and primitive operators, and use this domain module with your different problems for this domain.
 Your problems may be in a separate file or generated during run-time.
 Since Hypertension uses **metaprogramming**, you need to specify which Ruby methods may be used by the [planner](#algorithm "Jump to Algorithm section").
