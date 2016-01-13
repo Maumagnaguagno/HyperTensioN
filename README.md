@@ -8,7 +8,7 @@ With hierarchical planning it is possible to describe a strategy to obtain a seq
 It works based on decomposition, which is very alike to how humans think, taking mental steps further into primitive operators.
 The current version has most of its algorithm inspired by PyHop/SHOP, with backtracking and unification added.
 
-You can [download and play](../../archive/master.zip), or jump to each section of this README to learn more:
+You can [download and play](../../archive/master.zip), or jump to each section to learn more:
 - [**Algorithm**](#algorithm "Jump to Algorithm section"): planning algorithm explanation.
 - [**How it works**](#how-it-works "Jump to How it works section"): Features explained while describing a domain with Hypertension.
 - [**Hints**](#hints "Jump to Hints section"): a list of hints to keep in mind in order to keep things fast.
