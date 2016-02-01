@@ -366,7 +366,7 @@ Robby.problem(
 
 ## Hints
 Here are some hints to describe your domain:
-- Having the objects in variables being reused is faster to compare (pointer comparison), instead of String == String, only works for constant objects.
+- Having the objects in variables being reused is faster to compare (pointer comparison), instead of ```String == String```, only works for constant objects.
 - Order the methods decomposition wisely, otherwise you may test a lot before actually going to the correct path.
 - Use preconditions at your favor, you do not need to test things twice using a smart method decomposition.
 - Unification is costly, avoid generate, match your values once and propagate them.
@@ -374,7 +374,7 @@ Here are some hints to describe your domain:
 - Empty predicate sets must be put in the initial state at the problem file. This avoids predicate typos, as all predicates must be previously defined. Or you can use ```Hash.new {|h,k| h[k] = []}``` to create sets at run-time.
 - Check out [And-or Trees](http://en.wikipedia.org/wiki/And%E2%80%93or_tree). Which decisions must be made before paths fork and which actions must be done in sequence?
 - Using Symbols or constant frozen strings can speed-up things a little, avoiding repeated strings in memory, this was used in the [N Queens example](examples/n_queens/N_Queens.rb "N Queens").
-- You can explore further using Hash.compare_by_identity on domain and state in RUBY_VERSION >= 1.9.
+- You can explore further using ```Hash.compare_by_identity``` on domain and state in ```RUBY_VERSION >= 1.9```.
 
 ## Execution
 The problem acts as the main function since the problems include the domain, and the domain include the planner.
