@@ -43,19 +43,18 @@ class Sphygmomanometer < Test::Unit::TestCase
     ]
     assert_equal(expected_plan, N_Queens.solve(8, false, false))
     # Expected state
-    expected_plan.each {|i| i.shift}
-    assert_equal({:queen => expected_plan, :free_collumn => []}, N_Queens.state)
+    assert_equal({:queen => expected_plan.each {|i| i.shift}, :free_collumn => []}, N_Queens.state)
   end
 
   def test_planning_failure
     N_Queens.solve(8, false, false)
-    assert_equal(nil, N_Queens.planning([[:solve,1]]))
+    assert_nil(N_Queens.planning([[:solve,1]]))
   end
 
   def test_planning_exception
     Hypertension.state = simple_state
     Hypertension.domain = {}
-    assert_raises(RuntimeError) {Hypertension.planning([['exception_rise']])}
+    assert_raise(RuntimeError) {Hypertension.planning([['exception_rise']])}
   end
 
   #-----------------------------------------------
