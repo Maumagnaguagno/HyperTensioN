@@ -117,7 +117,7 @@ end
 ```
 
 The operators are the same as before, but visit and unvisit are not really important outside the planning stage, therefore they are not visible (```false```), while the others are visible (```true```).
-Our movement method swap_at is there, without any code describing its behavior, only the available methods.
+Our movement method ```swap_at``` is there, without any code describing its behavior, only the available methods.
 You could compare this with the header file holding the prototypes of functions as in C.
 Each method ```swap_at__XYZ``` describe one possible case of decomposition of ```swap_at```
 It is also possible to avoid listing all of them and filter based on their name (after they were declared):
@@ -168,7 +168,7 @@ end
 ```
 
 The application of an operator creates a new state if the preconditions are satisfied, which requires a deep copy of the state and is costly.
-You can avoid apply_operator and handle your own states.
+You can avoid ```apply_operator``` and handle your own states.
 And if you want to create dummy operators to simulate a success or failure without modifications in the state you just return ```true``` or ```false```.
 Success may be useful during the debug process or to change an internal feature of the agent wrapping the HTN when parsing the plan returned.
 Failure can be used to destroy the current plan decomposition without the use of preconditions, a specific case in which this construct is useful is not know.
@@ -187,7 +187,7 @@ def set_debug(term)
 end
 ```
 
-The other operators are no different, time to see how our **swap_at** method works.
+The other operators are no different, time to see how our ```swap_at``` method works.
 We need to define every single case as a different method.
 The order they appear in the domain definition implies the order of evaluation.
 Methods may appear in 3 different scenarios:
@@ -439,7 +439,7 @@ This may be usefull to reorder method decompositions in the domain to modify the
 You will notice that the plan is not a variable, as it is created during the backtracking, which means you cannot reorder actions in the planning process using this algorithm, but it is possible with a variation of this algorithm that creates the plan during decomposition.
 
 The methods are few and simple to use:
-- ```planning(tasks, level = 0)``` receives a task_list, ```[['task1', 'term1', 'term2'], ['task2', 'term3']]```, to decompose and the nesting level to help debug.
+- ```planning(tasks, level = 0)``` receives a task list, ```[['task1', 'term1', 'term2'], ['task2', 'term3']]```, to decompose and the nesting level to help debug.
 Only call this method after domain and state were defined.
 This method is called recursively until it finds an empty task list, ```[]```, then it starts to build the plan while backtracking to save CPU (avoid intermediate plan creation).
 Therefore no plan actually exists before reaching an empty task list.
@@ -554,6 +554,6 @@ We only support unordered tasks at the problem level and do not interleave them 
 Since we test for explicit goals only after the plan has been found with a sequence of tasks, a failure is considered enough proof to try other orderings, not other unifications with the same sequence of tasks.
 
 ## ToDo's
-- Debugger (why is the planner not returning this plan?)
+- Debugger (why is the planner not returning the expected plan?)
 - Extensions documentation
 - More tests
