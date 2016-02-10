@@ -22,6 +22,7 @@ module Hypest
     assert_equal(true, File.exist?(problem_type))
     assert_equal(domain_expected.split("\n"), IO.read(domain_type).split("\n"))
     assert_equal(problem_expected.split("\n"), IO.read(problem_type).split("\n"))
+  ensure
     File.delete(domain_type, problem_type)
   end
 end
