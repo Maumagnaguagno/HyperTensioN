@@ -407,7 +407,7 @@ ruby Hype.rb examples/basic_jshop/basic.jshop examples/basic_jshop/problem.jshop
 ```
 
 ## API
-Hypertension is a module with 3 attributes:
+[**Hypertension**](Hypertension.rb) is a module with 3 attributes:
 - ```attr_accessor :state``` with the current state.
 - ```attr_accessor :domain``` with the decomposition rules that can be applied to the operators and methods.
 - ```attr_accessor :debug``` as a flag to print intermediate data during planning.
@@ -461,7 +461,7 @@ Domain operators can be defined without ```apply_operator``` and will have the r
 Domain methods must yield a task list or are nullified, having no decomposition.
 
 ## Hype
-The **Hype** is the framework for parsers and compilers of planning descriptions.
+The [**Hype**](Hype.rb) is the framework for parsers and compilers of planning descriptions.
 It will save time and avoid errors during conversion of domains and problems for comparison results with other planners.
 This conversion step is not uncommon, as JSHOP itself compiles the description to Java code, trying to achieve the best performance possible.
 
