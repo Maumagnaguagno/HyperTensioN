@@ -407,22 +407,24 @@ ruby Hype.rb examples/basic_jshop/basic.jshop examples/basic_jshop/problem.jshop
 ```
 
 ## API
-Hypertension is a Ruby module and have a few instance variables:
-- ```@state``` with the current state.
-- ```@domain``` with the decomposition rules that can be applied to the operators and methods.
-- ```@debug``` as a flag to print intermediate data during planning.
+Hypertension is a module with 3 attributes:
+- ```attr_accessor :state``` with the current state.
+- ```attr_accessor :domain``` with the decomposition rules that can be applied to the operators and methods.
+- ```attr_accessor :debug``` as a flag to print intermediate data during planning.
 
 They were defined as instance variables to be mixed in other classes if needed, that is why they are not class variables.
 
 ```Ruby
 # Require and use
 require './Hypertension' # require_relative 'Hypertension' if RUBY_VERSION >= 1.9
+
 Hypertension.state = {...}
 Hypertension.applicable?(...)
 ```
 ```Ruby
 # Mix in
 require './Hypertension'
+
 class Foo < Bar
   include Hypertension
 
