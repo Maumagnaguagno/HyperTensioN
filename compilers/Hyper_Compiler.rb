@@ -81,17 +81,20 @@ module Hyper_Compiler
         # No preconditions
         if met_case[2].empty? and met_case[3].empty?
           subtasks_to_hyper(define_methods, met_case[4], '    ')
-        # Grounded or lifted
+        # Grounded
+        elsif met_case[1].empty?
+          predicates_to_hyper(define_methods << "    if applicable?(\n      # Positive preconditions", met_case[2])
+          predicates_to_hyper(define_methods << ",\n      # Negative preconditions", met_case[3])
+          subtasks_to_hyper(define_methods << "\n    )\n", met_case[4], '      ')
+          define_methods << "    end\n"
+        # Lifted
         else
-          grounded = met_case[1].empty?
           met_case[1].each {|free| define_methods << "    #{free.sub(/^\?/,'')} = ''\n"}
-          define_methods << (grounded ? '    if applicable?(' : '    generate(')
-          predicates_to_hyper(define_methods << "\n      # Positive preconditions", met_case[2])
+          predicates_to_hyper(define_methods << "    generate(\n      # Positive preconditions", met_case[2])
           predicates_to_hyper(define_methods << ",\n      # Negative preconditions", met_case[3])
           met_case[1].each {|free| define_methods << ", #{free.sub(/^\?/,'')}"}
-          define_methods << (grounded ? "\n    )\n" : "\n    ) {\n")
-          subtasks_to_hyper(define_methods, met_case[4], '      ')
-          define_methods << (grounded ? "    end\n" : "    }\n")
+          subtasks_to_hyper(define_methods << "\n    ) {\n", met_case[4], '      ')
+          define_methods << "    }\n"
         end
         define_methods << "  end\n"
       }
