@@ -5,11 +5,6 @@
     ana bob - agent
     gift - object
   )
-  (:init
-  )
-  (:goal
-    (and
-      (have bob gift)
-    )
-  )
+  (:init)
+  (:goal (and (have bob gift)))
 )

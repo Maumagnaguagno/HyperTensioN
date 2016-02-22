@@ -5,11 +5,6 @@
     ana bob - agent
     gift - object
   )
-  (:init
-  )
-  (:goal
-    (and
-      (happy bob)
-    )
-  )
+  (:init)
+  (:goal (and (happy bob)))
 )
