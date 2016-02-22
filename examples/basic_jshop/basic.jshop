@@ -1,11 +1,35 @@
 ; Basic example of JSHOP
-
 (defdomain basic (
-  (:operator (!pickup ?a) () () ((have ?a)))
-  (:operator (!drop ?a) ((have ?a)) ((have ?a)) ())
+
+  (:operator (!pickup ?a)
+    ()
+    ()
+    ((have ?a))
+  )
+
+  (:operator (!drop ?a)
+    ((have ?a))
+    ((have ?a))
+    ()
+  )
 
   (:method (swap ?x ?y)
-    ((have ?x) (not (have ?y)))
-    ((!drop ?x) (!pickup ?y))
-    ((have ?y) (not (have ?x)))
-    ((!drop ?y) (!pickup ?x)))))
+    (
+      (have ?x)
+      (not (have ?y))
+    )
+    (
+      (!drop ?x)
+      (!pickup ?y)
+    )
+
+    (
+      (have ?y)
+      (not (have ?x))
+    )
+    (
+      (!drop ?y)
+      (!pickup ?x)
+    )
+  )
+))
