@@ -492,7 +492,7 @@ We also do not support JSHOP axioms and external calls, yet.
 You can always not believe the **Hype** and convert descriptions by yourself, following a style that achieves a better or faster solution with the indentation that makes you happy.
 You could add flags or counters in the methods and return after generate unified one or more times a specific value.
 It is possible to support the JSHOP behavior putting several generators in one method and returning if the previous one ever unified.
-Well, Hype can do most of the boring stuff for you and them you can play with the details.
+Well, Hype can do most of the boring stuff so you can play with the details.
 
 ### Parsers
 Parsers are modules that read planning descriptions and convert the information to an [Intermediate Representation](docs/Representation.md).
@@ -517,8 +517,9 @@ end
 ```
 
 With the parser completed you need to connect with the Hype based in the file extensions of the files provided.
-Domain and problem files must have the same extension.
-Maybe the file reading is common enough to be read outside the parsers, but then no special files would be supported, like binary files (uncommon, but possible).
+It is expected that domain and problem files have the same extension to avoid incomplete data from mixed inputs.
+The parser is responsible for file reading.
+This allows uncommon, but possible, binary files.
 
 ### Compilers
 Compilers are modules that write planning descriptions based on the information available in the [Intermediate Representation](docs/Representation.md) format.
@@ -538,10 +539,33 @@ module Bar_Compiler
 end
 ```
 
-In the same sense of the parsers, it would be a better idea to handle the file here, which is still possible doing what you need and returning nil.
-The output filename is the input filename with the new extension, therefore ```input.pddl``` to ```jshop``` would be ```input.pddl.jshop```, so that you do not lose the information about the source.
-Note that any compiler have access to the parser attributes, which means you can call one module to optimize before calling another to actually compile.
-In fact this is the core idea behind Hype, be able to parse, modify and compile domains without having to worry about language support, any future language could be supported just adding a new parser and compiler.
+Unlike the parsers, the compilers have a choice in their output.
+The firsy option is for uncommon outputs, they must be handled inside the methods and return ```nil```.
+The second option is to output a more common text file and return the string to be written.
+If the second option was selected the output filename is the input filename with the new extension appended, therefore ```input.pddl``` to ```jshop``` would be ```input.pddl.jshop```, so no information about the source is lost.
+Any compiler have access to the parser attributes, which means you can call one module to optimize before calling another to actually compile.
+In fact this is the core idea behind Hype, be able to parse, modify and compile domains without having to worry about language support.
+Future languages compatible with the [Intermediate Representation](docs/Representation.md) format could be supported by just adding a new parser and compiler.
+The compiler is expected to not modify any parameter, use an extension to achieve such result.
+
+### Extensions
+Extensions are modules that transform planning descriptions.
+The basic extension is a module with one method to extend the attributes obtained from the parser:
+
+```Ruby
+module Extension
+  extend self
+
+  def apply(operators, methods, predicates, state, tasks, goal_pos, goal_not)
+    # TODO modify attributes
+  end
+end
+```
+
+Extensions are supposed to be executed between the parsing and compilation phases.
+More than one extension may be executed in the process, even repeatedly.
+They can be used to clean, warn and fill gaps left by the original description.
+Since they transform existing structures any value returned is ignored.
 
 ## Comparison
 The main advantage is to be able to define behavior in the core language, if you wish, without losing clarity, this alone gives a lot of power.
@@ -557,5 +581,4 @@ Since we test for explicit goals only after the plan has been found with a seque
 
 ## ToDo's
 - Debugger (why is the planner not returning the expected plan?)
-- Extensions documentation
 - More tests
