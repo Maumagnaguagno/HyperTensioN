@@ -1,20 +1,20 @@
 # HyperTensioN [![Build Status](https://travis-ci.org/Maumagnaguagno/HyperTensioN.svg)](https://travis-ci.org/Maumagnaguagno/HyperTensioN)
 **Hierarchical Task Network planning in Ruby**
 
-Hypertension is an Hierarchical Task Network Planner written in Ruby, which means you have to describe how tasks can be accomplished using method decomposition to achieve a plan, but in Ruby.
+Hypertension is an Hierarchical Task Network Planner written in Ruby, which means a description of how tasks can be accomplished using method decomposition is required to achieve a plan.
 HTN is used as an acronym for Hypertension in medical context, therefore the name was given.
 In order to support other planning languages a module named **[Hype](#hype "Jump to Hype section")** will take care of the conversion process.
 With hierarchical planning it is possible to describe a strategy to obtain a sequence of actions that executes a certain task.
 It works based on decomposition, which is very alike to how humans think, taking mental steps further into primitive operators.
 The current version has most of its algorithm inspired by PyHop/SHOP, with backtracking and unification added.
 
-You can [download and play](../../archive/master.zip), or jump to each section to learn more:
+[Download and play](../../archive/master.zip) or jump to each section to learn more:
 - [**Algorithm**](#algorithm "Jump to Algorithm section"): planning algorithm explanation.
 - [**Getting started**](#getting-started "Jump to Getting started section"): Features explained while describing a domain with Hypertension.
 - [**Hints**](#hints "Jump to Hints section"): a list of hints to keep in mind in order to keep things fast.
 - [**Execution**](#execution "Jump to Execution section"): Command-line examples for the forgotten.
 - [**API**](#api "Jump to API section"): Variables and methods defined by Hypertension.
-- [**Hype**](#hype "Jump to Hype section"): Follow the Hype and let your domain and problem be converted and executed automagically.
+- [**Hype**](#hype "Jump to Hype section"): Follow the Hype and let domain and problem be converted and executed automagically.
 - [**Comparison**](#comparison "Jump to Comparison section"): A brief comparison with JSHOP and PyHop.
 - [**ToDo's**](#todos "Jump to ToDo's section"): a small list of things to be done.
 
@@ -56,10 +56,10 @@ end
 ```
 
 ## Getting started
-The idea is to [**include** Hypertension in your domain module](#api "Jump to API section"), define the methods and primitive operators, and use this domain module with your different problems for this domain.
-Your problems may be in a separate file or generated during run-time.
-Since Hypertension uses **metaprogramming**, you need to specify which Ruby methods may be used by the [planner](#algorithm "Jump to Algorithm section").
-You will need to specify operator visibility and the subtasks of each method in the domain structure.
+The idea is to [**include** Hypertension in the domain module](#api "Jump to API section"), define the methods and primitive operators, and use this domain module for different problems.
+Problems may be in a separate file or generated during run-time.
+Since Hypertension uses **metaprogramming**, there is a need to specify which Ruby methods may be used by the [planner](#algorithm "Jump to Algorithm section").
+This specification declares operator visibility and the subtasks of each method in the domain structure.
 
 ### Example
 There is nothing better than an example to understand the behavior of something.
@@ -75,7 +75,7 @@ Robby has a small set of actions available:
 This is the set of primitive operators, not enough to HTN planning.
 We need to connect them to the hierarchy.
 We know Robby must move, enter and exit zero or more times to reach any beacon, report the beacon, and repeat this process for every beacon.
-If you are used to regular expressions the result is quite similar to this:
+The result is quite similar to the following regular expression:
 
 ```Ruby
 /((move|enter|exit)*report)*/
@@ -282,7 +282,7 @@ A free variable works like a placeholder, once bound it will have a value like a
 The binding process requires the context to dictate possible values to the variable.
 In Ruby we can replace the content of a string to a bound value, but that requires the creation of the original string with any value to be used as a pointer, or a more complex solution involving ```method_missing``` to tell the interpreter to create variables if none is found.
 I opted for empty strings as free variables, ```my_var = ''```.
-If you find my style a little misleading, you can add this little method for verbosity reasons with a minimal overhead due to the method call.
+If you find this style misleading, add this little method for verbosity reasons with a minimal overhead due to the method call.
 
 ```Ruby
 def free_variable
@@ -292,8 +292,8 @@ end
 my_var = free_variable
 ```
 
-You can also define the free variables as arguments, no problem.
-You still need to define to generate the free variables being used, this avoids the step of searching on every  precondition which variables are empty and let you use empty strings as objects if needed.
+Free variables can also be defined as arguments, no problem.
+You need to define which free variables being used by generate, this avoids the step of searching on every precondition which variables are empty and let you use empty strings as objects if needed.
 The example refactored looks like this:
 
 ```Ruby
@@ -316,7 +316,7 @@ end
 ```
 
 ### Problem
-With your domain ready all you need is to define the initial state and the task list.
+With the domain ready all you need is to define the initial state and the task list.
 The initial state is defined as a Hash table in which the keys are the predicates while the value is an array of possible terms.
 The task list follows the same principle, an array of each task to be solved.
 Note that the names must match the ones defined in the domain and tasks will be decomposed in the same order they are described (in ordered mode).
@@ -490,8 +490,8 @@ Sometimes only one proposition in the set is false, if we copied in the other se
 It is possible to declare the methods in the same Ruby method (losing label definition), but kills the simplicity we are trying to achieve.
 We also do not support JSHOP axioms and external calls, yet.
 
-You can always not believe the **Hype** and convert descriptions by yourself, following a style that achieves a better or faster solution with the indentation that makes you happy.
-You could add flags or counters in the methods and return after generate unified one or more times a specific value.
+You can always not believe the **Hype** and convert descriptions manually, following a style that achieves a better or faster solution with the indentation that makes you happy.
+You could add counters in the methods and return after generate unified one or more times a specific value.
 It is possible to support the JSHOP behavior putting several generators in one method and returning if the previous one ever unified.
 Well, Hype can do most of the boring stuff so you can play with the details.
 
@@ -517,7 +517,7 @@ module Foo_Parser
 end
 ```
 
-With the parser completed you need to connect with the Hype based in the file extensions of the files provided.
+With the parser completed we need to connect with the Hype based on the file extensions of the files provided.
 It is expected that domain and problem files have the same extension to avoid incomplete data from mixed inputs.
 The parser is responsible for file reading.
 This allows uncommon, but possible, binary files.
@@ -544,7 +544,7 @@ Unlike the parsers, the compilers have a choice in their output.
 The firsy option is for uncommon outputs, they must be handled inside the methods and return ```nil```.
 The second option is to output a more common text file and return the string to be written.
 If the second option was selected the output filename is the input filename with the new extension appended, therefore ```input.pddl``` to ```jshop``` would be ```input.pddl.jshop```, so no information about the source is lost.
-Any compiler have access to the parser attributes, which means you can call one module to optimize before calling another to actually compile.
+Any compiler have access to the parser attributes, which means one module can optimize before another compiles.
 In fact this is the core idea behind Hype, be able to parse, modify and compile domains without having to worry about language support.
 Future languages compatible with the [Intermediate Representation](docs/Representation.md) format could be supported by just adding a new parser and compiler.
 The compiler is expected to not modify any parameter, use an extension to achieve such result.
@@ -569,10 +569,10 @@ They can be used to clean, warn and fill gaps left by the original description.
 Since they transform existing structures any value returned is ignored.
 
 ## Comparison
-The main advantage is to be able to define behavior in the core language, if you wish, without losing clarity, this alone gives a lot of power.
-JSHOP requires you to dive into a very complex structure if you want to unlock this power.
-PyHop is based in this feature, everything defined in Python, but does not support backtracking and unification, which means you will have to create your own unification system and define your domain so no backtracking is required.
-The biggest advantage is not the planning itself, but the parsers and compilers being built around it, so that your JSHOP description can be converted automatically.
+The main advantage is to be able to define behavior in the core language, without losing clarity, this alone gives a lot of power.
+JSHOP requires the user to dive into a very complex structure to unlock such power.
+PyHop is based on this feature, everything defined in Python, but does not support backtracking and unification, which means the user have to create its own unification system and a domain that does not require backtracking.
+The biggest advantage is not the planning itself, but the parsers and compilers being built around it, so that JSHOP descriptions can be converted automatically.
 Perhaps the most invisible advantage is the lack of custom classes, every object used during planning is defined as one of the core objects.
 Once Strings, Arrays and Hashes are understood, the entire Hypertension module is just a few methods away from complete understanding.
 
