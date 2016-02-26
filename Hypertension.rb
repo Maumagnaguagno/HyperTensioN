@@ -227,19 +227,4 @@ module Hypertension
     }
     nil
   end
-
-  def task_permutations_partial(state, tasks, goal_pos, goal_not, plan = [])
-    # Only first partial plan found is considered
-    # TODO requires planning to yield to be complete
-    if tasks.empty?
-      return plan if applicable?(goal_pos, goal_not)
-    else
-      tasks.each {|t|
-        @state = state
-        p = planning([t.dup])
-        return p if p and (p = task_permutations(@state, tasks - [t], goal_pos, goal_not, plan + p))
-      }
-      nil
-    end
-  end
 end
