@@ -416,7 +416,7 @@ They were defined as instance variables to be mixed in other classes if needed, 
 
 ```Ruby
 # Require and use
-require './Hypertension' # require_relative 'Hypertension' if RUBY_VERSION >= 1.9
+require './Hypertension'
 
 Hypertension.state = {...}
 Hypertension.applicable?(...)
@@ -452,7 +452,8 @@ In case of failure, ```nil``` is returned.
 - ```apply_operator(precond_pos, precond_not, effect_add, effect_del)``` extends this idea applying effects if ```applicable?```. Returns true if applied, nil otherwise.
 - ```generate(precond_pos, precond_not, *free)``` yields all possible unifications to the free variables defined, therefore you need a block to capture the unifications. The return value is undetermined.
 - ```print_data(data)``` can be used to print task lists and proposition lists, usefull for debug.
-- ```problem(start, tasks, debug = false, goal_pos = [], goal_not = [])``` can be used to simplify the creation of a problem instance, returns the value of planning. Use problem as a template to see how to add Hypertension in your project. Add explicit goals to try different permutations of tasks until all goals are satisfied.
+- ```problem(start, tasks, debug = false, goal_pos = [], goal_not = [])``` is used to simplify the setup of a problem instance, returns the value of planning. Use problem as a template to see how to add Hypertension in your project.
+- ```task_permutations(state, tasks, goal_pos, goal_not)``` tries several permutations of the tasks to achieve unordered decomposition, it is used by ```problem``` when explicit goals are given. Return a plan or nil.
 
 Domain operators can be defined without ```apply_operator``` and will have the return value considered.
   - ```false``` or ```nil``` means the operator has failed.
