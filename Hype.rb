@@ -25,11 +25,12 @@ module Hype
     dot   - generate DOT file
     md    - generate Markdown file
     run   - same as rb with execution
-    debug - same as run with execution log\n
-    nil   - avoid print parsed data
+    debug - same as run with execution log
+    nil   - avoid print parsed data\n
   Extensions:
     wise        - static analysis of flat structure
-    refinements - refine hierarchical structure"
+    refinements - refine hierarchical structure
+    grammar     - print hierarchical structure grammar"
 
   #-----------------------------------------------
   # Propositions to string
