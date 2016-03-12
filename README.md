@@ -603,7 +603,7 @@ Since we test for explicit goals only after the plan has been found with a seque
   - Deep copy only used at operator application
 - Mar 2014
   - Refactoring of generate
--Jun 2015
+- Jun 2015
   - Unordered tasks with explicit goal check
 - Sep 2015
   - Apply method extracted from apply_operator
