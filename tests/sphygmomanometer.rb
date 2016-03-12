@@ -54,7 +54,7 @@ class Sphygmomanometer < Test::Unit::TestCase
   def test_planning_exception
     Hypertension.state = simple_state
     Hypertension.domain = {}
-    assert_raise(RuntimeError) {Hypertension.planning([['exception_rise']])}
+    assert_raises(RuntimeError) {Hypertension.planning([['exception_rise']])}
   end
 
   #-----------------------------------------------
