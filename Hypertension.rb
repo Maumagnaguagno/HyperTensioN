@@ -8,37 +8,6 @@
 #-----------------------------------------------
 # HTN planner based on PyHop
 #-----------------------------------------------
-# Mar 2014
-# - Converted PyHop to Ruby
-# - Data structures modified
-# Jun 2014
-# - converted ND_PyHop to Ruby
-# - Data structures modified
-# - Using previous state for state_valuation
-# - Added support for minimum probability
-# - Data structure simplified
-# - Override state_valuation and state_copy for specific purposes
-# Dec 2014
-# - Forked project, probability mode only works for Hypertension_simple
-# - STRIPS style operator application instead of imperative mode
-# - Backtrack support
-# - Operator visibility
-# - Unification
-# - Plan is built after tasks solved
-# - Domain and problem separated
-# - Deep copy only used at operator application
-# Mar 2014
-# - Refactoring of generate
-# Jun 2015
-# - Unordered tasks with explicit goal check
-# Sep 2015
-# - Apply method extracted from apply_operator
-#-----------------------------------------------
-# TODOs
-# - Order predicates and test applicability by level (generate)
-# - Unordered subtasks
-# - Anytime mode
-#-----------------------------------------------
 
 module Hypertension
   extend self

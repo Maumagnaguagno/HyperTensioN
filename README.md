@@ -16,6 +16,7 @@ The current version has most of its algorithm inspired by PyHop/SHOP, with backt
 - [**API**](#api "Jump to API section"): Variables and methods defined by Hypertension.
 - [**Hype**](#hype "Jump to Hype section"): Follow the Hype and let domain and problem be converted and executed automagically.
 - [**Comparison**](#comparison "Jump to Comparison section"): A brief comparison with JSHOP and PyHop.
+- [**Changelog**](#changelog "Jump to Changelog section"): a small list of things that happened.
 - [**ToDo's**](#todos "Jump to ToDo's section"): a small list of things to be done.
 
 ## Algorithm
@@ -580,6 +581,36 @@ The only killer feature that we lack, which requires a more complex algorithm, i
 We only support unordered tasks at the problem level and do not interleave them during decomposition.
 Since we test for explicit goals only after the plan has been found with a sequence of tasks, a failure is considered enough proof to try other orderings, not other unifications with the same sequence of tasks.
 
+## Changelog
+- Mar 2014
+  - Converted PyHop to Ruby
+  - Data structures modified
+- Jun 2014
+  - converted ND_PyHop to Ruby
+  - Data structures modified
+  - Using previous state for state_valuation
+  - Added support for minimum probability
+  - Data structure simplified
+  - Override state_valuation and state_copy for specific purposes
+- Dec 2014
+  - Forked project, probability mode only works for Hypertension_simple
+  - STRIPS style operator application instead of imperative mode
+  - Backtrack support
+  - Operator visibility
+  - Unification
+  - Plan is built after tasks solved
+  - Domain and problem separated
+  - Deep copy only used at operator application
+- Mar 2014
+  - Refactoring of generate
+-Jun 2015
+  - Unordered tasks with explicit goal check
+- Sep 2015
+  - Apply method extracted from apply_operator
+
 ## ToDo's
+- Order predicates and test applicability by level (generate)
+- Unordered subtasks
+- Anytime mode
 - Debugger (why is the planner not returning the expected plan?)
 - More tests
