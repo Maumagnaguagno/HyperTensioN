@@ -23,36 +23,24 @@ end
 if $0 == __FILE__
   @state = {:number => [['1'],['2'],['3']]}
 
-  # Verbose methods
-  def not_zero?(x)
-    x.to_i != 0
-  end
-
-  def not_one?(x)
-    x.to_i != 1
-  end
-
-  def four?(x)
-    x.to_i == 4
-  end
-
   # Query forall
+  puts 'Number x may assume any value from set {1,2,3}'
   x = ''
-  puts "For all numbers x, x != 0: #{forall?([[:number, x]], [], x) {not_zero?(x)}}"
+  puts "For all numbers x, x != 0: #{forall?([[:number, x]], [], x) {x.to_i != 0}}"
   x = ''
-  puts "For all numbers x, x != 1: #{forall?([[:number, x]], [], x) {not_one?(x)}}"
+  puts "For all numbers x, x != 1: #{forall?([[:number, x]], [], x) {x.to_i != 1}}"
   x = ''
-  puts "For all numbers x, x == 4: #{forall?([[:number, x]], [], x) {four?(x)}}"
+  puts "For all numbers x, x == 4: #{forall?([[:number, x]], [], x) {x.to_i != 4}}"
   x = ''
   puts "For all numbers x, x is odd or even: #{forall?([[:number, x]], [], x) {x.to_i.odd? or x.to_i.even?}}"
 
   # Query exists
   x = ''
-  puts "There exists a number x, x != 0: #{exists?([[:number, x]], [], x) {not_zero?(x)}}"
+  puts "There exists a number x, x != 0: #{exists?([[:number, x]], [], x) {x.to_i != 0}}"
   x = ''
-  puts "There exists a number x, x != 1: #{exists?([[:number, x]], [], x) {not_one?(x)}}"
+  puts "There exists a number x, x != 1: #{exists?([[:number, x]], [], x) {x.to_i != 1}}"
   x = ''
-  puts "There exists a number x, x == 4: #{exists?([[:number, x]], [], x) {four?(x)}}"
+  puts "There exists a number x, x == 4: #{exists?([[:number, x]], [], x) {x.to_i == 4}}"
   x = ''
   puts "There exists a number x, x is odd and even: #{exists?([[:number, x]], [], x) {x.to_i.odd? and x.to_i.even?}}"
 end
