@@ -12,10 +12,7 @@ class Sphygmomanometer < Test::Unit::TestCase
   end
 
   def test_attributes
-    ['domain', 'state', 'debug'].each {|att|
-      assert_respond_to(Hypertension, att)
-      assert_respond_to(Hypertension, "#{att}=")
-    }
+    [:domain, :domain=, :state, :state=, :debug, :debug=].each {|att| assert_respond_to(Hypertension, att)}
   end
 
   #-----------------------------------------------
