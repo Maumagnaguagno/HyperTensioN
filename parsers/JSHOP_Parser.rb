@@ -65,7 +65,7 @@ module JSHOP_Parser
         group.each {|pre|
           pre.first != NOT ? pos << pre : pre.size == 2 ? neg << (pre = pre.last) : raise("Error with #{name} negative precondition group")
           @predicates[pre.first.freeze] ||= false
-          free_variables.concat(pre.find_all {|i| i.start_with?('?') and not method[1].include?(i)})
+          free_variables.concat(pre.select {|i| i.start_with?('?') and not method[1].include?(i)})
         }
         free_variables.uniq!
       end
