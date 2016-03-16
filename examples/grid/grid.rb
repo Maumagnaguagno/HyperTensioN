@@ -21,7 +21,7 @@ if $0 == __FILE__
   puts 'Grid [width=3] [height=3] [predicate=conn] [prefix=p]'
   width, height, predicate, prefix = ARGV
   predicate ||= 'conn'
-  # Output propositions and objects created
+  # Output predicates and objects created
   puts Grid.generate(width ? width.to_i : 3, height ? height.to_i : 3, prefix || 'p').each {|a,b|
     puts "(#{predicate} #{a} #{b})"
   }.flatten!.uniq!.sort!.join(' ')

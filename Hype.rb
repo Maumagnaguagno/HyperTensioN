@@ -33,10 +33,10 @@ module Hype
     grammar     - print hierarchical structure grammar"
 
   #-----------------------------------------------
-  # Propositions to string
+  # Predicates to string
   #-----------------------------------------------
 
-  def propositions_to_s(props, prefix)
+  def predicates_to_s(props, prefix)
     props.map {|i| "#{prefix}(#{i.join(' ')})"}.join
   end
 
@@ -64,10 +64,10 @@ module Hype
     indent = "\n        "
     @parser.operators.each {|op|
       output << "    #{op.first}(#{op[1].join(' ')})\n"
-      output << "      Precond positive:#{propositions_to_s(op[2], indent)}\n" unless op[2].empty?
-      output << "      Precond negative:#{propositions_to_s(op[3], indent)}\n" unless op[3].empty?
-      output << "      Effect positive:#{propositions_to_s(op[4], indent)}\n" unless op[4].empty?
-      output << "      Effect negative:#{propositions_to_s(op[5], indent)}\n" unless op[5].empty?
+      output << "      Precond positive:#{predicates_to_s(op[2], indent)}\n" unless op[2].empty?
+      output << "      Precond negative:#{predicates_to_s(op[3], indent)}\n" unless op[3].empty?
+      output << "      Effect positive:#{predicates_to_s(op[4], indent)}\n" unless op[4].empty?
+      output << "      Effect negative:#{predicates_to_s(op[5], indent)}\n" unless op[5].empty?
       output << "\n"
     }
     output
@@ -85,8 +85,8 @@ module Hype
       decompose.each {|dec|
         output << "      Label: #{dec.first}\n"
         output << "        Free variables:\n          #{dec[1].join(indent)}\n" unless dec[1].empty?
-        output << "        Precond positive:#{propositions_to_s(dec[2], indent)}\n" unless dec[2].empty?
-        output << "        Precond negative:#{propositions_to_s(dec[3], indent)}\n" unless dec[3].empty?
+        output << "        Precond positive:#{predicates_to_s(dec[2], indent)}\n" unless dec[2].empty?
+        output << "        Precond negative:#{predicates_to_s(dec[3], indent)}\n" unless dec[3].empty?
         output << "        Subtasks:#{subtasks_to_s(dec[4], indent)}\n"
       }
       output << "\n"
@@ -103,11 +103,11 @@ module Hype
   Operators:\n#{operators_to_s}
   Methods:\n#{methods_to_s}
 Problem #{@parser.problem_name}
-  State:#{propositions_to_s(@parser.state, "\n    ")}\n
+  State:#{predicates_to_s(@parser.state, "\n    ")}\n
   Goal:
     Tasks:#{subtasks_to_s(@parser.tasks.drop(1), "\n      ", @parser.tasks.first)}
-    Positive:#{@parser.goal_pos.empty? ? "\n      empty" : propositions_to_s(@parser.goal_pos, "\n      ")}
-    Negative:#{@parser.goal_not.empty? ? "\n      empty" : propositions_to_s(@parser.goal_not, "\n      ")}"
+    Positive:#{@parser.goal_pos.empty? ? "\n      empty" : predicates_to_s(@parser.goal_pos, "\n      ")}
+    Negative:#{@parser.goal_not.empty? ? "\n      empty" : predicates_to_s(@parser.goal_not, "\n      ")}"
   end
 
   #-----------------------------------------------

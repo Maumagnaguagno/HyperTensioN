@@ -66,7 +66,7 @@ module Hypertension
   #-----------------------------------------------
 
   def apply(effect_add, effect_del)
-    # Create new state with added or deleted propositions
+    # Create new state with added or deleted predicates
     @state = Marshal.load(Marshal.dump(@state))
     effect_del.each {|name,*objs| @state[name].delete(objs)}
     effect_add.each {|name,*objs| @state[name] << objs}

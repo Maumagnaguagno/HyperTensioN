@@ -67,11 +67,11 @@ module PDDL_Parser
         unless group.empty?
           # Conjunction or atom
           group.first == AND ? group.shift : group = [group]
-          group.each {|pro|
-            raise "Error with #{name} preconditions" unless pro.instance_of?(Array)
-            pro.first != NOT ? pos << pro : pro.size == 2 ? neg << (pro = pro.last) : raise("Error with #{name} negative preconditions")
-            pro.replace(EQUAL_SUB) if (pro = pro.first) == EQUAL
-            @predicates[pro.freeze] ||= false
+          group.each {|pre|
+            raise "Error with #{name} preconditions" unless pre.instance_of?(Array)
+            pre.first != NOT ? pos << pre : pre.size == 2 ? neg << (pre = pre.last) : raise("Error with #{name} negative preconditions")
+            pre.replace(EQUAL_SUB) if (pre = pre.first) == EQUAL
+            @predicates[pre.freeze] ||= false
           }
         end
       when ':effect'
@@ -79,10 +79,10 @@ module PDDL_Parser
         unless group.empty?
           # Conjunction or atom
           group.first == AND ? group.shift : group = [group]
-          group.each {|pro|
-            raise "Error with #{name} effects" unless pro.instance_of?(Array)
-            pro.first != NOT ? add << pro : pro.size == 2 ? del << (pro = pro.last) : raise("Error with #{name} negative effects")
-            @predicates[pro.first.freeze] = true
+          group.each {|pre|
+            raise "Error with #{name} effects" unless pre.instance_of?(Array)
+            pre.first != NOT ? add << pre : pre.size == 2 ? del << (pre = pre.last) : raise("Error with #{name} negative effects")
+            @predicates[pre.first.freeze] = true
           }
         end
       else puts "#{group.first} is not recognized in action"
@@ -163,7 +163,7 @@ module PDDL_Parser
               until index == @objects.size
                 @state << [type, o = @objects[index]]
                 index += 1
-                # Convert type hierarchy to propositions of initial state
+                # Convert type hierarchy to initial state predicates
                 types = [type]
                 until types.empty?
                   subtype = types.shift
@@ -186,7 +186,7 @@ module PDDL_Parser
           if group = group[1] and not group.empty?
             # Conjunction or atom
             group.first == AND ? group.shift : group = [group]
-            group.each {|pro| pro.first != NOT ? @goal_pos << pro : pro.size == 2 ? @goal_not << pro.last : raise('Error with goals')}
+            group.each {|pre| pre.first != NOT ? @goal_pos << pre : pre.size == 2 ? @goal_not << pre.last : raise('Error with goals')}
           end
         else puts "#{group.first} is not recognized in problem"
         end

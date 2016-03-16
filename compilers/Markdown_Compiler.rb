@@ -11,10 +11,10 @@ module Markdown_Compiler
     output << "\n## Operators"
     operators.each {|op|
       output << "\n#{op.first.capitalize} | #{op[1].join(' ')}\n--- | ---\n***Preconditions*** | ***Effects***"
-      op[2].each {|pro| output << "\n(#{pro.join(' ')}) |#{" **not** (#{pro.join(' ')})" if op[5].include?(pro)}"}
-      op[3].each {|pro| output << "\n**not** (#{pro.join(' ')}) |#{" (#{pro.join(' ')})" if op[4].include?(pro)}"}
-      op[4].each {|pro| output << "\n| (#{pro.join(' ')})" unless op[3].include?(pro)}
-      op[5].each {|pro| output << "\n| **not** (#{pro.join(' ')})" unless op[2].include?(pro)}
+      op[2].each {|pre| output << "\n(#{pre.join(' ')}) |#{" **not** (#{pre.join(' ')})" if op[5].include?(pre)}"}
+      op[3].each {|pre| output << "\n**not** (#{pre.join(' ')}) |#{" (#{pre.join(' ')})" if op[4].include?(pre)}"}
+      op[4].each {|pre| output << "\n| (#{pre.join(' ')})" unless op[3].include?(pre)}
+      op[5].each {|pre| output << "\n| **not** (#{pre.join(' ')})" unless op[2].include?(pre)}
       output << "\n"
     }
     output << "\n## Methods"
@@ -22,8 +22,8 @@ module Markdown_Compiler
       output << "\n**#{met.first.capitalize}(#{met[1].join(' ')})**"
       met.drop(2).each {|met_case|
         output << "\n- #{met_case.first}(#{met[1].join(' ')})\n  - Preconditions:"
-        met_case[2].each {|pro| output << "\n    - (#{pro.join(' ')})"}
-        met_case[3].each {|pro| output << "\n    - **not** (#{pro.join(' ')})"}
+        met_case[2].each {|pre| output << "\n    - (#{pre.join(' ')})"}
+        met_case[3].each {|pre| output << "\n    - **not** (#{pre.join(' ')})"}
         output << "\n  - Subtasks:"
         met_case[4].each {|task| output << "\n    - (#{task.join(' ')})"}
       }
@@ -38,7 +38,7 @@ module Markdown_Compiler
 
   def compile_problem(domain_name, problem_name, operators, methods, predicates, state, tasks, goal_pos, goal_not, domain_filename)
     output = "# #{problem_name.capitalize} of #{domain_name.capitalize}\n## Initial state"
-    state.each {|pro| output << "\n- (#{pro.join(' ')})"}
+    state.each {|pre| output << "\n- (#{pre.join(' ')})"}
     output << "\n\n## Tasks"
     unless tasks.empty?
       ordered = tasks.shift
@@ -47,8 +47,8 @@ module Markdown_Compiler
       tasks.unshift(ordered)
     end
     output << "\n\n## Goal state"
-    goal_pos.each {|pro| output << "\n- (#{pro.join(' ')})"}
-    goal_not.each {|pro| output << "\n- **not** (#{pro.join(' ')})"}
+    goal_pos.each {|pre| output << "\n- (#{pre.join(' ')})"}
+    goal_not.each {|pre| output << "\n- **not** (#{pre.join(' ')})"}
     output
   end
 end

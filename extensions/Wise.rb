@@ -4,9 +4,9 @@ module Wise
   def apply(operators, methods, predicates, state, tasks, goal_pos, goal_not, debug = true)
     puts 'Wise'.center(50,'-') if debug
     sep = ' '
-    state.reject! {|pro|
-      unless predicates.include?(pro.first)
-        puts "Initial state proposition removed: (#{pro.join(sep)})" if debug
+    state.reject! {|pre|
+      unless predicates.include?(pre.first)
+        puts "Initial state predicate removed: (#{pre.join(sep)})" if debug
         true
       end
     }
@@ -20,30 +20,30 @@ module Wise
         end
       }
       2.upto(5) {|i|
-        op[i].each {|pro|
-          pro.drop(1).each {|term|
+        op[i].each {|pre|
+          pre.drop(1).each {|term|
             if term.start_with?('?')
               unless parameters.include?(term)
-                puts "#{name} never declared variable #{term} from (#{pro.join(sep)}), adding to parameters" if debug
+                puts "#{name} never declared variable #{term} from (#{pre.join(sep)}), adding to parameters" if debug
                 parameters << term
               end
             elsif parameters.include?("?#{term}")
-              puts "#{name} contains probable variable #{term} from (#{pro.join(sep)}), modified to ?#{term}" if debug
+              puts "#{name} contains probable variable #{term} from (#{pre.join(sep)}), modified to ?#{term}" if debug
               term.insert(0,'?')
             end
           }
         }
       }
       # Effect contained in precondition
-      effect_add.reject! {|eff|
-        if precond_pos.include?(eff)
-          puts "#{name} effect removed: (#{eff.join(sep)})" if debug
+      effect_add.reject! {|pre|
+        if precond_pos.include?(pre)
+          puts "#{name} effect removed: (#{pre.join(sep)})" if debug
           true
         end
       }
-      effect_del.reject! {|eff|
-        if precond_not.include?(eff)
-          puts "#{name} effect removed: (not (#{eff.join(sep)}))" if debug
+      effect_del.reject! {|pre|
+        if precond_not.include?(pre)
+          puts "#{name} effect removed: (not (#{pre.join(sep)}))" if debug
           true
         end
       }
@@ -51,9 +51,9 @@ module Wise
       if debug
         (precond_all = precond_pos + precond_not).uniq!
         side_effects = effect_add - precond_all
-        side_effects.each {|pro| puts "#{name} contains side effect: (#{pro.join(sep)})"} unless side_effects.empty?
+        side_effects.each {|pre| puts "#{name} contains side effect: (#{pre.join(sep)})"} unless side_effects.empty?
         side_effects = effect_del - precond_all
-        side_effects.each {|pro| puts "#{name} contains side effect: (not (#{pro.join(sep)}))"} unless side_effects.empty?
+        side_effects.each {|pre| puts "#{name} contains side effect: (not (#{pre.join(sep)}))"} unless side_effects.empty?
       end
     }
   end

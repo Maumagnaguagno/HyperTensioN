@@ -21,7 +21,7 @@ def unprotect(protection_pos, protection_not)
 end
 
 def protected?(effect_add, effect_del)
-  effect_add.none? {|pro| @state[:protection_not].include?(pro)} and effect_del.none? {|pro| @state[:protection_pos].include?(objs)}
+  effect_add.none? {|pre| @state[:protection_not].include?(pre)} and effect_del.none? {|pre| @state[:protection_pos].include?(pre)}
 end
 
 def apply_protected_operator(precond_pos, precond_not, effect_add, effect_del)

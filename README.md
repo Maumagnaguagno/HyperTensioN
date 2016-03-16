@@ -438,7 +438,7 @@ end
 
 Having the state and domain as separate variables also means there is no need to propagate them.
 This also means you can, at any point, change more than the state.
-This may be usefull to reorder method decompositions in the domain to modify the behavior without touching the methods or set the debug option only after an specific operator is called.
+This may be useful to reorder method decompositions in the domain to modify the behavior without touching the methods or set the debug option only after an specific operator is called.
 You will notice that the plan is not a variable, as it is created during the backtracking, which means you cannot reorder actions in the planning process using this algorithm, but it is possible with a variation of this algorithm that creates the plan during decomposition.
 
 The methods are few and simple to use:
@@ -449,10 +449,10 @@ Therefore no plan actually exists before reaching an empty task list.
 In case of failure, ```nil``` is returned.
 
 - ```applicable?(precond_pos, precond_not)``` tests if the current state have all positive preconditions and not a single negative precondition. It returns true if applicable and false otherwise.
-- ```apply(effect_add, effect_del)``` modifies the current state, add or remove the propositions specified. Returns true.
+- ```apply(effect_add, effect_del)``` modifies the current state, add or remove predicates present in the lists. Returns true.
 - ```apply_operator(precond_pos, precond_not, effect_add, effect_del)``` extends this idea applying effects if ```applicable?```. Returns true if applied, nil otherwise.
 - ```generate(precond_pos, precond_not, *free)``` yields all possible unifications to the free variables defined, therefore you need a block to capture the unifications. The return value is undetermined.
-- ```print_data(data)``` can be used to print task lists and proposition lists, usefull for debug.
+- ```print_data(data)``` can be used to print task lists and predicate lists, useful for debug.
 - ```problem(start, tasks, debug = false, goal_pos = [], goal_not = [])``` is used to simplify the setup of a problem instance, returns the value of planning. Use problem as a template to see how to add Hypertension in your project.
 - ```task_permutations(state, tasks, goal_pos, goal_not)``` tries several permutations of the tasks to achieve unordered decomposition, it is used by ```problem``` when explicit goals are given. Return a plan or nil.
 
@@ -487,7 +487,7 @@ As any parser, the ones provided by Hype are limited in one way or another.
 Methods may be broken into several independent blocks or in the same block without the need to check the same preconditions again.
 Both cases are supported, but we evaluate the preconditions of each set independently while JSHOP only evaluates the last if the first ones evaluated to false in the same block.
 In order to copy the behavior we cannot simply copy the positive preconditions in the negative set and vice-versa.
-Sometimes only one proposition in the set is false, if we copied in the other set for the other methods it would never work.
+Sometimes only one predicate in the set is false, if we copied in the other set for the other methods it would never work.
 It is possible to declare the methods in the same Ruby method (losing label definition), but kills the simplicity we are trying to achieve.
 We also do not support JSHOP axioms and external calls, yet.
 

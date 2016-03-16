@@ -12,9 +12,9 @@ module JSHOP_Parser
 
   def define_effects(name, group, effects)
     raise "Error with #{name} effects" unless group.instance_of?(Array)
-    group.each {|pro|
-      pro.first != NOT ? effects << pro : raise('Unexpected not in effects')
-      @predicates[pro.first.freeze] = true
+    group.each {|pre|
+      pre.first != NOT ? effects << pre : raise('Unexpected not in effects')
+      @predicates[pre.first.freeze] = true
     }
   end
 
@@ -34,9 +34,9 @@ module JSHOP_Parser
     # Preconditions
     if (group = op.shift) != NIL
       raise "Error with #{name} preconditions" unless group.instance_of?(Array)
-      group.each {|pro|
-        pro.first != NOT ? pos << pro : pro.size == 2 ? neg << (pro = pro.last) : raise("Error with #{name} negative precondition group")
-        @predicates[pro.first.freeze] ||= false
+      group.each {|pre|
+        pre.first != NOT ? pos << pre : pre.size == 2 ? neg << (pre = pre.last) : raise("Error with #{name} negative precondition group")
+        @predicates[pre.first.freeze] ||= false
       }
     end
     # Effects
@@ -62,17 +62,17 @@ module JSHOP_Parser
       # Preconditions
       if (group = met.shift) != NIL
         raise "Error with #{name} preconditions" unless group.instance_of?(Array)
-        group.each {|pro|
-          pro.first != NOT ? pos << pro : pro.size == 2 ? neg << (pro = pro.last) : raise("Error with #{name} negative precondition group")
-          @predicates[pro.first.freeze] ||= false
-          free_variables.concat(pro.find_all {|i| i.start_with?('?') and not method[1].include?(i)})
+        group.each {|pre|
+          pre.first != NOT ? pos << pre : pre.size == 2 ? neg << (pre = pre.last) : raise("Error with #{name} negative precondition group")
+          @predicates[pre.first.freeze] ||= false
+          free_variables.concat(pre.find_all {|i| i.start_with?('?') and not method[1].include?(i)})
         }
         free_variables.uniq!
       end
       # Subtasks
       if (group = met.shift) != NIL
         raise "Error with #{name} subtasks" unless group.instance_of?(Array)
-        group.each {|pro| pro.first.sub!(/^!!/,'invisible_') or pro.first.sub!(/^!/,'')}
+        group.each {|pre| pre.first.sub!(/^!!/,'invisible_') or pre.first.sub!(/^!/,'')}
         method.last << group
       else method.last << []
       end
@@ -115,7 +115,7 @@ module JSHOP_Parser
       @tasks = tokens.shift
       # Tasks may be ordered or unordered
       @tasks.shift unless order = (@tasks.first != ':unordered')
-      @tasks.each {|pro| pro.first.sub!(/^!!/,'invisible_') or pro.first.sub!(/^!/,'')}
+      @tasks.each {|pre| pre.first.sub!(/^!!/,'invisible_') or pre.first.sub!(/^!/,'')}
       @tasks.unshift(order)
       @goal_pos = []
       @goal_not = []

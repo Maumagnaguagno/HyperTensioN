@@ -40,22 +40,22 @@ module Refinements
         name << op.first.sub(/^invisible_/,'')
         parameters.concat(param)
         # Preconditions
-        op[2].each {|pro|
-          pro = pro.map {|p| p.start_with?('?') ? param[op[1].index(p)] : p}
-          precond_pos << pro unless precond_pos.include?(pro) or effect_add.include?(pro)
+        op[2].each {|pre|
+          pre = pre.map {|p| p.start_with?('?') ? param[op[1].index(p)] : p}
+          precond_pos << pre unless precond_pos.include?(pre) or effect_add.include?(pre)
         }
-        op[3].each {|pro|
-          pro = pro.map {|p| p.start_with?('?') ? param[op[1].index(p)] : p}
-          precond_not << pro unless precond_not.include?(pro) or effect_del.include?(pro)
+        op[3].each {|pre|
+          pre = pre.map {|p| p.start_with?('?') ? param[op[1].index(p)] : p}
+          precond_not << pre unless precond_not.include?(pre) or effect_del.include?(pre)
         }
         # Effects
-        op[4].each {|pro|
-          effect_add << pro = pro.map {|p| p.start_with?('?') ? param[op[1].index(p)] : p}
-          effect_del.delete(pro)
+        op[4].each {|pre|
+          effect_add << pre = pre.map {|p| p.start_with?('?') ? param[op[1].index(p)] : p}
+          effect_del.delete(pre)
         }
-        op[5].each {|pro|
-          effect_del << pro = pro.map {|p| p.start_with?('?') ? param[op[1].index(p)] : p}
-          effect_add.delete(pro)
+        op[5].each {|pre|
+          effect_del << pre = pre.map {|p| p.start_with?('?') ? param[op[1].index(p)] : p}
+          effect_add.delete(pre)
         }
       }
       parameters.uniq!
