@@ -21,10 +21,10 @@ end
 # Main
 #-----------------------------------------------
 if $0 == __FILE__
+  puts 'Number x may assume any value from set {1,2,3}'
   @state = {:number => [['1'],['2'],['3']]}
 
   # Query forall
-  puts 'Number x may assume any value from set {1,2,3}'
   x = ''
   puts "For all numbers x, x != 0: #{forall?([[:number, x]], [], x) {x.to_i != 0}}"
   x = ''
