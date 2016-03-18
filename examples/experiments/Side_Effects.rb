@@ -1,6 +1,10 @@
 require File.expand_path('../../../Hypertension', __FILE__)
 include Hypertension
 
+#-----------------------------------------------
+# Apply operator with side effects
+#-----------------------------------------------
+
 def apply_operator_with_side_effects(precond_pos, precond_not, effect_add, effect_del, side_precond_pos, side_precond_not, *free, &block)
   if applicable?(precond_pos, precond_not)
     # Side-effects
