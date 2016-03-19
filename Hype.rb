@@ -8,7 +8,7 @@
 #-----------------------------------------------
 
 # Require parsers, compilers and extensions
-Dir.glob("#{File.expand_path('..', __FILE__)}/{parsers,compilers,extensions}/*.rb") {|file| require file}
+Dir.glob(File.expand_path('../{parsers,compilers,extensions}/*.rb', __FILE__)) {|file| require file}
 
 module Hype
   extend self
