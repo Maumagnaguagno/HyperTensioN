@@ -177,9 +177,9 @@ Problem #{@parser.problem_name}
       @parser.goal_not
     ]
     data = compiler.compile_domain(*args)
-    open("#{domain}.#{type}",'w') {|file| file << data} if data
+    IO.write("#{domain}.#{type}", data) if data
     data = compiler.compile_problem(*args << File.basename(domain))
-    open("#{problem}.#{type}",'w') {|file| file << data} if data
+    IO.write("#{problem}.#{type}", data) if data
   end
 end
 
