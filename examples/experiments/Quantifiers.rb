@@ -21,26 +21,19 @@ end
 # Main
 #-----------------------------------------------
 if $0 == __FILE__
-  puts 'Number x may assume any value from set {1,2,3}'
+  puts 'variable x may assume any value from set {1,2,3}'
+  x = ''
   @state = {:number => [['1'],['2'],['3']]}
 
   # Query forall
-  x = ''
   puts "For all numbers x, x != 0: #{forall?([[:number, x]], [], x) {x.to_i != 0}}"
-  x = ''
-  puts "For all numbers x, x != 1: #{forall?([[:number, x]], [], x) {x.to_i != 1}}"
-  x = ''
-  puts "For all numbers x, x == 4: #{forall?([[:number, x]], [], x) {x.to_i != 4}}"
-  x = ''
-  puts "For all numbers x, x is odd or even: #{forall?([[:number, x]], [], x) {x.to_i.odd? or x.to_i.even?}}"
+  puts "For all numbers x, x != 1: #{forall?([[:number, x]], [], x.clear) {x.to_i != 1}}"
+  puts "For all numbers x, x == 4: #{forall?([[:number, x]], [], x.clear) {x.to_i == 4}}"
+  puts "For all numbers x, x is odd or even: #{forall?([[:number, x]], [], x.clear) {x.to_i.odd? or x.to_i.even?}}"
 
   # Query exists
-  x = ''
-  puts "There exists a number x, x != 0: #{exists?([[:number, x]], [], x) {x.to_i != 0}}"
-  x = ''
-  puts "There exists a number x, x != 1: #{exists?([[:number, x]], [], x) {x.to_i != 1}}"
-  x = ''
-  puts "There exists a number x, x == 4: #{exists?([[:number, x]], [], x) {x.to_i == 4}}"
-  x = ''
-  puts "There exists a number x, x is odd and even: #{exists?([[:number, x]], [], x) {x.to_i.odd? and x.to_i.even?}}"
+  puts "There exists a number x, x != 0: #{exists?([[:number, x]], [], x.clear) {x.to_i != 0}}"
+  puts "There exists a number x, x != 1: #{exists?([[:number, x]], [], x.clear) {x.to_i != 1}}"
+  puts "There exists a number x, x == 4: #{exists?([[:number, x]], [], x.clear) {x.to_i == 4}}"
+  puts "There exists a number x, x is odd and even: #{exists?([[:number, x]], [], x.clear) {x.to_i.odd? and x.to_i.even?}}"
 end

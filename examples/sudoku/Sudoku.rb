@@ -124,11 +124,11 @@ module Sudoku
     }
     # Check each box, box elimination
     available = Hash.new {|h,k| h[k] = []}
+    x = ''
+    y = ''
+    symbol = ''
     boxes.times {|b|
       box = "box_#{b}"
-      x = ''
-      y = ''
-      symbol = ''
       generate(
         # Positive preconditions
         [
@@ -155,6 +155,9 @@ module Sudoku
         end
       }
       available.clear
+      x.clear
+      y.clear
+      symbol.clear
     }
   end
 end
