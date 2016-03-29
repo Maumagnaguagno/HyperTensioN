@@ -1,4 +1,4 @@
-require File.expand_path('../Travel', __FILE__)
+require_relative 'Travel'
 
 plan = Travel.problem(
   # Start

@@ -1,4 +1,4 @@
-require File.expand_path('../../../Hypertension', __FILE__)
+require_relative '../../Hypertension'
 
 module Sudoku
   include Hypertension
