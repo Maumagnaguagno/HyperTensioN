@@ -47,7 +47,7 @@ module Hypertension
       }
       current_task.unshift(task_name)
     # Error
-    else raise "Decomposition problem with #{current_task.first}"
+    else raise "Domain defines no decomposition for #{current_task.first}"
     end
     nil
   end
