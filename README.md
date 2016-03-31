@@ -607,6 +607,8 @@ Since we test for explicit goals only after the plan has been found with a seque
   - Unordered tasks with explicit goal check
 - Sep 2015
   - Apply method extracted from apply_operator
+- Mar 2016
+  - Released version 1.0 as last version supporting Ruby 1.8
 
 ## ToDo's
 - Order predicates and test applicability by level (generate)
