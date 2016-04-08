@@ -8,11 +8,11 @@ module Hyper_Parser
   #-----------------------------------------------
 
   def parse_domain(domain_filename)
+    @domain_name = 'unknown'
     @operators = []
     @methods = []
     @predicates = {}
     require domain_filename
-    @domain_name ||= 'unknown'
   end
 
   #-----------------------------------------------
@@ -20,11 +20,11 @@ module Hyper_Parser
   #-----------------------------------------------
 
   def parse_problem(problem_filename)
+    @problem_name = 'unknown'
     @state = {}
     @tasks = []
     @goal_pos = []
     @goal_not = []
     require problem_filename
-    @problem_name ||= 'unknown'
   end
 end
