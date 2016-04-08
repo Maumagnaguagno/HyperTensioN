@@ -58,7 +58,7 @@ operators = [
     # Add effects
     [['at', '?agent', '?to']],
     # Del effects
-    ['at', '?agent', '?from']]
+    [['at', '?agent', '?from']]
   ]
 ]
 ```
