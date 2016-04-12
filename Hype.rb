@@ -138,6 +138,8 @@ Problem #{@parser.problem_name}
     when 'patterns' then Patterns
     when 'refinements' then Refinements
     when 'grammar' then Grammar
+    when 'complexity' then Complexity
+    when 'dummy' then Dummy
     else raise "Unknown extension #{extension}"
     end
     extender.apply(
