@@ -5,7 +5,7 @@ module Grammar
   # Apply
   #-----------------------------------------------
 
-  def apply(operators, methods, predicates, state, tasks, goal_pos, goal_not, debug = true)
+  def apply(operators, methods, predicates, state, tasks, goal_pos, goal_not)
     puts 'Grammar'.center(50,'-'), 'Production rules'
     methods.each {|met|
       parameters = met[1].join(' ')
