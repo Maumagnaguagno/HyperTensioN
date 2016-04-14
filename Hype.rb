@@ -213,7 +213,7 @@ if $0 == __FILE__
         elsif type != 'nil'
           Hype.compile(domain, problem, type)
         end
-        puts "Time: #{Time.now.to_f - t}s"
+        puts "Total time: #{Time.now.to_f - t}s"
       end
     end
   rescue
