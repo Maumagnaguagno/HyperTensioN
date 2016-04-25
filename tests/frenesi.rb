@@ -8,11 +8,15 @@ class Frenesi < Test::Unit::TestCase
   #-----------------------------------------------
 
   def test_different_extensions
-    assert_raises(RuntimeError) {Hype.parse('a.pddl','b.jshop')}
+    e = assert_raises(RuntimeError) {Hype.parse('a.pddl','b.jshop')}
+    assert_equal('Incompatible extensions between domain and problem', e.message)
   end
 
   def test_unknown_extension
-    assert_raises(RuntimeError) {Hype.parse('a.blob','b.blob')}
+    e = assert_raises(RuntimeError) {Hype.parse('a.blob','b.blob')}
+    assert_equal('Unknown file extension .blob', e.message)
+    e = assert_raises(RuntimeError) {Hype.parse('a','b')}
+    assert_equal('Unknown file extension ', e.message)
   end
 
   #-----------------------------------------------
