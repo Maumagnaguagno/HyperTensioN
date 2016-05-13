@@ -7,7 +7,7 @@ rvm:
   - 2.2.0
   - 2.3.0
   # JRuby
-  - jruby-19mode
+  - jruby-9000
   # Rubinius
   - rbx-2
 script:
