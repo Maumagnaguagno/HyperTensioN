@@ -182,7 +182,6 @@ module Hypertension
     puts 'Interrupted'
   rescue
     puts $!, $@
-    STDIN.gets
   end
 
   #-----------------------------------------------
