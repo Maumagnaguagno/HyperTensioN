@@ -108,7 +108,6 @@ module PDDL_Parser
           group.shift
           @requirements = group
         when ':predicates'
-          # TODO take advantage of predicates definition
         when ':types'
           # Type hierarchy
           raise 'Typing not required' unless @requirements.include?(':typing')
