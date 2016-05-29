@@ -16,7 +16,7 @@ module Wise
       parameters.each {|var|
         unless var.start_with?('?')
           puts "#{name} parameter #{var} modified to ?#{var}" if debug
-          var.insert(0,'?')
+          var.prepend('?')
         end
       }
       2.upto(5) {|i|
@@ -29,7 +29,7 @@ module Wise
               end
             elsif parameters.include?("?#{term}")
               puts "#{name} contains probable variable #{term} from (#{pre.join(sep)}), modified to ?#{term}" if debug
-              term.insert(0,'?')
+              term.prepend('?')
             end
           }
         }
