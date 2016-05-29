@@ -39,8 +39,4 @@ plan = Travel.problem(
 )
 
 # Test
-expected = [
-  ['walk', 'me', 'home', 'friend'],
-  ['walk', 'me', 'friend', 'park']
-]
-abort('Test failed') if plan != expected
+abort('Test failed') if plan != [['walk', 'me', 'home', 'friend'], ['walk', 'me', 'friend', 'park']]
