@@ -465,22 +465,19 @@ Domain methods must yield a task list or are nullified, having no decomposition.
 ## Hype
 The [**Hype**](Hype.rb) is the framework for parsers and compilers of planning descriptions.
 It will save time and avoid errors during conversion of domains and problems for comparison results with other planners.
-This conversion step is not uncommon, as JSHOP itself compiles the description to Java code, trying to achieve the best performance possible.
+The conversion step is not uncommon, as JSHOP itself compiles the description to Java code, trying to achieve the best performance possible.
 
 **Parser support**:
-- [x] [Ruby](https://en.wikipedia.org/wiki/Ruby_%28programming_language%29) using an [Intermediate Representation](docs/Representation.md)
-- [x] [PDDL](http://en.wikipedia.org/wiki/Planning_Domain_Definition_Language "PDDL at Wikipedia")
-- [x] [JSHOP](http://www.cs.umd.edu/projects/shop/description.html "SHOP/JSHOP project page")
-- [ ] [HPDDL](https://github.com/ronwalf/HTN-Translation "HTN-Translation GitHub repository")
+- [Ruby](https://en.wikipedia.org/wiki/Ruby_%28programming_language%29) using an [Intermediate Representation](docs/Representation.md)
+- [PDDL](http://en.wikipedia.org/wiki/Planning_Domain_Definition_Language "PDDL at Wikipedia")
+- [JSHOP](http://www.cs.umd.edu/projects/shop/description.html "SHOP/JSHOP project page")
 
 **Compiler support**:
-- [x] Hypertension (methods and tasks may not be available if the input was PDDL)
-- [x] [PDDL](http://en.wikipedia.org/wiki/Planning_Domain_Definition_Language "PDDL at Wikipedia") (methods are ignored, goal must be manually converted from the tasks)
-- [x] [JSHOP](http://www.cs.umd.edu/projects/shop/description.html "SHOP/JSHOP project page") (methods and tasks may not be available if the input was PDDL)
-- [x] [Graphviz DOT](http://www.graphviz.org/) (generate a [graph](docs/Graph.md) description to be compiled into an image)
-- [ ] [HPDDL](https://github.com/ronwalf/HTN-Translation "HTN-Translation GitHub repository") (methods and tasks may not be available if the input was PDDL)
-- [x] [Markdown](http://daringfireball.net/projects/markdown/)
-- [ ] [LaTex](https://www.latex-project.org/)
+- Hypertension (methods and tasks may not be available if the input was PDDL)
+- [PDDL](http://en.wikipedia.org/wiki/Planning_Domain_Definition_Language "PDDL at Wikipedia") (methods are ignored, goal must be manually converted from the tasks)
+- [JSHOP](http://www.cs.umd.edu/projects/shop/description.html "SHOP/JSHOP project page") (methods and tasks may not be available if the input was PDDL)
+- [Graphviz DOT](http://www.graphviz.org/) (generate a [graph](docs/Graph.md) description to be compiled into an image)
+- [Markdown](http://daringfireball.net/projects/markdown/)
 
 As any parser, the ones provided by Hype are limited in one way or another.
 [PDDL](http://en.wikipedia.org/wiki/Planning_Domain_Definition_Language "PDDL at Wikipedia") have far more features than supported by most planners and JSHOP have 2 different ways to define methods.
