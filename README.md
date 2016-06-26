@@ -454,7 +454,7 @@ In case of failure, ```nil``` is returned.
 - ```generate(precond_pos, precond_not, *free)``` yields all possible unifications to the free variables defined, therefore you need a block to capture the unifications. The return value is undetermined.
 - ```print_data(data)``` can be used to print task lists and predicate lists, useful for debug.
 - ```problem(start, tasks, debug = false, goal_pos = [], goal_not = [])``` is used to simplify the setup of a problem instance, returns the value of planning. Use problem as a template to see how to add Hypertension in your project.
-- ```task_permutations(state, tasks, goal_pos, goal_not)``` tries several permutations of the tasks to achieve unordered decomposition, it is used by ```problem``` when explicit goals are given. Return a plan or nil.
+- ```task_permutations(state, tasks, goal_pos, goal_not)``` tries several task permutations to achieve unordered decomposition, it is used by ```problem``` when explicit goals are given. Return a plan or nil.
 
 Domain operators can be defined without ```apply_operator``` and will have the return value considered.
   - ```false``` or ```nil``` means the operator has failed.
@@ -474,7 +474,7 @@ The conversion step is not uncommon, as JSHOP itself compiles the description to
 
 **Compiler support**:
 - Hypertension (methods and tasks may not be available if the input was PDDL)
-- [PDDL](http://en.wikipedia.org/wiki/Planning_Domain_Definition_Language "PDDL at Wikipedia") (methods are ignored, goal must be manually converted from the tasks)
+- [PDDL](http://en.wikipedia.org/wiki/Planning_Domain_Definition_Language "PDDL at Wikipedia") (methods are ignored, goal must be manually converted based on tasks)
 - [JSHOP](http://www.cs.umd.edu/projects/shop/description.html "SHOP/JSHOP project page") (methods and tasks may not be available if the input was PDDL)
 - [Graphviz DOT](http://www.graphviz.org/) (generate a [graph](docs/Graph.md) description to be compiled into an image)
 - [Markdown](http://daringfireball.net/projects/markdown/)
@@ -574,7 +574,7 @@ The biggest advantage is not the planning itself, but the parsers and compilers 
 Perhaps the most invisible advantage is the lack of custom classes, every object used during planning is defined as one of the core objects.
 Once Strings, Arrays and Hashes are understood, the entire Hypertension module is just a few methods away from complete understanding.
 
-The only killer feature that we lack, which requires a more complex algorithm, is interleaved/unordered execution of tasks, a feature that JSHOP2 supports and is extremely important to achieve good plans in some cases.
+The only lacking killer feature, which requires a more complex algorithm, is interleaved/unordered execution of tasks, a feature that JSHOP2 supports and is extremely important to achieve good plans in some cases.
 We only support unordered tasks at the problem level and do not interleave them during decomposition.
 Since we test for explicit goals only after the plan has been found with a sequence of tasks, a failure is considered enough proof to try other orderings, not other unifications with the same sequence of tasks.
 
@@ -598,7 +598,7 @@ Since we test for explicit goals only after the plan has been found with a seque
   - Plan is built after tasks solved
   - Domain and problem separated
   - Deep copy only used at operator application
-- Mar 2014
+- Mar 2015
   - Refactoring of generate
 - Jun 2015
   - Unordered tasks with explicit goal check
