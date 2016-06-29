@@ -7,7 +7,6 @@ module PDDL_Parser
   NOT = 'not'
   HYPHEN = '-'
   EQUAL = '='
-  EQUAL_SUB = 'equal'
 
   #-----------------------------------------------
   # Scan tokens
@@ -70,8 +69,7 @@ module PDDL_Parser
           group.each {|pre|
             raise "Error with #{name} preconditions" unless pre.instance_of?(Array)
             pre.first != NOT ? pos << pre : pre.size == 2 ? neg << (pre = pre.last) : raise("Error with #{name} negative preconditions")
-            pre.replace(EQUAL_SUB) if (pre = pre.first) == EQUAL
-            @predicates[pre.freeze] ||= false
+            @predicates[pre.first.freeze] ||= false
           }
         end
       when ':effect'
@@ -164,8 +162,7 @@ module PDDL_Parser
                 index += 1
                 # Convert type hierarchy to initial state predicates
                 types = [type]
-                until types.empty?
-                  subtype = types.shift
+                while subtype = types.shift
                   @types.each {|sub,t|
                     if sub == subtype
                       @state << [t, o]
@@ -177,7 +174,7 @@ module PDDL_Parser
             end
           end
           raise 'Repeated object definition' if @objects.uniq!
-          @objects.each {|obj| @state << [EQUAL_SUB, obj, obj]} if @requirements.include?(':equality')
+          @objects.each {|obj| @state << [EQUAL, obj, obj]} if @requirements.include?(':equality')
         when ':init'
           group.shift
           @state.concat(group)
