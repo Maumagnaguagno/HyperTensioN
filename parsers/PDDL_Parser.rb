@@ -100,6 +100,7 @@ module PDDL_Parser
       @methods = []
       @predicates = {}
       @types = []
+      @requirements = []
       until tokens.empty?
         case (group = tokens.shift).first
         when ':action' then parse_action(group)
@@ -126,7 +127,6 @@ module PDDL_Parser
         end
       end
       @domain_name ||= 'unknown'
-      @requirements ||= []
     else raise "File #{domain_filename} does not match domain pattern"
     end
   end
