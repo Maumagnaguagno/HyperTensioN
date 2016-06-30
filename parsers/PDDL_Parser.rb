@@ -52,12 +52,11 @@ module PDDL_Parser
           free_variables << group.shift
           if group.first == HYPHEN
             group.shift
-            type = group.shift
+            @predicates[(type = group.shift).freeze] ||= false
             until index == free_variables.size
               pos << [type, free_variables[index]]
               index += 1
             end
-            @predicates[type.freeze] ||= false
           end
         end
         raise "Action #{name} with repeated parameters" if free_variables.uniq!
@@ -144,9 +143,6 @@ module PDDL_Parser
         case (group = tokens.shift).first
         when 'problem' then @problem_name = group.last
         when ':domain' then raise 'Different domain specified in problem file' if @domain_name != group.last
-        when ':requirements'
-          group.shift
-          @requirements.concat(group).uniq!
         when ':objects'
           # Move types to initial state
           group.shift
