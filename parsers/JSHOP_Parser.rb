@@ -24,8 +24,7 @@ module JSHOP_Parser
 
   def parse_operator(op)
     op.shift
-    name = op.first.shift
-    raise 'Action without name definition' unless name.instance_of?(String)
+    raise 'Action without name definition' unless (name = op.first.shift).instance_of?(String)
     name.sub!(/^!!/,'invisible_') or name.sub!(/^!/,'')
     raise "Action #{name} redefined" if @operators.assoc(name)
     raise "Operator #{name} have #{op.size} groups instead of 4" if op.size != 4
@@ -89,8 +88,8 @@ module JSHOP_Parser
       @predicates = {}
       raise 'More than one group to define domain content' if tokens.size != 1
       tokens = tokens.shift
-      until tokens.empty?
-        case (group = tokens.shift).first
+      while group = tokens.shift
+        case group.first
         when ':operator' then parse_operator(group)
         when ':method' then parse_method(group)
         else puts "#{group.first} is not recognized in domain"
