@@ -98,8 +98,8 @@ module PDDL_Parser
       @predicates = {}
       @types = []
       @requirements = []
-      until tokens.empty?
-        case (group = tokens.shift).first
+      while group = tokens.shift
+        case group.first
         when ':action' then parse_action(group)
         when 'domain' then @domain_name = group.last
         when ':requirements'
@@ -139,8 +139,8 @@ module PDDL_Parser
       @goal_pos = []
       @goal_not = []
       @tasks = []
-      until tokens.empty?
-        case (group = tokens.shift).first
+      while group = tokens.shift
+        case group.first
         when 'problem' then @problem_name = group.last
         when ':domain' then raise 'Different domain specified in problem file' if @domain_name != group.last
         when ':objects'
