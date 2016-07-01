@@ -29,7 +29,6 @@ module JSHOP_Parser
     name.sub!(/^!!/,'invisible_') or name.sub!(/^!/,'')
     raise "Action #{name} redefined" if @operators.assoc(name)
     raise "Operator #{name} have #{op.size} groups instead of 4" if op.size != 4
-    # Header
     @operators << [name, op.shift, pos = [], neg = [], add = [], del = []]
     # Preconditions
     if (group = op.shift) != NIL
@@ -50,12 +49,9 @@ module JSHOP_Parser
 
   def parse_method(met)
     met.shift
-    # Header
-    name = (group = met.first).shift
+    # Same method may have decompositions already defined
+    @methods << method = [name, group] unless method = @methods.assoc(name = (group = met.first).shift)
     met.shift
-    # Already defined
-    method = @methods.assoc(name)
-    @methods << method = [name, group] unless method
     until met.empty?
       # Optional label, add index for the unlabeled cases
       method << [met.first.instance_of?(String) ? met.shift : "#{name}_#{method.size - 2}", free_variables = [], pos = [], neg = []]
