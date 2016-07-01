@@ -49,10 +49,9 @@ module JSHOP_Parser
 
   def parse_method(met)
     met.shift
-    # Same method may have decompositions already defined
-    unless method = @methods.assoc(name = (group = met.first).shift)
-      @methods << method = [name, group]
-    end
+    # Method may already have decompositions associated
+    name = (group = met.first).shift
+    @methods << method = [name, group] unless method = @methods.assoc(name)
     met.shift
     until met.empty?
       # Optional label, add index for the unlabeled cases
