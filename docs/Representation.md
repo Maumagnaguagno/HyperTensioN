@@ -120,19 +120,19 @@ methods = [
 
 ## Predicates
 Predicates are partitioned in three types to both planners and compilers to decide which informations are important.
-Predicates that appear in effects are considered mutable while predicates that appear only in the preconditions are considered constant.
+Predicates that appear in effects are considered mutable while predicates that appear only in preconditions are considered invariant.
 Other predicates are considered irrelevant and may be pruned without any problem.
-In order to save this knowledge we use a Hash that maps predicate name to true, if mutable, or false, if constant.
+In order to obtain this knowledge we use a Hash that maps predicate name to true, if mutable, or false, if invariant.
 Irrelevant predicates are not stored.
-Remember to freeze the predicate to avoid key duplication by the Hash implementation.
+Note that frozen predicate strings avoid key duplication by the Hash implementation.
 
 ```Ruby
 pre_mutable = ['have','?x']
-pre_constant = ['object', '?x']
+pre_invariant = ['object', '?x']
 pre_irrelevant = ['cookie', '?y']
 predicates = {
   pre_mutable.first.freeze => true,
-  pre_constant.first.freeze => false
+  pre_invariant.first.freeze => false
 }
 ```
 

@@ -7,7 +7,7 @@ module Markdown_Compiler
 
   def compile_domain(domain_name, problem_name, operators, methods, predicates, state, tasks, goal_pos, goal_not)
     output = "# #{domain_name.capitalize}\n## Predicates\n"
-    predicates.each {|k,v| output << "- #{k}: #{v ? 'mutable' : 'constant'}\n"}
+    predicates.each {|k,v| output << "- #{k}: #{v ? 'mutable' : 'invariant'}\n"}
     output << "\n## Operators"
     operators.each {|op|
       output << "\n#{op.first.capitalize} | #{op[1].join(' ')}\n--- | ---\n***Preconditions*** | ***Effects***"

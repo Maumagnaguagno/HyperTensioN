@@ -93,7 +93,7 @@ module Hypertension
     match_objects = []
     precond_pos.each {|name,*terms|
       next unless terms.include?('')
-      # Swap free variables with set to match or maintain constant
+      # Swap free variables with matching set or maintain constant term
       terms.map! {|p| objects.find {|j| j.first.equal?(p)} or p}
       # Compare with current state
       @state[name].each {|objs|
