@@ -175,7 +175,7 @@ module PDDL_Parser
           group.shift
           @state.concat(group)
         when ':goal'
-          if group = group[1] and not group.empty?
+          unless (group = group[1]).empty?
             # Conjunction or atom
             group.first == AND ? group.shift : group = [group]
             group.each {|pre| pre.first != NOT ? @goal_pos << pre : pre.size == 2 ? @goal_not << pre.last : raise('Error with goals')}
