@@ -19,6 +19,8 @@ def formula_applicable?(precondition)
   when :not
     precondition.shift
     precondition.none? {|pre| formula_applicable?(pre)}
+  when :call
+    call(precondition)
   else
     name, *objs = precondition
     @state[name].include?(objs)
@@ -26,10 +28,29 @@ def formula_applicable?(precondition)
 end
 
 #-----------------------------------------------
+# Call
+#-----------------------------------------------
+
+def call(expression)
+  expression.shift
+  f = expression.shift
+  if (value = expression.shift).is_a?(Array)
+    value = call(value)
+  end
+  if expression.empty?
+    send(f, value)
+  else
+    expression.each {|i| value = value.send(f, i.is_a?(Array) ? call(i) : i)}
+    value
+  end
+end
+
+#-----------------------------------------------
 # Main
 #-----------------------------------------------
 if $0 == __FILE__
-  states = [
+  # (and (p a) (or (p b) (and (p c) (not p d)))) => true or false
+  [
     [{:p => []}, false],
 
     [{:p => [[:a]]}, false],
@@ -65,4 +86,10 @@ if $0 == __FILE__
       ]
     ) == expected
   }
+  # (= 5 (+ 2 3))
+  p call([:call, '==', 5, [:call, '+', 2, 3]])
+  # (= (+ 1 2 3) 6)
+  p call([:call, '==', [:call, '+', 1, 2, 3], 6])
+  # (= (+ a b c) abc)
+  p call([:call, '==', [:call, '+', 'a', 'b', 'c'], 'abc'])
 end
