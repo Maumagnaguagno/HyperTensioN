@@ -11,7 +11,7 @@ The current version has most of its algorithm inspired by PyHop/SHOP, with backt
 [Download and play](../../archive/master.zip) or jump to each section to learn more:
 - [**Algorithm**](#algorithm "Jump to Algorithm section"): planning algorithm explanation.
 - [**Getting started**](#getting-started "Jump to Getting started section"): Features explained while describing a domain with Hypertension.
-- [**Hints**](#hints "Jump to Hints section"): a list of hints to keep in mind in order to keep things fast.
+- [**Hints**](#hints "Jump to Hints section"): a list of hints to keep in mind.
 - [**Execution**](#execution "Jump to Execution section"): Command-line examples for the forgotten.
 - [**API**](#api "Jump to API section"): Variables and methods defined by Hypertension.
 - [**Hype**](#hype "Jump to Hype section"): Follow the Hype and let domain and problem be converted and executed automagically.
