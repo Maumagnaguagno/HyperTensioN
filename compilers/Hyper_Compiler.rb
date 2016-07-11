@@ -81,7 +81,7 @@ module Hyper_Compiler
         # No preconditions
         if met_case[2].empty? and met_case[3].empty?
           subtasks_to_hyper(define_methods, met_case[4], '    ')
-        # Grounded
+        # Ground
         elsif met_case[1].empty?
           predicates_to_hyper(define_methods << "    if applicable?(\n      # Positive preconditions", met_case[2])
           predicates_to_hyper(define_methods << ",\n      # Negative preconditions", met_case[3])

@@ -193,7 +193,7 @@ We need to define every single case as a different method.
 The order they appear in the domain definition implies the order of evaluation.
 Methods may appear in 3 different scenarios:
 - **No preconditions**, direct application of subtasks.
-- **Grounded preconditions**, apply subtasks if satisfied, every variable is [grounded](http://en.wikipedia.org/wiki/Ground_expression).
+- **Ground preconditions**, apply subtasks if satisfied, every term is a [ground term](http://en.wikipedia.org/wiki/Ground_expression).
 - **Lifted preconditions**, unify [free variables](http://en.wikipedia.org/wiki/Free_variables_and_bound_variables) according to the preconditions. [Check how it works](#free-variables).
 
 Instead of returning, the methods yield a subtask list.
@@ -214,7 +214,7 @@ def swap_at__jump(object, goal)
 end
 ```
 
-#### Grounded preconditions
+#### Ground preconditions
 Sometimes we have preconditions in the last operator of the subtask list, we want to discover if the precondition is satisfied now instead of executing a lot of steps to discover this decomposition leads to a failure.
 Use preconditions as look-aheads, this may create a redundancy with the operators, but saves quite a lot of time if used wisely.
 
