@@ -40,7 +40,7 @@ def call(expression)
   if expression.empty?
     send(f, value)
   else
-    expression.each {|i| value = value.send(f, i.is_a?(Array) ? call(i) : i)}
+    expression.each {|i| value = value.send(f, i.is_a?(Array) && i.first == :call ? call(i) : i)}
     value
   end
 end
