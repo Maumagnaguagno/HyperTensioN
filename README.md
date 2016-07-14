@@ -396,15 +396,15 @@ cd HyperTensioN
 # ruby Hype.rb path/domain_filename path/problem_filename {extensions} [output]
 # Multiple extensions can be executed before the output happens, more on that to come.
 # The output can be print(default), rb, pddl, jshop, dot, md, run or debug.
-ruby Hype.rb examples/basic_jshop/basic.jshop examples/basic_jshop/pb1.jshop rb
-ruby examples/basic_jshop/pb1.jshop.rb
+ruby Hype.rb examples/basic/basic.jshop examples/basic/pb1.jshop rb
+ruby examples/basic/pb1.jshop.rb
 ```
 
 You can also compile and execute with a single command with **run** or **debug**, the system compile as **rb** and require the generated files.
 Debug mode shows the explored paths while run mode only shows the planning result.
 
 ```Shell
-ruby Hype.rb examples/basic_jshop/basic.jshop examples/basic_jshop/problem.jshop run
+ruby Hype.rb examples/basic/basic.jshop examples/basic/pb1.jshop run
 ```
 
 ## API

@@ -72,7 +72,7 @@ Since Arrays are being used, there is no limit to add more data beyond the first
 ## Methods
 Sometimes we want to apply specific actions in a certain order to accomplish a task.
 Those tasks are made from methods and act as domain knowledge to be exploited by an HTN planner.
-The following method is the swap from the basic_jshop example, it contains two possible cases:
+The following method is the swap from the [basic JSHOP domain](../examples/basic/basic.jshop "basic.jshop") example, it contains two possible cases:
 
 ```Lisp
 (:method (swap ?x ?y)
