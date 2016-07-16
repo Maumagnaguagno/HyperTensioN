@@ -30,15 +30,26 @@ end
 # Main
 #-----------------------------------------------
 if $0 == __FILE__
+  require 'test/unit'
   require_relative '../../Hypertension'
-  include Hypertension
 
-  @state = {:something => [['a'], ['b']]}
-  setup_protection
-  protect([[:something, 'a']], [[:something, 'c']])
-  p @state
-  p apply_protected_operator([], [], [[:something, 'c']], [[:something, 'a']])
-  p @state
-  p apply_protected_operator([], [], [[:something, 'x']], [[:something, 'b']])
-  p @state
+  class Protection < Test::Unit::TestCase
+    include Hypertension
+
+    def test_protection
+      @state = {:something => [['a'], ['b']]}
+      setup_protection
+      assert_equal([['a'],['b']], @state[:something])
+      assert_equal([], @state[:protection_pos])
+      assert_equal([], @state[:protection_not])
+      protect([[:something, 'a']], [[:something, 'c']])
+      assert_equal([['a'],['b']], @state[:something])
+      assert_equal([[:something, 'a']], @state[:protection_pos])
+      assert_equal([[:something, 'c']], @state[:protection_not])
+      assert_equal(nil, apply_protected_operator([], [], [[:something, 'c']], [[:something, 'a']]))
+      assert_equal([['a'],['b']], @state[:something])
+      assert_equal(true, apply_protected_operator([], [], [[:something, 'x']], [[:something, 'b']]))
+      assert_equal([['a'],['x']], @state[:something])
+    end
+  end
 end
