@@ -16,10 +16,10 @@ def expression_applicable?(expression)
     call(expression)
   when :forall
     block = expression.pop
-    forall?(*expression) {expression_applicable?(block)}
+    forall?(*expression, &block)
   when :exists
     block = expression.pop
-    exists?(*expression) {expression_applicable?(block)}
+    exists?(*expression, &block)
   else @state[command].include?(expression)
   end
 end
@@ -64,9 +64,9 @@ end
 if $0 == __FILE__
   require 'test/unit'
   require_relative '../../Hypertension'
-  include Hypertension
 
-  class Expressionism < Test::Unit::TestCase
+  class Expression < Test::Unit::TestCase
+    include Hypertension
 
     def test_expression_applicable?
       @state = {:p => nil}
@@ -117,7 +117,7 @@ if $0 == __FILE__
       assert_equal(true, forall?([[:number, x]], [], x.clear) {x.to_i.odd? or x.to_i.even?})
     end
 
-    def test_quantification_exists
+    def test_quantification_exists?
       # Variable x may assume any value from [1, 2, 3]
       @state = {:number => [['1'],['2'],['3']]}
       # There exists a number x, x != 0
