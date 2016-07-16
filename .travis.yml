@@ -15,6 +15,9 @@ script:
   - ruby tests/sphygmomanometer.rb
   - ruby tests/frenesi.rb
   # Examples
+  - ruby examples/experiments/Expression.rb
+  - ruby examples/experiments/Protection.rb
+  - ruby examples/experiments/Side_Effects.rb
   - ruby examples/travel/pb1.rb
   - ruby examples/travel/pb2.rb
   - ruby examples/travel/pb3.rb
