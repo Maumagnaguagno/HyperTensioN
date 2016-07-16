@@ -1,6 +1,3 @@
-require_relative '../../Hypertension'
-include Hypertension
-
 #-----------------------------------------------
 # Apply operator with side effects
 #-----------------------------------------------
@@ -18,6 +15,9 @@ end
 # Main
 #-----------------------------------------------
 if $0 == __FILE__
+  require_relative '../../Hypertension'
+  include Hypertension
+
   def move_briefcase(briefcase, from, to)
     if applicable?(
       # Positive preconditions

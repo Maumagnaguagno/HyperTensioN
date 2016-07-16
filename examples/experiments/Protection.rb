@@ -1,6 +1,3 @@
-require_relative '../../Hypertension'
-include Hypertension
-
 #-----------------------------------------------
 # Protection
 #-----------------------------------------------
@@ -33,6 +30,9 @@ end
 # Main
 #-----------------------------------------------
 if $0 == __FILE__
+  require_relative '../../Hypertension'
+  include Hypertension
+
   @state = {:something => [['a'], ['b']]}
   setup_protection
   protect([[:something, 'a']], [[:something, 'c']])
