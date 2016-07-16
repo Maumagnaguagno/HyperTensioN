@@ -65,9 +65,10 @@ operators = [
 
 Some elements may be simplified by the parser to make the common representation compatible with any language.
 PDDL types can be downgraded to positive preconditions in the domain and added to the initial state in the problem.
-Disjunctions and conditionals would require an expansion from ```op``` to ```op1 op2 op3```, in which ```op#``` is one of the possible scenarios.
-Quantifiers require more work and are currently not supported by the representation, an [experimental version of quantifiers](../examples/experiments/Quantifiers.rb "Quantifiers.rb") is available in pure Ruby.
-Since Arrays are being used, there is no limit to add more data beyond the first 6 cells, like quantifier support or action costs.
+Disjunctions and conditionals would require an AST or an expansion to cover each case.
+Quantifiers require more work and are currently not supported by the intermediate representation.
+Since Arrays are being used, it is possible to add more data beyond the first 6 positions.
+Until then you can see some [experimental](../examples/experiments) ideas being tested in pure Ruby.
 
 ## Methods
 Sometimes we want to apply specific actions in a certain order to accomplish a task.
