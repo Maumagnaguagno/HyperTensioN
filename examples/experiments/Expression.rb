@@ -1,17 +1,17 @@
 #-----------------------------------------------
-# Expression applicable?
+# Compute
 #-----------------------------------------------
 
-def expression_applicable?(expression)
+def compute(expression)
   case command = expression.shift
   when :and
-    expression.all? {|e| expression_applicable?(e)}
+    expression.all? {|e| compute(e)}
   when :or
-    expression.any? {|e| expression_applicable?(e)}
+    expression.any? {|e| compute(e)}
   when :xor
-    expression.one? {|e| expression_applicable?(e)}
+    expression.one? {|e| compute(e)}
   when :not
-    expression.none? {|e| expression_applicable?(e)}
+    expression.none? {|e| compute(e)}
   when :call
     call(expression)
   when :forall
@@ -68,7 +68,7 @@ if $0 == __FILE__
   class Expression < Test::Unit::TestCase
     include Hypertension
 
-    def test_expression_applicable?
+    def test_compute
       @state = {:p => nil}
       variables = [[:a],[:b],[:c],[:d]]
       5.times {|i|
@@ -78,7 +78,7 @@ if $0 == __FILE__
           pb = p.include?([:b])
           pc = p.include?([:c])
           pd = p.include?([:d])
-          formula = [:and,
+          expression = [:and,
             [:p, :a],
             [:or,
               [:p, :b],
@@ -88,7 +88,7 @@ if $0 == __FILE__
               ]
             ]
           ]
-          assert_equal((pa and (pb or (pc and not pd))), expression_applicable?(formula))
+          assert_equal((pa and (pb or (pc and not pd))), compute(expression))
         }
       }
     end
