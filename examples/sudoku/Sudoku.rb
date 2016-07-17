@@ -48,7 +48,7 @@ module Sudoku
       :box => box
     }
     tasks = [
-      [:solve, counter, total_width, total_height, box_width * box_height]
+      [:solve, counter, box_width * box_height]
     ]
     if verbose
       problem(start, tasks, debug)
@@ -57,7 +57,7 @@ module Sudoku
       @state = start
       planning(tasks)
     end
-    # Output
+    # Display board
     @state[:at].sort_by {|i| i.first(2).reverse!}.map {|i| i.last}.each_slice(total_width) {|i| puts i.join}
   end
 
@@ -85,79 +85,30 @@ module Sudoku
   # Methods
   #-----------------------------------------------
 
-  def try_next(counter, collumns, rows, boxes)
+  def try_next(counter, cells)
     puts counter if @debug
     return yield [] if counter.zero?
     counter -= 1
-    # Check each cell, row and collumn elimination
-    rows.times {|r|
-      y = r.to_s
-      collumns.times {|c|
-        x = c.to_s
-        box = ''
-        symbol = ''
-        available = nil
-        generate(
-          # Positive preconditions
-          [
-            [:at, x, y, box, EMPTY],
-            [:symbol, symbol]
-          ],
-          # Negative preconditions
-          [
-            [:collumn, x, symbol],
-            [:row, y, symbol],
-            [:box, box, symbol]
-          ], box, symbol
-        ) {
-          break available = nil if available
-          available = [box.dup, symbol.dup]
-        }
-        # Cell only have one symbol available
-        if available
-          return yield [
-            [:put_symbol, x, y, *available],
-            [:solve, counter, collumns, rows, boxes]
-          ]
-        end
-      }
+    # Find available symbols for each empty cell
+    available = Hash.new
+    @state[:at].each {|x,y,b,symbol|
+      if symbol == EMPTY
+        available[[x, y, b]] = symbols = Array.new(cells) {|i| i.succ.to_s}
+        @state[:collumn].each {|i,s| symbols.delete(s) if i == x}
+        @state[:row].each {|i,s| symbols.delete(s) if i == y}
+        @state[:box].each {|i,s| symbols.delete(s) if i == b}
+      end
     }
-    # Check each box, box elimination
-    available = Hash.new {|h,k| h[k] = []}
-    x = ''
-    y = ''
-    symbol = ''
-    boxes.times {|b|
-      box = "box_#{b}"
-      generate(
-        # Positive preconditions
-        [
-          [:at, x, y, box, EMPTY],
-          [:symbol, symbol]
-        ],
-        # Negative preconditions
-        [
-          [:collumn, x, symbol],
-          [:row, y, symbol],
-          [:box, box, symbol]
-        ], x, y, symbol
-      ) {
-        available[symbol] << [x.dup, y.dup]
+    # Explore empty cells with fewest available symbols first
+    available.sort_by {|position,symbols| symbols.size}.each {|position,symbols|
+      x, y, box = position
+      symbols.each {|symbol|
+        yield [
+          [:put_symbol, x, y, box, symbol],
+          [:solve, counter, cells]
+        ]
       }
-      # Box only have one symbol available
-      available.each {|symbol,positions|
-        if positions.size == 1
-          x, y = positions.first
-          return yield [
-            [:put_symbol, x, y, box, symbol],
-            [:solve, counter, collumns, rows, boxes]
-          ]
-        end
-      }
-      available.clear
-      x.clear
-      y.clear
-      symbol.clear
+      return if symbols.size == 1
     }
   end
 end
@@ -166,7 +117,7 @@ end
 # Main
 #-----------------------------------------------
 if $0 == __FILE__
-  debug = ARGV.last == '-d'
+  debug = ARGV.first == '-d'
   # Easy
   board = '
   3 4 | 1 2
@@ -190,7 +141,6 @@ if $0 == __FILE__
   . . 5 | . 1 . | 3 . .'
   Sudoku.solve(board, 3, 3, 3, 3, debug, true)
   # Hard
-  # TODO add more strategies to solve hard boards (i.e. symbol only have one position inside box)
   board = '
   4 . . | . . . | 8 . 5
   . 3 . | . . . | . . .
