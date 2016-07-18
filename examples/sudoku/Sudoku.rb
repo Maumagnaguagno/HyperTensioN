@@ -90,25 +90,37 @@ module Sudoku
     return yield [] if counter.zero?
     counter -= 1
     # Find available symbols for each empty cell
-    available = Hash.new
+    available = Array.new(cells - 2) {[]}
+    collumn = @state[:collumn]
+    row = @state[:row]
+    box = @state[:box]
     @state[:at].each {|x,y,b,symbol|
       if symbol == EMPTY
-        available[[x, y, b]] = symbols = Array.new(cells) {|i| i.succ.to_s}
-        @state[:collumn].each {|i,s| symbols.delete(s) if i == x}
-        @state[:row].each {|i,s| symbols.delete(s) if i == y}
-        @state[:box].each {|i,s| symbols.delete(s) if i == b}
+        symbols = Array.new(cells) {|i| i.succ.to_s}
+        collumn.each {|i,s| symbols.delete(s) if i == x}
+        row.each {|i,s| symbols.delete(s) if i == y}
+        box.each {|i,s| symbols.delete(s) if i == b}
+        if symbols.empty?
+          return
+        elsif symbols.size == 1
+          return yield [
+            [:put_symbol, x, y, b, symbols.first],
+            [:solve, counter, cells]
+          ]
+        end
+        available[symbols.size - 2] << [x, y, b, symbols]
       end
     }
     # Explore empty cells with fewest available symbols first
-    available.sort_by {|position,symbols| symbols.size}.each {|position,symbols|
-      x, y, box = position
-      symbols.each {|symbol|
-        yield [
-          [:put_symbol, x, y, box, symbol],
-          [:solve, counter, cells]
-        ]
+    available.each {|set|
+      set.each {|x,y,b,symbols|
+        symbols.each {|symbol|
+          yield [
+            [:put_symbol, x, y, b, symbol],
+            [:solve, counter, cells]
+          ]
+        }
       }
-      return if symbols.size == 1
     }
   end
 end
