@@ -32,7 +32,7 @@ class Frenesi < Test::Unit::TestCase
       JSHOP_Parser, [],
       # Attributes
       :domain_name => 'basic',
-      :problem_name => 'problem',
+      :problem_name => 'pb1',
       :operators => [
         ['pickup', ['?a'],
           # Preconditions
