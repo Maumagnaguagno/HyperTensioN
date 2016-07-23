@@ -115,7 +115,6 @@ Problem #{@parser.problem_name}
   #-----------------------------------------------
 
   def parse(domain, problem)
-    # Mix files may result in incomplete data
     raise 'Incompatible extensions between domain and problem' if File.extname(domain) != File.extname(problem)
     @parser = case File.extname(domain)
     when '.rb' then Hyper_Parser
@@ -132,7 +131,6 @@ Problem #{@parser.problem_name}
   #-----------------------------------------------
 
   def extend(extension)
-    raise 'No data to extend' unless @parser
     extender = case extension
     when 'wise' then Wise
     when 'patterns' then Patterns
@@ -158,7 +156,6 @@ Problem #{@parser.problem_name}
   #-----------------------------------------------
 
   def compile(domain, problem, type)
-    raise 'No data to compile' unless @parser
     compiler = case type
     when 'rb' then Hyper_Compiler
     when 'jshop' then JSHOP_Compiler
