@@ -23,7 +23,7 @@ class Frenesi < Test::Unit::TestCase
   # Parsing
   #-----------------------------------------------
 
-  def test_basic_jshop_parsing
+  def test_basic_pb1_jshop_parsing
     parser_tests(
       # Files
       './examples/basic/basic.jshop',
@@ -79,7 +79,7 @@ class Frenesi < Test::Unit::TestCase
     )
   end
 
-  def test_basic_pddl_parsing
+  def test_basic_pb1_pddl_parsing
     parser_tests(
       # Files
       './examples/basic/basic.pddl',
@@ -120,7 +120,7 @@ class Frenesi < Test::Unit::TestCase
   # Compilation
   #-----------------------------------------------
 
-  def test_basic_jshop_compile_to_pddl
+  def test_basic_pb1_jshop_parsing_compile_to_pddl
     compiler_tests(
       # Files
       './examples/basic/basic.jshop',
