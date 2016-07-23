@@ -112,7 +112,9 @@ class Frenesi < Test::Unit::TestCase
       :state => [],
       :tasks => [],
       :goal_pos => [['have', 'banjo']],
-      :goal_not => []
+      :goal_not => [],
+      :objects => ['kiwi', 'banjo'],
+      :requirements => [':strips', ':negative-preconditions']
     )
   end
 
