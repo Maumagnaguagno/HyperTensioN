@@ -26,8 +26,8 @@ class Frenesi < Test::Unit::TestCase
   def test_basic_pb1_jshop_parsing
     parser_tests(
       # Files
-      './examples/basic/basic.jshop',
-      './examples/basic/pb1.jshop',
+      'examples/basic/basic.jshop',
+      'examples/basic/pb1.jshop',
       # Parser and extensions
       JSHOP_Parser, [],
       # Attributes
@@ -82,8 +82,8 @@ class Frenesi < Test::Unit::TestCase
   def test_basic_pb1_pddl_parsing
     parser_tests(
       # Files
-      './examples/basic/basic.pddl',
-      './examples/basic/pb1.pddl',
+      'examples/basic/basic.pddl',
+      'examples/basic/pb1.pddl',
       # Parser and extensions
       PDDL_Parser, [],
       # Attributes
@@ -123,8 +123,8 @@ class Frenesi < Test::Unit::TestCase
   def test_basic_pb1_jshop_parsing_compile_to_pddl
     compiler_tests(
       # Files
-      './examples/basic/basic.jshop',
-      './examples/basic/pb1.jshop',
+      'examples/basic/basic.jshop',
+      'examples/basic/pb1.jshop',
       # Parser, extensions and output
       JSHOP_Parser, [], 'pddl',
       # Domain
