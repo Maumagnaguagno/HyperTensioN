@@ -389,7 +389,6 @@ ruby examples/robby/pb1.rb
 If you described your domain and problem in another language you must convert it to Ruby before execution.
 Hype can do it for you, it requires a domain and a problem file to be compiled to a certain output type, like ```rb```.
 If no output type is provided or 'print' is provided, the system only prints out what was understood from the files and the time taken to parse.
-Hype expects the domain and problem files to be in the examples folder when requiring Hypertension for ```rb``` outputs.
 
 ```Shell
 cd HyperTensioN
