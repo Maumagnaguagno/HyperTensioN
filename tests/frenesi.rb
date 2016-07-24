@@ -53,20 +53,18 @@ class Frenesi < Test::Unit::TestCase
       ],
       :methods => [
         ['swap', ['?x', '?y'],
-          ['swap_0',
+          ['swap_0', [],
             # Preconditions
-            [],
             [['have', '?x']],
-            # Effects
             [['have', '?y']],
+            # Subtasks
             [['drop', '?x'], ['pickup', '?y']]
           ],
-          ['swap_1',
+          ['swap_1', [],
             # Preconditions
-            [],
             [['have', '?y']],
-            # Effects
             [['have', '?x']],
+            # Subtasks
             [['drop', '?y'], ['pickup', '?x']]
           ]
         ]
