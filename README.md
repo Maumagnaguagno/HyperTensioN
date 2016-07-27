@@ -28,7 +28,7 @@ If successfully applied, the planning process continues decomposing and insertin
 If it is a method, the path is different, we need to decompose into one of several cases with a valid unification for the free variables.
 Each case unified is a list of tasks, subtasks, that may require decomposition too, occupying the same place the method that generated them once was.
 I exposed the unification only to methods, but it is possible to expose to operators too (which kills the idea of what a primitive is).
-Now the methods take care of the heavy part (should the _agent_ **move** from _here_ to _there_ by **foot** ```[walking]``` or call a **cab** ```[call, enter, ride, pay, exit]```) while the primitive operators just execute the effects when applicable.
+Now the methods take care of the heavy part (should the _agent_ **move** from _here_ to _there_ by **foot** ``[walking]`` or call a **cab** ``[call, enter, ride, pay, exit]``) while the primitive operators just execute the effects when applicable.
 If no decomposition happens, failure is returned.
 
 ```Ruby
@@ -117,10 +117,10 @@ module Robby
 end
 ```
 
-The operators are the same as before, but visit and unvisit are not really important outside the planning stage, therefore they are not visible (```false```), while the others are visible (```true```).
-Our movement method ```swap_at``` is there, without any code describing its behavior, only the available methods.
+The operators are the same as before, but visit and unvisit are not really important outside the planning stage, therefore they are not visible (``false``), while the others are visible (``true``).
+Our movement method ``swap_at`` is there, without any code describing its behavior, only the available methods.
 You could compare this with the header file holding the prototypes of functions as in C.
-Each method ```swap_at__XYZ``` describe one possible case of decomposition of ```swap_at```
+Each method ``swap_at__XYZ`` describe one possible case of decomposition of ``swap_at``
 It is also possible to avoid listing all of them and filter based on their name (after they were declared):
 ```Ruby
 @domain['swap_at'] = instance_methods.find_all {|i| i =~ /^swap_at/}
@@ -169,8 +169,8 @@ end
 ```
 
 The application of an operator creates a new state if the preconditions are satisfied, which requires a deep copy of the state and is costly.
-You can avoid ```apply_operator``` and handle your own states.
-And if you want to create dummy operators to simulate a success or failure without modifications in the state you just return ```true``` or ```false```.
+You can avoid ``apply_operator`` and handle your own states.
+And if you want to create dummy operators to simulate a success or failure without modifications in the state you just return ``true`` or ``false``.
 Success may be useful during the debug process or to change an internal feature of the agent wrapping the HTN when parsing the plan returned.
 Failure can be used to destroy the current plan decomposition without the use of preconditions, a specific case in which this construct is useful is not know.
 
@@ -188,7 +188,7 @@ def set_debug(term)
 end
 ```
 
-The other operators are no different, time to see how our ```swap_at``` method works.
+The other operators are no different, time to see how our ``swap_at`` method works.
 We need to define every single case as a different method.
 The order they appear in the domain definition implies the order of evaluation.
 Methods may appear in 3 different scenarios:
@@ -202,7 +202,7 @@ Be aware that all methods must have the same parameter list, other variables mus
 
 #### No preconditions
 This is the simplest case, the method **yields** a subtask list without any test.
-The subtask list may be empty, ```yield []```.
+The subtask list may be empty, ``yield []``.
 This example is not part of the current implementation of Robby.
 
 ```Ruby
@@ -238,14 +238,14 @@ end
 #### Lifted preconditions
 It is impossible to propagate variables all the time, some variables must be bound during run-time.
 Free variables are created as empty strings, being used as pointers to their future values.
-A ```generate([positive], [negative], free_variables)``` method will do the hard work, using positive preconditions to find possible values and unify accordingly, only yielding values that satisfy the preconditions requested.
+A ``generate([positive], [negative], free_variables)`` method will do the hard work, using positive preconditions to find possible values and unify accordingly, only yielding values that satisfy the preconditions requested.
 Therefore a positive precondition set that does not mention all free variables will generate zero unifications.
 In classical planning it is possible to try the entire list of objects as values, but in HTN there may be an infinite number of values.
 It is possible to solve this problem adding each object possible to be used to the initial state, ``(object kiwi) (object banjo)``, in the initial state and add them in the preconditions, ``(object ?x)``.
 Unifications only happen to methods in Hypertension, a method must be created to bound values for an operator if a free variable value is not know.
 The following example goes beyond this specification, using an instance variable to avoid cached positions created by other decomposition paths.
-You can always use ```if-else``` constructs to speed-up problem solving.
-Here it is clear that no state memory is created by Hypertension, that is why we use ```@visited_at```.
+You can always use ``if-else`` constructs to speed-up problem solving.
+Here it is clear that no state memory is created by Hypertension, that is why we use ``@visited_at``.
 This memory is also cleared during the process to reuse previous positions, give a look at visit and unvisit operators in Robby to understand.
 You could also define visit and unvisit as predicates, but then your memory would only hold the current path, which makes planning slower.
 
@@ -281,8 +281,8 @@ end
 Free variables are not supported by Ruby, we need to create them.
 A free variable works like a placeholder, once bound it will have a value like any common variable.
 The binding process requires the context to dictate possible values to the variable.
-In Ruby we can replace the content of a string to a bound value, but that requires the creation of the original string with any value to be used as a pointer, or a more complex solution involving ```method_missing``` to tell the interpreter to create variables if none is found.
-I opted for empty strings as free variables, ```my_var = ''```.
+In Ruby we can replace the content of a string to a bound value, but that requires the creation of the original string with any value to be used as a pointer, or a more complex solution involving ``method_missing`` to tell the interpreter to create variables if none is found.
+I opted for empty strings as free variables, ``my_var = ''``.
 If you find this style misleading, add this little method for verbosity reasons with a minimal overhead due to the method call.
 
 ```Ruby
@@ -321,9 +321,9 @@ With the domain ready all you need is to define the initial state and the task l
 The initial state is defined as a Hash table in which the keys are the predicates while the value is an array of possible terms.
 The task list follows the same principle, an array of each task to be solved.
 Note that the names must match the ones defined in the domain and tasks will be decomposed in the same order they are described (in ordered mode).
-Even if a predicate has no true terms associated in the initial state you must declare them, as ```reported => []``` is declared in the example.
+Even if a predicate has no true terms associated in the initial state you must declare them, as ``reported => []`` is declared in the example.
 If your problem does not generate objects during run-time a speed improvement can be obtained moving them to variables, therefore the comparisons will be pointer-based.
-An interesting idea is to have debug being activated by a command line argument, in this case ```ruby pb1.rb -d``` activates debug mode.
+An interesting idea is to have debug being activated by a command line argument, in this case ``ruby pb1.rb -d`` activates debug mode.
 
 ```Ruby
 require './Robby'
@@ -367,15 +367,15 @@ Robby.problem(
 
 ## Hints
 Here are some hints to describe your domain:
-- Having the objects in variables being reused is faster to compare (pointer comparison), instead of ```String == String```, only works for constant objects.
+- Having the objects in variables being reused is faster to compare (pointer comparison), instead of ``String == String``, only works for constant objects.
 - Order the methods decomposition wisely, otherwise you may test a lot before actually going to the correct path.
 - Use preconditions at your favor, you do not need to test things twice using a smart method decomposition.
 - Unification is costly, avoid generate, match your values once and propagate them.
-- Even if a precondition or effect is an empty set you need to declare it, use ```[]```.
-- Empty predicate sets must be put in the initial state at the problem file. This avoids predicate typos, as all predicates must be previously defined. Or you can use ```Hash.new {|h,k| h[k] = []}``` to create sets at run-time.
+- Even if a precondition or effect is an empty set you need to declare it, use ``[]``.
+- Empty predicate sets must be put in the initial state at the problem file. This avoids predicate typos, as all predicates must be previously defined. Or you can use ``Hash.new {|h,k| h[k] = []}`` to create sets at run-time.
 - Check out [And-or Trees](http://en.wikipedia.org/wiki/And%E2%80%93or_tree). Which decisions must be made before paths fork and which actions must be done in sequence?
 - Using Symbols or constant frozen strings can speed-up things a little, avoiding repeated strings in memory, this was used in the [N Queens example](examples/n_queens/N_Queens.rb "N Queens").
-- You can explore further using ```Hash.compare_by_identity``` on domain and state in ```RUBY_VERSION >= 1.9```.
+- You can explore further using ``Hash.compare_by_identity`` on domain and state in ``RUBY_VERSION >= 1.9``.
 
 ## Execution
 The problem acts as the main function since the problems include the domain, and the domain include the planner.
@@ -387,7 +387,7 @@ ruby examples/robby/pb1.rb
 ```
 
 If you described your domain and problem in another language you must convert it to Ruby before execution.
-Hype can do it for you, it requires a domain and a problem file to be compiled to a certain output type, like ```rb```.
+Hype can do it for you, it requires a domain and a problem file to be compiled to a certain output type, like ``rb``.
 If no output type is provided or 'print' is provided, the system only prints out what was understood from the files and the time taken to parse.
 
 ```Shell
@@ -408,9 +408,9 @@ ruby Hype.rb examples/basic/basic.jshop examples/basic/pb1.jshop run
 
 ## API
 [**Hypertension**](Hypertension.rb) is a module with 3 attributes:
-- ```attr_accessor :state``` with the current state.
-- ```attr_accessor :domain``` with the decomposition rules that can be applied to the operators and methods.
-- ```attr_accessor :debug``` as a flag to print intermediate data during planning.
+- ``attr_accessor :state`` with the current state.
+- ``attr_accessor :domain`` with the decomposition rules that can be applied to the operators and methods.
+- ``attr_accessor :debug`` as a flag to print intermediate data during planning.
 
 They were defined as instance variables to be mixed in other classes if needed, that is why they are not class variables.
 
@@ -441,22 +441,22 @@ This may be useful to reorder method decompositions in the domain to modify the 
 You will notice that the plan is not a variable, as it is created during the backtracking, which means you cannot reorder actions in the planning process using this algorithm, but it is possible with a variation of this algorithm that creates the plan during decomposition.
 
 The methods are few and simple to use:
-- ```planning(tasks, level = 0)``` receives a task list, ```[['task1', 'term1', 'term2'], ['task2', 'term3']]```, to decompose and the nesting level to help debug.
+- ``planning(tasks, level = 0)`` receives a task list, ``[['task1', 'term1', 'term2'], ['task2', 'term3']]``, to decompose and the nesting level to help debug.
 Only call this method after domain and state were defined.
-This method is called recursively until it finds an empty task list, ```[]```, then it starts to build the plan while backtracking to save CPU (avoid intermediate plan creation).
+This method is called recursively until it finds an empty task list, ``[]``, then it starts to build the plan while backtracking to save CPU (avoid intermediate plan creation).
 Therefore no plan actually exists before reaching an empty task list.
-In case of failure, ```nil``` is returned.
+In case of failure, ``nil`` is returned.
 
-- ```applicable?(precond_pos, precond_not)``` tests if the current state have all positive preconditions and not a single negative precondition. It returns true if applicable and false otherwise.
-- ```apply(effect_add, effect_del)``` modifies the current state, add or remove predicates present in the lists. Returns true.
-- ```apply_operator(precond_pos, precond_not, effect_add, effect_del)``` extends this idea applying effects if ```applicable?```. Returns true if applied, nil otherwise.
-- ```generate(precond_pos, precond_not, *free)``` yields all possible unifications to the free variables defined, therefore you need a block to capture the unifications. The return value is undetermined.
-- ```print_data(data)``` can be used to print task lists and predicate lists, useful for debug.
-- ```problem(start, tasks, debug = false, goal_pos = [], goal_not = [])``` is used to simplify the setup of a problem instance, returns the value of planning. Use problem as a template to see how to add Hypertension in your project.
-- ```task_permutations(state, tasks, goal_pos, goal_not)``` tries several task permutations to achieve unordered decomposition, it is used by ```problem``` when explicit goals are given. Return a plan or nil.
+- ``applicable?(precond_pos, precond_not)`` tests if the current state have all positive preconditions and not a single negative precondition. It returns true if applicable and false otherwise.
+- ``apply(effect_add, effect_del)`` modifies the current state, add or remove predicates present in the lists. Returns true.
+- ``apply_operator(precond_pos, precond_not, effect_add, effect_del)`` extends this idea applying effects if ``applicable?``. Returns true if applied, nil otherwise.
+- ``generate(precond_pos, precond_not, *free)`` yields all possible unifications to the free variables defined, therefore you need a block to capture the unifications. The return value is undetermined.
+- ``print_data(data)`` can be used to print task lists and predicate lists, useful for debug.
+- ``problem(start, tasks, debug = false, goal_pos = [], goal_not = [])`` is used to simplify the setup of a problem instance, returns the value of planning. Use problem as a template to see how to add Hypertension in your project.
+- ``task_permutations(state, tasks, goal_pos, goal_not)`` tries several task permutations to achieve unordered decomposition, it is used by ``problem`` when explicit goals are given. Return a plan or nil.
 
-Domain operators can be defined without ```apply_operator``` and will have the return value considered.
-  - ```false``` or ```nil``` means the operator has failed.
+Domain operators can be defined without ``apply_operator`` and will have the return value considered.
+  - ``false`` or ``nil`` means the operator has failed.
   - Any other value means the operator was applied with success.
 
 Domain methods must yield a task list or are nullified, having no decomposition.
@@ -538,9 +538,9 @@ end
 ```
 
 Unlike the parsers, the compilers have a choice in their output.
-The firsy option is for uncommon outputs, they must be handled inside the methods and return ```nil```.
+The firsy option is for uncommon outputs, they must be handled inside the methods and return ``nil``.
 The second option is to output a more common text file and return the string to be written.
-If the second option was selected the output filename is the input filename with the new extension appended, therefore ```input.pddl``` to ```jshop``` would be ```input.pddl.jshop```, so no information about the source is lost.
+If the second option was selected the output filename is the input filename with the new extension appended, therefore ``input.pddl`` to ``jshop`` would be ``input.pddl.jshop``, so no information about the source is lost.
 Any compiler have access to the parser attributes, which means one module can optimize before another compiles.
 In fact this is the core idea behind Hype, be able to parse, modify and compile domains without having to worry about language support.
 Future languages compatible with the [Intermediate Representation](docs/Representation.md) format could be supported by just adding a new parser and compiler.
