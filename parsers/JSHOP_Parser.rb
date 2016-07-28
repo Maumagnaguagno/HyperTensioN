@@ -10,10 +10,10 @@ module JSHOP_Parser
   # Define effects
   #-----------------------------------------------
 
-  def define_effects(name, group, effects)
+  def define_effects(name, group)
     raise "Error with #{name} effects" unless group.instance_of?(Array)
     group.each {|pre|
-      pre.first != NOT ? effects << pre : raise('Unexpected not in effects')
+      raise 'Unexpected not in effects' if pre.first == NOT
       @predicates[pre.first.freeze] = true
     }
   end
@@ -28,7 +28,7 @@ module JSHOP_Parser
     name.sub!(/^!!/,'invisible_') or name.sub!(/^!/,'')
     raise "Action #{name} redefined" if @operators.assoc(name)
     raise "Operator #{name} have #{op.size} groups instead of 4" if op.size != 4
-    @operators << [name, op.shift, pos = [], neg = [], add = [], del = []]
+    @operators << [name, op.shift, pos = [], neg = []]
     # Preconditions
     if (group = op.shift) != NIL
       raise "Error with #{name} preconditions" unless group.instance_of?(Array)
@@ -38,8 +38,8 @@ module JSHOP_Parser
       }
     end
     # Effects
-    define_effects(name, group, del) if (group = op.shift) != NIL
-    define_effects(name, group, add) if (group = op.shift) != NIL
+    @operators.last[5] = (group = op.shift) != NIL ? define_effects(name, group) : []
+    @operators.last[4] = (group = op.shift) != NIL ? define_effects(name, group) : []
   end
 
   #-----------------------------------------------
