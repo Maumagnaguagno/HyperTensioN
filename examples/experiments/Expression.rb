@@ -96,12 +96,16 @@ if $0 == __FILE__
     def test_call
       # (* 1 2 3 4)
       assert_equal(24, call(['*', 1, 2, 3, 4]))
+      assert_equal(24, compute([:call, '*', 1, 2, 3, 4]))
       # (= 5 (+ 2 3))
       assert_equal(true, call(['==', 5, [:call, '+', 2, 3]]))
+      assert_equal(true, compute([:call, '==', 5, [:call, '+', 2, 3]]))
       # (= (+ 1 2 3) 6)
       assert_equal(true, call(['==', [:call, '+', 1, 2, 3], 6]))
+      assert_equal(true, compute([:call, '==', [:call, '+', 1, 2, 3], 6]))
       # (= (+ a b c) abc)
       assert_equal(true, call(['==', [:call, '+', 'a', 'b', 'c'], 'abc']))
+      assert_equal(true, compute([:call, '==', [:call, '+', 'a', 'b', 'c'], 'abc']))
     end
 
     def test_quantification_forall?
