@@ -41,8 +41,8 @@ module PDDL_Parser
     raise 'Action without name definition' unless (name = op.shift).instance_of?(String)
     raise "Action #{name} redefined" if @operators.assoc(name)
     @operators << [name, free_variables = [], pos = [], neg = [], add = [], del = []]
-    until op.empty?
-      case group = op.shift
+    while group = op.shift
+      case group
       when ':parameters'
         raise "Error with #{name} parameters" unless op.first.instance_of?(Array)
         raise "Unexpected hyphen in #{name} parameters" if (group = op.shift).first == HYPHEN
@@ -104,9 +104,7 @@ module PDDL_Parser
         case group.first
         when ':action' then parse_action(group)
         when 'domain' then @domain_name = group.last
-        when ':requirements'
-          group.shift
-          @requirements = group
+        when ':requirements' then (@requirements = group).shift
         when ':predicates'
         when ':types'
           # Type hierarchy
