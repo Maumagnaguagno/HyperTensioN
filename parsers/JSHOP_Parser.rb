@@ -53,7 +53,7 @@ module JSHOP_Parser
     @methods << method = [name, group] unless method = @methods.assoc(name)
     met.shift
     until met.empty?
-      # Optional label, add index for the unlabeled cases
+      # Optional label, add index for the unlabeled decompositions
       method << [met.first.instance_of?(String) ? met.shift : "#{name}_#{method.size - 2}", free_variables = [], pos = [], neg = []]
       # Preconditions
       if (group = met.shift) != NIL

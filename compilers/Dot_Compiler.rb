@@ -31,20 +31,20 @@ module Dot_Compiler
     methods.each {|met|
       method_str = ''
       decompositions = []
-      met.drop(2).each_with_index {|d,i|
-        decompositions << "<n#{i}>#{d.first}"
+      met.drop(2).each_with_index {|dec,i|
+        decompositions << "<n#{i}>#{dec.first}"
         # Label
-        method_str << "  \"label_#{d.first}\" [\n    shape=Mrecord\n    label=\"{{#{d.first}|#{d[1].join(' ')}}|"
+        method_str << "  \"label_#{dec.first}\" [\n    shape=Mrecord\n    label=\"{{#{dec.first}|#{dec[1].join(' ')}}|"
         # Preconditions
-        predicates_to_dot(method_str, d[2], d[3])
+        predicates_to_dot(method_str, dec[2], dec[3])
         # Subtasks
         connections = ''
-        d[4].each_with_index {|subtask,j|
+        dec[4].each_with_index {|subtask,j|
           method_str << "|<n#{j}>#{subtask.join(' ')}"
-          connections << "  \"label_#{d.first}\":n#{j} -> \"#{subtask.first}\"\n" if all_connections or operators.assoc(subtask.first)
+          connections << "  \"label_#{dec.first}\":n#{j} -> \"#{subtask.first}\"\n" if all_connections or operators.assoc(subtask.first)
         }
         # Connections
-        method_str << "}\"\n  ]\n  \"#{met.first}\":n#{i} -> \"label_#{d.first}\" [style=dotted]\n#{connections}"
+        method_str << "}\"\n  ]\n  \"#{met.first}\":n#{i} -> \"label_#{dec.first}\" [style=dotted]\n#{connections}"
       }
       domain_str << "  \"#{met.first}\" [\n    shape=Mrecord\n    style=bold\n    label=\"{{#{met.first}|#{met[1].join(' ')}}|{#{decompositions.join('|')}}}\"\n  ]\n#{method_str}"
     }

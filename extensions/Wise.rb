@@ -40,9 +40,9 @@ module Wise
     }
     # Methods
     methods.each {|met|
-      name, param, *decompose = met
+      name, param, *decompositions = met
       prefixed_variables(name, param, debug)
-      decompose.each {|dec|
+      decompositions.each {|dec|
         label, free, precond_pos, precond_not, subtasks = dec
         param.each {|p| puts "#{label} shadowing variable #{p}" if free.include?(p)} if debug
         prefixed_variables(label, free, debug)

@@ -75,25 +75,25 @@ module Hyper_Compiler
     methods.each_with_index {|met,mi|
       domain_str << "\n    '#{met.first}' => [\n"
       variables = met[1].empty? ? '' : "(#{met[1].map {|i| i.sub(/^\?/,'')}.join(', ')})"
-      met.drop(2).each_with_index {|met_case,i|
-        domain_str << "      '#{met_case.first}'#{',' if met.size - 3 != i}\n"
-        define_methods << "\n  def #{met_case.first}#{variables}\n"
+      met.drop(2).each_with_index {|dec,i|
+        domain_str << "      '#{dec.first}'#{',' if met.size - 3 != i}\n"
+        define_methods << "\n  def #{dec.first}#{variables}\n"
         # No preconditions
-        if met_case[2].empty? and met_case[3].empty?
-          subtasks_to_hyper(define_methods, met_case[4], '    ')
+        if dec[2].empty? and dec[3].empty?
+          subtasks_to_hyper(define_methods, dec[4], '    ')
         # Ground
-        elsif met_case[1].empty?
-          predicates_to_hyper(define_methods << "    if applicable?(\n      # Positive preconditions", met_case[2])
-          predicates_to_hyper(define_methods << ",\n      # Negative preconditions", met_case[3])
-          subtasks_to_hyper(define_methods << "\n    )\n", met_case[4], '      ')
+        elsif dec[1].empty?
+          predicates_to_hyper(define_methods << "    if applicable?(\n      # Positive preconditions", dec[2])
+          predicates_to_hyper(define_methods << ",\n      # Negative preconditions", dec[3])
+          subtasks_to_hyper(define_methods << "\n    )\n", dec[4], '      ')
           define_methods << "    end\n"
         # Lifted
         else
-          met_case[1].each {|free| define_methods << "    #{free.sub(/^\?/,'')} = ''\n"}
-          predicates_to_hyper(define_methods << "    generate(\n      # Positive preconditions", met_case[2])
-          predicates_to_hyper(define_methods << ",\n      # Negative preconditions", met_case[3])
-          met_case[1].each {|free| define_methods << ", #{free.sub(/^\?/,'')}"}
-          subtasks_to_hyper(define_methods << "\n    ) {\n", met_case[4], '      ')
+          dec[1].each {|free| define_methods << "    #{free.sub(/^\?/,'')} = ''\n"}
+          predicates_to_hyper(define_methods << "    generate(\n      # Positive preconditions", dec[2])
+          predicates_to_hyper(define_methods << ",\n      # Negative preconditions", dec[3])
+          dec[1].each {|free| define_methods << ", #{free.sub(/^\?/,'')}"}
+          subtasks_to_hyper(define_methods << "\n    ) {\n", dec[4], '      ')
           define_methods << "    }\n"
         end
         define_methods << "  end\n"

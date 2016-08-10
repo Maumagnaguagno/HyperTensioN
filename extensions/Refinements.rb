@@ -8,9 +8,9 @@ module Refinements
     # Cluster sequential operators
     cluster = []
     methods.each {|met|
-      met.drop(2).each {|cases|
+      met.drop(2).each {|dec|
         new_subtasks = []
-        cases[4].each {|subtask|
+        dec[4].each {|subtask|
           if op = operators.assoc(subtask.first)
             cluster << [op, subtask.drop(1)]
           else
@@ -19,7 +19,7 @@ module Refinements
           end
         }
         add_cluster_to_subtasks(operators, cluster, new_subtasks)
-        cases[4] = new_subtasks
+        dec[4] = new_subtasks
       }
     }
     # Clean preconditions based on hierarchy

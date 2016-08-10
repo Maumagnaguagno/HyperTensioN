@@ -20,12 +20,12 @@ module Markdown_Compiler
     output << "\n## Methods"
     methods.each {|met|
       output << "\n**#{met.first.capitalize}(#{met[1].join(' ')})**"
-      met.drop(2).each {|met_case|
-        output << "\n- #{met_case.first}(#{met[1].join(' ')})\n  - Preconditions:"
-        met_case[2].each {|pre| output << "\n    - (#{pre.join(' ')})"}
-        met_case[3].each {|pre| output << "\n    - **not** (#{pre.join(' ')})"}
+      met.drop(2).each {|dec|
+        output << "\n- #{dec.first}(#{met[1].join(' ')})\n  - Preconditions:"
+        dec[2].each {|pre| output << "\n    - (#{pre.join(' ')})"}
+        dec[3].each {|pre| output << "\n    - **not** (#{pre.join(' ')})"}
         output << "\n  - Subtasks:"
-        met_case[4].each {|task| output << "\n    - (#{task.join(' ')})"}
+        dec[4].each {|task| output << "\n    - (#{task.join(' ')})"}
       }
       output << "\n"
     }
