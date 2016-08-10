@@ -10,24 +10,28 @@ module Markdown_Compiler
     predicates.each {|k,v| output << "- #{k}: #{v ? 'mutable' : 'invariant'}\n"}
     output << "\n## Operators"
     operators.each {|op|
-      output << "\n#{op.first.capitalize} | #{op[1].join(' ')}\n--- | ---\n***Preconditions*** | ***Effects***"
-      op[2].each {|pre| output << "\n(#{pre.join(' ')}) |#{" **not** (#{pre.join(' ')})" if op[5].include?(pre)}"}
-      op[3].each {|pre| output << "\n**not** (#{pre.join(' ')}) |#{" (#{pre.join(' ')})" if op[4].include?(pre)}"}
-      op[4].each {|pre| output << "\n|| (#{pre.join(' ')})" unless op[3].include?(pre)}
-      op[5].each {|pre| output << "\n|| **not** (#{pre.join(' ')})" unless op[2].include?(pre)}
-      output << "\n"
+      output << "\n#{op.first.capitalize} | #{op[1].join(' ')}\n--- | ---\n***Preconditions*** | ***Effects***\n"
+      op[2].each {|pre| output << "(#{pre.join(' ')}) |#{" **not** (#{pre.join(' ')})" if op[5].include?(pre)}\n"}
+      op[3].each {|pre| output << "**not** (#{pre.join(' ')}) |#{" (#{pre.join(' ')})" if op[4].include?(pre)}\n"}
+      op[4].each {|pre| output << "|| (#{pre.join(' ')})\n" unless op[3].include?(pre)}
+      op[5].each {|pre| output << "|| **not** (#{pre.join(' ')})\n" unless op[2].include?(pre)}
     }
     output << "\n## Methods"
-    methods.each {|met|
-      output << "\n**#{met.first.capitalize}(#{met[1].join(' ')})**"
-      met.drop(2).each {|dec|
-        output << "\n- #{dec.first}(#{met[1].join(' ')})\n  - Preconditions:"
-        dec[2].each {|pre| output << "\n    - (#{pre.join(' ')})"}
-        dec[3].each {|pre| output << "\n    - **not** (#{pre.join(' ')})"}
-        output << "\n  - Subtasks:"
-        dec[4].each {|task| output << "\n    - (#{task.join(' ')})"}
+    methods.each_with_index {|(name,param,*decompositions),i|
+      output << "\n#{name.capitalize} | #{param.join(' ')} ||\n--- | --- | ---\n***Label*** | ***Preconditions*** | ***Subtasks***"
+      decompositions.each {|dec|
+        output << "\n#{dec.first} ||"
+        index = 0
+        dec[2].each {|pre|
+          output << "\n|| (#{pre.join(' ')}) | #{dec[4][index].join(' ') if dec[4][index]}"
+          index += 1
+        }
+        dec[3].each {|pre|
+          output << "\n|| **not** (#{pre.join(' ')}) | #{dec[4][index].join(' ') if dec[4][index]}"
+          index += 1
+        }
       }
-      output << "\n"
+      output << "\n" if i != methods.size.pred
     }
     output
   end
