@@ -13,8 +13,8 @@ module Markdown_Compiler
       output << "\n#{op.first.capitalize} | #{op[1].join(' ')}\n--- | ---\n***Preconditions*** | ***Effects***"
       op[2].each {|pre| output << "\n(#{pre.join(' ')}) |#{" **not** (#{pre.join(' ')})" if op[5].include?(pre)}"}
       op[3].each {|pre| output << "\n**not** (#{pre.join(' ')}) |#{" (#{pre.join(' ')})" if op[4].include?(pre)}"}
-      op[4].each {|pre| output << "\n| (#{pre.join(' ')})" unless op[3].include?(pre)}
-      op[5].each {|pre| output << "\n| **not** (#{pre.join(' ')})" unless op[2].include?(pre)}
+      op[4].each {|pre| output << "\n|| (#{pre.join(' ')})" unless op[3].include?(pre)}
+      op[5].each {|pre| output << "\n|| **not** (#{pre.join(' ')})" unless op[2].include?(pre)}
       output << "\n"
     }
     output << "\n## Methods"
