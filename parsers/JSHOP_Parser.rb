@@ -92,7 +92,7 @@ module JSHOP_Parser
         case group.first
         when ':operator' then parse_operator(group)
         when ':method' then parse_method(group)
-        else puts "#{group.first} is not recognized in domain"
+        else raise "#{group.first} is not recognized in domain"
         end
       end
     else raise "File #{domain_filename} does not match domain pattern"

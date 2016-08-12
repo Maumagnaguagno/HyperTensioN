@@ -84,7 +84,7 @@ module PDDL_Parser
             @predicates[pre.first.freeze] = true
           }
         end
-      else puts "#{group.first} is not recognized in action"
+      else raise "#{group.first} is not recognized in action"
       end
     end
   end
@@ -120,7 +120,7 @@ module PDDL_Parser
               @types << [subtypes.shift, type] until subtypes.empty?
             end
           end
-        else puts "#{group.first} is not recognized in domain"
+        else raise "#{group.first} is not recognized in domain"
         end
       end
       @domain_name ||= 'unknown'
@@ -180,7 +180,7 @@ module PDDL_Parser
             group.first == AND ? group.shift : group = [group]
             group.each {|pre| pre.first != NOT ? @goal_pos << pre : pre.size == 2 ? @goal_not << pre.last : raise('Error with goals')}
           end
-        else puts "#{group.first} is not recognized in problem"
+        else raise "#{group.first} is not recognized in problem"
         end
       end
     else raise "File #{problem_filename} does not match problem pattern"
