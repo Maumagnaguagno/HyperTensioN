@@ -1,0 +1,39 @@
+(defdomain hanoi (
+  (:operator (!move ?disc ?sourcetop ?targettop ?source ?target)
+    ; Preconditions
+    ()
+    ; Del effects
+    (
+      (on ?disc ?sourcetop)
+      (top ?disc ?source)
+      (top ?targettop ?target)
+    )
+    ; Add effects
+    (
+      (on ?disc ?targettop)
+      (top ?sourcetop ?source)
+      (top ?disc ?target)
+    )
+  )
+  (:method (keep_moving ?n ?source ?target ?auxiliary)
+    recursive
+    ; Preconditions
+    (
+      (dec ?n ?n-1)
+      (on ?disc ?sourcetop)
+      (top ?disc ?source)
+      (top ?targettop ?target)
+    )
+    ; Subtasks
+    (
+      (keep_moving ?n-1 ?source ?auxiliary ?target)
+      (move ?disc ?sourcetop ?targettop ?source ?target)
+      (keep_moving ?n-1 ?auxiliary ?target ?source)
+    )
+    base
+    ; Preconditions
+    ()
+    ; Subtasks
+    ()
+  )
+))

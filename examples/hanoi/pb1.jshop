@@ -1,0 +1,20 @@
+(defproblem pb1 hanoi
+  ; Initial state
+  (
+    ; Towers
+    (on disk1 disk2)
+    (on disk2 disk3)
+    (on disk3  pegA)
+    (top disk1 pegA)
+    (top  pegB pegB)
+    (top  pegC pegC)
+    ; Decrement
+    (dec n1 n0)
+    (dec n2 n1)
+    (dec n3 n2)
+  )
+  ; Task list
+  (
+    (keep_moving n3 pegA pegC pegB)
+  )
+)
