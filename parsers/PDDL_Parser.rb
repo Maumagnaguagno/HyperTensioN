@@ -180,7 +180,7 @@ module PDDL_Parser
             group.first == AND ? group.shift : group = [group]
             group.each {|pre|
               pre.first != NOT ? @goal_pos << pre : pre.size == 2 ? @goal_not << pre = pre.last : raise('Error with goals')
-              @predicates[pre.first] ||= false
+              @predicates[pre.first.freeze] ||= false
             }
           end
         else raise "#{group.first} is not recognized in problem"
