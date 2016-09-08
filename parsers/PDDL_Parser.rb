@@ -178,7 +178,10 @@ module PDDL_Parser
           unless (group = group[1]).empty?
             # Conjunction or atom
             group.first == AND ? group.shift : group = [group]
-            group.each {|pre| pre.first != NOT ? @goal_pos << pre : pre.size == 2 ? @goal_not << pre.last : raise('Error with goals')}
+            group.each {|pre|
+              pre.first != NOT ? @goal_pos << pre : pre.size == 2 ? @goal_not << pre = pre.last : raise('Error with goals')
+              @predicates[pre.first] ||= false
+            }
           end
         else raise "#{group.first} is not recognized in problem"
         end
