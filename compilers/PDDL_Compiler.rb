@@ -11,7 +11,7 @@ module PDDL_Compiler
     negative_preconditions = false
     operators.each {|op|
       negative_preconditions = true unless op[3].empty?
-      2.upto(5) {|i| op[i].each {|p| declared[p.first] ||= p.join(' ')}}
+      2.upto(5) {|i| op[i].each {|p| (declared[p.first] ||= p.join(' ?')).squeeze!('?')}}
     }
     state.each {|p| declared[p.first] ||= p.join(' ?') if predicates.include?(p.first)}
     goal_pos.each {|p| declared[p.first] ||= p.join(' ?')}
