@@ -22,8 +22,8 @@ def protected?(effect_add, effect_del)
 end
 
 def apply_protected_operator(precond_pos, precond_not, effect_add, effect_del)
-  # Apply operator unless interfere with protected
-  apply_operator(precond_pos, precond_not, effect_add, effect_del) unless protected?(effect_add, effect_del)
+  # Apply effects if preconditions satisfied and not protected
+  apply(effect_add, effect_del) if applicable?(precond_pos, precond_not) and not protected?(effect_add, effect_del)
 end
 
 #-----------------------------------------------
