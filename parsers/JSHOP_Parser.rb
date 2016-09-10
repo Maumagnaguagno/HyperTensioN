@@ -33,7 +33,7 @@ module JSHOP_Parser
     if (group = op.shift) != NIL
       raise "Error with #{name} preconditions" unless group.instance_of?(Array)
       group.each {|pre|
-        pre.first != NOT ? pos << pre : pre.size == 2 ? neg << (pre = pre.last) : raise("Error with #{name} negative preconditions")
+        pre.first != NOT ? pos << pre : pre.size == 2 ? neg << pre = pre.last : raise("Error with #{name} negative preconditions")
         @predicates[pre.first.freeze] ||= false
       }
     end
@@ -59,7 +59,7 @@ module JSHOP_Parser
       if (group = met.shift) != NIL
         raise "Error with #{name} preconditions" unless group.instance_of?(Array)
         group.each {|pre|
-          pre.first != NOT ? pos << pre : pre.size == 2 ? neg << (pre = pre.last) : raise("Error with #{name} negative preconditions")
+          pre.first != NOT ? pos << pre : pre.size == 2 ? neg << pre = pre.last : raise("Error with #{name} negative preconditions")
           @predicates[pre.first.freeze] ||= false
           free_variables.concat(pre.select {|i| i.start_with?('?') and not method[1].include?(i)})
         }
