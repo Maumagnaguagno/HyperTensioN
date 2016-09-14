@@ -4,13 +4,13 @@
 
   (:action pickup
     :parameters (?a)
-    :precondition (and (not (have ?a)))
-    :effect (and (have ?a))
+    :precondition (not (have ?a))
+    :effect (have ?a)
   )
 
   (:action drop
     :parameters (?a)
-    :precondition (and (have ?a))
-    :effect (and (not (have ?a)))
+    :precondition (have ?a)
+    :effect (not (have ?a))
   )
 )

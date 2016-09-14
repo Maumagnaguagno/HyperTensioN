@@ -2,5 +2,5 @@
   (:domain basic)
   (:objects kiwi banjo)
   (:init)
-  (:goal (and (have banjo)))
+  (:goal (have banjo))
 )
