@@ -5,5 +5,5 @@
     gift - object
   )
   (:init (have ana gift))
-  (:goal (and (happy bob)))
+  (:goal (happy bob))
 )
