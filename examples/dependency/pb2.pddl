@@ -5,5 +5,5 @@
     gift - object
   )
   (:init)
-  (:goal (and (happy bob)))
+  (:goal (happy bob))
 )

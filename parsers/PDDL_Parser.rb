@@ -67,7 +67,7 @@ module PDDL_Parser
           group.first == AND ? group.shift : group = [group]
           group.each {|pre|
             raise "Error with #{name} preconditions" unless pre.instance_of?(Array)
-            pre.first != NOT ? pos << pre : pre.size == 2 ? neg << (pre = pre.last) : raise("Error with #{name} negative preconditions")
+            pre.first != NOT ? pos << pre : pre.size == 2 ? neg << pre = pre.last : raise("Error with #{name} negative preconditions")
             pre.map! {|i| free_variables.find {|j| j == i} || i}
             @predicates[pre.first.freeze] ||= false
           }
@@ -79,7 +79,7 @@ module PDDL_Parser
           group.first == AND ? group.shift : group = [group]
           group.each {|pre|
             raise "Error with #{name} effects" unless pre.instance_of?(Array)
-            pre.first != NOT ? add << pre : pre.size == 2 ? del << (pre = pre.last) : raise("Error with #{name} negative effects")
+            pre.first != NOT ? add << pre : pre.size == 2 ? del << pre = pre.last : raise("Error with #{name} negative effects")
             pre.map! {|i| free_variables.find {|j| j == i} || i}
             @predicates[pre.first.freeze] = true
           }

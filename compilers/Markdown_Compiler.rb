@@ -12,12 +12,12 @@ module Markdown_Compiler
     state.each {|pre| unused_predicates[pre.first] = nil unless predicates.include?(pre.first)}
     unused_predicates.each_key {|pre| output << "- #{pre}: unused\n"}
     output << "\n## Operators"
-    operators.each {|op|
-      output << "\n#{op.first.capitalize} | #{op[1].join(' ')}\n--- | ---\n***Preconditions*** | ***Effects***\n"
-      op[2].each {|pre| output << "(#{pre.join(' ')}) |#{" **not** (#{pre.join(' ')})" if op[5].include?(pre)}\n"}
-      op[3].each {|pre| output << "**not** (#{pre.join(' ')}) |#{" (#{pre.join(' ')})" if op[4].include?(pre)}\n"}
-      op[4].each {|pre| output << "|| (#{pre.join(' ')})\n" unless op[3].include?(pre)}
-      op[5].each {|pre| output << "|| **not** (#{pre.join(' ')})\n" unless op[2].include?(pre)}
+    operators.each {|name, param, precond_pos, precond_not, effect_add, effect_del|
+      output << "\n#{name.capitalize} | #{param.join(' ')}\n--- | ---\n***Preconditions*** | ***Effects***\n"
+      precond_pos.each {|pre| output << "(#{pre.join(' ')}) |#{" **not** (#{pre.join(' ')})" if effect_del.include?(pre)}\n"}
+      precond_not.each {|pre| output << "**not** (#{pre.join(' ')}) |#{" (#{pre.join(' ')})" if effect_add.include?(pre)}\n"}
+      effect_add.each {|pre| output << "|| (#{pre.join(' ')})\n" unless precond_not.include?(pre)}
+      effect_del.each {|pre| output << "|| **not** (#{pre.join(' ')})\n" unless precond_pos.include?(pre)}
     }
     output << "\n## Methods"
     methods.each_with_index {|(name,param,*decompositions),i|

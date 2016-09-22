@@ -4,7 +4,7 @@
 
   (:action work
     :parameters (?a - agent)
-    :precondition (and (not (got_money ?a)))
+    :precondition (not (got_money ?a))
     :effect (and (not (happy ?a)) (got_money ?a))
   )
 

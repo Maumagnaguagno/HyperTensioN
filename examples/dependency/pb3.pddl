@@ -5,5 +5,5 @@
     gift - object
   )
   (:init)
-  (:goal (and (got_money bob)))
+  (:goal (got_money bob))
 )
