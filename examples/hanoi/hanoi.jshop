@@ -27,7 +27,7 @@
     ; Subtasks
     (
       (keep_moving ?n-1 ?source ?auxiliary ?target)
-      (move ?disc ?sourcetop ?targettop ?source ?target)
+      (!move ?disc ?sourcetop ?targettop ?source ?target)
       (keep_moving ?n-1 ?auxiliary ?target ?source)
     )
     base
