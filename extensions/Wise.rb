@@ -1,6 +1,10 @@
 module Wise
   extend self
 
+  #-----------------------------------------------
+  # Apply
+  #-----------------------------------------------
+
   def apply(operators, methods, predicates, state, tasks, goal_pos, goal_not, debug = true)
     puts 'Wise'.center(50,'-') if debug
     # Initial state
@@ -11,10 +15,9 @@ module Wise
       end
     }
     # Operators
-    operators.each {|op|
-      name, param, precond_pos, precond_not, effect_add, effect_del = op
-      prefixed_variables(name, param, debug)
-      defined_variables(name, param, op, 2, 5, debug)
+    operators.each {|name, param, precond_pos, precond_not, effect_add, effect_del|
+      prefix_variables(name, param, debug)
+      define_variables(name, param, [precond_pos, precond_not, effect_add, effect_del], debug)
       # Effect contained in precondition
       effect_add.reject! {|pre|
         if precond_pos.include?(pre)
@@ -38,17 +41,20 @@ module Wise
     # Methods
     methods.each {|met|
       name, param, *decompositions = met
-      prefixed_variables(name, param, debug)
-      decompositions.each {|dec|
-        label, free, precond_pos, precond_not, subtasks = dec
+      prefix_variables(name, param, debug)
+      decompositions.each {|label, free, precond_pos, precond_not, subtasks|
         param.each {|p| puts "#{label} shadowing variable #{p}" if free.include?(p)} if debug
-        prefixed_variables(label, free, debug)
-        defined_variables(name, param + free, dec, 2, 4, debug)
+        prefix_variables(label, free, debug)
+        define_variables(name, param + free, [precond_pos, precond_not, subtasks], debug)
       }
     }
   end
 
-  def prefixed_variables(name, param, debug)
+  #-----------------------------------------------
+  # Prefix variables
+  #-----------------------------------------------
+
+  def prefix_variables(name, param, debug)
     param.each {|var|
       unless var.start_with?('?')
         puts "#{name} parameter #{var} modified to ?#{var}" if debug
@@ -56,10 +62,14 @@ module Wise
       end
     }
   end
-  
-  def defined_variables(name, param, group, min, max, debug)
-    min.upto(max) {|i|
-      group[i].each {|pre|
+
+  #-----------------------------------------------
+  # Define variables
+  #-----------------------------------------------
+
+  def define_variables(name, param, group, debug)
+    group.each {|predicates|
+      predicates.each {|pre|
         pre.drop(1).each {|term|
           if term.start_with?('?')
             unless param.include?(term)
@@ -67,7 +77,7 @@ module Wise
               param << term
             end
           elsif param.include?("?#{term}")
-            puts "#{name} contains probable variable #{term} from (#{pre.join(' ')}), modified to ?#{term}" if debug
+            puts "#{name} contains probable variable #{term} from (#{pre.join(' ')}), modifying to ?#{term}" if debug
             term.prepend('?')
           end
         }

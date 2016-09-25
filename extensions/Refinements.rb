@@ -3,6 +3,10 @@ module Refinements
 
   INVISIBLE = true
 
+  #-----------------------------------------------
+  # Apply
+  #-----------------------------------------------
+
   def apply(operators, methods, predicates, state, tasks, goal_pos, goal_not, debug = true)
     puts 'Refinements'.center(50,'-') if debug
     # Cluster sequential operators
@@ -25,6 +29,10 @@ module Refinements
     # Clean preconditions based on hierarchy
     # TODO
   end
+
+  #-----------------------------------------------
+  # Add clusters to subtasks
+  #-----------------------------------------------
 
   def add_cluster_to_subtasks(operators, cluster, new_subtasks)
     if cluster.size > 1
