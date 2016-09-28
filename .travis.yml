@@ -8,8 +8,6 @@ rvm:
   - 2.3.0
   # JRuby
   - jruby-9000
-  # Rubinius
-  - rbx-2
 script:
   # Tests
   - ruby tests/sphygmomanometer.rb
