@@ -57,7 +57,7 @@ module JSHOP_Parser
       if met.first.instance_of?(String)
         label = met.shift
         raise "Method #{name} redefined #{label} decomposition" if method.drop(2).assoc(label)
-      else label = "#{name}_#{method.size - 2}"
+      else label = "case_#{method.size - 2}"
       end
       method << [label, free_variables = [], pos = [], neg = []]
       # Preconditions
