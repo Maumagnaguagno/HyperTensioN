@@ -41,26 +41,24 @@ module Hyper_Compiler
     define_operators = ''
     operators.each_with_index {|op,i|
       domain_str << "\n    '#{op.first}' => #{!op.first.start_with?('invisible_')}#{',' if operators.size.pred != i or not methods.empty?}"
-      define_operators << "\n  def #{op.first}#{"(#{op[1].map {|j| j.sub(/^\?/,'')}.join(', ')})" unless op[1].empty?}\n"
+      define_operators << "\n  def #{op.first}#{"(#{op[1].map {|j| j.sub(/^\?/,'')}.join(', ')})" unless op[1].empty?}\n    "
       if op[4].empty? and op[5].empty?
         if op[2].empty? and op[3].empty?
           # Empty
-          define_operators << "    true\n  end\n"
+          define_operators << "true\n  end\n"
         else
           # Sensing
-          define_operators << '    applicable?('
-          predicates_to_hyper(define_operators << "\n      # Positive preconditions", op[2])
+          predicates_to_hyper(define_operators << "applicable?(\n      # Positive preconditions", op[2])
           predicates_to_hyper(define_operators << ",\n      # Negative preconditions", op[3])
           define_operators << "    )\n  end\n"
         end
       else
         if op[2].empty? and op[3].empty?
           # Effective
-          define_operators << '    apply('
+          define_operators << 'apply('
         else
           # Effective if preconditions hold
-          define_operators << '    apply_operator('
-          predicates_to_hyper(define_operators << "\n      # Positive preconditions", op[2])
+          predicates_to_hyper(define_operators << "apply_operator(\n      # Positive preconditions", op[2])
           predicates_to_hyper(define_operators << ",\n      # Negative preconditions", op[3])
           define_operators << ','
         end
