@@ -36,8 +36,8 @@ module Hype
   # Predicates to string
   #-----------------------------------------------
 
-  def predicates_to_s(props, prefix)
-    props.map {|i| "#{prefix}(#{i.join(' ')})"}.join
+  def predicates_to_s(predicates, prefix)
+    predicates.map {|i| "#{prefix}(#{i.join(' ')})"}.join
   end
 
   #-----------------------------------------------
