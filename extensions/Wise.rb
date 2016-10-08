@@ -15,7 +15,7 @@ module Wise
       end
     }
     # Operators
-    operators.each {|name, param, precond_pos, precond_not, effect_add, effect_del|
+    operators.each {|name,param,precond_pos,precond_not,effect_add,effect_del|
       prefix_variables(name, param, debug)
       define_variables(name, param, [precond_pos, precond_not, effect_add, effect_del], debug)
       # Effect contained in precondition

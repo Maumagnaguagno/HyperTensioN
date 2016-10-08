@@ -12,7 +12,7 @@ module Markdown_Compiler
     state.each {|pre| unused_predicates[pre.first] = nil unless predicates.include?(pre.first)}
     unused_predicates.each_key {|pre| output << "- #{pre}: unused\n"}
     output << "\n## Operators"
-    operators.each {|name, param, precond_pos, precond_not, effect_add, effect_del|
+    operators.each {|name,param,precond_pos,precond_not,effect_add,effect_del|
       output << "\n#{name.capitalize} | #{param.join(' ')}\n--- | ---\n***Preconditions*** | ***Effects***\n"
       precond_pos.each {|pre| output << "(#{pre.join(' ')}) |#{" **not** (#{pre.join(' ')})" if effect_del.include?(pre)}\n"}
       precond_not.each {|pre| output << "**not** (#{pre.join(' ')}) |#{" (#{pre.join(' ')})" if effect_add.include?(pre)}\n"}
