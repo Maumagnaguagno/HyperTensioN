@@ -82,10 +82,10 @@ The result is quite similar to the following regular expression:
 /((move|enter|exit)*report)*/
 ```
 
-We need to match the movement pattern first, the trick part is to avoid repetitions or our robot may be stuck in a loop of A to B and B to A.
+We need to match the movement pattern first, the trick part is to avoid repetitions or our robot may be stuck in a loop of A to B and B to A during [search](examples/search/search.jshop "search.jshop").
 Robby needs to remember which locations were visited, let us see this in a recursive format.
 The base of the recursion happens when the object (Robby) is already at the destination, otherwise use move, enter or exit, mark the position and call the recursion again.
-We need to remember to unvisit the locations once we reach our goal, otherwise Robby may be stuck.
+We need to remember to unvisit the locations once we reach our goal to be able to reuse them.
 
 ### Domain
 We start defininig all the nodes in the hierarchy.
@@ -168,7 +168,7 @@ def enter(bot, source, destination)
 end
 ```
 
-The application of an operator creates a new state if the preconditions are satisfied, which requires a deep copy of the state and is costly.
+The application of an operator creates a new state if the preconditions are satisfied, which requires a deep copy of the state (a costly operation).
 You can avoid ``apply_operator`` and handle your own states.
 And if you want to create dummy operators to simulate a success or failure without modifications in the state you just return ``true`` or ``false``.
 Success may be useful during the debug process or to change an internal feature of the agent wrapping the HTN when parsing the plan returned.

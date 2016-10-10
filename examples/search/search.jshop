@@ -1,0 +1,109 @@
+(defdomain search (
+
+  (:operator (!move ?agent ?from ?to)
+    (
+      (at ?agent ?from)
+      (adjacent ?from ?to)
+    )
+    ((at ?agent ?from))
+    ((at ?agent ?to))
+  )
+
+  (:operator (!!visit ?agent ?pos)
+    nil
+    nil
+    ((visited ?agent ?pos))
+  )
+
+  (:operator (!!unvisit ?agent ?pos)
+    nil
+    ((visited ?agent ?pos))
+    nil
+  )
+
+  (:method (forward ?agent ?goal)
+    base
+    ((at ?agent ?goal))
+    nil
+
+    recursion
+    (
+      (at ?agent ?from)
+      (adjacent ?from ?place)
+      (not (visited ?agent ?place))
+    )
+    (
+      (!move ?agent ?from ?place)
+      (!!visit ?agent ?from)
+      (forward ?agent ?goal)
+      (!!unvisit ?agent ?from)
+    )
+  )
+
+  (:method (backward ?agent ?goal)
+    base
+    ((at ?agent ?goal))
+    nil
+
+    recursion
+    (
+      (adjacent ?place ?goal)
+      (not (visited ?agent ?place))
+    )
+    (
+      (!!visit ?agent ?goal)
+      (backward ?agent ?place)
+      (!move ?agent ?place ?goal)
+      (!!unvisit ?agent ?goal)
+    )
+  )
+
+  (:method (bidirectional_forward ?agent ?goal)
+    base
+    ((at ?agent ?goal))
+    nil
+
+    recursion
+    (
+      (at ?agent ?from)
+      (adjacent ?from ?place)
+      (not (visited ?agent ?place))
+    )
+    (
+      (!move ?agent ?from ?place)
+      (!!visit ?agent ?from)
+      (bidirectional_backward ?agent ?goal)
+      (!!unvisit ?agent ?from)
+    )
+  )
+
+  (:method (bidirectional_backward ?agent ?goal)
+    base
+    ((at ?agent ?goal))
+    nil
+
+    recursion
+    (
+      (adjacent ?place ?goal)
+      (not (visited ?agent ?place))
+    )
+    (
+      (!!visit ?agent ?goal)
+      (bidirectional_forward ?agent ?place)
+      (!move ?agent ?place ?goal)
+      (!!unvisit ?agent ?goal)
+    )
+  )
+
+  (:method (meta ?search ?predicate ?agent ?goal)
+    base
+    ((?predicate ?agent ?goal))
+    nil
+
+    recursion
+    nil
+    (
+      (?search ?agent ?goal)
+    )
+  )
+))

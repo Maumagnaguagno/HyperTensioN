@@ -1,0 +1,14 @@
+(defproblem pb2 search
+  (
+    (at ag1 p0_0)
+    (adjacent p0_0 p1_0) (adjacent p1_0 p0_0)
+    (adjacent p1_0 p2_0) (adjacent p2_0 p1_0)
+    (adjacent p2_0 p3_0) (adjacent p3_0 p2_0)
+    (adjacent p3_0 p4_0) (adjacent p4_0 p3_0)
+  )
+
+  (
+    (backward ag1 p4_0)
+    (backward ag1 p0_0)
+  )
+)
