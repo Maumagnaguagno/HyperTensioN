@@ -1,8 +1,6 @@
 module Refinements
   extend self
 
-  INVISIBLE = true
-
   #-----------------------------------------------
   # Apply
   #-----------------------------------------------
@@ -36,7 +34,7 @@ module Refinements
 
   def add_cluster_to_subtasks(operators, cluster, new_subtasks)
     if cluster.size > 1
-      name = INVISIBLE ? 'invisible_' : ''
+      name = 'invisible_'
       parameters = []
       precond_pos = []
       precond_not = []
@@ -65,18 +63,16 @@ module Refinements
           effect_del << pre = pre.map {|p| p.start_with?('?') ? param[op[1].index(p)] : p}
           effect_add.delete(pre)
         }
+        # Duplicate visible operators without preconditions or effects to keep plan consistent
+        unless op.first.start_with?('invisible_')
+          new_subtasks << param.unshift(name_dup = "#{op.first}_dup")
+          operators << [name_dup, op[1], [], [], [], []] unless operators.assoc(name_dup)
+        end
       }
       parameters.uniq!
       # TODO Compare more than just name, variable usage may generate incompatible versions
       operators << [name, parameters, precond_pos, precond_not, effect_add, effect_del] unless operators.assoc(name)
-      new_subtasks << [name, *parameters]
-      if INVISIBLE
-        # Duplicate operators without preconditions or effects only to maintain plan consistent
-        cluster.each {|op,param|
-          new_subtasks << [name_dup = "#{op.first}_dup", *param]
-          operators << [name_dup, op[1], [], [], [], []] unless operators.assoc(name_dup)
-        }
-      end
+      new_subtasks.unshift([name, *parameters])
       cluster.clear
     elsif cluster.size == 1
       op, param = cluster.shift
