@@ -16,8 +16,12 @@ module Wise
     }
     # Operators
     operators.each {|name,param,precond_pos,precond_not,effect_add,effect_del|
-      prefix_variables(name, param, debug)
+      prefix_variables(name = "operator #{name}", param, debug)
       define_variables(name, param, [precond_pos, precond_not, effect_add, effect_del], debug)
+      # Precondition contradiction
+      (precond_pos & precond_not).each {|pre| puts "#{name} preconditions contains contradiction (#{pre.join(' ')}) and (not (#{pre.join(' ')}))"} if debug
+      # Effect contradiction
+      (effect_add & effect_del).each {|pre| puts "#{name} effects contains contradiction (#{pre.join(' ')}) and (not (#{pre.join(' ')}))"} if debug
       # Effect contained in precondition
       effect_add.reject! {|pre|
         if precond_pos.include?(pre)
@@ -33,7 +37,7 @@ module Wise
       }
       # Unknown previous state of predicate
       if debug
-        (precond_all = precond_pos + precond_not).uniq!
+        precond_all = precond_pos | precond_not
         (effect_add - precond_all).each {|pre| puts "#{name} contains side effect: (#{pre.join(' ')})"}
         (effect_del - precond_all).each {|pre| puts "#{name} contains side effect: (not (#{pre.join(' ')}))"}
       end
@@ -41,11 +45,13 @@ module Wise
     # Methods
     methods.each {|met|
       name, param, *decompositions = met
-      prefix_variables(name, param, debug)
-      decompositions.each {|label, free, precond_pos, precond_not, subtasks|
+      prefix_variables(name = "method #{name}", param, debug)
+      decompositions.each {|label,free,precond_pos,precond_not,subtasks|
+        label = "#{name} #{label}"
         param.each {|p| puts "#{label} shadowing variable #{p}" if free.include?(p)} if debug
+        (precond_pos & precond_not).each {|pre| puts "#{label} preconditions contains contradiction (#{pre.join(' ')}) and (not (#{pre.join(' ')}))"} if debug
         prefix_variables(label, free, debug)
-        define_variables(name, param + free, [precond_pos, precond_not, subtasks], debug)
+        define_variables(label, param + free, [precond_pos, precond_not, subtasks], debug)
       }
     }
   end
