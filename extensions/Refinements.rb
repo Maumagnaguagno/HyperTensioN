@@ -6,8 +6,16 @@ module Refinements
   #-----------------------------------------------
 
   def apply(operators, methods, predicates, state, tasks, goal_pos, goal_not, debug = true)
-    puts 'Refinements'.center(50,'-'), 'Macro' if debug
+    puts 'Refinements'.center(50,'-'), 'Simplify' if debug
+    # Simplify
+    operators.each {|name,param,precond_pos,precond_not,effect_add,effect_del|
+      (effect_add & effect_del).each {|pre|
+        puts "  Simplify operator #{name}: remove effect (not (#{pre.join(' ')}))" if debug
+        effect_del.delete(pre)
+      }
+    }
     # Macro sequential operators
+    puts 'Macro' if debug
     macro = []
     methods.each {|met|
       met.drop(2).each {|dec|
@@ -49,12 +57,12 @@ module Refinements
         # Preconditions
         op[2].each {|pre|
           pre = pre.map {|p| p.start_with?('?') ? param[op[1].index(p)] : p}
-          puts "  Precond (not (#{pre.join(' ')})) will never be satisfied" if debug and (precond_not.include?(pre) or effect_del.include?(pre))
+          puts "  Precondition (not (#{pre.join(' ')})) will never be satisfied" if debug and (precond_not.include?(pre) or effect_del.include?(pre))
           precond_pos << pre unless precond_pos.include?(pre) or effect_add.include?(pre)
         }
         op[3].each {|pre|
           pre = pre.map {|p| p.start_with?('?') ? param[op[1].index(p)] : p}
-          puts "  Precond (#{pre.join(' ')}) will never be satisfied" if debug and (precond_pos.include?(pre) or effect_add.include?(pre))
+          puts "  Precondition (#{pre.join(' ')}) will never be satisfied" if debug and (precond_pos.include?(pre) or effect_add.include?(pre))
           precond_not << pre unless precond_not.include?(pre) or effect_del.include?(pre)
         }
         # Effects
