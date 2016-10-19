@@ -49,16 +49,22 @@ module Refinements
       end
     }
     # Methods
-    # TODO test arity of subtasks
     methods.each {|met|
       name, param, *decompositions = met
       prefix_variables(name = "method #{name}", param, debug)
       decompositions.each {|label,free,precond_pos,precond_not,subtasks|
         label = "#{name} #{label}"
-        param.each {|p| puts "  #{label} shadowing variable #{p}" if free.include?(p)} if debug
-        (precond_pos & precond_not).each {|pre| puts "  #{label} preconditions contains contradiction (#{pre.join(' ')}) and (not (#{pre.join(' ')}))"} if debug
         prefix_variables(label, free, debug)
         define_variables(label, param + free, [precond_pos, precond_not, subtasks], debug)
+        param.each {|p| puts "  #{label} shadowing variable #{p}" if free.include?(p)} if debug
+        (precond_pos & precond_not).each {|pre| puts "  #{label} preconditions contains contradiction (#{pre.join(' ')}) and (not (#{pre.join(' ')}))"} if debug
+        # Subtask arity
+        subtasks.each {|task|
+          if op = operators.assoc(task.first) then raise "#{label} subtask #{task.first} expected #{op[1].size} terms instead of #{task.size.pred}" if op[1].size != task.size.pred
+          elsif met = methods.assoc(task.first) then raise "#{label} subtask #{task.first} expected #{met[1].size} terms instead of #{task.size.pred}" if met[1].size != task.size.pred
+          else raise "#{label} subtask #{task.first} is unknown"
+          end
+        }
       }
     }
     # Macro sequential operators
