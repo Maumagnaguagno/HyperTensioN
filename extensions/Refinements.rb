@@ -8,10 +8,57 @@ module Refinements
   def apply(operators, methods, predicates, state, tasks, goal_pos, goal_not, debug = true)
     puts 'Refinements'.center(50,'-'), 'Simplify' if debug
     # Simplify
+    # Initial state
+    state.reject! {|pre|
+      # Unused predicate
+      unless predicates.include?(pre.first)
+        puts "Initial state unused predicate: remove (#{pre.join(' ')})" if debug
+        true
+      end
+    }
+    # Operators
+    # TODO remove invisible operators without preconditions and effects
     operators.each {|name,param,precond_pos,precond_not,effect_add,effect_del|
+      prefix_variables(name = "operator #{name}", param, debug)
+      define_variables(name, param, [precond_pos, precond_not, effect_add, effect_del], debug)
+      # Precondition contradiction
+      (precond_pos & precond_not).each {|pre| puts "#{name} preconditions: contains contradiction (#{pre.join(' ')}) and (not (#{pre.join(' ')}))"} if debug
+      # Remove effect contradiction
       (effect_add & effect_del).each {|pre|
-        puts "  Simplify operator #{name}: remove effect (not (#{pre.join(' ')}))" if debug
+        puts "  operator #{name} effect contradiction: remove (not (#{pre.join(' ')}))" if debug
         effect_del.delete(pre)
+      }
+      # Effect contained in precondition
+      effect_add.reject! {|pre|
+        if precond_pos.include?(pre)
+          puts "  operator #{name} effect present in precondition: remove (#{pre.join(' ')})" if debug
+          true
+        end
+      }
+      effect_del.reject! {|pre|
+        if precond_not.include?(pre)
+          puts "  operator #{name} effect present in precondition: remove (not (#{pre.join(' ')}))" if debug
+          true
+        end
+      }
+      # Unknown previous state of predicate
+      if debug
+        precond_all = precond_pos | precond_not
+        (effect_add - precond_all).each {|pre| puts "  operator #{name} contains side effect: (#{pre.join(' ')})"}
+        (effect_del - precond_all).each {|pre| puts "  operator #{name} contains side effect: (not (#{pre.join(' ')}))"}
+      end
+    }
+    # Methods
+    # TODO test arity of subtasks
+    methods.each {|met|
+      name, param, *decompositions = met
+      prefix_variables(name = "method #{name}", param, debug)
+      decompositions.each {|label,free,precond_pos,precond_not,subtasks|
+        label = "#{name} #{label}"
+        param.each {|p| puts "  #{label} shadowing variable #{p}" if free.include?(p)} if debug
+        (precond_pos & precond_not).each {|pre| puts "  #{label} preconditions contains contradiction (#{pre.join(' ')}) and (not (#{pre.join(' ')}))"} if debug
+        prefix_variables(label, free, debug)
+        define_variables(label, param + free, [precond_pos, precond_not, subtasks], debug)
       }
     }
     # Macro sequential operators
@@ -35,6 +82,38 @@ module Refinements
     }
     # TODO pull up preconditions based on hierarchy
     # TODO compress predicate/variable/method/invisible operator names (changes final state description)
+  end
+
+  #-----------------------------------------------
+  # Prefix variables
+  #-----------------------------------------------
+
+  def prefix_variables(name, param, debug)
+    param.each {|var|
+      unless var.start_with?('?')
+        puts "  #{name} parameter #{var} modified to ?#{var}" if debug
+        var.prepend('?')
+      end
+    }
+  end
+
+  #-----------------------------------------------
+  # Define variables
+  #-----------------------------------------------
+
+  def define_variables(name, param, group, debug)
+    group.each {|predicates|
+      predicates.each {|pre|
+        pre.drop(1).each {|term|
+          if term.start_with?('?')
+            raise "#{name} never declared variable #{term} from (#{pre.join(' ')})" unless param.include?(term)
+          elsif param.include?("?#{term}")
+            puts "  #{name} contains probable variable #{term} from (#{pre.join(' ')}), modifying to ?#{term}" if debug
+            term.prepend('?')
+          end
+        }
+      }
+    }
   end
 
   #-----------------------------------------------

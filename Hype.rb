@@ -28,8 +28,7 @@ module Hype
     debug - same as run with execution log
     nil   - avoid print parsed data\n
   Extensions:
-    wise        - static analysis of flat structure
-    refinements - refine hierarchical structure
+    refinements - check and refine hierarchical structure
     grammar     - print hierarchical structure grammar"
 
   #-----------------------------------------------
@@ -131,16 +130,14 @@ Problem #{@parser.problem_name}
   #-----------------------------------------------
 
   def extend(extension)
-    extender = case extension
-    when 'wise' then Wise
+    case extension
     when 'patterns' then Patterns
     when 'refinements' then Refinements
     when 'grammar' then Grammar
     when 'complexity' then Complexity
     when 'dummy' then Dummy
     else raise "Unknown extension #{extension}"
-    end
-    extender.apply(
+    end.apply(
       @parser.operators,
       @parser.methods,
       @parser.predicates,
