@@ -6,8 +6,9 @@ class Sphygmomanometer < Test::Unit::TestCase
   def simple_state
     {
       'a' => [['1'], ['2'], ['3']],
-      'b' => [['4'], ['5']],
-      'c' => [['a','b'], ['c','d']]
+      'b' => [['3'], ['4'], ['5']],
+      'c' => [['a','b'], ['c','d']],
+      'd' => [['d','x']]
     }
   end
 
@@ -60,22 +61,26 @@ class Sphygmomanometer < Test::Unit::TestCase
   #-----------------------------------------------
 
   def test_generate
-    expected = ['1','2','3'].product(['4','5'], ['c'])
+    expected = ['1','2','3'].product(['4','5'], ['c'], ['d'])
     Hypertension.state = simple_state
     # Free variables
     x = ''
     y = ''
+    w = ''
     z = ''
-    # Generate x y z based on state and preconditions
+    # Generate x y w z based on state and preconditions
     Hypertension.generate(
       [
         ['a', x],
         ['b', y],
-        ['c', z, 'd']
+        ['c', w, z],
+        ['d', z, 'x']
       ],
-      [], x, y, z
+      [
+        ['a', y]
+      ], x, y, w, z
     ) {
-      assert_equal(expected.shift, [x,y,z])
+      assert_equal(expected.shift, [x,y,w,z])
     }
     assert_equal(true, expected.empty?)
   end
