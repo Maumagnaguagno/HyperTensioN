@@ -6,7 +6,7 @@
 #-----------------------------------------------
 # Require this module to use
 #-----------------------------------------------
-# HTN planner based on PyHop
+# HTN planner
 #-----------------------------------------------
 
 module Hypertension
@@ -29,9 +29,8 @@ module Hypertension
       if send(*current_task)
         # Keep decomposing the hierarchy
         if plan = planning(tasks, level)
-          # Some operators are not visible
-          plan.unshift(current_task) if decomposition
-          return plan
+          # Add visible operators to plan
+          return decomposition ? plan.unshift(current_task) : plan
         end
         @state = old_state
       end
