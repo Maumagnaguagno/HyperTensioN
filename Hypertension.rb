@@ -131,15 +131,16 @@ module Hypertension
     while level
       # Replace pointer value with useful object to affect variables
       free[level].replace(objects[level][obj])
+      obj += 1
       if level != free.size.pred
         # Stack backjump position
-        stack.unshift(level, obj.succ) if obj.succ != objects[level].size
+        stack.unshift(level, obj) if obj != objects[level].size
         level += 1
         obj = 0
       else
         yield if applicable?(precond_pos, precond_not)
         # Load next object or restore
-        if (obj += 1) == objects[level].size
+        if obj == objects[level].size
           level = stack.shift
           obj = stack.shift
         end
