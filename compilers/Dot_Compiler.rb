@@ -56,6 +56,6 @@ module Dot_Compiler
   #-----------------------------------------------
 
   def compile_problem(domain_name, problem_name, operators, methods, predicates, state, tasks, goal_pos, goal_not, domain_filename)
-    # TODO graphs for simple relationship between objects (extremely cluttered), maybe only the tasks
+    # TODO graphs for simple relationship between objects (extremely cluttered), maybe only tasks
   end
 end
