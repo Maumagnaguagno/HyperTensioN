@@ -95,6 +95,7 @@
     )
   )
 
+  ; This method is beyond JSHOP definition
   (:method (meta ?search ?predicate ?agent ?goal)
     base
     ((?predicate ?agent ?goal))
