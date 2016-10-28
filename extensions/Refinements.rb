@@ -17,35 +17,40 @@ module Refinements
       end
     }
     # Operators
-    # TODO remove invisible operators without preconditions and effects
-    operators.each {|name,param,precond_pos,precond_not,effect_add,effect_del|
-      prefix_variables(name = "operator #{name}", param, debug)
-      define_variables(name, param, [precond_pos, precond_not, effect_add, effect_del], debug)
+    noops = []
+    operators.reject! {|name,param,precond_pos,precond_not,effect_add,effect_del|
+      prefix_variables(opname = "operator #{name}", param, debug)
+      define_variables(opname, param, [precond_pos, precond_not, effect_add, effect_del], debug)
       # Precondition contradiction
-      (precond_pos & precond_not).each {|pre| puts "#{name} preconditions: contains contradiction (#{pre.join(' ')}) and (not (#{pre.join(' ')}))"} if debug
+      (precond_pos & precond_not).each {|pre| puts "#{opname} preconditions: contains contradiction (#{pre.join(' ')}) and (not (#{pre.join(' ')}))"} if debug
       # Remove effect contradiction
       (effect_add & effect_del).each {|pre|
-        puts "  operator #{name} effect contradiction: remove (not (#{pre.join(' ')}))" if debug
+        puts "  #{opname} effect contradiction: remove (not (#{pre.join(' ')}))" if debug
         effect_del.delete(pre)
       }
       # Effect contained in precondition
       effect_add.reject! {|pre|
         if precond_pos.include?(pre)
-          puts "  operator #{name} effect present in precondition: remove (#{pre.join(' ')})" if debug
+          puts "  #{opname} effect present in precondition: remove (#{pre.join(' ')})" if debug
           true
         end
       }
       effect_del.reject! {|pre|
         if precond_not.include?(pre)
-          puts "  operator #{name} effect present in precondition: remove (not (#{pre.join(' ')}))" if debug
+          puts "  #{opname} effect present in precondition: remove (not (#{pre.join(' ')}))" if debug
           true
         end
       }
-      # Unknown previous state of predicate
+      # Unknown previous state of effect
       if debug
         precond_all = precond_pos | precond_not
-        (effect_add - precond_all).each {|pre| puts "  operator #{name} contains side effect: (#{pre.join(' ')})"}
-        (effect_del - precond_all).each {|pre| puts "  operator #{name} contains side effect: (not (#{pre.join(' ')}))"}
+        (effect_add - precond_all).each {|pre| puts "  #{opname} contains side effect: (#{pre.join(' ')})"}
+        (effect_del - precond_all).each {|pre| puts "  #{opname} contains side effect: (not (#{pre.join(' ')}))"}
+      end
+      # Remove noops, invisible operators without preconditions and effects
+      if name.start_with?('invisible_') and precond_pos.empty? and precond_not.empty? and effect_add.empty? and effect_del.empty?
+        puts "  #{opname} is unnecessary: removed" if debug
+        noops << name
       end
     }
     # Methods
@@ -58,15 +63,24 @@ module Refinements
         define_variables(label, param + free, [precond_pos, precond_not, subtasks], debug)
         param.each {|p| puts "  #{label} shadowing variable #{p}" if free.include?(p)} if debug
         (precond_pos & precond_not).each {|pre| puts "  #{label} preconditions contains contradiction (#{pre.join(' ')}) and (not (#{pre.join(' ')}))"} if debug
-        # Subtask arity
-        subtasks.each {|task|
-          if op = operators.assoc(task.first) then raise "#{label} subtask #{task.first} expected #{op[1].size} terms instead of #{task.size.pred}" if op[1].size != task.size.pred
+        # Subtask arity check and noops removal
+        subtasks.reject! {|task|
+          if noops.include?(task.first)
+            puts "  #{label} subtask #{task.first} removed"
+            true
+          elsif op = operators.assoc(task.first) then raise "#{label} subtask #{task.first} expected #{op[1].size} terms instead of #{task.size.pred}" if op[1].size != task.size.pred
           elsif met = methods.assoc(task.first) then raise "#{label} subtask #{task.first} expected #{met[1].size} terms instead of #{task.size.pred}" if met[1].size != task.size.pred
-          else raise "#{label} subtask #{task.first} is unknown"
+          else
+            raise "#{label} subtask #{task.first} is unknown"
+            false
           end
         }
       }
     }
+    # Tasks
+    ordered = tasks.shift
+    tasks.reject! {|task| noops.include?(task.first)}
+    tasks.unshift(ordered) unless tasks.empty?
     # Macro sequential operators
     puts 'Macro' if debug
     macro = []
@@ -112,7 +126,7 @@ module Refinements
       predicates.each {|pre|
         pre.drop(1).each {|term|
           if term.start_with?('?')
-            raise "#{name} never declared variable #{term} from (#{pre.join(' ')})" unless param.include?(term)
+            raise "  #{name} never declared variable #{term} from (#{pre.join(' ')})" unless param.include?(term)
           elsif param.include?("?#{term}")
             puts "  #{name} contains probable variable #{term} from (#{pre.join(' ')}), modifying to ?#{term}" if debug
             term.prepend('?')
