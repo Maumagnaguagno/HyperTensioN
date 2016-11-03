@@ -46,7 +46,7 @@ if $0 == __FILE__
       assert_equal([['a'],['b']], @state[:something])
       assert_equal([[:something, 'a']], @state[:protection_pos])
       assert_equal([[:something, 'c']], @state[:protection_not])
-      assert_equal(nil, apply_protected_operator([], [], [[:something, 'c']], [[:something, 'a']]))
+      assert_nil(apply_protected_operator([], [], [[:something, 'c']], [[:something, 'a']]))
       assert_equal([['a'],['b']], @state[:something])
       assert_equal(true, apply_protected_operator([], [], [[:something, 'x']], [[:something, 'b']]))
       assert_equal([['a'],['x']], @state[:something])
