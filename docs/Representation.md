@@ -1,5 +1,7 @@
 # Intermediate Representation
-In order to parse and compile from/to different languages, a [common representation](https://en.wikipedia.org/wiki/Intermediate_language) is required.
+Hype is able to parse from and compile to different languages, with the parsed language usually being easier to describe planning elements while the compiled language deals with a different set of planning elements or computer details.
+Instead of creating one converter for each input-output pair, such as parseA-CompileB, we opted for a more modular design with parser and compiler completely independent.
+The only thing that both parts must share is a [common representation](https://en.wikipedia.org/wiki/Intermediate_language).
 All elements from the languages involved must be able to be represented or inferred from the selected common representation.
 The elements considered for planning are:
 - domain name
@@ -11,8 +13,10 @@ The elements considered for planning are:
 - goal state
 - tasks
 
+## Domain and Problem names
 Domain and problem names are Strings representing the scenario and require no modification.
-The other elements require some work to be obtained in a common representation.
+Usually domain and problems are limited to alfanumeric, hyphen and underline characters, without any blank spaces.
+Are used only to validate that problem and domain are related, so that when combined a valid planning instance is obtained.
 
 ## Operators
 Compare the following PDDL action and JSHOP operator:
