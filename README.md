@@ -387,23 +387,23 @@ ruby examples/robby/pb1.rb
 ```
 
 If you described your domain and problem in another language you must convert it to Ruby before execution.
-Hype can do it for you, it requires a domain and a problem file to be compiled to a certain output type, like ``rb``.
-If no output type is provided or 'print' is provided, the system only prints out what was understood from the files and the time taken to parse.
+Hype can do it for you, it requires a domain and a problem file to be compiled to a certain output type.
+The output can be ``print``, ``rb``, ``pddl``, ``jshop``, ``dot``, ``md`` or ``run``.
+If no output type is provided the system uses ``print`` as the default, it only prints out what was parsed from the files and the time taken.
 
 ```Shell
 cd HyperTensioN
 # ruby Hype.rb path/domain_filename path/problem_filename {extensions} [output]
 # Multiple extensions can be executed before the output happens, more on that to come.
-# The output can be print(default), rb, pddl, jshop, dot, md, run or debug.
 ruby Hype.rb examples/basic/basic.jshop examples/basic/pb1.jshop rb
 ruby examples/basic/pb1.jshop.rb
 ```
 
-You can also compile and execute with a single command with **run** or **debug**, the system compile as **rb** and require the generated files.
-Debug mode shows the explored paths while run mode only shows the planning result.
+You can also compile and execute in a single command with ``run``, the system compile as ``rb`` and require the generated files.
+Activate debug mode with ``run -d`` to pass the debug flag to the problem and show explored paths instead of only the planning result.
 
 ```Shell
-ruby Hype.rb examples/basic/basic.jshop examples/basic/pb1.jshop run
+ruby Hype.rb examples/basic/basic.jshop examples/basic/pb1.jshop run -d
 ```
 
 ## API
