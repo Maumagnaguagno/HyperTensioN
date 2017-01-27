@@ -388,7 +388,7 @@ ruby examples/robby/pb1.rb
 
 If you described your domain and problem in another language you must convert it to Ruby before execution.
 Hype can do it for you, it requires a domain and a problem file to be compiled to a certain output type.
-The output can be ``print``, ``rb``, ``pddl``, ``jshop``, ``dot``, ``md`` or ``run``.
+The output can be ``print``, ``rb``, ``pddl``, ``jshop``, ``dot``, ``md``, ``run``, ``debug`` or ``nil``.
 If no output type is provided the system uses ``print`` as the default, it only prints out what was parsed from the files and the time taken.
 
 ```Shell
@@ -400,10 +400,11 @@ ruby examples/basic/pb1.jshop.rb
 ```
 
 You can also compile and execute in a single command with ``run``, the system compile as ``rb`` and require the generated files.
-Activate debug mode with ``run -d`` to pass the debug flag to the problem and show explored paths instead of only the planning result.
+Activate debug mode with ``debug`` to pass the debug flag to the problem and show explored paths instead of only the planning result.
 
 ```Shell
-ruby Hype.rb examples/basic/basic.jshop examples/basic/pb1.jshop run -d
+ruby Hype.rb examples/basic/basic.jshop examples/basic/pb1.jshop run
+ruby Hype.rb examples/basic/basic.jshop examples/basic/pb1.jshop debug
 ```
 
 ## API
