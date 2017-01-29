@@ -574,7 +574,7 @@ The biggest advantage is not the planning itself, but the parsers and compilers 
 Perhaps the most invisible advantage is the lack of custom classes, every object used during planning is defined as one of the core objects.
 Once Strings, Arrays and Hashes are understood, the entire Hypertension module is just a few methods away from complete understanding.
 
-The only lacking killer feature, which requires a more complex algorithm, is interleaved/unordered execution of tasks, a feature that JSHOP2 supports and is extremely important to achieve good plans in some cases.
+Among the lacking features is interleaved/unordered execution of tasks, a feature that JSHOP2 supports and is extremely important to achieve good plans in some cases.
 We only support unordered tasks at the problem level and do not interleave them during decomposition.
 Since we test for explicit goals only after the plan has been found with a sequence of tasks, a failure is considered enough proof to try other orderings, not other unifications with the same sequence of tasks.
 
