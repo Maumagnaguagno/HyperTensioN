@@ -463,9 +463,9 @@ Domain operators can be defined without ``apply_operator`` and will have the ret
 Domain methods must yield a task list or are nullified, having no decomposition.
 
 ## Hype
-The [**Hype**](Hype.rb) is the framework for parsers and compilers of planning descriptions.
+[**Hype**](Hype.rb) is the framework for parsers and compilers of planning descriptions.
 It will save time and avoid errors during conversion of domains and problems for comparison results with other planners.
-The conversion step is not uncommon, as JSHOP itself compiles the description to Java code, trying to achieve the best performance possible.
+Such conversion step is not uncommon, as JSHOP itself compiles the description to Java code, trying to achieve the best performance possible.
 
 **Parser support**:
 - [Ruby](https://en.wikipedia.org/wiki/Ruby_%28programming_language%29) using an [Intermediate Representation](docs/Representation.md)
