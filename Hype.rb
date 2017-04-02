@@ -43,12 +43,12 @@ module Hype
   # Subtasks to string
   #-----------------------------------------------
 
-  def subtasks_to_s(tasks, prefix, order = true)
+  def subtasks_to_s(tasks, prefix, ordered = true)
     if tasks.empty?
       "#{prefix}empty"
     else
       operators = @parser.operators
-      output = "#{prefix}#{'un' unless order}ordered"
+      output = "#{prefix}#{'un' unless ordered}ordered"
       tasks.each {|t| output << prefix << (operators.assoc(t.first) ? 'operator' : 'method  ') << " (#{t.join(' ')})"}
       output
     end

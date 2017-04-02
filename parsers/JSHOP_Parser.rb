@@ -113,9 +113,8 @@ module JSHOP_Parser
       if tokens.first != NIL
         @tasks = tokens.shift
         # Tasks may be ordered or unordered
-        @tasks.shift unless order = (@tasks.first != ':unordered')
-        @tasks.each {|pre| pre.first.sub!(/^!!/,'invisible_') or pre.first.sub!(/^!/,'')}
-        @tasks.unshift(order)
+        @tasks.shift unless ordered = (@tasks.first != ':unordered')
+        @tasks.each {|pre| pre.first.sub!(/^!!/,'invisible_') or pre.first.sub!(/^!/,'')}.unshift(ordered)
       else @tasks = []
       end
       @goal_pos = []
