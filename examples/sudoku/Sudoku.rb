@@ -129,7 +129,7 @@ end
 # Main
 #-----------------------------------------------
 if $0 == __FILE__
-  debug = ARGV.first == '-d'
+  debug = ARGV.first == 'debug'
   # Easy
   board = '
   3 4 | 1 2

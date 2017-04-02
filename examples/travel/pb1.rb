@@ -34,7 +34,7 @@ plan = Travel.problem(
     ['travel', 'me', 'home', 'park']
   ],
   # Debug
-  ARGV.first == '-d'
+  ARGV.first == 'debug'
 )
 
 # Test

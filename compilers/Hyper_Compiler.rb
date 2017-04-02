@@ -121,7 +121,7 @@ module Hyper_Compiler
     # Tasks
     group = []
     tasks.each {|t| group << "    ['#{t.first}'#{', ' if t.size > 1}#{t.drop(1).join(', ')}]"}
-    problem_str << "\n  },\n  # Tasks\n  [\n" << group .join(",\n") << "\n  ],\n  # Debug\n  ARGV.first == '-d'"
+    problem_str << "\n  },\n  # Tasks\n  [\n" << group .join(",\n") << "\n  ],\n  # Debug\n  ARGV.first == 'debug'"
     tasks.unshift(ordered) unless tasks.empty?
     unless ordered
       group.clear

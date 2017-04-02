@@ -323,7 +323,7 @@ The task list follows the same principle, an array of each task to be solved.
 Note that the names must match the ones defined in the domain and tasks will be decomposed in the same order they are described (in ordered mode).
 Even if a predicate has no true terms associated in the initial state you must declare them, as ``reported => []`` is declared in the example.
 If your problem does not generate objects during run-time a speed improvement can be obtained moving them to variables, therefore the comparisons will be pointer-based.
-An interesting idea is to have debug being activated by a command line argument, in this case ``ruby pb1.rb -d`` activates debug mode.
+An interesting idea is to have debug being activated by a command line argument, in this case ``ruby pb1.rb debug`` activates debug mode.
 
 ```Ruby
 require './Robby'
@@ -361,7 +361,7 @@ Robby.problem(
     ['swap_at', robby, right]
   ],
   # Debug
-  ARGV.first == '-d'
+  ARGV.first == 'debug'
 )
 ```
 
