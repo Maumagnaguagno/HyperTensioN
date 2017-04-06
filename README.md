@@ -119,11 +119,11 @@ end
 
 The operators are the same as before, but visit and unvisit are not really important outside the planning stage, therefore they are not visible (``false``), while the others are visible (``true``).
 Our movement method ``swap_at`` is there, without any code describing its behavior, only the available methods.
-You could compare this with the header file holding the prototypes of functions as in C.
+You could compare this with a C header file holding function prototypes.
 Each method ``swap_at__XYZ`` describe one possible case of decomposition of ``swap_at``
 It is also possible to avoid listing all of them and filter based on their name (after they were declared):
 ```Ruby
-@domain['swap_at'] = instance_methods.find_all {|i| i =~ /^swap_at/}
+@domain['swap_at'] = instance_methods.find_all {|method| method =~ /^swap_at/}
 ```
 
 The enter operator appears to be a good starting point, we need to define our preconditions and effects.
