@@ -184,7 +184,7 @@ module Refinements
       }
       parameters.uniq!
       # Variable usage may require a new macro operator
-      parameters.each {|i| name << i.sub('?','_')}
+      parameters.each {|i| name << i.tr('?','_')}
       unless operators.assoc(name)
         operators << [name, parameters, precond_pos, precond_not, effect_add, effect_del]
         puts "  Macro operator #{name}"
