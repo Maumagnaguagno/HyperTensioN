@@ -21,7 +21,7 @@ module Hypertension
     case decomposition = @domain[(current_task = tasks.shift).first]
     # Operator (true: visible, false: invisible)
     when true, false
-      puts "#{'  ' * level}#{current_task.first}(#{current_task.drop(1).join(',')})" if @debug
+      puts "#{'  ' * level}#{current_task.first}(#{current_task.drop(1).join(' ')})" if @debug
       old_state = @state
       # If operator applied
       if send(*current_task)
@@ -38,7 +38,7 @@ module Hypertension
       task_name = current_task.shift
       level += 1
       decomposition.each {|method|
-        puts "#{'  ' * level.pred}#{method}(#{current_task.join(',')})" if @debug
+        puts "#{'  ' * level.pred}#{method}(#{current_task.join(' ')})" if @debug
         # Every unification is tested
         send(method, *current_task) {|subtasks| return plan if plan = planning(subtasks.concat(tasks), level)}
       }
@@ -151,7 +151,7 @@ module Hypertension
   #-----------------------------------------------
 
   def print_data(data)
-    data.each_with_index {|d,i| puts "#{i}: #{d.first}(#{d.drop(1).join(', ')})"}
+    data.each_with_index {|d,i| puts "#{i}: #{d.first}(#{d.drop(1).join(' ')})"}
   end
 
   #-----------------------------------------------
