@@ -131,7 +131,7 @@ methods = [
 Predicates are partitioned in three types to both planners and compilers to decide which informations are important.
 Predicates that appear in effects are considered mutable while predicates that appear only in preconditions are considered invariant.
 Other predicates are considered irrelevant and may be pruned without any problem.
-In order to obtain this knowledge we use a Hash that maps predicate name to true, if mutable, or false, if invariant.
+In order to obtain this knowledge we use a Hash that maps predicate name to ``true``, if mutable, or ``false``, if invariant.
 Irrelevant predicates are not stored.
 Note that frozen predicate strings avoid key duplication by the Hash implementation.
 
@@ -147,7 +147,7 @@ predicates = {
 
 ## States, Goals and Tasks
 The state represents how the objects are in the world in a moment.
-Anything not declared here is considered false, we are using the closed world assumption.
+Anything not declared here is considered false, we are using the [closed-world assumption](https://en.wikipedia.org/wiki/Closed-world_assumption).
 Usually the initial and goal states are declared as the problem for classical planning, and the initial state and tasks for HTN planning.
 Compare the following PDDL and JSHOP problem files:
 

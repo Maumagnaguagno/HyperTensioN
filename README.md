@@ -321,7 +321,7 @@ With the domain ready all you need is to define the initial state and the task l
 The initial state is defined as a Hash table in which the keys are the predicates while the value is an array of possible terms.
 The task list follows the same principle, an array of each task to be solved.
 Note that the names must match the ones defined in the domain and tasks will be decomposed in the same order they are described (in ordered mode).
-Even if a predicate has no true terms associated in the initial state you must declare them, as ``reported => []`` is declared in the example.
+Even if predicates that do not appear in the initial state must be declared, as ``reported => []`` is declared in the example.
 If your problem does not generate objects during run-time a speed improvement can be obtained moving them to variables, therefore the comparisons will be pointer-based.
 An interesting idea is to have debug being activated by a command line argument, in this case ``ruby pb1.rb debug`` activates debug mode.
 
@@ -448,13 +448,13 @@ This method is called recursively until it finds an empty task list, ``[]``, the
 Therefore no plan actually exists before reaching an empty task list.
 In case of failure, ``nil`` is returned.
 
-- ``applicable?(precond_pos, precond_not)`` tests if the current state have all positive preconditions and not a single negative precondition. It returns true if applicable and false otherwise.
+- ``applicable?(precond_pos, precond_not)`` tests if the current state have all positive preconditions and not a single negative precondition. Returns ``true`` if applicable, ``false`` otherwise.
 - ``apply(effect_add, effect_del)`` modifies the current state, add or remove predicates present in the lists. Returns true.
-- ``apply_operator(precond_pos, precond_not, effect_add, effect_del)`` extends this idea applying effects if ``applicable?``. Returns true if applied, nil otherwise.
-- ``generate(precond_pos, precond_not, *free)`` yields all possible unifications to the free variables defined, therefore you need a block to capture the unifications. The return value is undetermined.
-- ``print_data(data)`` can be used to print task lists and predicate lists, useful for debug.
+- ``apply_operator(precond_pos, precond_not, effect_add, effect_del)`` extends this idea applying effects if ``applicable?``. Returns ``true`` if applied, ``nil`` otherwise.
+- ``generate(precond_pos, precond_not, *free)`` yields all possible unifications to the free variables defined, therefore you need a block to capture the unifications. The return value is undefined.
+- ``print_data(data)`` can be used to print task and predicate lists, useful for debug.
 - ``problem(start, tasks, debug = false, goal_pos = [], goal_not = [])`` is used to simplify the setup of a problem instance, returns the value of planning. Use problem as a template to see how to add Hypertension in your project.
-- ``task_permutations(state, tasks, goal_pos, goal_not)`` tries several task permutations to achieve unordered decomposition, it is used by ``problem`` when explicit goals are given. Return a plan or nil.
+- ``task_permutations(state, tasks, goal_pos, goal_not)`` tries several task permutations to achieve unordered decomposition, it is used by ``problem`` when explicit goals are given. Returns a plan or ``nil``.
 
 Domain operators can be defined without ``apply_operator`` and will have the return value considered.
   - ``false`` or ``nil`` means the operator has failed.
@@ -538,8 +538,8 @@ module Bar_Compiler
 end
 ```
 
-Unlike the parsers, the compilers have a choice in their output.
-The firsy option is for uncommon outputs, they must be handled inside the methods and return ``nil``.
+Unlike parsers, compilers have a choice in their output.
+The first option is for uncommon outputs, they must be handled inside the methods and return ``nil``.
 The second option is to output a more common text file and return the string to be written.
 If the second option was selected the output filename is the input filename with the new extension appended, therefore ``input.pddl`` to ``jshop`` would be ``input.pddl.jshop``, so no information about the source is lost.
 Any compiler have access to the parser attributes, which means one module can optimize before another compiles.
