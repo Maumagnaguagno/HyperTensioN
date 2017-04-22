@@ -4,14 +4,11 @@ Instead of creating one converter for each input-output pair, such as parseA-Com
 The only thing that both parts must share is a [common representation](https://en.wikipedia.org/wiki/Intermediate_language).
 All elements from the languages involved must be able to be represented or inferred from the selected common representation.
 The elements considered for planning are:
-- domain name
-- problem name
-- operators
-- methods
-- predicates
-- initial state
-- goal state
-- tasks
+- [**Domain and problem names**](#domain-and-problem-names)
+- [**Operators**](#operators)
+- [**Methods**](#methods)
+- [**Predicates**](#predicates)
+- [**States, Goals and Tasks**](#states-goals-and-tasks)
 
 ## Domain and Problem names
 Domain and problem names are Strings representing the scenario and require no modification.
