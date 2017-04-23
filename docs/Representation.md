@@ -73,7 +73,7 @@ Until then you can see some [experimental](../examples/experiments) ideas being 
 
 ## Methods
 Sometimes we want to apply specific actions in a certain order to accomplish a task.
-Those tasks are made from methods and act as domain knowledge to be exploited by an HTN planner.
+Those tasks are made from methods and act as domain knowledge to be exploited by a HTN planner.
 The following method is the swap from the [basic JSHOP domain](../examples/basic/basic.jshop) example, it contains two possible cases:
 
 ```Lisp

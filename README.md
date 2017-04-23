@@ -3,7 +3,7 @@
 
 Hypertension is an [Hierarchical Task Network](https://en.wikipedia.org/wiki/Hierarchical_task_network) Planner written in Ruby, which means a description of how tasks can be accomplished using method decomposition is required to achieve a plan.
 HTN is used as an acronym for Hypertension in medical context, therefore the name was given.
-In order to support other planning languages a module named **[Hype](#hype "Jump to Hype section")** will take care of the conversion process.
+In order to support other planning languages a module named [**Hype**](#hype "Jump to Hype section") will take care of the conversion process.
 With hierarchical planning it is possible to describe a strategy to obtain a sequence of actions that executes a certain task.
 It works based on decomposition, which is very alike to how humans think, taking mental steps further into primitive operators.
 This project was inspired by [Pyhop] and [JSHOP].
@@ -20,7 +20,7 @@ This project was inspired by [Pyhop] and [JSHOP].
 - [**ToDo's**](#todos "Jump to ToDo's section"): a small list of things to be done.
 
 ## Algorithm
-The basic algorithm for HTN planning is quite simple and flexible, the hard part is in the structure that decomposes an hierarchy and the unification engine.
+The basic algorithm for HTN planning is quite simple and flexible, the hard part is in the structure that decomposes a hierarchy and the unification engine.
 The task list (input of planning) is decomposed until nothing remains, the base of recursion, returning an empty plan.
 The tail of recursion are the operator and method cases.
 The operator tests if the current task (the first in the list, since it decomposes in order here) can be applied to the current state (which is a visible structure to the other Ruby methods, but does not appear here).
