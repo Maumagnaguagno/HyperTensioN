@@ -1,12 +1,12 @@
 # HyperTensioN [![Build Status](https://travis-ci.org/Maumagnaguagno/HyperTensioN.svg)](https://travis-ci.org/Maumagnaguagno/HyperTensioN)
 **Hierarchical Task Network planning in Ruby**
 
-Hypertension is an Hierarchical Task Network Planner written in Ruby, which means a description of how tasks can be accomplished using method decomposition is required to achieve a plan.
+Hypertension is an [Hierarchical Task Network](https://en.wikipedia.org/wiki/Hierarchical_task_network) Planner written in Ruby, which means a description of how tasks can be accomplished using method decomposition is required to achieve a plan.
 HTN is used as an acronym for Hypertension in medical context, therefore the name was given.
 In order to support other planning languages a module named **[Hype](#hype "Jump to Hype section")** will take care of the conversion process.
 With hierarchical planning it is possible to describe a strategy to obtain a sequence of actions that executes a certain task.
 It works based on decomposition, which is very alike to how humans think, taking mental steps further into primitive operators.
-The current version has most of its algorithm inspired by PyHop/SHOP, with backtracking and unification added.
+This project was inspired by [Pyhop] and [JSHOP].
 
 [Download and play](../../archive/master.zip) or jump to each section to learn more:
 - [**Algorithm**](#algorithm "Jump to Algorithm section"): planning algorithm explanation.
@@ -15,12 +15,12 @@ The current version has most of its algorithm inspired by PyHop/SHOP, with backt
 - [**Execution**](#execution "Jump to Execution section"): Command-line examples for the forgotten.
 - [**API**](#api "Jump to API section"): Variables and methods defined by Hypertension.
 - [**Hype**](#hype "Jump to Hype section"): Follow the Hype and let domain and problem be converted and executed automagically.
-- [**Comparison**](#comparison "Jump to Comparison section"): A brief comparison with JSHOP and PyHop.
+- [**Comparison**](#comparison "Jump to Comparison section"): A brief comparison with JSHOP and Pyhop.
 - [**Changelog**](#changelog "Jump to Changelog section"): a small list of things that happened.
 - [**ToDo's**](#todos "Jump to ToDo's section"): a small list of things to be done.
 
 ## Algorithm
-The [SHOP/JSHOP](http://www.cs.umd.edu/projects/shop/description.html "SHOP/JSHOP project page") algorithm for HTN planning is quite simple and flexible, the hard part is in the structure that decomposes and the unification engine.
+The basic algorithm for HTN planning is quite simple and flexible, the hard part is in the structure that decomposes an hierarchy and the unification engine.
 The task list (input of planning) is decomposed until nothing remains, the base of recursion, returning an empty plan.
 The tail of recursion are the operator and method cases.
 The operator tests if the current task (the first in the list, since it decomposes in order here) can be applied to the current state (which is a visible structure to the other Ruby methods, but does not appear here).
@@ -82,7 +82,7 @@ The result is quite similar to the following regular expression:
 /((move|enter|exit)*report)*/
 ```
 
-We need to match the movement pattern first, the trick part is to avoid repetitions or our robot may be stuck in a loop of A to B and B to A during [search](examples/search/search.jshop "search.jshop").
+We need to match the movement pattern first, the trick part is to avoid repetitions or our robot may be stuck in a loop of A to B and B to A during [search](examples/search/search.jshop).
 Robby needs to remember which locations were visited, let us see this in a recursive format.
 The base of the recursion happens when the object (Robby) is already at the destination, otherwise use move, enter or exit, mark the position and call the recursion again.
 We need to remember to unvisit the locations once we reach our goal to be able to reuse them.
@@ -465,32 +465,32 @@ Domain methods must yield a task list or are nullified, having no decomposition.
 ## Hype
 [**Hype**](Hype.rb) is the framework for parsers and compilers of planning descriptions.
 It will save time and avoid errors during conversion of domains and problems for comparison results with other planners.
-Such conversion step is not uncommon, as JSHOP itself compiles the description to Java code, trying to achieve the best performance possible.
+Such conversion step is not uncommon, as JSHOP2 itself compiles the description to Java code, trying to achieve the best performance possible.
 
 **Parser support**:
 - [Ruby](https://en.wikipedia.org/wiki/Ruby_%28programming_language%29) using an [Intermediate Representation](docs/Representation.md)
 - [PDDL](http://en.wikipedia.org/wiki/Planning_Domain_Definition_Language "PDDL at Wikipedia")
-- [JSHOP](http://www.cs.umd.edu/projects/shop/description.html "SHOP/JSHOP project page")
+- [JSHOP]
 
 **Compiler support**:
 - Hypertension (methods and tasks may not be available if the input was PDDL)
 - [PDDL](http://en.wikipedia.org/wiki/Planning_Domain_Definition_Language "PDDL at Wikipedia") (methods are ignored, goal must be manually converted based on tasks)
-- [JSHOP](http://www.cs.umd.edu/projects/shop/description.html "SHOP/JSHOP project page") (methods and tasks may not be available if the input was PDDL)
+- [JSHOP] (methods and tasks may not be available if the input was PDDL)
 - [Graphviz DOT](http://www.graphviz.org/) (generate a [graph](docs/Graph.md) description to be compiled into an image)
 - [Markdown](http://daringfireball.net/projects/markdown/)
 
 As any parser, the ones provided by Hype are limited in one way or another.
-[PDDL](http://en.wikipedia.org/wiki/Planning_Domain_Definition_Language "PDDL at Wikipedia") have far more features than supported by most planners and JSHOP have 2 different ways to define methods.
+[PDDL](http://en.wikipedia.org/wiki/Planning_Domain_Definition_Language "PDDL at Wikipedia") have far more features than supported by most planners and [JSHOP] have 2 different ways to define methods.
 Methods may be broken into several independent blocks or in the same block without the need to check the same preconditions again.
-Both cases are supported, but we evaluate the preconditions of each set independently while JSHOP only evaluates the last if the first ones evaluated to false in the same block.
+Both cases are supported, but we evaluate the preconditions of each set independently while [JSHOP] only evaluates the last if the first ones evaluated to false in the same block.
 In order to copy the behavior we cannot simply copy the positive preconditions in the negative set and vice-versa.
 Sometimes only one predicate in the set is false, if we copied in the other set for the other methods it would never work.
 It is possible to declare the methods in the same Ruby method (losing label definition), but kills the simplicity we are trying to achieve.
-We also do not support JSHOP axioms and external calls, yet.
+We also do not support [JSHOP] axioms and external calls, yet.
 
 You can always not believe the **Hype** and convert descriptions manually, following a style that achieves a better or faster solution with the indentation that makes you happy.
 You could add counters in the methods and return after generate unified one or more times a specific value.
-It is possible to support the JSHOP behavior putting several generators in one method and returning if the previous one ever unified.
+It is possible to support [JSHOP] behavior putting several generators in one method and returning if the previous one ever unified.
 Well, Hype can do most of the boring stuff so you can play with the details.
 
 ### Parsers
@@ -568,22 +568,22 @@ Since they transform existing structures any value returned is ignored.
 
 ## Comparison
 The main advantage is to be able to define behavior in the core language, without losing clarity, this alone gives a lot of power.
-JSHOP requires the user to dive into a very complex structure to unlock such power.
-PyHop is based on this feature, everything defined in Python, but does not support backtracking and unification, which means the user have to create its own unification system and a domain that does not require backtracking.
-The biggest advantage is not the planning itself, but the parsers and compilers being built around it, so that JSHOP descriptions can be converted automatically.
+JSHOP2 requires the user to dive into a very complex structure to unlock such power.
+[Pyhop] is based on this feature, everything defined in Python, but does not support backtracking and unification, which means the user have to create its own unification system and a domain that does not require backtracking.
+The biggest advantage is not the planner itself, but the parsers and compilers built around it, so that descriptions can be converted automatically.
 Perhaps the most invisible advantage is the lack of custom classes, every object used during planning is defined as one of the core objects.
 Once Strings, Arrays and Hashes are understood, the entire Hypertension module is just a few methods away from complete understanding.
 
-Among the lacking features is interleaved/unordered execution of tasks, a feature that JSHOP2 supports and is extremely important to achieve good plans in some cases.
+Among the lacking features is interleaved/unordered execution of tasks, a feature that JSHOP2 supports and is extremely important to achieve good plans in some cases, and lazy variable evaluation.
 We only support unordered tasks at the problem level and do not interleave them during decomposition.
 Since we test for explicit goals only after the plan has been found with a sequence of tasks, a failure is considered enough proof to try other orderings, not other unifications with the same sequence of tasks.
 
 ## Changelog
 - Mar 2014
-  - Converted PyHop to Ruby
+  - Converted Pyhop to Ruby
   - Data structures modified
 - Jun 2014
-  - converted ND_PyHop to Ruby
+  - converted ND_Pyhop to Ruby
   - Data structures modified
   - Using previous state for state_valuation
   - Added support for minimum probability
@@ -613,3 +613,6 @@ Since we test for explicit goals only after the plan has been found with a seque
 - Anytime mode
 - Debugger (why is the planner not returning the expected plan?)
 - More tests
+
+[JSHOP]: http://www.cs.umd.edu/projects/shop/description.html "SHOP/JSHOP project page"
+[Pyhop]: https://bitbucket.org/dananau/pyhop "Pyhop project page"
