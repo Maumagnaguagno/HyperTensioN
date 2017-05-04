@@ -106,23 +106,23 @@ module Robby
     )
   end
 
-  def report(bot, source, thing)
+  def report(bot, source, beacon)
     apply_operator(
       # Positive preconditions
       [
         ['robot', bot],
         ['location', source],
-        ['beacon', thing],
+        ['beacon', beacon],
         ['at', bot, source],
-        ['in', thing, source]
+        ['in', beacon, source]
       ],
       # Negative preconditions
       [
-        ['reported', bot, thing]
+        ['reported', bot, beacon]
       ],
       # Add effects
       [
-        ['reported', bot, thing]
+        ['reported', bot, beacon]
       ],
       # Del effects
       []
