@@ -13,8 +13,7 @@ module Grammar
       production_or = []
       met.drop(2).each {|dec|
         production_or << "#{dec.first}(#{parameters})"
-        production_and = []
-        dec[4].each {|subtask| production_and << "#{subtask.first}(#{subtask.drop(1).join(' ')})"}
+        production_and = dec[4].map {|subtask| "#{subtask.first}(#{subtask.drop(1).join(' ')})"}
         puts "#{dec.first}(#{parameters}) ->\n  #{production_and.empty? ? 'empty' : production_and.join(" &\n  ")}"
       }
       next if production_or.size == 1 and production_or.first == left_token
