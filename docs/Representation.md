@@ -52,6 +52,7 @@ Compare the following PDDL action and JSHOP operator:
 ```
 
 They represent the same data, with PDDL giving more tokens to clarify what each field represents.
+Preconditions and effects are conjunctions of predicates and more complex expressions are yet to be supported.
 The following Ruby code is the intermediate representation obtained by one of the above representations.
 
 ```Ruby
@@ -92,6 +93,7 @@ The following method is the swap from the [basic JSHOP domain](../examples/basic
 )
 ```
 
+Preconditions are a conjunction of predicates and more complex expressions are yet to be supported, while subtasks are always considered to be ordered.
 And is represented by:
 
 ```Ruby
