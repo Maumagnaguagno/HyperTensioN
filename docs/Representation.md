@@ -166,12 +166,10 @@ Compare the following PDDL and JSHOP problem files:
   (:init
     (have kiwi)
   )
-  (:goal
-    (and
-      (not (have kiwi))
-      (have banjo)
-    )
-  )
+  (:goal (and
+    (not (have kiwi))
+    (have banjo)
+  ))
 )
 ```
 
