@@ -66,13 +66,11 @@ module Refinements
         # Subtask arity check and noops removal
         subtasks.reject! {|task|
           if noops.include?(task.first)
-            puts "  #{label} subtask #{task.first} removed"
+            puts "  #{label} subtask #{task.first} removed" if debug
             true
-          elsif op = operators.assoc(task.first) then raise "#{label} subtask #{task.first} expected #{op[1].size} terms instead of #{task.size.pred}" if op[1].size != task.size.pred
-          elsif met = methods.assoc(task.first) then raise "#{label} subtask #{task.first} expected #{met[1].size} terms instead of #{task.size.pred}" if met[1].size != task.size.pred
-          else
-            raise "#{label} subtask #{task.first} is unknown"
-            false
+          elsif t = operators.assoc(task.first) || methods.assoc(task.first)
+            raise "#{label} subtask #{task.first} expected #{t[1].size} terms instead of #{task.size.pred}" if t[1].size != task.size.pred
+          else raise "#{label} subtask #{task.first} is unknown"
           end
         }
       }
