@@ -185,7 +185,7 @@ module Refinements
       parameters.each {|i| name << i.tr('?','_')}
       unless operators.assoc(name)
         operators << [name, parameters, precond_pos, precond_not, effect_add, effect_del]
-        puts "  Macro operator #{name}"
+        puts "  Macro operator #{name}" if debug
       end
       new_subtasks.unshift([name, *parameters])
       macro.clear
