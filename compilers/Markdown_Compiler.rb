@@ -7,7 +7,7 @@ module Markdown_Compiler
 
   def compile_domain(domain_name, problem_name, operators, methods, predicates, state, tasks, goal_pos, goal_not)
     output = "# #{domain_name.capitalize}\n## Predicates\n"
-    predicates.each {|k,v| output << "- #{k}: #{v ? 'mutable' : 'invariant'}\n"}
+    predicates.each {|k,v| output << "- **#{k}**: #{v ? 'mutable' : 'invariant'}\n"}
     unused_predicates = {}
     state.each {|pre| unused_predicates[pre.first] = nil unless predicates.include?(pre.first)}
     unused_predicates.each_key {|pre| output << "- #{pre}: unused\n"}
