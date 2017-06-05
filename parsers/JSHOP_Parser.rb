@@ -88,7 +88,7 @@ module JSHOP_Parser
       raise 'Found group instead of domain name' if tokens.first.instance_of?(Array)
       @domain_name = tokens.shift
       @predicates = {}
-      raise 'More than one group to define domain content' if tokens.size != 1
+      raise 'More than one group to define domain' if tokens.size != 1
       tokens = tokens.shift
       while group = tokens.shift
         case group.first
