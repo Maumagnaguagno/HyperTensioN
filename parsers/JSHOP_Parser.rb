@@ -49,7 +49,7 @@ module JSHOP_Parser
     name.sub!(/^!!/,'invisible_') or name.sub!(/^!/,'')
     raise "Action #{name} redefined" if @operators.assoc(name)
     raise "Operator #{name} have size #{op.size} instead of 4" if op.size != 4
-    @operators << [name, op.shift, pos = [], neg = []]
+    @operators << operator = [name, op.shift, pos = [], neg = []]
     # Preconditions
     raise "Error with #{name} preconditions" unless (group = op.shift).instance_of?(Array)
     group.each {|pre|
@@ -57,8 +57,8 @@ module JSHOP_Parser
       @predicates[pre.first.freeze] ||= false
     }
     # Effects
-    define_effects(name, @operators.last[5] = op.shift)
-    define_effects(name, @operators.last[4] = op.shift)
+    define_effects(name, operator[5] = op.shift)
+    define_effects(name, operator[4] = op.shift)
   end
 
   #-----------------------------------------------
