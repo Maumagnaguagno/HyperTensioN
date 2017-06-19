@@ -4,7 +4,31 @@ module JSHOP_Parser
   attr_reader :domain_name, :problem_name, :operators, :methods, :predicates, :state, :tasks, :goal_pos, :goal_not
 
   NOT = 'not'
-  NIL = 'nil'
+
+  #-----------------------------------------------
+  # Scan tokens
+  #-----------------------------------------------
+
+  def scan_tokens(filename)
+    (str = IO.read(filename)).gsub!(/;.*$/,'')
+    str.downcase!
+    stack = []
+    list = []
+    str.scan(/[()]|[^\s()]+/) {|t|
+      case t
+      when '('
+        stack << list
+        list = []
+      when ')'
+        stack.empty? ? raise('Missing open parentheses') : list = stack.pop << list
+      when 'nil' then list << []
+      else list << t
+      end
+    }
+    raise 'Missing close parentheses' unless stack.empty?
+    raise 'Malformed expression' if list.size != 1
+    list.first
+  end
 
   #-----------------------------------------------
   # Define effects
@@ -27,16 +51,14 @@ module JSHOP_Parser
     raise "Operator #{name} have size #{op.size} instead of 4" if op.size != 4
     @operators << [name, op.shift, pos = [], neg = []]
     # Preconditions
-    if (group = op.shift) != NIL
-      raise "Error with #{name} preconditions" unless group.instance_of?(Array)
-      group.each {|pre|
-        pre.first != NOT ? pos << pre : pre.size == 2 ? neg << pre = pre.last : raise("Error with #{name} negative preconditions")
-        @predicates[pre.first.freeze] ||= false
-      }
-    end
+    raise "Error with #{name} preconditions" unless (group = op.shift).instance_of?(Array)
+    group.each {|pre|
+      pre.first != NOT ? pos << pre : pre.size == 2 ? neg << pre = pre.last : raise("Error with #{name} negative preconditions")
+      @predicates[pre.first.freeze] ||= false
+    }
     # Effects
-    @operators.last[5] = (group = op.shift) != NIL ? define_effects(name, group) : []
-    @operators.last[4] = (group = op.shift) != NIL ? define_effects(name, group) : []
+    define_effects(name, @operators.last[5] = op.shift)
+    define_effects(name, @operators.last[4] = op.shift)
   end
 
   #-----------------------------------------------
@@ -58,22 +80,16 @@ module JSHOP_Parser
       end
       method << [label, free_variables = [], pos = [], neg = []]
       # Preconditions
-      if (group = met.shift) != NIL
-        raise "Error with #{name} preconditions" unless group.instance_of?(Array)
-        group.each {|pre|
-          pre.first != NOT ? pos << pre : pre.size == 2 ? neg << pre = pre.last : raise("Error with #{name} negative preconditions")
-          @predicates[pre.first.freeze] ||= false
-          free_variables.concat(pre.select {|i| i.start_with?('?') and not method[1].include?(i)})
-        }
-        free_variables.uniq!
-      end
+      raise "Error with #{name} preconditions" unless (group = met.shift).instance_of?(Array)
+      group.each {|pre|
+        pre.first != NOT ? pos << pre : pre.size == 2 ? neg << pre = pre.last : raise("Error with #{name} negative preconditions")
+        @predicates[pre.first.freeze] ||= false
+        free_variables.concat(pre.select {|i| i.start_with?('?') and not method[1].include?(i)})
+      }
+      free_variables.uniq!
       # Subtasks
-      if (group = met.shift) != NIL
-        raise "Error with #{name} subtasks" unless group.instance_of?(Array)
-        group.each {|pre| pre.first.sub!(/^!!/,'invisible_') or pre.first.sub!(/^!/,'')}
-        method.last << group
-      else method.last << []
-      end
+      raise "Error with #{name} subtasks" unless (group = met.shift).instance_of?(Array)
+      method.last << group.each {|pre| pre.first.sub!(/^!!/,'invisible_') or pre.first.sub!(/^!/,'')}
     end
   end
 
@@ -82,7 +98,7 @@ module JSHOP_Parser
   #-----------------------------------------------
 
   def parse_domain(domain_filename)
-    if (tokens = PDDL_Parser.scan_tokens(domain_filename)).instance_of?(Array) and tokens.shift == 'defdomain'
+    if (tokens = scan_tokens(domain_filename)).instance_of?(Array) and tokens.shift == 'defdomain'
       @operators = []
       @methods = []
       raise 'Found group instead of domain name' if tokens.first.instance_of?(Array)
@@ -106,17 +122,14 @@ module JSHOP_Parser
   #-----------------------------------------------
 
   def parse_problem(problem_filename)
-    if (tokens = PDDL_Parser.scan_tokens(problem_filename)).instance_of?(Array) and tokens.size == 5 and tokens.shift == 'defproblem'
+    if (tokens = scan_tokens(problem_filename)).instance_of?(Array) and tokens.size == 5 and tokens.shift == 'defproblem'
       @problem_name = tokens.shift
       raise 'Different domain specified in problem file' if @domain_name != tokens.shift
-      @state = (group = tokens.shift) != NIL ? group : []
-      if tokens.first != NIL
-        @tasks = tokens.shift
-        # Tasks may be ordered or unordered
-        @tasks.shift unless ordered = (@tasks.first != ':unordered')
-        @tasks.each {|pre| pre.first.sub!(/^!!/,'invisible_') or pre.first.sub!(/^!/,'')}.unshift(ordered)
-      else @tasks = []
-      end
+      @state = tokens.shift
+      @tasks = tokens.shift
+      # Tasks may be ordered or unordered
+      @tasks.shift unless ordered = (@tasks.first != ':unordered')
+      @tasks.each {|pre| pre.first.sub!(/^!!/,'invisible_') or pre.first.sub!(/^!/,'')}.unshift(ordered)
       @goal_pos = []
       @goal_not = []
     else raise "File #{problem_filename} does not match problem pattern"
