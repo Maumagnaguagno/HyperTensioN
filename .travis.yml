@@ -12,6 +12,12 @@ script:
   # Tests
   - ruby tests/sphygmomanometer.rb
   - ruby tests/frenesi.rb
+  - ruby tests/dependent.rb
+  - ruby tests/miner.rb
+  - ruby tests/paisley.rb
+  - ruby tests/rescue.rb
+  - ruby tests/simple.rb
+  - ruby tests/walker.rb
   # Examples
   - ruby examples/experiments/Expression.rb
   - ruby examples/experiments/Protection.rb
@@ -23,3 +29,5 @@ script:
   - ruby examples/robby/pb1.rb
   - ruby Hype.rb examples/basic/basic.jshop examples/basic/pb1.jshop run
   - ruby Hype.rb examples/hanoi/hanoi.jshop examples/hanoi/pb1.jshop run
+  - ruby examples/goldminer/pb1.rb
+  - ruby examples/goldminer/pb1_const_objects.rb
