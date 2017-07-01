@@ -98,13 +98,12 @@ module JSHOP_Parser
   #-----------------------------------------------
 
   def parse_domain(domain_filename)
-    if (tokens = scan_tokens(domain_filename)).instance_of?(Array) and tokens.shift == 'defdomain'
-      @operators = []
-      @methods = []
+    if (tokens = scan_tokens(domain_filename)).instance_of?(Array) and tokens.size == 3 and tokens.shift == 'defdomain'
       raise 'Found group instead of domain name' if tokens.first.instance_of?(Array)
       @domain_name = tokens.shift
+      @operators = []
+      @methods = []
       @predicates = {}
-      raise 'More than one group to define domain' if tokens.size != 1
       tokens = tokens.shift
       while group = tokens.shift
         case group.first
