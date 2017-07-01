@@ -99,14 +99,14 @@ module Hyper_Compiler
     objects = []
     start_hash = {}
     predicates.each_key {|i| start_hash[i] = []}
-    state.each {|pred,*terms|
-      start_hash[pred] << terms if predicates.include?(pred)
+    state.each {|pre,*terms|
+      start_hash[pre] << terms if predicates.include?(pre)
       objects.concat(terms)
     }
-    goal_pos.each {|pred,*terms| objects.concat(terms)}
-    goal_not.each {|pred,*terms| objects.concat(terms)}
+    goal_pos.each {|pre,*terms| objects.concat(terms)}
+    goal_not.each {|pre,*terms| objects.concat(terms)}
     ordered = tasks.shift
-    tasks.each {|pred,*terms| objects.concat(terms)}
+    tasks.each {|pre,*terms| objects.concat(terms)}
     # Objects
     objects.uniq!
     objects.each {|i| problem_str << "#{i} = '#{i}'\n"}

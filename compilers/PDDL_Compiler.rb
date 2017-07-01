@@ -47,7 +47,7 @@ module PDDL_Compiler
       objects.concat(pre.drop(1))
       start_str << "    (#{pre.join(' ')})\n"
     }
-    tasks.drop(1).each {|pred,*terms| objects.concat(terms)}
+    tasks.drop(1).each {|pre,*terms| objects.concat(terms)}
     goal_str = ''
     goal_pos.each {|pre|
       objects.concat(pre.drop(1))
