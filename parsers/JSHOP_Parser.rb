@@ -45,10 +45,10 @@ module JSHOP_Parser
 
   def parse_operator(op)
     op.shift
-    raise 'Action without name definition' unless (name = op.first.shift).instance_of?(String)
+    raise 'Operator without name definition' unless (name = op.first.shift).instance_of?(String)
     name.sub!(/^!!/,'invisible_') or name.sub!(/^!/,'')
-    raise "Action #{name} redefined" if @operators.assoc(name)
-    raise "Operator #{name} have size #{op.size} instead of 4" if op.size != 4
+    raise "#{name} have size #{op.size} instead of 4" if op.size != 4
+    raise "#{name} redefined" if @operators.assoc(name)
     @operators << operator = [name, op.shift, pos = [], neg = []]
     # Preconditions
     raise "Error with #{name} preconditions" unless (group = op.shift).instance_of?(Array)
@@ -75,7 +75,7 @@ module JSHOP_Parser
       # Optional label, add index for the unlabeled decompositions
       if met.first.instance_of?(String)
         label = met.shift
-        raise "Method #{name} redefined #{label} decomposition" if method.drop(2).assoc(label)
+        raise "#{name} redefined #{label} decomposition" if method.drop(2).assoc(label)
       else label = "case_#{method.size - 2}"
       end
       method << [label, free_variables = [], pos = [], neg = []]

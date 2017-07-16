@@ -39,7 +39,7 @@ module PDDL_Parser
   def parse_action(op)
     op.shift
     raise 'Action without name definition' unless (name = op.shift).instance_of?(String)
-    raise "Action #{name} redefined" if @operators.assoc(name)
+    raise "#{name} redefined" if @operators.assoc(name)
     @operators << [name, free_variables = [], pos = [], neg = [], add = [], del = []]
     while group = op.shift
       case group
@@ -59,7 +59,7 @@ module PDDL_Parser
             end
           end
         end
-        raise "Action #{name} with repeated parameters" if free_variables.uniq!
+        raise "#{name} with repeated parameters" if free_variables.uniq!
       when ':precondition'
         raise "Error with #{name} precondition" unless (group = op.shift).instance_of?(Array)
         unless group.empty?
