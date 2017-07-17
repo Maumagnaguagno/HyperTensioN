@@ -122,6 +122,7 @@ Our movement method ``swap_at`` is there, without any code describing its behavi
 You could compare this with a C header file holding function prototypes.
 Each method ``swap_at__XYZ`` describe one possible case of decomposition of ``swap_at``
 It is also possible to avoid listing all of them and filter based on their name (after they were declared):
+
 ```Ruby
 @domain['swap_at'] = instance_methods.find_all {|method| method =~ /^swap_at/}
 ```
@@ -422,6 +423,7 @@ require './Hypertension'
 Hypertension.state = {...}
 Hypertension.applicable?(...)
 ```
+
 ```Ruby
 # Mix in
 require './Hypertension'
