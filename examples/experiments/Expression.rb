@@ -3,24 +3,15 @@
 #-----------------------------------------------
 
 def compute(expression)
-  case command = expression.shift
-  when :and
-    expression.all? {|e| compute(e)}
-  when :or
-    expression.any? {|e| compute(e)}
-  when :xor
-    expression.one? {|e| compute(e)}
-  when :not
-    expression.none? {|e| compute(e)}
-  when :call
-    call(expression)
-  when :forall
-    block = expression.pop
-    forall?(*expression, &block)
-  when :exists
-    block = expression.pop
-    exists?(*expression, &block)
-  else @state[command].include?(expression)
+  case first = expression.shift
+  when :and then expression.all? {|e| evaluate(e)}
+  when :or then expression.any? {|e| evaluate(e)}
+  when :xor then expression.one? {|e| evaluate(e)}
+  when :not then expression.none? {|e| evaluate(e)}
+  when :call then call(expression)
+  when :forall then forall?(*expression)
+  when :exists then exists?(*expression)
+  else @state[first].include?(expression)
   end
 end
 
