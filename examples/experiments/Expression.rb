@@ -1,8 +1,8 @@
 #-----------------------------------------------
-# Compute
+# Evaluate
 #-----------------------------------------------
 
-def compute(expression)
+def evaluate(expression)
   case first = expression.shift
   when :and then expression.all? {|e| evaluate(e)}
   when :or then expression.any? {|e| evaluate(e)}
@@ -59,7 +59,7 @@ if $0 == __FILE__
   class Expression < Test::Unit::TestCase
     include Hypertension
 
-    def test_compute
+    def test_evaluate
       @state = {:p => nil}
       variables = [[:a],[:b],[:c],[:d]]
       5.times {|i|
@@ -79,7 +79,7 @@ if $0 == __FILE__
               ]
             ]
           ]
-          assert_equal((pa and (pb or (pc and not pd))), compute(expression))
+          assert_equal((pa and (pb or (pc and not pd))), evaluate(expression))
         }
       }
     end
@@ -87,16 +87,16 @@ if $0 == __FILE__
     def test_call
       # (* 1 2 3 4)
       assert_equal(24, call(['*', 1, 2, 3, 4]))
-      assert_equal(24, compute([:call, '*', 1, 2, 3, 4]))
+      assert_equal(24, evaluate([:call, '*', 1, 2, 3, 4]))
       # (= 5 (+ 2 3))
       assert_equal(true, call(['==', 5, [:call, '+', 2, 3]]))
-      assert_equal(true, compute([:call, '==', 5, [:call, '+', 2, 3]]))
+      assert_equal(true, evaluate([:call, '==', 5, [:call, '+', 2, 3]]))
       # (= (+ 1 2 3) 6)
       assert_equal(true, call(['==', [:call, '+', 1, 2, 3], 6]))
-      assert_equal(true, compute([:call, '==', [:call, '+', 1, 2, 3], 6]))
+      assert_equal(true, evaluate([:call, '==', [:call, '+', 1, 2, 3], 6]))
       # (= (+ a b c) abc)
       assert_equal(true, call(['==', [:call, '+', 'a', 'b', 'c'], 'abc']))
-      assert_equal(true, compute([:call, '==', [:call, '+', 'a', 'b', 'c'], 'abc']))
+      assert_equal(true, evaluate([:call, '==', [:call, '+', 'a', 'b', 'c'], 'abc']))
     end
 
     def test_quantification_forall?
