@@ -470,7 +470,7 @@ It will save time and avoid errors during conversion of domains and problems for
 Such conversion step is not uncommon, as JSHOP2 itself compiles the description to Java code, trying to achieve the best performance possible.
 
 **Parser support**:
-- [Ruby](https://en.wikipedia.org/wiki/Ruby_%28programming_language%29) using an [Intermediate Representation](docs/Representation.md)
+- [Ruby](https://en.wikipedia.org/wiki/Ruby_%28programming_language%29) using an [Intermediate Representation]
 - [PDDL](http://en.wikipedia.org/wiki/Planning_Domain_Definition_Language "PDDL at Wikipedia")
 - [JSHOP]
 
@@ -496,7 +496,7 @@ It is possible to support [JSHOP] behavior putting several generators in one met
 Well, Hype can do most of the boring stuff so you can play with the details.
 
 ### Parsers
-Parsers are modules that read planning descriptions and convert the information to an [Intermediate Representation](docs/Representation.md).
+Parsers are modules that read planning descriptions and convert the information to an [Intermediate Representation].
 The basic parser is a module with two methods that fill the planning attributes:
 
 ```Ruby
@@ -524,7 +524,7 @@ This allows uncommon, but possible, binary files.
 Since parsers create structures no value is expected to be returned by ``parse_domain`` and ``parse_problem``.
 
 ### Extensions
-Extensions are modules that analyze or transform planning descriptions in the [Intermediate Representation](docs/Representation.md) format.
+Extensions are modules that analyze or transform planning descriptions in the [Intermediate Representation] format.
 The basic extension is a module with one method to extend the attributes obtained from the parser:
 
 ```Ruby
@@ -543,7 +543,7 @@ They can be used to clean, warn and fill gaps left by the original description.
 Since extensions transform existing structures no value is expected to be returned by ``apply``.
 
 ### Compilers
-Compilers are modules that write planning descriptions based on the information available in the [Intermediate Representation](docs/Representation.md) format.
+Compilers are modules that write planning descriptions based on the information available in the [Intermediate Representation] format.
 The basic compiler is a module with two methods to compile problem and domain files to text:
 
 ```Ruby
@@ -566,7 +566,7 @@ The second option is to return a string to be written to a common text file.
 If the second option was selected the output filename is the input filename with the new extension appended, therefore ``input.pddl`` to ``jshop`` would be ``input.pddl.jshop``, so no information about the source is lost.
 Any compiler have access to the parser attributes, which means one module can optimize before another compiles.
 In fact this is the core idea behind Hype, be able to parse, modify and compile domains without having to worry about language support.
-Future languages compatible with the [Intermediate Representation](docs/Representation.md) format could be supported by just adding a new parser and compiler.
+Future languages compatible with the [Intermediate Representation] format could be supported by just adding a new parser and compiler.
 The compiler is expected to not modify any parameter, use an extension to achieve such result.
 
 ## Comparison
@@ -617,5 +617,6 @@ Since we test for explicit goals only after the plan has been found with a seque
 - Debugger (why is the planner not returning the expected plan?)
 - More tests
 
+[Intermediate Representation]: docs/Representation.md
 [JSHOP]: http://www.cs.umd.edu/projects/shop/description.html "SHOP/JSHOP project page"
 [Pyhop]: https://bitbucket.org/dananau/pyhop "Pyhop project page"
