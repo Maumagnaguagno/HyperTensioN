@@ -28,8 +28,11 @@ module Hype
     debug - same as run with execution log
     nil   - avoid print parsed data\n
   Extensions:
+    patterns    - add methods and tasks based on operator patterns
+    dummy       - add brute-force methods to operators
     refinements - check and refine hierarchical structure
-    grammar     - print hierarchical structure grammar"
+    grammar     - print hierarchical structure grammar
+    complexity  - print estimated complexity of planning description"
 
   #-----------------------------------------------
   # Predicates to string
@@ -132,10 +135,10 @@ Problem #{@parser.problem_name}
   def extend(extension)
     case extension
     when 'patterns' then Patterns
+    when 'dummy' then Dummy
     when 'refinements' then Refinements
     when 'grammar' then Grammar
     when 'complexity' then Complexity
-    when 'dummy' then Dummy
     else raise "Unknown extension #{extension}"
     end.apply(
       @parser.operators,
