@@ -521,6 +521,26 @@ With the parser completed we need to connect with the Hype based on the file ext
 It is expected that domain and problem files have the same extension to avoid incomplete data from mixed inputs.
 The parser is responsible for file reading.
 This allows uncommon, but possible, binary files.
+Since parsers create structures no value is expected to be returned by ``parse_domain`` and ``parse_problem``.
+
+### Extensions
+Extensions are modules that analyze or transform planning descriptions in the [Intermediate Representation](docs/Representation.md) format.
+The basic extension is a module with one method to extend the attributes obtained from the parser:
+
+```Ruby
+module Extension
+  extend self
+
+  def apply(operators, methods, predicates, state, tasks, goal_pos, goal_not)
+    # TODO modify attributes
+  end
+end
+```
+
+Extensions are supposed to be executed between the parsing and compilation phases.
+More than one extension may be executed in the process, even repeatedly.
+They can be used to clean, warn and fill gaps left by the original description.
+Since extensions transform existing structures no value is expected to be returned by ``apply``.
 
 ### Compilers
 Compilers are modules that write planning descriptions based on the information available in the [Intermediate Representation](docs/Representation.md) format.
@@ -540,33 +560,14 @@ module Bar_Compiler
 end
 ```
 
-Unlike parsers, compilers have a choice in their output.
+Unlike parsers, ``compile_domain`` and ``compile_problem`` have a choice in their output.
 The first option is for uncommon outputs, they must be handled inside the methods and return ``nil``.
-The second option is to output a more common text file and return the string to be written.
+The second option is to return a string to be written to a common text file.
 If the second option was selected the output filename is the input filename with the new extension appended, therefore ``input.pddl`` to ``jshop`` would be ``input.pddl.jshop``, so no information about the source is lost.
 Any compiler have access to the parser attributes, which means one module can optimize before another compiles.
 In fact this is the core idea behind Hype, be able to parse, modify and compile domains without having to worry about language support.
 Future languages compatible with the [Intermediate Representation](docs/Representation.md) format could be supported by just adding a new parser and compiler.
 The compiler is expected to not modify any parameter, use an extension to achieve such result.
-
-### Extensions
-Extensions are modules that transform planning descriptions.
-The basic extension is a module with one method to extend the attributes obtained from the parser:
-
-```Ruby
-module Extension
-  extend self
-
-  def apply(operators, methods, predicates, state, tasks, goal_pos, goal_not)
-    # TODO modify attributes
-  end
-end
-```
-
-Extensions are supposed to be executed between the parsing and compilation phases.
-More than one extension may be executed in the process, even repeatedly.
-They can be used to clean, warn and fill gaps left by the original description.
-Since they transform existing structures any value returned is ignored.
 
 ## Comparison
 The main advantage is to be able to define behavior in the core language, without losing clarity, this alone gives a lot of power.
