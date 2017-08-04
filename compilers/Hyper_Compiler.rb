@@ -11,8 +11,7 @@ module Hyper_Compiler
     if predicates.empty?
       output << "\n#{indentation}#{yielder}[]"
     else
-      group = predicates.map {|g| g.map {|i| i.start_with?('?') ? i.sub(/^\?/,'') : "'#{i}'"}.join(', ')}.join("],\n#{indentation}  [")
-      output << "\n#{indentation}#{yielder}[\n#{indentation}  [" << group << "]\n#{indentation}]"
+      output << "\n#{indentation}#{yielder}[\n#{indentation}  [" << predicates.map {|g| g.map {|i| i.start_with?('?') ? i.sub(/^\?/,'') : "'#{i}'"}.join(', ')}.join("],\n#{indentation}  [") << "]\n#{indentation}]"
     end
   end
 
