@@ -474,9 +474,9 @@ Such conversion step is not uncommon, as JSHOP2 itself compiles the description 
 - [JSHOP]
 
 **Compiler support**:
-- Hypertension (methods and tasks may not be available if the input was PDDL)
+- Hypertension (methods and tasks may be unavailable if the input was PDDL)
 - [PDDL](http://en.wikipedia.org/wiki/Planning_Domain_Definition_Language "PDDL at Wikipedia") (methods are ignored, goal must be manually converted based on tasks)
-- [JSHOP] (methods and tasks may not be available if the input was PDDL)
+- [JSHOP] (methods and tasks may be unavailable if the input was PDDL)
 - [Graphviz DOT](http://www.graphviz.org/) (generate a [graph](docs/Graph.md) description to be compiled into an image)
 - [Markdown](http://daringfireball.net/projects/markdown/)
 
