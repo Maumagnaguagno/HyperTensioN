@@ -119,7 +119,6 @@ Problem #{@parser.problem_name}
   def parse(domain, problem)
     raise 'Incompatible extensions between domain and problem' if File.extname(domain) != File.extname(problem)
     @parser = case File.extname(domain)
-    when '.rb' then Hyper_Parser
     when '.jshop' then JSHOP_Parser
     when '.pddl' then PDDL_Parser
     else raise "Unknown file extension #{File.extname(domain)}"

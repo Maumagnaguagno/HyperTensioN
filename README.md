@@ -470,7 +470,6 @@ It will save time and avoid errors during conversion of domains and problems for
 Such conversion step is not uncommon, as JSHOP2 itself compiles the description to Java code, trying to achieve the best performance possible.
 
 **Parser support**:
-- [Ruby](https://en.wikipedia.org/wiki/Ruby_%28programming_language%29) using an [Intermediate Representation]
 - [PDDL](http://en.wikipedia.org/wiki/Planning_Domain_Definition_Language "PDDL at Wikipedia")
 - [JSHOP]
 
