@@ -194,7 +194,7 @@ module Patterns
         # Prefer dependency with same predicate goal
         sub = nil
         methods.each {|met2|
-          if met2.first =~ /^dependency_(?!#{dependent})_before_#{dependency}_for_([\w-]+)$/
+          if met2.first =~ /^dependency_(?!#{dependent})[\w-]+_before_#{dependency}_for_([\w-]+)$/
             if $1 == pred
               sub = met2
               break
