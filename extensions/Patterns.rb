@@ -225,7 +225,11 @@ module Patterns
         }
         if sub
           puts "  #{met[3][4][0].first} to #{sub.first} in #{met.first}" if debug
-          met[3][4][0] = met[4][4][1] = sub.first(2).flatten
+          if met[4]
+            met[3][4][0] = met[4][4][1] = sub.first(2).flatten
+          else
+            met[3][4][0] = sub.first(2).flatten
+          end
           # TODO fill preconditions
         end
 =begin
