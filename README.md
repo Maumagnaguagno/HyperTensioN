@@ -186,6 +186,7 @@ end
 
 def set_debug(term)
   @debug = term
+  true # Otherwise term is returned
 end
 ```
 
@@ -459,29 +460,36 @@ In case of failure, ``nil`` is returned.
 - ``task_permutations(state, tasks, goal_pos, goal_not)`` tries several task permutations to achieve unordered decomposition, it is used by ``problem`` when explicit goals are given. Returns a plan or ``nil``.
 
 Domain operators can be defined without ``apply_operator`` and will have the return value considered.
-  - ``false`` or ``nil`` means the operator has failed.
-  - Any other value means the operator was applied with success.
+- ``false`` or ``nil`` means the operator has failed.
+- Any other value means the operator was applied with success.
 
 Domain methods must yield a task list or are nullified, having no decomposition.
 
 ## Hype
-[**Hype**](Hype.rb) is the framework for parsers and compilers of planning descriptions.
+[**Hype**](Hype.rb) is the framework for parsers, extensions and compilers of planning descriptions.
 It will save time and avoid errors during conversion of domains and problems for comparison results with other planners.
-Such conversion step is not uncommon, as JSHOP2 itself compiles the description to Java code, trying to achieve the best performance possible.
+Such conversion step is not new, as JSHOP2 itself compiles the description to Java code to achieve a better performance.
 
-**Parser support**:
-- [PDDL](http://en.wikipedia.org/wiki/Planning_Domain_Definition_Language "PDDL at Wikipedia")
+**Parsers**:
+- [PDDL]
 - [JSHOP]
 
-**Compiler support**:
-- Hypertension (methods and tasks may be unavailable if the input was PDDL)
-- [PDDL](http://en.wikipedia.org/wiki/Planning_Domain_Definition_Language "PDDL at Wikipedia") (methods are ignored, goal must be manually converted based on tasks)
-- [JSHOP] (methods and tasks may be unavailable if the input was PDDL)
+**Extensions**:
+- Patterns generate methods based on operator patterns, map goal state to tasks
+- Dummy generate brute-force methods that try to achieve predicates in the goal state
+- Refinements TBA
+- Grammar TBA
+- Complexity TBA
+
+**Compilers**:
+- Hypertension (methods and tasks are unavailable for a PDDL input without extensions)
+- [PDDL] (methods are ignored, goal must be manually converted based on tasks)
+- [JSHOP] (methods and tasks are unavailable for a PDDL input without extensions)
 - [Graphviz DOT](http://www.graphviz.org/) (generate a [graph](docs/Graph.md) description to be compiled into an image)
 - [Markdown](http://daringfireball.net/projects/markdown/)
 
 As any parser, the ones provided by Hype are limited in one way or another.
-[PDDL](http://en.wikipedia.org/wiki/Planning_Domain_Definition_Language "PDDL at Wikipedia") have far more features than supported by most planners and [JSHOP] have 2 different ways to define methods.
+[PDDL] have far more features than supported by most planners and [JSHOP] have 2 different ways to define methods.
 Methods may be broken into several independent blocks or in the same block without the need to check the same preconditions again.
 Both cases are supported, but we evaluate the preconditions of each set independently while [JSHOP] only evaluates the last if the first ones evaluated to false in the same block.
 In order to copy the behavior we cannot simply copy the positive preconditions in the negative set and vice-versa.
@@ -617,5 +625,6 @@ Since we test for explicit goals only after the plan has been found with a seque
 - More tests
 
 [Intermediate Representation]: docs/Representation.md
+[PDDL]: http://en.wikipedia.org/wiki/Planning_Domain_Definition_Language "PDDL at Wikipedia"
 [JSHOP]: http://www.cs.umd.edu/projects/shop/description.html "SHOP/JSHOP project page"
 [Pyhop]: https://bitbucket.org/dananau/pyhop "Pyhop project page"
