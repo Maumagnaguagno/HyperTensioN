@@ -475,8 +475,8 @@ Such conversion step is not new, as JSHOP2 itself compiles the description to Ja
 - [JSHOP]
 
 **Extensions**:
-- Patterns generate methods based on operator patterns, map goal state to tasks
-- Dummy generate brute-force methods that try to achieve predicates in the goal state
+- Patterns (generate methods based on operator patterns, map goal state to tasks)
+- [Dummy](docs/Dummy.md) (generate brute-force methods that try to achieve goal predicates)
 - Refinements TBA
 - Grammar TBA
 - Complexity TBA
