@@ -1,4 +1,4 @@
-Based on [Complexity Results for HTN Planning](http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.476.6897&rep=rep1&type=pdf)
+Based on [Complexity Results for HTN Planning](https://pdfs.semanticscholar.org/fa4e/c2d29c9942ad290e6ac485e9d2c93f842d1c.pdf)
 
 ```Ruby
 Algorithm dummy(operators, initial state, goal state)

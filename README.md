@@ -195,8 +195,8 @@ We need to define every single case as a different method.
 The order they appear in the domain definition implies the order of evaluation.
 Methods may appear in 3 different scenarios:
 - **No preconditions**, direct application of subtasks.
-- **Ground preconditions**, apply subtasks if satisfied, every term is a [ground term](http://en.wikipedia.org/wiki/Ground_expression).
-- **Lifted preconditions**, unify [free variables](http://en.wikipedia.org/wiki/Free_variables_and_bound_variables) according to the preconditions. [Check how it works](#free-variables).
+- **Ground preconditions**, apply subtasks if satisfied, every term is a [ground term](https://en.wikipedia.org/wiki/Ground_expression).
+- **Lifted preconditions**, unify [free variables](https://en.wikipedia.org/wiki/Free_variables_and_bound_variables) according to the preconditions. [Check how it works](#free-variables).
 
 Instead of returning, the methods yield a subtask list.
 This approach solves the problem of returning several unifications per method call, yielding them as required.
@@ -375,7 +375,7 @@ Here are some hints to describe your domain:
 - Unification is costly, avoid generate, match your values once and propagate them.
 - Even if a precondition or effect is an empty set you need to declare it, use ``[]``.
 - Empty predicate sets must be put in the initial state at the problem file. This avoids predicate typos, as all predicates must be previously defined. Or you can use ``Hash.new {|h,k| h[k] = []}`` to create sets at run-time.
-- Check out [And-or Trees](http://en.wikipedia.org/wiki/And%E2%80%93or_tree). Which decisions must be made before paths fork and which actions must be done in sequence?
+- Check out [And-or Trees](https://en.wikipedia.org/wiki/And%E2%80%93or_tree). Which decisions must be made before paths fork and which actions must be done in sequence?
 - Using Symbols or constant frozen strings can speed-up things a little, avoiding repeated strings in memory, this was used in the [N Queens example](examples/n_queens/N_Queens.rb "N Queens").
 - You can explore further using ``Hash.compare_by_identity`` on domain and state in ``RUBY_VERSION >= 1.9``.
 
@@ -486,7 +486,7 @@ Such conversion step is not new, as JSHOP2 itself compiles the description to Ja
 - [PDDL] (methods are ignored, goal must be manually converted based on tasks)
 - [JSHOP] (methods and tasks are unavailable for a PDDL input without extensions)
 - [Graphviz DOT](http://www.graphviz.org/) (generate a [graph](docs/Graph.md) description to be compiled into an image)
-- [Markdown](http://daringfireball.net/projects/markdown/)
+- [Markdown](https://daringfireball.net/projects/markdown/)
 
 As any parser, the ones provided by Hype are limited in one way or another.
 [PDDL] have far more features than supported by most planners and [JSHOP] have 2 different ways to define methods.
@@ -625,6 +625,6 @@ Since we test for explicit goals only after the plan has been found with a seque
 - More tests
 
 [Intermediate Representation]: docs/Representation.md
-[PDDL]: http://en.wikipedia.org/wiki/Planning_Domain_Definition_Language "PDDL at Wikipedia"
-[JSHOP]: http://www.cs.umd.edu/projects/shop/description.html "SHOP/JSHOP project page"
+[PDDL]: https://en.wikipedia.org/wiki/Planning_Domain_Definition_Language "PDDL at Wikipedia"
+[JSHOP]: https://www.cs.umd.edu/projects/shop/description.html "SHOP/JSHOP project page"
 [Pyhop]: https://bitbucket.org/dananau/pyhop "Pyhop project page"
