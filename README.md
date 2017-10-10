@@ -1,7 +1,7 @@
 # HyperTensioN [![Build Status](https://travis-ci.org/Maumagnaguagno/HyperTensioN.svg)](https://travis-ci.org/Maumagnaguagno/HyperTensioN)
 **Hierarchical Task Network planning in Ruby**
 
-Hypertension is an [Hierarchical Task Network](https://en.wikipedia.org/wiki/Hierarchical_task_network) planner written in Ruby, in which a method decomposition description of how tasks can be accomplished is used to achieve a plan.
+HyperTensioN is an [Hierarchical Task Network](https://en.wikipedia.org/wiki/Hierarchical_task_network) planner written in Ruby, in which a method decomposition description of how tasks can be accomplished is used to achieve a plan.
 HTN is used as an acronym for Hypertension in medical context, therefore the name was given.
 In order to support other planning languages a module named [**Hype**](#hype "Jump to Hype section") will take care of the conversion process.
 With hierarchical planning it is possible to describe a strategy to obtain a sequence of actions that executes a certain task.
@@ -10,10 +10,10 @@ This project was inspired by [Pyhop] and [JSHOP].
 
 [Download and play](../../archive/master.zip) or jump to each section to learn more:
 - [**Algorithm**](#algorithm "Jump to Algorithm section"): planning algorithm explanation.
-- [**Getting started**](#getting-started "Jump to Getting started section"): Features explained while describing a domain with Hypertension.
+- [**Getting started**](#getting-started "Jump to Getting started section"): Features explained while describing a domain with HyperTensioN.
 - [**Hints**](#hints "Jump to Hints section"): a list of hints to keep in mind.
 - [**Execution**](#execution "Jump to Execution section"): Command-line examples for the forgotten.
-- [**API**](#api "Jump to API section"): Variables and methods defined by Hypertension.
+- [**API**](#api "Jump to API section"): Variables and methods defined by HyperTensioN.
 - [**Hype**](#hype "Jump to Hype section"): Follow the Hype and let domain and problem be converted and executed automagically.
 - [**Comparison**](#comparison "Jump to Comparison section"): A brief comparison with JSHOP and Pyhop.
 - [**Changelog**](#changelog "Jump to Changelog section"): a small list of things that happened.
@@ -57,9 +57,9 @@ end
 ```
 
 ## Getting started
-The idea is to [**include** Hypertension in the domain module](#api "Jump to API section"), define the methods and primitive operators, and use this domain module for different problems.
+The idea is to [``include Hypertension`` in the domain module](#api "Jump to API section"), define the methods and primitive operators, and use this domain module for different problems.
 Problems may be in a separate file or generated during run-time.
-Since Hypertension uses **metaprogramming**, there is a need to specify which Ruby methods may be used by the [planner](#algorithm "Jump to Algorithm section").
+Since HyperTensioN uses **metaprogramming**, there is a need to specify which Ruby methods may be used by the [planner](#algorithm "Jump to Algorithm section").
 This specification declares operator visibility and the subtasks of each method in the domain structure.
 
 ### Example
@@ -244,10 +244,10 @@ A ``generate(precond_pos, precond_not, *free)`` method will do the hard work, us
 Therefore a positive precondition set that does not mention all free variables will generate zero unifications.
 In classical planning it is possible to try the entire list of objects as values, but in HTN there may be an infinite number of values.
 It is possible to solve this problem adding each object possible to be used to the initial state, ``(object kiwi) (object banjo)``, in the initial state and add them in the preconditions, ``(object ?x)``.
-Unifications only happen to methods in Hypertension, a method must be created to bound values for an operator if a free variable value is not know.
+Unifications only happen to methods in HyperTensioN, a method must be created to bound values for an operator if a free variable value is not know.
 The following example goes beyond this specification, using an instance variable to avoid cached positions created by other decomposition paths.
 You can always use ``if-else`` constructs to speed-up problem solving.
-Here it is clear that no state memory is created by Hypertension, that is why we use ``@visited_at``.
+Here it is clear that no state memory is created by HyperTensioN, that is why we use ``@visited_at``.
 This memory is also cleared during the process to reuse previous positions, give a look at visit and unvisit operators in Robby to understand.
 You could also define visit and unvisit as predicates, but then your memory would only hold the current path, which makes planning slower.
 
@@ -456,7 +456,7 @@ In case of failure, ``nil`` is returned.
 - ``apply_operator(precond_pos, precond_not, effect_add, effect_del)`` extends this idea applying effects if ``applicable?``. Returns ``true`` if applied, ``nil`` otherwise.
 - ``generate(precond_pos, precond_not, *free)`` yields all possible unifications to the free variables defined, therefore you need a block to capture the unifications. The return value is undefined.
 - ``print_data(data)`` can be used to print task and predicate lists, useful for debug.
-- ``problem(start, tasks, debug = false, goal_pos = [], goal_not = [])`` is used to simplify the setup of a problem instance, returns the value of planning. Use problem as a template to see how to add Hypertension in your project.
+- ``problem(start, tasks, debug = false, goal_pos = [], goal_not = [])`` is used to simplify the setup of a problem instance, returns the value of planning. Use problem as a template to see how to add HyperTensioN in your project.
 - ``task_permutations(state, tasks, goal_pos, goal_not)`` tries several task permutations to achieve unordered decomposition, it is used by ``problem`` when explicit goals are given. Returns a plan or ``nil``.
 
 Domain operators can be defined without ``apply_operator`` and will have the return value considered.
@@ -482,7 +482,7 @@ Such conversion step is not new, as JSHOP2 itself compiles the description to Ja
 - Complexity TBA
 
 **Compilers**:
-- Hypertension (methods and tasks are unavailable for a PDDL input without extensions)
+- HyperTensioN (methods and tasks are unavailable for a PDDL input without extensions)
 - [PDDL] (methods are ignored, goal must be manually converted based on tasks)
 - [JSHOP] (methods and tasks are unavailable for a PDDL input without extensions)
 - [Graphviz DOT](http://www.graphviz.org/) (generate a [graph](docs/Graph.md) description to be compiled into an image)
@@ -582,7 +582,7 @@ JSHOP2 requires the user to dive into a very complex structure to unlock such po
 [Pyhop] is based on this feature, everything defined in Python, but does not support backtracking and unification, which means the user have to create its own unification system and a domain that does not require backtracking.
 The biggest advantage is not the planner itself, but the parsers and compilers built around it, so that descriptions can be converted automatically.
 Perhaps the most invisible advantage is the lack of custom classes, every object used during planning is defined as one of the core objects.
-Once Strings, Arrays and Hashes are understood, the entire Hypertension module is just a few methods away from complete understanding.
+Once Strings, Arrays and Hashes are understood, the entire HyperTensioN module is just a few methods away from complete understanding.
 
 Among the lacking features is interleaved/unordered execution of tasks, a feature that JSHOP2 supports and is extremely important to achieve good plans in some cases, and lazy variable evaluation.
 We only support unordered tasks at the problem level and do not interleave them during decomposition.

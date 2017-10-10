@@ -19,7 +19,7 @@ module Hype
     Hype domain problem {extensions} [output]\n
   Output:
     print - print parsed data(default)
-    rb    - generate Ruby files to Hypertension
+    rb    - generate Ruby files to HyperTensioN
     pddl  - generate PDDL files
     jshop - generate JSHOP files
     dot   - generate DOT file
