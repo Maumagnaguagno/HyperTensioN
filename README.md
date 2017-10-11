@@ -477,9 +477,9 @@ Such conversion step is not new, as JSHOP2 itself compiles the description to Ja
 **Extensions**:
 - Patterns (generate methods based on operator patterns, map goal state to tasks)
 - [Dummy](docs/Dummy.md) (generate brute-force methods that try to achieve goal predicates)
-- Refinements TBA
-- Grammar TBA
-- Complexity TBA
+- Refinements (fix common mistakes and create operator macros to speed up decomposition)
+- Grammar (print domain methods as [production rules](https://en.wikipedia.org/wiki/Production_(computer_science)))
+- Complexity (print domain, problem and total complexity based on amount of terms)
 
 **Compilers**:
 - HyperTensioN (methods and tasks are unavailable for a PDDL input without extensions)
