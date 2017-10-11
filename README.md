@@ -9,15 +9,15 @@ It works based on decomposition, which is very alike to how humans think, taking
 This project was inspired by [Pyhop] and [JSHOP].
 
 [Download and play](../../archive/master.zip) or jump to each section to learn more:
-- [**Algorithm**](#algorithm "Jump to Algorithm section"): planning algorithm explanation.
-- [**Getting started**](#getting-started "Jump to Getting started section"): Features explained while describing a domain with HyperTensioN.
-- [**Hints**](#hints "Jump to Hints section"): a list of hints to keep in mind.
-- [**Execution**](#execution "Jump to Execution section"): Command-line examples for the forgotten.
-- [**API**](#api "Jump to API section"): Variables and methods defined by HyperTensioN.
-- [**Hype**](#hype "Jump to Hype section"): Follow the Hype and let domain and problem be converted and executed automagically.
-- [**Comparison**](#comparison "Jump to Comparison section"): A brief comparison with JSHOP and Pyhop.
-- [**Changelog**](#changelog "Jump to Changelog section"): a small list of things that happened.
-- [**ToDo's**](#todos "Jump to ToDo's section"): a small list of things to be done.
+- [**Algorithm**](#algorithm "Jump to Algorithm section"): planning algorithm explanation
+- [**Getting started**](#getting-started "Jump to Getting started section"): Features explained while describing a domain with HyperTensioN
+- [**Hints**](#hints "Jump to Hints section"): a list of hints to keep in mind
+- [**Execution**](#execution "Jump to Execution section"): Command-line examples for the forgotten
+- [**API**](#api "Jump to API section"): Variables and methods defined by HyperTensioN
+- [**Hype**](#hype "Jump to Hype section"): Follow the Hype and let domain and problem be converted and executed automagically
+- [**Comparison**](#comparison "Jump to Comparison section"): A brief comparison with JSHOP and Pyhop
+- [**Changelog**](#changelog "Jump to Changelog section"): a small list of things that happened
+- [**ToDo's**](#todos "Jump to ToDo's section"): a small list of things to be done
 
 ## Algorithm
 The basic algorithm for HTN planning is quite simple and flexible, the hard part is in the structure that decomposes a hierarchy and the unification engine.
