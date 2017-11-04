@@ -1,14 +1,13 @@
 (define (domain tsp)
-  (:requirements :strips :typing :negative-preconditions)
-  (:types node)
+  (:requirements :strips :negative-preconditions)
   (:predicates
-    (at ?pos - node)
-    (connected ?start ?finish - node)
-    (visited ?finish - node)
+    (at ?pos)
+    (connected ?start ?finish)
+    (visited ?finish)
   )
 
   (:action move
-    :parameters (?start ?finish - node)
+    :parameters (?start ?finish)
     :precondition (and
       (at ?start)
       (connected ?start ?finish)

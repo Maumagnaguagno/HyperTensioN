@@ -1,6 +1,6 @@
 (define (problem pb1)
   (:domain tsp)
-  (:objects Boston NewYork Pittsburgh Toronto Albany - node)
+  (:objects Boston NewYork Pittsburgh Toronto Albany)
   (:init
     ; Directed graph
     (connected Boston NewYork)

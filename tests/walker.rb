@@ -17,8 +17,6 @@ class Walker < Test::Unit::TestCase
         ['move', ['?start', '?finish'],
           # Preconditions
           [
-             ['node', '?start'],
-             ['node', '?finish'],
              ['at', '?start'],
              ['connected', '?start', '?finish']
           ],
@@ -96,18 +94,12 @@ class Walker < Test::Unit::TestCase
         ],
       ],
       :predicates => {
-        'node' => false,
         'at' => true,
         'connected' => false,
         'visited' => true,
         'visited_at' => true
       },
       :state => [
-        ['node', 'boston'],
-        ['node', 'newyork'],
-        ['node', 'pittsburgh'],
-        ['node', 'toronto'],
-        ['node', 'albany'],
         ['connected', 'boston', 'newyork'],
         ['connected', 'newyork', 'boston'],
         ['connected', 'pittsburgh', 'boston'],
@@ -141,7 +133,7 @@ class Walker < Test::Unit::TestCase
       ],
       :goal_not => [],
       :objects => ['boston', 'newyork', 'pittsburgh', 'toronto', 'albany'],
-      :requirements => [':strips', ':typing', ':negative-preconditions']
+      :requirements => [':strips', ':negative-preconditions']
     )
   end
 end
