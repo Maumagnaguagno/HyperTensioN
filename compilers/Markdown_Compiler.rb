@@ -25,18 +25,18 @@ module Markdown_Compiler
       output << "\n## Methods"
       methods.each_with_index {|(name,param,*decompositions),i|
         output << "\n#{name.capitalize} | #{param.join(' ')} ||\n--- | --- | ---\n***Label*** | ***Preconditions*** | ***Subtasks***"
-        decompositions.each {|label,precond_pos,precond_not,tasks|
+        decompositions.each {|label,free,precond_pos,precond_not,subtasks|
           output << "\n#{label} ||"
           index = 0
           precond_pos.each {|pre|
-            output << "\n|| (#{pre.join(' ')}) | #{tasks[index].join(' ') if tasks[index]}"
+            output << "\n|| (#{pre.join(' ')}) | #{subtasks[index].join(' ') if tasks[index]}"
             index += 1
           }
           precond_not.each {|pre|
-            output << "\n|| **not** (#{pre.join(' ')}) | #{tasks[index].join(' ') if tasks[index]}"
+            output << "\n|| **not** (#{pre.join(' ')}) | #{subtasks[index].join(' ') if tasks[index]}"
             index += 1
           }
-          tasks.drop(index).each {|task| output << "\n||| #{task.join(' ')}"}
+          subtasks.drop(index).each {|task| output << "\n||| #{task.join(' ')}"}
         }
         output << "\n" if i != methods.size.pred
       }
