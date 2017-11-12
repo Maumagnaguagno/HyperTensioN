@@ -18,11 +18,18 @@ module Hypest
     File.delete(problem_type) if File.exist?(problem_type)
     parser_tests(domain, problem, expected_parser, extensions, {})
     Hype.compile(domain, problem, type)
-    assert_equal(true, File.exist?(domain_type))
-    assert_equal(true, File.exist?(problem_type))
-    assert_equal(domain_expected.split("\n"), IO.read(domain_type).split("\n"))
-    assert_equal(problem_expected.split("\n"), IO.read(problem_type).split("\n"))
+    if domain_expected
+      assert_equal(true, File.exist?(domain_type))
+      assert_equal(domain_expected.split("\n"), IO.read(domain_type).split("\n"))
+    else assert_equal(false, File.exist?(domain_type))
+    end
+    if problem_expected
+      assert_equal(true, File.exist?(problem_type))
+      assert_equal(problem_expected.split("\n"), IO.read(problem_type).split("\n"))
+    else assert_equal(false, File.exist?(problem_type))
+    end
   ensure
-    File.delete(domain_type, problem_type)
+    File.delete(domain_type) if domain_expected
+    File.delete(problem_type) if problem_expected
   end
 end
