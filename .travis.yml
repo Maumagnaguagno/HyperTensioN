@@ -18,9 +18,6 @@ script:
   - ruby tests/rescue.rb
   - ruby tests/simple.rb
   - ruby tests/walker.rb
-  - ruby tests/brute.rb
-  - ruby tests/graph.rb
-  - ruby tests/markup.rb
   # Examples
   - ruby examples/experiments/Expression.rb
   - ruby examples/experiments/Protection.rb

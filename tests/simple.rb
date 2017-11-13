@@ -38,14 +38,14 @@ class Simple < Test::Unit::TestCase
             [['have', '?x']],
             [['have', '?y']],
             # Subtasks
-            [true, ['drop', '?x'], ['pickup', '?y']]
+            [['drop', '?x'], ['pickup', '?y']]
           ],
           ['case_1', [],
             # Preconditions
             [['have', '?y']],
             [['have', '?x']],
             # Subtasks
-            [true, ['drop', '?y'], ['pickup', '?x']]
+            [['drop', '?y'], ['pickup', '?x']]
           ]
         ]
       ],
