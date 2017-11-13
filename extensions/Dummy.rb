@@ -5,9 +5,8 @@ module Dummy
   # Apply
   #-----------------------------------------------
 
-  def apply(operators, methods, predicates, state, tasks, goal_pos, goal_not, repetitions = 1)
-    puts 'Dummy'.center(50,'-')
-    t = Time.now.to_f
+  def apply(operators, methods, predicates, state, tasks, goal_pos, goal_not, debug = false, repetitions = 1)
+    puts 'Dummy'.center(50,'-'), "Repetitions: #{repetitions}" if debug
     # Tasks are unordered
     tasks << false if tasks.empty?
     # Invisible operators are rejected from search
@@ -49,7 +48,6 @@ module Dummy
         )
       }
     }
-    puts "Repetitions: #{repetitions}\nConversion time: #{Time.now.to_f - t}s"
   end
 
   #-----------------------------------------------
