@@ -175,7 +175,7 @@ module PDDL_Parser
           group.shift
           @state.concat(group)
         when ':goal'
-          unless (group = group[1]).empty?
+          if group = group[1]
             # Conjunction or atom
             group.first == AND ? group.shift : group = [group]
             group.each {|pre|
