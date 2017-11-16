@@ -1,7 +1,7 @@
 # HyperTensioN [![Build Status](https://travis-ci.org/Maumagnaguagno/HyperTensioN.svg)](https://travis-ci.org/Maumagnaguagno/HyperTensioN)
 **Hierarchical Task Network planning in Ruby**
 
-HyperTensioN is an [Hierarchical Task Network](https://en.wikipedia.org/wiki/Hierarchical_task_network) planner written in Ruby, in which a method decomposition description of how tasks can be accomplished is used to achieve a plan.
+HyperTensioN is a [Hierarchical Task Network](https://en.wikipedia.org/wiki/Hierarchical_task_network) planner written in Ruby, in which a method decomposition description of how tasks can be accomplished is used to achieve a plan.
 HTN is used as an acronym for Hypertension in medical context, therefore the name was given.
 In order to support other planning languages a module named [**Hype**](#hype "Jump to Hype section") will take care of the conversion process.
 With hierarchical planning it is possible to describe a strategy to obtain a sequence of actions that executes a certain task.
@@ -442,7 +442,7 @@ end
 Having the state and domain as separate variables also means there is no need to propagate them.
 This also means you can, at any point, change more than the state.
 This may be useful to reorder method decompositions in the domain to modify the behavior without touching the methods or set the debug option only after an specific operator is called.
-You will notice that the plan is not a variable, as it is created during the backtracking, which means you cannot reorder actions in the planning process using this algorithm, but it is possible with a variation of this algorithm that creates the plan during decomposition.
+You will notice that the plan is not a variable, as it is created during the backtracking, which means you cannot reorder actions in the planning process using this algorithm, but it is possible with a variation that creates the plan during decomposition.
 
 The methods are few and simple to use:
 - ``planning(tasks, level = 0)`` receives a task list, ``[['task1', 'term1', 'term2'], ['task2', 'term3']]``, to decompose and the nesting level to help debug.
