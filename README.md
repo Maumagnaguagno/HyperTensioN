@@ -377,7 +377,8 @@ Here are some hints to describe your domain:
 - Empty predicate sets must be put in the initial state at the problem file. This avoids predicate typos, as all predicates must be previously defined. Or you can use ``Hash.new {|h,k| h[k] = []}`` to create sets at run-time.
 - Check out [And-or Trees](https://en.wikipedia.org/wiki/And%E2%80%93or_tree). Which decisions must be made before paths fork and which actions must be done in sequence?
 - Using Symbols or constant frozen strings can speed-up things a little, avoiding repeated strings in memory, this was used in the [N Queens example](examples/n_queens/N_Queens.rb "N Queens").
-- You can explore further using ``Hash.compare_by_identity`` on domain and state in ``RUBY_VERSION >= 1.9``.
+- Explore further using ``Hash.compare_by_identity`` on domain and state in ``RUBY_VERSION >= 1.9``.
+- Replace the state copy in ``apply`` with ``@state = Marshal.load(Marshal.dump(@state))`` to deep copy complex state structures, otherwise keep the current fast version.
 
 ## Execution
 The problem acts as the main function since the problems include the domain, and the domain include the planner.
@@ -616,6 +617,8 @@ Since we test for explicit goals only after the plan has been found with a seque
   - Apply method extracted from apply_operator
 - Mar 2016
   - Released version 1.0 as last version supporting Ruby 1.8
+- Nov 2017
+  - Faster state duplication
 
 ## ToDo's
 - Order predicates and test applicability by level (generate)
