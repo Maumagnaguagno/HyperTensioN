@@ -64,7 +64,7 @@ module Hypertension
 
   def apply(effect_add, effect_del)
     # Create new state with added or deleted predicates
-    @state = Marshal.load(Marshal.dump(@state))
+    @state = @state.each_with_object({}) {|(k,v),state| state[k] = v.dup}
     effect_del.each {|pre,*terms| @state[pre].delete(terms)}
     effect_add.each {|pre,*terms| @state[pre] << terms}
     true
