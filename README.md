@@ -369,16 +369,16 @@ Robby.problem(
 
 ## Hints
 Here are some hints to describe your domain:
-- Having the objects in variables being reused is faster to compare (pointer comparison), instead of ``String == String``, only works for constant objects.
+- Have objects in variables being reused is faster to compare (pointer comparison), instead of ``'str' == 'str``, only works for constant objects.
+- Use Symbols or constant frozen strings, avoid repeated strings in memory.
 - Order the methods decomposition wisely, otherwise you may test a lot before actually going to the correct path.
-- Use preconditions at your favor, you do not need to test things twice using a smart method decomposition.
-- Unification is costly, avoid generate, match your values once and propagate them.
-- Even if a precondition or effect is an empty set you need to declare it, use ``[]``.
-- Empty predicate sets must be put in the initial state at the problem file. This avoids predicate typos, as all predicates must be previously defined. Or you can use ``Hash.new {|h,k| h[k] = []}`` to create sets at run-time.
-- Check out [And-or Trees](https://en.wikipedia.org/wiki/And%E2%80%93or_tree). Which decisions must be made before paths fork and which actions must be done in sequence?
-- Using Symbols or constant frozen strings can speed-up things a little, avoiding repeated strings in memory, this was used in the [N Queens example](examples/n_queens/N_Queens.rb "N Queens").
-- Explore further using ``Hash.compare_by_identity`` on domain and state in ``RUBY_VERSION >= 1.9``.
-- Replace the state copy in ``apply`` with ``@state = Marshal.load(Marshal.dump(@state))`` to deep copy complex state structures, otherwise keep the current fast version.
+- Use preconditions at your favor, you do not need to test twice using a smart method decomposition, check out [And-or Trees](https://en.wikipedia.org/wiki/And%E2%80%93or_tree).
+- Unifications are costly, avoid generate, match your values once and propagate or use a custom unification process.
+- Even if a precondition or effect is empty you need to declare it, use ``[]``.
+- Empty predicate arrays must be declared in the initial state at the problem file. This avoids predicate typos, as all predicates must be previously defined. Or you can use ``Hash.new {|h,k| h[k] = []}`` to create arrays at run-time.
+- Explore further using ``Hash.compare_by_identity`` on domain and state.
+- Use different state structures to speed-up state operations, implement your own state duplication, preconditions applicable and effect application operations.
+- Replace the state copy with ``@state = Marshal.load(Marshal.dump(@state))`` to deep copy any state structure, otherwise keep the current fast version or use your own implementation.
 
 ## Execution
 The problem acts as the main function since the problems include the domain, and the domain include the planner.
