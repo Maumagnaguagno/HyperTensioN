@@ -30,14 +30,14 @@ class Sphygmomanometer < Test::Unit::TestCase
 
   def test_planning_success
     expected_plan = [
-      [:put_piece, '0', '7'],
-      [:put_piece, '4', '6'],
-      [:put_piece, '7', '5'],
-      [:put_piece, '5', '4'],
-      [:put_piece, '2', '3'],
-      [:put_piece, '6', '2'],
-      [:put_piece, '1', '1'],
-      [:put_piece, '3', '0']
+      [:put_piece, 0, 7],
+      [:put_piece, 4, 6],
+      [:put_piece, 7, 5],
+      [:put_piece, 5, 4],
+      [:put_piece, 2, 3],
+      [:put_piece, 6, 2],
+      [:put_piece, 1, 1],
+      [:put_piece, 3, 0]
     ]
     assert_equal(expected_plan, N_Queens.solve(8, false, false))
     # Expected state
