@@ -369,7 +369,7 @@ Robby.problem(
 
 ## Hints
 Here are some hints to describe your domain:
-- Reuse objects in variables to compare faster (pointer comparison), instead of ``'str' == 'str'``, only works for constant objects.
+- Reuse objects in variables to compare faster (pointer comparison), only works for constant objects.
 - Use Symbols or constant frozen Strings, avoid repeated Strings in memory.
 - Order the method decomposition wisely, otherwise you may test a lot before actually going to the correct path.
 - Use preconditions at your favor, no need to test twice using a smart method decomposition, check out [And-or Trees](https://en.wikipedia.org/wiki/And%E2%80%93or_tree).
