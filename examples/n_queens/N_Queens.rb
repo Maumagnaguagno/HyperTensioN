@@ -18,7 +18,7 @@ module N_Queens
   def solve(size, debug, verbose)
     start = {
       :queen => [],
-      :free_collumn => Array.new(size) {|i| [i.to_s]}
+      :free_collumn => Array.new(size) {|i| i}
     }
     tasks = [
       [:solve, size]
@@ -37,16 +37,11 @@ module N_Queens
   #-----------------------------------------------
 
   def put_piece(x, y)
-    apply(
-      # Add effects
-      [
-        [:queen, x, y]
-      ],
-      # Del effects
-      [
-        [:free_collumn, x]
-      ]
-    )
+    # Add effects
+    q = @state[:queen].dup << [x, y]
+    # Del effects
+    (f = @state[:free_collumn].dup).delete(x)
+    @state = {:queen => q, :free_collumn => f}
   end
 
   #-----------------------------------------------
@@ -56,25 +51,15 @@ module N_Queens
   def try_next(c)
     # Base of recursion
     return yield [] if c.zero?
-    yi = c.pred
-    # Free variables
-    x = ''
-    y = yi.to_s # Closed row boost
-    # Generate unifications
-    generate(
-      # Positive preconditions
-      [
-        [:free_collumn, x]
-      ],
-      # Negative preconditions
-      [], x
-    ) {
+    y = c.pred # Closed row boost
+    queen = @state[:queen]
+    # Generate unifications without generate
+    @state[:free_collumn].each {|x|
       # No need to test x == i, free collumn test, or y == j, every piece has their row
-      xi = x.to_i
-      next if @state[:queen].any? {|i,j| (xi - i.to_i).abs == (yi - j.to_i).abs}
+      next if queen.any? {|i,j| (x - i).abs == (y - j).abs}
       yield [
         [:put_piece, x, y],
-        [:solve, yi]
+        [:solve, y]
       ]
     }
   end
@@ -90,7 +75,7 @@ if $0 == __FILE__
   # Draw from row size - 1 to 0
   N_Queens.state[:queen].reverse_each {|i,j|
     row = '[ ]' * size
-    row[i.to_i * 3 + 1] = 'Q'
+    row[i * 3 + 1] = 'Q'
     puts row
   }
 end
