@@ -369,16 +369,16 @@ Robby.problem(
 
 ## Hints
 Here are some hints to describe your domain:
-- Have objects in variables being reused is faster to compare (pointer comparison), instead of ``'str' == 'str``, only works for constant objects.
-- Use Symbols or constant frozen strings, avoid repeated strings in memory.
-- Order the methods decomposition wisely, otherwise you may test a lot before actually going to the correct path.
-- Use preconditions at your favor, you do not need to test twice using a smart method decomposition, check out [And-or Trees](https://en.wikipedia.org/wiki/And%E2%80%93or_tree).
+- Reuse objects in variables to compare faster (pointer comparison), instead of ``'str' == 'str'``, only works for constant objects.
+- Use Symbols or constant frozen Strings, avoid repeated Strings in memory.
+- Order the method decomposition wisely, otherwise you may test a lot before actually going to the correct path.
+- Use preconditions at your favor, no need to test twice using a smart method decomposition, check out [And-or Trees](https://en.wikipedia.org/wiki/And%E2%80%93or_tree).
 - Unifications are costly, avoid generate, match your values once and propagate or use a custom unification process.
 - Even if a precondition or effect is empty you need to declare it, use ``[]``.
 - Empty predicate arrays must be declared in the initial state at the problem file. This avoids predicate typos, as all predicates must be previously defined. Or you can use ``Hash.new {|h,k| h[k] = []}`` to create arrays at run-time.
 - Explore further using ``Hash.compare_by_identity`` on domain and state.
-- Use different state structures to speed-up state operations, implement your own state duplication, preconditions applicable and effect application operations.
-- Replace the state copy with ``@state = Marshal.load(Marshal.dump(@state))`` to deep copy any state structure, otherwise keep the current fast version or use your own implementation.
+- Use different state structures to speed-up state operations and implement your own state duplication, preconditions applicable and effect application operations to better describe your domain.
+- Replace the state copy from ``apply`` with ``@state = Marshal.load(Marshal.dump(@state))`` to deep copy any state structure, otherwise keep the current fast version or use a custom implementation.
 
 ## Execution
 The problem acts as the main function since the problems include the domain, and the domain include the planner.
