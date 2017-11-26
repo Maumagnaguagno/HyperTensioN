@@ -44,5 +44,7 @@ abort('Test failed') if plan != [
   ['call_taxi', 'park', 'home'],
   ['ride_taxi', 'me', 'home', 'friend', '6.5'],
   ['pay_driver', 'me', '20', '6.5'],
-  ['walk', 'me', 'friend', 'park']
+  ['call_taxi', 'friend', 'home'],
+  ['ride_taxi', 'me', 'home', 'park', '5.5'],
+  ['pay_driver', 'me', '13.5', '5.5']
 ]
