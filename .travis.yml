@@ -26,6 +26,7 @@ script:
   - ruby examples/travel/pb2.rb
   - ruby examples/travel/pb3.rb
   - ruby examples/travel/pb4.rb
+  - ruby examples/travel/pb5.rb
   - ruby examples/robby/pb1.rb
   - ruby Hype.rb examples/basic/basic.jshop examples/basic/pb1.jshop run
   - ruby Hype.rb examples/hanoi/hanoi.jshop examples/hanoi/pb1.jshop run
