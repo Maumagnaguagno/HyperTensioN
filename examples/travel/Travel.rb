@@ -29,7 +29,7 @@ module Travel
   #-----------------------------------------------
 
   def taxi_rate(dist)
-    dist.to_i * 0.5 + 1.5
+    dist * 0.5 + 1.5
   end
 
   #-----------------------------------------------
@@ -114,8 +114,7 @@ module Travel
       [],
       # Add effects
       [
-        ['cash', agent, (amount_of_money.to_i - cost.to_i).to_s],
-        ['owe', agent, '0']
+        ['cash', agent, (amount_of_money.to_i - cost.to_i).to_s]
       ],
       # Del effects
       [
