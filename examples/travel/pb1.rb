@@ -31,7 +31,7 @@ plan = Travel.problem(
   },
   # Tasks
   [
-    ['travel', 'me', 'home', 'park']
+    ['travel', 'me', 'park']
   ],
   # Debug
   ARGV.first == 'debug'

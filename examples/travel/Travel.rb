@@ -128,11 +128,10 @@ module Travel
   # Methods
   #-----------------------------------------------
 
-  def stay_here(agent, source, destination)
+  def stay_here(agent, destination)
     if applicable?(
       # Positive preconditions
       [
-        ['at', agent, source],
         ['at', agent, destination]
       ],
       # Negative preconditions
@@ -142,8 +141,9 @@ module Travel
     end
   end
 
-  def travel_by_taxi(agent, source, destination)
+  def travel_by_taxi(agent, destination)
     # Free variables
+    source = ''
     amount_of_money = ''
     taxi_position = ''
     distance = ''
@@ -159,7 +159,7 @@ module Travel
       # Negative preconditions
       [
         ['at', agent, destination]
-      ], amount_of_money, taxi_position, distance
+      ], source, amount_of_money, taxi_position, distance
     ) {
       distance = distance.to_i
       if distance > STAMINA
@@ -176,8 +176,11 @@ module Travel
     }
   end
 
-  def travel_by_foot(agent, source, destination)
-    if applicable?(
+  def travel_by_foot(agent, destination)
+    # Free variables
+    source = ''
+    # Generate unifications
+    generate(
       # Positive preconditions
       [
         ['at', agent, source]
@@ -185,11 +188,11 @@ module Travel
       # Negative preconditions
       [
         ['at', agent, destination]
-      ]
-    )
+      ], source
+    ) {
       yield [
         ['walk', agent, source, destination]
       ]
-    end
+    }
   end
 end

@@ -31,12 +31,15 @@ plan = Travel.problem(
   },
   # Tasks
   [
-    ['travel','me','home','friend'],
-    ['travel','me','friend','park']
+    ['travel', 'me', 'friend'],
+    ['travel', 'me', 'park']
   ],
   # Debug
   ARGV.first == 'debug'
 )
 
 # Test
-abort('Test failed') if plan != [['walk', 'me', 'home', 'friend'], ['walk', 'me', 'friend', 'park']]
+abort('Test failed') if plan != [
+  ['walk', 'me', 'home', 'friend'],
+  ['walk', 'me', 'friend', 'park']
+]
