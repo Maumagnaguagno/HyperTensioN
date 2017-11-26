@@ -25,14 +25,6 @@ module Travel
   }
 
   #-----------------------------------------------
-  # Definitions
-  #-----------------------------------------------
-
-  def taxi_rate(dist)
-    dist * 0.5 + 1.5
-  end
-
-  #-----------------------------------------------
   # Operators
   #-----------------------------------------------
 
@@ -114,7 +106,7 @@ module Travel
       [],
       # Add effects
       [
-        ['cash', agent, (amount_of_money.to_i - cost.to_i).to_s]
+        ['cash', agent, (amount_of_money.to_f - cost.to_f).to_s]
       ],
       # Del effects
       [
@@ -161,10 +153,10 @@ module Travel
         ['at', agent, destination]
       ], source, amount_of_money, taxi_position, distance
     ) {
-      distance = distance.to_i
+      distance = distance.to_f
       if distance > STAMINA
-        cost = taxi_rate(distance)
-        if amount_of_money.to_i >= cost
+        cost = distance * 0.5 + 1.5
+        if amount_of_money.to_f >= cost
           cost = cost.to_s
           yield [
             ['call_taxi', taxi_position, source],
