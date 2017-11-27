@@ -18,9 +18,9 @@ end
 # Main
 #-----------------------------------------------
 if $0 == __FILE__
-  puts 'Grid [width=3] [height=3] [predicate=conn] [prefix=p]'
+  puts 'Grid [width=3] [height=3] [predicate=connected] [prefix=p] => (connected p0_0 p0_1)'
   width, height, predicate, prefix = ARGV
-  predicate ||= 'conn'
+  predicate ||= 'connected'
   # Output predicates and objects created
   puts Grid.generate(width ? width.to_i : 3, height ? height.to_i : 3, prefix || 'p').each {|a,b|
     puts "(#{predicate} #{a} #{b})"
