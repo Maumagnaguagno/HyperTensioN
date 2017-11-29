@@ -10,9 +10,10 @@ plan = Travel.problem(
     'cash' => [
       ['me', '20']
     ],
-    'owe' => [
-      ['me', '0']
+    'stamina' => [
+      ['me', '2']
     ],
+    'owe' => [],
     'distance' => [
       ['home', 'park', '8'],
       ['home', 'friend', '10'],

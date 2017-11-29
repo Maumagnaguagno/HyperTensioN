@@ -4,8 +4,6 @@ module Travel
   include Hypertension
   extend self
 
-  STAMINA = 2
-
   #-----------------------------------------------
   # Domain
   #-----------------------------------------------
@@ -139,6 +137,7 @@ module Travel
     amount_of_money = ''
     taxi_position = ''
     distance = ''
+    stamina = ''
     # Generate unifications
     generate(
       # Positive preconditions
@@ -146,15 +145,16 @@ module Travel
         ['at', agent, source],
         ['at', 'taxi', taxi_position],
         ['cash', agent, amount_of_money],
-        ['distance', source, destination, distance]
+        ['distance', source, destination, distance],
+        ['stamina', agent, stamina]
       ],
       # Negative preconditions
       [
         ['at', agent, destination]
-      ], source, amount_of_money, taxi_position, distance
+      ], source, amount_of_money, taxi_position, distance, stamina
     ) {
-      distance = distance.to_f
-      if distance > STAMINA
+      distance = distance.to_i
+      if distance > stamina.to_i
         cost = distance * 0.5 + 1.5
         if amount_of_money.to_f >= cost
           cost = cost.to_s
