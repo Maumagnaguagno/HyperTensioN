@@ -55,9 +55,7 @@ module Travel
         ['at', 'taxi', taxi_position]
       ],
       # Negative preconditions
-      [
-        ['at', 'taxi', here]
-      ],
+      [],
       # Add effects
       [
         ['at', 'taxi', here]
