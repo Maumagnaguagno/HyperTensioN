@@ -197,7 +197,6 @@ class Simple < Test::Unit::TestCase
     )
   end
 
-
   def test_basic_pb1_pddl_parsing_with_dummy_compile_to_jshop
     compiler_tests(
       # Files
