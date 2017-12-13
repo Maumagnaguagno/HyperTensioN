@@ -55,8 +55,8 @@ module N_Queens
     queen = @state[:queen]
     # Generate unifications without generate
     @state[:free_collumn].each {|x|
-      # No need to test x == i, free collumn test, or y == j, every piece has their row
-      next if queen.any? {|i,j| (x - i).abs == (y - j).abs}
+      # No need to test x == i, free collumn test, or y == j, every piece have a row
+      next if queen.any? {|i,j| (i - x).abs == j - y}
       yield [
         [:put_piece, x, y],
         [:solve, y]
