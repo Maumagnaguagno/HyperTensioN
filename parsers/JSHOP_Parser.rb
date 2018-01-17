@@ -35,8 +35,8 @@ module JSHOP_Parser
   #-----------------------------------------------
 
   def define_effects(name, group)
-    raise "Error with #{name} effects" unless group.instance_of?(Array)
-    group.each {|pre| pre.first != NOT ? @predicates[pre.first.freeze] = true : raise("Unexpected not in #{name} effects")}
+    raise "Error with #{name} effect" unless group.instance_of?(Array)
+    group.each {|pre| pre.first != NOT ? @predicates[pre.first.freeze] = true : raise("Unexpected not in #{name} effect")}
   end
 
   #-----------------------------------------------
@@ -51,9 +51,9 @@ module JSHOP_Parser
     raise "#{name} redefined" if @operators.assoc(name)
     @operators << operator = [name, op.shift, pos = [], neg = []]
     # Preconditions
-    raise "Error with #{name} preconditions" unless (group = op.shift).instance_of?(Array)
+    raise "Error with #{name} precondition" unless (group = op.shift).instance_of?(Array)
     group.each {|pre|
-      pre.first != NOT ? pos << pre : pre.size == 2 ? neg << pre = pre.last : raise("Error with #{name} negative preconditions")
+      pre.first != NOT ? pos << pre : pre.size == 2 ? neg << pre = pre.last : raise("Error with #{name} negative precondition")
       @predicates[pre.first.freeze] ||= false
     }
     # Effects
@@ -80,9 +80,9 @@ module JSHOP_Parser
       end
       method << [label, free_variables = [], pos = [], neg = []]
       # Preconditions
-      raise "Error with #{name} preconditions" unless (group = met.shift).instance_of?(Array)
+      raise "Error with #{name} precondition" unless (group = met.shift).instance_of?(Array)
       group.each {|pre|
-        pre.first != NOT ? pos << pre : pre.size == 2 ? neg << pre = pre.last : raise("Error with #{name} negative preconditions")
+        pre.first != NOT ? pos << pre : pre.size == 2 ? neg << pre = pre.last : raise("Error with #{name} negative precondition")
         @predicates[pre.first.freeze] ||= false
         free_variables.concat(pre.select {|i| i.start_with?('?') and not method[1].include?(i)})
       }
