@@ -35,7 +35,7 @@ if $0 == __FILE__
       @state = {
         :something => [['a'], ['b']],
         :protection_pos => [],
-        :protection_not] = []
+        :protection_not => []
       }
       assert_equal([['a'],['b']], @state[:something])
       assert_equal([], @state[:protection_pos])
