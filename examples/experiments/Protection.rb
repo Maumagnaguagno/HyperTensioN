@@ -2,11 +2,6 @@
 # Protection
 #-----------------------------------------------
 
-def setup_protection(protection_pos = [], protection_not = [])
-  @state[:protection_pos] = protection_pos
-  @state[:protection_not] = protection_not
-end
-
 def protect(protection_pos, protection_not)
   @state[:protection_pos].concat(protection_pos)
   @state[:protection_not].concat(protection_not)
@@ -37,8 +32,11 @@ if $0 == __FILE__
     include Hypertension
 
     def test_protection
-      @state = {:something => [['a'], ['b']]}
-      setup_protection
+      @state = {
+        :something => [['a'], ['b']],
+        :protection_pos => [],
+        :protection_not] = []
+      }
       assert_equal([['a'],['b']], @state[:something])
       assert_equal([], @state[:protection_pos])
       assert_equal([], @state[:protection_not])
