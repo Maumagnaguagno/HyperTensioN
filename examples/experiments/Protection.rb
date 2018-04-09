@@ -1,13 +1,9 @@
-require_relative '../../Hypertension'
-
-module Hypertension
-
-  alias original_problem problem
+module Protection
 
   def problem(start, *args)
     start[:protection_pos] = []
     start[:protection_not] = []
-    original_problem(start, *args)
+    super(start, *args)
   end
 
   def protect(protection_pos, protection_not)
@@ -24,10 +20,8 @@ module Hypertension
     effect_add.any? {|pre| @state[:protection_not].include?(pre)} and effect_del.any? {|pre| @state[:protection_pos].include?(pre)}
   end
 
-  alias original_apply apply
-
   def apply(effect_add, effect_del)
-    original_apply(effect_add, effect_del) unless protected?(effect_add, effect_del)
+    super(effect_add, effect_del) unless protected?(effect_add, effect_del)
   end
 end
 
@@ -36,9 +30,11 @@ end
 #-----------------------------------------------
 if $0 == __FILE__
   require 'test/unit'
+  require_relative '../../Hypertension'
 
-  class Protection < Test::Unit::TestCase
+  class Protect < Test::Unit::TestCase
     include Hypertension
+    include Protection
 
     def test_protection
       @state = {
