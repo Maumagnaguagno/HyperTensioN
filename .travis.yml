@@ -6,8 +6,9 @@ rvm:
   - 2.2.0
   - 2.3.0
   - 2.4.0
+  - 2.5.0
   # JRuby
-  - jruby-9000
+  - jruby
 script:
   # Tests
   - ruby tests/sphygmomanometer.rb
