@@ -5,17 +5,17 @@ module Hypest
 
   def parser_tests(domain, problem, parser, extensions, expected)
     Hype.parse(domain, problem)
-    extensions.each {|e| Hype.extend(e)}
     assert_same(parser, Hype.parser)
+    extensions.each {|e| Hype.extend(e)}
     expected.each {|att,value| assert_equal(value, parser.send(att))}
   end
 
   def compiler_tests(domain, problem, parser, extensions, type, domain_expected, problem_expected)
+    parser_tests(domain, problem, parser, extensions, {})
     domain_type = "#{domain}.#{type}"
     problem_type = "#{problem}.#{type}"
     File.delete(domain_type) if File.exist?(domain_type)
     File.delete(problem_type) if File.exist?(problem_type)
-    parser_tests(domain, problem, parser, extensions, {})
     Hype.compile(domain, problem, type)
     if domain_expected
       assert_equal(true, File.exist?(domain_type))
