@@ -33,3 +33,25 @@ module Function
     @state['protect_axiom'].all? {|i| send(*i)}
   end
 end
+
+module Continuous
+  include Function
+
+  def function(f, time = -1)
+    v = super(f)
+    time = time.to_f
+    @state[:continuous].each {|type,g,expression,start,finish|
+      if f == g and start <= time and time <= finish
+        case type
+        when 'increase' then v += expression.call(time - start)
+        when 'decrease' then v -= expression.call(time - start)
+        end
+      end
+    }
+    v
+  end
+
+  def activate(type, f, expression, start, finish)
+    @state[:continuous] << [type, f, expression, start.to_f, finish.to_f]
+  end
+end
