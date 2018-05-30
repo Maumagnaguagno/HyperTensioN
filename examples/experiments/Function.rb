@@ -41,10 +41,10 @@ module Continuous
     v = super(f)
     time = time.to_f
     @state[:continuous].each {|type,g,expression,start,finish|
-      if f == g and start <= time and time <= finish
+      if f == g and start <= time
         case type
-        when 'increase' then v += expression.call(time - start)
-        when 'decrease' then v -= expression.call(time - start)
+        when 'increase' then v += expression.call((time > finish ? finish : time) - start)
+        when 'decrease' then v -= expression.call((time > finish ? finish : time) - start)
         end
       end
     }
