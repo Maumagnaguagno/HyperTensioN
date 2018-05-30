@@ -53,5 +53,6 @@ module Continuous
 
   def activate(type, f, expression, start, finish)
     @state[:continuous] << [type, f, expression, start.to_f, finish.to_f]
+    @state[:continuous].sort_by! {|i| i[3]}
   end
 end
