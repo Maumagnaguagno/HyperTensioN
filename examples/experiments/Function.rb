@@ -42,9 +42,12 @@ module Continuous
     time = time.to_f
     @state[:continuous].each {|type,g,expression,start,finish|
       if f == g and start <= time
+        e = expression.call((time > finish ? finish : time) - start)
         case type
-        when 'increase' then v += expression.call((time > finish ? finish : time) - start)
-        when 'decrease' then v -= expression.call((time > finish ? finish : time) - start)
+        when 'increase' then v += e
+        when 'decrease' then v -= e
+        when 'scale_up' then v *= e
+        when 'scale_down' then v /= e
         end
       end
     }
