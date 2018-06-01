@@ -37,8 +37,9 @@ end
 module Continuous
   include Function
 
-  def function(f, time = -1)
-    v = super(f)
+  def function(f, time = nil)
+    v = @state[:function][f]
+    return v unless time
     time = time.to_f
     @state[:continuous].each {|type,g,expression,start,finish|
       if f == g and start <= time
