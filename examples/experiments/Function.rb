@@ -73,9 +73,11 @@ module Continuous
 
   def event(type, f, value, start)
     @state[:event] << [type, f, value.to_f, start.to_f]
+    axioms_protected?
   end
 
   def process(type, f, expression, start, finish)
     @state[:process] << [type, f, expression, start.to_f, finish.to_f]
+    axioms_protected?
   end
 end
