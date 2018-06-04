@@ -37,26 +37,45 @@ end
 module Continuous
   include Function
 
+  def problem(state, *args)
+    state[:event] = []
+    state[:process] = []
+    super(state, *args)
+  end
+
   def function(f, time = nil)
     v = @state[:function][f]
     return v unless time
     time = time.to_f
-    @state[:continuous].each {|type,g,expression,start,finish|
+    @state[:event].each {|type,g,value,start|
       if f == g and start <= time
-        e = send(*expression, (time > finish ? finish : time) - start)
         case type
-        when 'increase' then v += e
-        when 'decrease' then v -= e
-        when 'scale_up' then v *= e
-        when 'scale_down' then v /= e
+        when 'increase' then v += value
+        when 'decrease' then v -= value
+        when 'scale_up' then v *= value
+        when 'scale_down' then v /= value
+        end
+      end
+    }
+    @state[:process].each {|type,g,expression,start,finish|
+      if f == g and start <= time
+        value = send(*expression, (time > finish ? finish : time) - start)
+        case type
+        when 'increase' then v += value
+        when 'decrease' then v -= value
+        when 'scale_up' then v *= value
+        when 'scale_down' then v /= value
         end
       end
     }
     v
   end
 
-  def activate(type, f, expression, start, finish)
-    @state[:continuous] << [type, f, expression, start.to_f, finish.to_f]
-    @state[:continuous].sort_by! {|i| i[3]}
+  def event(type, f, value, start)
+    @state[:event] << [type, f, value.to_f, start.to_f]
+  end
+
+  def process(type, f, expression, start, finish)
+    @state[:process] << [type, f, expression, start.to_f, finish.to_f]
   end
 end
