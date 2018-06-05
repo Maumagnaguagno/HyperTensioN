@@ -33,8 +33,7 @@ if $0 == __FILE__
   require_relative '../../Hypertension'
 
   class Protect < Test::Unit::TestCase
-    include Hypertension
-    include Protection
+    include Protection, Hypertension
 
     def test_protection
       @state = {
