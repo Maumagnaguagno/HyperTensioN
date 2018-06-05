@@ -16,7 +16,7 @@ module N_Queens
   }
 
   def solve(size, debug, verbose)
-    start = {
+    state = {
       :queen => [],
       :free_collumn => Array.new(size) {|i| i}
     }
@@ -24,10 +24,10 @@ module N_Queens
       [:solve, size]
     ]
     if verbose
-      problem(start, tasks, debug)
+      problem(state, tasks, debug)
     else
       @debug = debug
-      @state = start
+      @state = state
       planning(tasks)
     end
   end

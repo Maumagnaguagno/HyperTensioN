@@ -40,7 +40,7 @@ module Sudoku
       end
     }
     # Setup
-    start = {
+    state = {
       :symbol => Array.new(total_width) {|i| [i.succ.to_s]},
       :at => board,
       :collumn => collumn,
@@ -51,10 +51,10 @@ module Sudoku
       [:solve, counter, box_width * box_height]
     ]
     if verbose
-      problem(start, tasks, debug)
+      problem(state, tasks, debug)
     else
       @debug = debug
-      @state = start
+      @state = state
       planning(tasks)
     end
     # Display board

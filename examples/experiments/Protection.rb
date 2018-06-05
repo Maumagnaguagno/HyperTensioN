@@ -1,9 +1,9 @@
 module Protection
 
-  def problem(start, *args)
-    start[:protection_pos] = []
-    start[:protection_not] = []
-    super(start, *args)
+  def problem(state, *args)
+    state[:protection_pos] = []
+    state[:protection_not] = []
+    super(state, *args)
   end
 
   def protect(protection_pos, protection_not)

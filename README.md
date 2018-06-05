@@ -457,7 +457,7 @@ In case of failure, ``nil`` is returned.
 - ``apply_operator(precond_pos, precond_not, effect_add, effect_del)`` extends this idea applying effects if ``applicable?``. Returns ``true`` if applied, ``nil`` otherwise.
 - ``generate(precond_pos, precond_not, *free)`` yields all possible unifications to the free variables defined, therefore you need a block to capture the unifications. The return value is undefined.
 - ``print_data(data)`` can be used to print task and predicate lists, useful for debug.
-- ``problem(start, tasks, debug = false, goal_pos = [], goal_not = [])`` is used to simplify the setup of a problem instance, returns the value of planning. Use problem as a template to see how to add HyperTensioN in your project.
+- ``problem(state, tasks, debug = false, goal_pos = [], goal_not = [])`` is used to simplify the setup of a problem instance, returns the value of planning. Use problem as a template to see how to add HyperTensioN in your project.
 - ``task_permutations(state, tasks, goal_pos, goal_not)`` tries several task permutations to achieve unordered decomposition, it is used by ``problem`` when explicit goals are given. Returns a plan or ``nil``.
 
 Domain operators can be defined without ``apply_operator`` and will have the return value considered.

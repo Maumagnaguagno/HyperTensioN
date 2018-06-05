@@ -158,15 +158,15 @@ module Hypertension
   # Problem
   #-----------------------------------------------
 
-  def problem(start, tasks, debug = false, goal_pos = [], goal_not = [])
+  def problem(state, tasks, debug = false, goal_pos = [], goal_not = [])
     @debug = debug
-    @state = start
+    @state = state
     puts 'Tasks'.center(50,'-')
     print_data(tasks)
     puts 'Planning'.center(50,'-')
     t = Time.now.to_f
     # Ordered or unordered tasks
-    plan = goal_pos.empty? && goal_not.empty? ? planning(tasks) : task_permutations(start, tasks, goal_pos, goal_not)
+    plan = goal_pos.empty? && goal_not.empty? ? planning(tasks) : task_permutations(state, tasks, goal_pos, goal_not)
     puts "Time: #{Time.now.to_f - t}s", 'Plan'.center(50,'-')
     if plan
       if plan.empty? then puts 'Empty plan'
