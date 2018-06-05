@@ -1,5 +1,10 @@
 module Function
 
+  def problem(state, *args)
+    state['protect_axiom'] ||= []
+    super(state, *args)
+  end
+
   def function(f)
     @state[:function][f]
   end
