@@ -23,15 +23,12 @@ module Hypertension
     when true, false
       puts "#{'  ' * level}#{current_task.first}(#{current_task.drop(1).join(' ')})" if @debug
       old_state = @state
-      # If operator applied
-      if send(*current_task)
-        # Keep decomposing the hierarchy
-        if plan = planning(tasks, level)
-          # Add visible operators to plan
-          return decomposition ? plan.unshift(current_task) : plan
-        end
-        @state = old_state
+      # Keep decomposing the hierarchy if operator applied
+      if send(*current_task) and plan = planning(tasks, level)
+        # Add visible operator to plan
+        return decomposition ? plan.unshift(current_task) : plan
       end
+      @state = old_state
     # Method
     when Array
       # Keep decomposing the hierarchy
