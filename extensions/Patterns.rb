@@ -556,7 +556,7 @@ module Patterns
             node[2].each {|pre|
               if pre.include?(f) and not precond_pos.assoc(pre.first)
                 precond_pos << pre
-                new_free.concat(pre.drop(1).select {|i| not ground_var.include?(i) and not free.include?(i)})
+                new_free.concat(pre.drop(1).select {|i| not ground_var.include?(i) || free.include?(i)})
                 found = true
               end
             }
