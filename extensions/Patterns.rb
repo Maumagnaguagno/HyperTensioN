@@ -198,8 +198,7 @@ module Patterns
             if $1 == pred
               sub = met2
               break
-            elsif not sub
-              sub = met2
+            else sub ||= met2
             end
           end
         }
@@ -218,8 +217,7 @@ module Patterns
             if $1 == pred
               sub = met2
               break
-            elsif not sub
-              sub = met2
+            else sub ||= met2
             end
           end
         }
