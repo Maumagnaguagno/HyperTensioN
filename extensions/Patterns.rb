@@ -284,7 +284,7 @@ module Patterns
       operators.each {|op|
         if group = op[4].assoc(goal.first)
           # TODO add unification method when required
-          tasks << [op.first, *op[1].map {|var| (i = group.index(var)) ? goal[i] : var}]
+          tasks << op[1].map {|var| (i = group.index(var)) ? goal[i] : var}.unshift(op.first)
           break
         end
       }
@@ -294,7 +294,7 @@ module Patterns
       operators.each {|op|
         if group = op[5].assoc(goal.first)
           # TODO add unification method when required
-          tasks << [op.first, *op[1].map {|var| (i = group.index(var)) ? goal[i] : var}]
+          tasks << op[1].map {|var| (i = group.index(var)) ? goal[i] : var}.unshift(op.first)
           break
         end
       }
