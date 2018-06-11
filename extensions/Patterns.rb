@@ -341,7 +341,7 @@ module Patterns
             puts "  swap method composed: #{method_name}" if debug
             methods << swap_method = [method_name, predicate_terms,
               ['base', [], [predicate_terms.first(eff.size.pred).unshift(eff_name)], [], []]]
-            end
+          end
           # Add swap recursion
           swap_ops.each {|op2,constraint2|
             constraint_terms = Array.new(constraint2.size - 3) {|i| "?middle_#{i}"}
