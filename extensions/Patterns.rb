@@ -249,11 +249,7 @@ module Patterns
   def add_tasks(goal_methods, operators, methods, predicates, tasks, goal_pos, goal_not, debug)
     # TODO Interference topological sort to avoid unordered tasks
     # Add tasks as unordered
-    if tasks.empty?
-      tasks << false
-    elsif tasks.first
-      tasks[0] = false
-    end
+    tasks[0] = false if tasks.empty? or tasks.first
     # Select task
     puts 'Goal to Task' if debug
     goal_methods.each {|(type,goal),v|
