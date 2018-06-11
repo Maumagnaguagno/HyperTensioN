@@ -418,8 +418,8 @@ module Patterns
             end
           end
           list_of_op.each {|op_first|
-            op_name = op_first.first
             if debug
+              op_name = op_first.first
               puts "#{indentation}#{op_name} achieves (#{type ? pre.join(' ') : "not (#{pre.join(' ')})"})"
               methods.each {|met| puts "#{indentation}  consider to use method #{met.first}" if met.first =~ /^dependency_[\w-]+_before_#{op_name}$/o}
             end
