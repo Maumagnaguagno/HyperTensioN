@@ -48,8 +48,8 @@ module Patterns
       (precond_pos & effect_del).each {|pre|
         if pre2 = effect_add.assoc(pre.first)
           cparam = (pre.drop(1) - pre2.drop(1)) | (pre2.drop(1) - pre.drop(1))
-          # TODO constraint may not exist in some cases
-          if constraint = constraints.find {|i| i & cparam == cparam}
+          # TODO constraint may not exist or exist more than once
+          if constraint = constraints.find {|i| (cparam - i).empty?}
             swaps[op] = [pre, constraint]
             if debug
               swap_counter += 1
