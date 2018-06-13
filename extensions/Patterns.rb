@@ -80,7 +80,7 @@ module Patterns
         end
         # TODO check mutex relations
         # Avoid same operator or operator with effect nullified
-        next if op.equal?(op2) or (op2[2].all? {|pre| effect_add.include?(pre)} and op2[3].all? {|pre| effect_del.include?(pre)})
+        next if op.equal?(op2) or ((effect_add - op2[2]).empty? and (effect_del - op2[3]).empty?)
         op2_namesub = op2.first.tr(hyphen, underscore)
         precond_pos.each {|pre|
           next unless op2[4].assoc(pre.first)
