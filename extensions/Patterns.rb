@@ -342,6 +342,7 @@ module Patterns
           swap_ops.each {|op2,constraint2|
             constraint_terms = Array.new(constraint2.size - 3) {|i| "?middle_#{i}"}
             constraint_terms.unshift(current) << intermediate
+            constraint_terms.reverse! if original_current == constraint2.last
             # Replace op2 signature with new variables
             new_op2 = op2[1].map {|var| var == original_current ? current : var == original_intermediate ? intermediate : var}.unshift(op2.first)
             # Label and free variables
