@@ -41,9 +41,6 @@ if $0 == __FILE__
         :protection_pos => [],
         :protection_not => []
       }
-      assert_equal([['a'],['b']], @state[:something])
-      assert_equal([], @state[:protection_pos])
-      assert_equal([], @state[:protection_not])
       protect([[:something, 'a']], [[:something, 'c']])
       assert_equal([['a'],['b']], @state[:something])
       assert_equal([[:something, 'a']], @state[:protection_pos])
