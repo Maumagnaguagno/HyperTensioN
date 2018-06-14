@@ -86,3 +86,48 @@ module Continuous
     axioms_protected?
   end
 end
+
+#-----------------------------------------------
+# Main
+#-----------------------------------------------
+if $0 == __FILE__
+  require 'test/unit'
+  require_relative '../../Hypertension'
+
+  class Exogenous < Test::Unit::TestCase
+    include Continuous, Hypertension
+
+    def identity(i)
+      i
+    end
+
+    def setup_initial_state
+      @state = {
+        :event => [],
+        :process => [],
+        :function => {:x => 0},
+        'protect_axiom' => []
+      }
+    end
+
+    def test_event
+      setup_initial_state
+      event('increase', :x, 1, 1)
+      assert_equal(0, function(:x))
+      assert_equal(0, function(:x, 0.5))
+      assert_equal(1, function(:x, 1))
+      assert_equal(1, function(:x, 1.5))
+    end
+
+    def test_process
+      setup_initial_state
+      process('increase', :x, :identity, 1, 5)
+      assert_equal(0, function(:x))
+      assert_equal(0, function(:x, 0.5))
+      assert_equal(0, function(:x, 1))
+      assert_equal(0.5, function(:x, 1.5))
+      assert_equal(4, function(:x, 5))
+      assert_equal(4, function(:x, 6))
+    end
+  end
+end
