@@ -45,7 +45,6 @@ module Continuous
   def problem(state, *args)
     state[:event] = []
     state[:process] = []
-    state[:predicate_event] = []
     super(state, *args)
   end
 
@@ -83,13 +82,18 @@ module Continuous
     return v unless time
     time = time.to_f
     t = 0
-    @state[:predicate_event].each {|type,g,value,start|
-      if f == g and t <= start and start <= time
+    @state[:event].each {|type,g,value,start|
+      if p == g and t <= start and start <= time
         t = start
-        v = type == 'true'
+        v = value
       end
     }
     v
+  end
+
+  def modify(p, value, start)
+    @state[:event] << [nil, p, value == 'true', start.to_f]
+    axioms_protected?
   end
 
   def event(type, f, value, start)
@@ -122,6 +126,7 @@ if $0 == __FILE__
         :event => [],
         :process => [],
         :function => {:x => 0},
+        'happy' => [['you']],
         'protect_axiom' => []
       }
     end
@@ -144,6 +149,19 @@ if $0 == __FILE__
       assert_equal(0.5, function(:x, 1.5))
       assert_equal(4, function(:x, 5))
       assert_equal(4, function(:x, 6))
+    end
+
+    def test_at_time
+      setup_initial_state
+      pre = ['happy', 'you']
+      modify(pre, 'false', 1)
+      modify(pre, 'true', 5)
+      assert_equal(true, at_time(pre))
+      assert_equal(true, at_time(pre, 0.5))
+      assert_equal(false, at_time(pre, 1))
+      assert_equal(false, at_time(pre, 1.5))
+      assert_equal(true, at_time(pre, 5))
+      assert_equal(true, at_time(pre, 6))
     end
   end
 end
