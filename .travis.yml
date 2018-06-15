@@ -21,6 +21,7 @@ script:
   - ruby tests/walker.rb
   # Examples
   - ruby examples/experiments/Expression.rb
+  - ruby examples/experiments/Function.rb
   - ruby examples/experiments/Protection.rb
   - ruby examples/experiments/Side_Effects.rb
   - ruby examples/travel/pb1.rb
