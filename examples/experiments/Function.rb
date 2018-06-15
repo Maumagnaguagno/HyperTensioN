@@ -77,7 +77,7 @@ module Continuous
     v
   end
 
-  def moment(p, time = nil)
+  def at_time(p, time = nil)
     pre, *terms = p
     v = @state[pre].include?(terms)
     return v unless time
