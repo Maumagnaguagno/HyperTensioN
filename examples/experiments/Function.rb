@@ -45,6 +45,7 @@ module Continuous
   def problem(state, *args)
     state[:event] = []
     state[:process] = []
+    state[:predicate_event] = []
     super(state, *args)
   end
 
@@ -71,6 +72,21 @@ module Continuous
         when 'scale_up' then v *= value
         when 'scale_down' then v /= value
         end
+      end
+    }
+    v
+  end
+
+  def moment(p, time = nil)
+    pre, *terms = p
+    v = @state[pre].include?(terms)
+    return v unless time
+    time = time.to_f
+    t = 0
+    @state[:predicate_event].each {|type,g,value,start|
+      if f == g and t <= start and start <= time
+        t = start
+        v = type == 'true'
       end
     }
     v
