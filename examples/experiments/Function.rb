@@ -121,6 +121,10 @@ if $0 == __FILE__
       i
     end
 
+    def x_less_than(y)
+      function(:x) < y
+    end
+
     def setup_initial_state
       @state = {
         :event => [],
@@ -129,6 +133,24 @@ if $0 == __FILE__
         'happy' => [['you']],
         'protect_axiom' => []
       }
+    end
+
+    def test_instantaneous
+      setup_initial_state
+      assert_equal(0, function(:x))
+      assert_equal(true, increase(:x, 5))
+      assert_equal(5, function(:x))
+      assert_equal(true, decrease(:x, 3))
+      assert_equal(2, function(:x))
+      assert_equal(true, scale_up(:x, 2))
+      assert_equal(4, function(:x))
+      assert_equal(true, scale_down(:x, 4))
+      assert_equal(1, function(:x))
+      assert_equal(true, assign(:x, 10))
+      assert_equal(10, function(:x))
+      assert_equal(true, axioms_protected?)
+      @state['protect_axiom'] << ['x_less_than', 10]
+      assert_equal(false, axioms_protected?)
     end
 
     def test_event
