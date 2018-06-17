@@ -121,8 +121,12 @@ if $0 == __FILE__
       i
     end
 
-    def x_less_than(y)
-      function(:x) < y
+    def x_less_than(y, time = nil)
+      function(:x, time) < y
+    end
+
+    def happy(time = nil)
+      at_time(['happy', 'you'], time)
     end
 
     def setup_initial_state
@@ -148,6 +152,7 @@ if $0 == __FILE__
       assert_equal(1, function(:x))
       assert_equal(true, assign(:x, 10))
       assert_equal(10, function(:x))
+      @state['protect_axiom'] << ['x_less_than', 11]
       assert_equal(true, axioms_protected?)
       @state['protect_axiom'] << ['x_less_than', 10]
       assert_equal(false, axioms_protected?)
@@ -155,35 +160,47 @@ if $0 == __FILE__
 
     def test_event
       setup_initial_state
-      event('increase', :x, 1, 1)
+      assert_equal(true, event('increase', :x, 1, 1))
       assert_equal(0, function(:x))
       assert_equal(0, function(:x, 0.5))
       assert_equal(1, function(:x, 1))
       assert_equal(1, function(:x, 1.5))
+      @state['protect_axiom'].push(['x_less_than', 11], ['x_less_than', 11, 1.5])
+      assert_equal(true, axioms_protected?)
+      @state['protect_axiom'] << ['x_less_than', 1, 1.5]
+      assert_equal(false, axioms_protected?)
     end
 
     def test_process
       setup_initial_state
-      process('increase', :x, :identity, 1, 5)
+      assert_equal(true, process('increase', :x, :identity, 1, 5))
       assert_equal(0, function(:x))
       assert_equal(0, function(:x, 0.5))
       assert_equal(0, function(:x, 1))
       assert_equal(0.5, function(:x, 1.5))
       assert_equal(4, function(:x, 5))
       assert_equal(4, function(:x, 6))
+      @state['protect_axiom'].push(['x_less_than', 11], ['x_less_than', 11, 6])
+      assert_equal(true, axioms_protected?)
+      @state['protect_axiom'] << ['x_less_than', 4, 6]
+      assert_equal(false, axioms_protected?)
     end
 
     def test_at_time
       setup_initial_state
       pre = ['happy', 'you']
-      modify(pre, 'false', 1)
-      modify(pre, 'true', 5)
+      assert_equal(true, modify(pre, 'false', 1))
+      assert_equal(true, modify(pre, 'true', 5))
       assert_equal(true, at_time(pre))
       assert_equal(true, at_time(pre, 0.5))
       assert_equal(false, at_time(pre, 1))
       assert_equal(false, at_time(pre, 1.5))
       assert_equal(true, at_time(pre, 5))
       assert_equal(true, at_time(pre, 6))
+      @state['protect_axiom'].push(['happy'], ['happy', 6])
+      assert_equal(true, axioms_protected?)
+      @state['protect_axiom'] << ['happy', 2]
+      assert_equal(false, axioms_protected?)
     end
   end
 end
