@@ -83,23 +83,23 @@ module Patterns
         next if op.equal?(op2) or ((effect_add - op2[2]).empty? and (effect_del - op2[3]).empty?)
         op2_namesub = op2.first.tr(hyphen, underscore)
         precond_pos.each {|pre|
-          next unless op2[4].assoc(pre.first)
-          (dependencies[op] ||= []) << [op2, true, pre]
-          next unless debug
-          dependency_counter += 1
-          pre_join = pre.join(sep)
-          puts "  #{op2.first} before #{name}, dependency (#{pre_join})"
-          edges.push("\n  #{op2_namesub} -> \"(#{pre_join})\"", "\n  \"(#{pre_join})\" -> #{namesub}")
+          if op2[4].assoc(pre.first)
+            (dependencies[op] ||= []) << [op2, true, pre]
+            next unless debug
+            dependency_counter += 1
+            puts "  #{op2.first} before #{name}, dependency (#{pre_join = pre.join(sep)})"
+            edges.push("\n  #{op2_namesub} -> \"(#{pre_join})\"", "\n  \"(#{pre_join})\" -> #{namesub}")
+          end
         }
         next unless negative_patterns
         precond_not.each {|pre|
-          next unless op2[5].assoc(pre.first)
-          (dependencies[op] ||= []) << [op2, false, pre]
-          next unless debug
-          dependency_counter += 1
-          pre_join = pre.join(sep)
-          puts "  #{op2.first} before #{name}, dependency (not (#{pre_join}))"
-          edges.push("\n  #{op2_namesub} -> \"(not (#{pre_join}))\"", "\n  \"(not (#{pre_join}))\" -> #{namesub}")
+          if op2[5].assoc(pre.first)
+            (dependencies[op] ||= []) << [op2, false, pre]
+            next unless debug
+            dependency_counter += 1
+            puts "  #{op2.first} before #{name}, dependency (not (#{pre_join = pre.join(sep)}))"
+            edges.push("\n  #{op2_namesub} -> \"(not (#{pre_join}))\"", "\n  \"(not (#{pre_join}))\" -> #{namesub}")
+          end
         }
       }
     }
