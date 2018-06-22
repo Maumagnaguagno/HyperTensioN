@@ -203,11 +203,11 @@ module Patterns
           end
         }
         if sub
-          puts "  #{met[4][4][0].first} to #{sub.first} in #{met.first}" if debug
-          met[4][4][0] = sub.first(2).flatten
+          puts "  #{met.last[4][0].first} to #{sub.first} in #{met.first}" if debug
+          met.last[4][0] = sub.first(2).flatten
           # Fill missing variables and preconditions related
-          met[4][1].concat(new_variables = sub[1] - met[1])
-          fill_preconditions(sub[2], predicates, met[4][2], met[4][3], new_variables)
+          met.last[1].concat(new_variables = sub[1] - met[1])
+          fill_preconditions(sub[2], predicates, met.last[2], met.last[3], new_variables)
           # TODO add unification if any variable is still free
           sub = nil
         end
@@ -557,7 +557,7 @@ module Patterns
             }
             break if found
           elsif node.first.start_with?(DEPENDENCY_PREFIX)
-            node[node.size-1][4].reverse_each {|i| fringe.unshift(operators.assoc(i.first) || methods.assoc(i.first)) unless visited.include?(i.first)}
+            node.last[4].reverse_each {|i| fringe.unshift(operators.assoc(i.first) || methods.assoc(i.first)) unless visited.include?(i.first)}
           elsif node.first.start_with?(SWAP_PREFIX)
             node[3][4].reverse_each {|i| fringe.unshift(operators.assoc(i.first) || methods.assoc(i.first)) unless visited.include?(i.first)}
           # TODO else support user provided methods
