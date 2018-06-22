@@ -444,21 +444,27 @@ module Patterns
       first = methods.assoc("swap_#{m.first.first}_until_#{m.first.first}")
       first_terms = pre.drop(1) if pre.first == m.first.first
     end
+    second_effects = second[4]
+    second_terms = second[1]
+    if m = swaps[second]
+      second = methods.assoc("swap_#{m.first.first}_until_#{m.first.first}")
+      second_terms = pre.drop(1) if pre.first == m.first.first
+    end
     name = "dependency_#{first.first}_before_#{second.first}"
     return if methods.any? {|met| met.first.start_with?(name)}
     # Preconditions
     precond_pos = []
     precond_not = []
-    (variables = first_terms + second[1]).uniq!
+    (variables = first_terms + second_terms).uniq!
     fill_preconditions(first, predicates, precond_pos, precond_not, variables) if operators.include?(first)
-    fill_preconditions(second, predicates, precond_pos, precond_not, variables)
+    fill_preconditions(second, predicates, precond_pos, precond_not, variables) if operators.include?(second)
     precond_pos.uniq!
     precond_not.uniq!
     # Variables
     possible_terms = first_terms + pre
     variables = first[1].select {|i| precond_pos.any? {|pre2| pre2.include?(i)} or possible_terms.include?(i)}
-    variables.concat(second[1]).uniq!
-    second[4].each {|effect|
+    variables.concat(second_terms).uniq!
+    second_effects.each {|effect|
       puts "  dependency method composed: #{name}_for_#{effect.first}" if debug
       methods << met = ["#{name}_for_#{effect.first}", variables,
         # Label and free variables
@@ -478,7 +484,7 @@ module Patterns
         # Negative preconditions
         type ? [] : [pre],
         # Subtasks
-        [second.first(2).flatten]
+        [[second.first, *second_terms]]
       ] unless first.first.start_with?(SWAP_PREFIX)
       # Label and free variables
       met << ['unsatisfied', [],
@@ -489,7 +495,7 @@ module Patterns
         # Subtasks
         [
           [first.first, *first_terms],
-          second.first(2).flatten
+          [second.first, *second_terms]
         ]
       ]
     }
