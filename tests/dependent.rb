@@ -246,8 +246,8 @@ class Dependent < Test::Unit::TestCase
     satisfied
     (
       (agent ?a)
-      (object ?x)
       (agent ?b)
+      (object ?x)
       (have ?a ?x)
     )
     (
@@ -259,8 +259,8 @@ class Dependent < Test::Unit::TestCase
     unsatisfied
     (
       (agent ?a)
-      (object ?x)
       (agent ?b)
+      (object ?x)
       (not (have ?a ?x))
     )
     (
@@ -281,8 +281,8 @@ class Dependent < Test::Unit::TestCase
     satisfied
     (
       (agent ?a)
-      (object ?x)
       (agent ?b)
+      (object ?x)
       (have ?a ?x)
     )
     (
@@ -294,8 +294,8 @@ class Dependent < Test::Unit::TestCase
     unsatisfied
     (
       (agent ?a)
-      (object ?x)
       (agent ?b)
+      (object ?x)
       (not (have ?a ?x))
     )
     (
@@ -310,8 +310,8 @@ UNIFY_BUY_GIVE = '
     a_x
     (
       (agent ?a)
-      (object ?x)
       (agent ?b)
+      (object ?x)
     )
     (
       (dependency_buy_before_give_for_happy ?a ?x ?b)
@@ -522,8 +522,8 @@ module Dependency
       # Positive preconditions
       [
         ['agent', a],
-        ['object', x],
         ['agent', b],
+        ['object', x],
         ['have', a, x]
       ],
       # Negative preconditions
@@ -540,8 +540,8 @@ module Dependency
       # Positive preconditions
       [
         ['agent', a],
-        ['object', x],
-        ['agent', b]
+        ['agent', b],
+        ['object', x]
       ],
       # Negative preconditions
       [
@@ -573,8 +573,8 @@ module Dependency
       # Positive preconditions
       [
         ['agent', a],
-        ['object', x],
         ['agent', b],
+        ['object', x],
         ['have', a, x]
       ],
       # Negative preconditions
@@ -591,8 +591,8 @@ module Dependency
       # Positive preconditions
       [
         ['agent', a],
-        ['object', x],
-        ['agent', b]
+        ['agent', b],
+        ['object', x]
       ],
       # Negative preconditions
       [
@@ -613,8 +613,8 @@ module Dependency
       # Positive preconditions
       [
         ['agent', a],
-        ['object', x],
-        ['agent', b]
+        ['agent', b],
+        ['object', x]
       ],
       # Negative preconditions
       [], a, x
