@@ -7,7 +7,7 @@ class Paisley < Test::Unit::TestCase
       ['cross', ['?agent', '?b', *parameters],
         # Preconditions
         [
-          ['agent', '?ag'], ['predicate', '?b'], ['adjacent' , *constraint_terms],
+          ['agent', '?ag'], ['predicate'], ['predicate2', '?b'], ['adjacent' , *constraint_terms],
           ['bridge', '?from', '?b', '?to'], ['at', '?ag', '?from'], ['empty', '?to']
         ],
         [],
@@ -69,13 +69,13 @@ class Paisley < Test::Unit::TestCase
     predicates = {
       'agent' => false,
       'predicate' => false,
+      'predicate2' => false,
       'adjacent' => false,
       'at' => true,
       'bridge' => true,
       'empty' => true
     }
     methods = []
-
     Patterns.apply(cross_operator(['?from', '?to'], ['?from', '?to']), methods, predicates, [], [], [], [])
     assert_equal(swap_cross_methods(['?current', '?intermediate'], ['?current', '?intermediate']), methods)
     methods.clear
@@ -98,7 +98,7 @@ class Paisley < Test::Unit::TestCase
         ['pick', ['?obj', '?room', '?gripper'],
           # Preconditions
           [
-            ['ball', '?obj'], ['room', '?room'], ['gripper', '?gripper'],
+            ['ball', '?obj'], ['room', '?room'], ['gripper', '?gripper'], ['predicate'],
             ['at', '?obj', '?room'], ['atRobby', '?room'], ['free', '?gripper']
           ],
           [],
@@ -125,6 +125,7 @@ class Paisley < Test::Unit::TestCase
         'ball' => false,
         'room' => false,
         'gripper' => false,
+        'predicate' => false,
         'at' => true,
         'atRobby' => true,
         'free' => true,
@@ -152,7 +153,7 @@ class Paisley < Test::Unit::TestCase
           ['satisfied', [],
             # Preconditions
             [
-              ['ball', '?obj'], ['room', '?room'], ['gripper', '?gripper'],
+              ['ball', '?obj'], ['room', '?room'], ['gripper', '?gripper'], ['predicate'],
               ['at', '?obj', '?room']
             ],
             [],
@@ -161,7 +162,7 @@ class Paisley < Test::Unit::TestCase
           ],
           ['unsatisfied', [],
             # Preconditions
-            [['ball', '?obj'], ['room', '?room'], ['gripper', '?gripper']],
+            [['ball', '?obj'], ['room', '?room'], ['gripper', '?gripper'], ['predicate']],
             [['at', '?obj', '?room']],
             # Subtasks
             [
@@ -190,7 +191,7 @@ class Paisley < Test::Unit::TestCase
           ],
           ['unsatisfied', [],
             # Preconditions
-            [['ball', '?obj'], ['room', '?room'], ['gripper', '?gripper']],
+            [['ball', '?obj'], ['room', '?room'], ['gripper', '?gripper'], ['predicate']],
             [['carry', '?obj', '?gripper']],
             # Subtasks
             [
@@ -219,7 +220,7 @@ class Paisley < Test::Unit::TestCase
           ],
           ['unsatisfied', [],
             # Preconditions
-            [['ball', '?obj'], ['room', '?room'], ['gripper', '?gripper']],
+            [['ball', '?obj'], ['room', '?room'], ['gripper', '?gripper'], ['predicate']],
             [['carry', '?obj', '?gripper']],
             # Subtasks
             [

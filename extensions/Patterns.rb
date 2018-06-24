@@ -579,7 +579,7 @@ module Patterns
   #-----------------------------------------------
 
   def fill_preconditions(operator, predicates, precond_pos, precond_not, variables)
-    operator[2].each {|prec| precond_pos << prec if not predicates[prec.first] and variables.any? {|i| prec.include?(i)}}
-    operator[3].each {|prec| precond_not << prec if not predicates[prec.first] and variables.any? {|i| prec.include?(i)}}
+    operator[2].each {|prec| precond_pos << prec if not predicates[prec.first] and prec.size == 1 || variables.any? {|i| prec.include?(i)}}
+    operator[3].each {|prec| precond_not << prec if not predicates[prec.first] and prec.size == 1 || variables.any? {|i| prec.include?(i)}}
   end
 end
