@@ -564,10 +564,8 @@ module Patterns
               end
             }
             break if found
-          elsif node.first.start_with?(DEPENDENCY_PREFIX)
+          elsif node.first.start_with?(DEPENDENCY_PREFIX) or node.first.start_with?(SWAP_PREFIX)
             node.last[4].reverse_each {|i| fringe.unshift(operators.assoc(i.first) || methods.assoc(i.first)) unless visited.include?(i.first)}
-          elsif node.first.start_with?(SWAP_PREFIX)
-            node[3][4].reverse_each {|i| fringe.unshift(operators.assoc(i.first) || methods.assoc(i.first)) unless visited.include?(i.first)}
           # TODO else support user provided methods
           end
         end
