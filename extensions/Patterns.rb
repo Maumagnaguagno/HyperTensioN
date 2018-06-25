@@ -406,7 +406,7 @@ module Patterns
         }
         # Operators related to the same dependency generate an OR method, otherwise generate AND method
         same_dependency_predicate.each {|(type,pre),list_of_op|
-          list_of_op.each {|op_first| compose_dependency_method(op_first, op, type, pre, swaps, operators, methods, predicates, false)}
+          list_of_op.each {|op_first| compose_dependency_method(op_first, op, type, pre, swaps, operators, methods, predicates, debug)}
         }
         next unless debug
         puts "  #{op.first} requires a complex method\n    (and"
