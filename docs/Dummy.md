@@ -1,33 +1,37 @@
+# Dummy
 Based on [Complexity Results for HTN Planning](https://pdfs.semanticscholar.org/fa4e/c2d29c9942ad290e6ac485e9d2c93f842d1c.pdf)
+The implementation of the following algorithm has been expanded to support a limited number of repetitions.
+This limitation purpose it to avoid infinite loops by marking actions once applied.
+The repetition expands the amount of methods of ``perform_goal_p/not_p try_o_to_perform_goal_p/not_p n``, ``mark`` and ``unmark`` operators.
 
 ```Ruby
-Algorithm dummy(operators, initial state, goal state)
+algorithm dummy(operators, initial state, goal state)
   create an unordered task list
   create methods set
-  Foreach positive goal predicate p in goal state
+  foreach positive goal predicate p in goal state
     create task perform_goal_p
     perform_goal_p can be decomposed into:
     - method finish_goal_p
       - positive precondition p
-      - no subtasks
+      - subtasks []
     - method try_o_to_perform_goal_p for each operator o
       - preconditions of o
-      - subtasks <mark o, o, perform_goal_p, unmark o>
+      - subtasks [mark o, o, perform_goal_p, unmark o]
     add perform_goal_p to task list
   end
-  Foreach negative goal predicate p in goal state
+  foreach negative goal predicate p in goal state
     create task perform_goal_not_p
     perform_goal_not_p can be decomposed into:
     - finish_goal_not_p
       - negative precondition p
-      - no subtasks
+      - subtasks []
     - try_o_to_perform_goal_not_p for each operator o
       - preconditions of o
-      - subtasks <mark o, o, perform_goal_not_p, unmark o>
+      - subtasks [mark o, o, perform_goal_not_p, unmark o]
     add perform_goal_not_p to task list
   end
-  Add operator mark o with negative precondition (marked o) and positive effect (marked o)
-  Add operator unmark o with negative effect (marked o)
+  add operator mark o with negative precondition (marked o) and positive effect (marked o)
+  add operator unmark o with negative effect (marked o)
   return <operators, methods, initial state, task list>
 end
 ```
