@@ -5,10 +5,10 @@ This limitation purpose it to avoid infinite loops by marking actions once appli
 The repetition expands the amount of methods of ``perform_goal_p/not_p try_o_to_perform_goal_p/not_p n``, ``mark`` and ``unmark`` operators.
 
 ```Ruby
-algorithm dummy(operators, initial state, goal state)
+def dummy(operators, initial state, goal state)
   create an unordered task list
   create methods set
-  foreach positive goal predicate p in goal state
+  for positive goal predicate p in goal state
     create task perform_goal_p
     perform_goal_p can be decomposed into:
     - method finish_goal_p
@@ -19,7 +19,7 @@ algorithm dummy(operators, initial state, goal state)
       - subtasks [mark o, o, perform_goal_p, unmark o]
     add perform_goal_p to task list
   end
-  foreach negative goal predicate p in goal state
+  for negative goal predicate p in goal state
     create task perform_goal_not_p
     perform_goal_not_p can be decomposed into:
     - finish_goal_not_p
