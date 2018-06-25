@@ -111,7 +111,10 @@ class Miner < Test::Unit::TestCase
           ['unsatisfied', [],
             # Preconditions
             [],
-            [['at', '?agent', '?pick_position']],
+            [
+              ['blocked', '?pick_position'],
+              ['at', '?agent', '?pick_position']
+            ],
             # Subtasks
             [
               ['swap_at_until_at', '?agent', '?pick_position'],
@@ -130,14 +133,18 @@ class Miner < Test::Unit::TestCase
           ['satisfied', [],
             # Preconditions
             [['on', '?gold', '?pick_position']],
-            [],
+            [['blocked', '?pick_position']],
             # Subtasks
             [['dependency_swap_at_until_at_before_pick_for_have', '?agent', '?gold', '?pick_position']]
           ],
           ['unsatisfied', [],
             # Preconditions
             [],
-            [['on', '?gold', '?pick_position']],
+            [
+              ['blocked', '?pick_position'],
+              ['blocked', '?drop_position'],
+              ['on', '?gold', '?pick_position']
+            ],
             # Subtasks
             [
               ['dependency_swap_at_until_at_before_drop_for_on', '?agent', '?gold', '?drop_position'],
@@ -156,7 +163,10 @@ class Miner < Test::Unit::TestCase
           ['unsatisfied', [],
             # Preconditions
             [],
-            [['at', '?agent', '?drop_position']],
+            [
+              ['blocked', '?drop_position'],
+              ['at', '?agent', '?drop_position']
+            ],
             # Subtasks
             [
               ['swap_at_until_at', '?agent', '?drop_position'],
@@ -175,14 +185,18 @@ class Miner < Test::Unit::TestCase
           ['satisfied', [],
             # Preconditions
             [['have', '?agent', '?gold']],
-            [],
+            [['blocked', '?drop_position']],
             # Subtasks
             [['dependency_swap_at_until_at_before_drop_for_on', '?agent', '?gold', '?drop_position']]
           ],
           ['unsatisfied', [],
             # Preconditions
             [],
-            [['have', '?agent', '?gold']],
+            [
+              ['blocked', '?drop_position'],
+              ['blocked', '?pick_position'],
+              ['have', '?agent', '?gold']
+            ],
             # Subtasks
             [
               ['dependency_swap_at_until_at_before_pick_for_have', '?agent', '?gold', '?pick_position'],
@@ -197,7 +211,10 @@ class Miner < Test::Unit::TestCase
               ['at', '?agent', '?from'],
               ['on', '?gold', '?pick_position']
             ],
-            [],
+            [
+              ['blocked', '?drop_position'],
+              ['blocked', '?pick_position']
+            ],
             # Subtasks
             [['dependency_pick_before_drop_for_on', '?agent', '?gold', '?pick_position', '?drop_position']]
           ]

@@ -455,10 +455,13 @@ module Patterns
     # Preconditions
     (variables = first_terms + second_terms).uniq!
     precond_pos_second = []
-    fill_preconditions(second, predicates, precond_pos_second, [], second_terms) if operators.include?(second)
+    precond_not_second = []
+    fill_preconditions(second, predicates, precond_pos_second, precond_not_second, second_terms) if operators.include?(second)
     precond_pos = precond_pos_second.dup
-    fill_preconditions(first, predicates, precond_pos, [], variables) if operators.include?(first)
+    precond_not = precond_not_second.dup
+    fill_preconditions(first, predicates, precond_pos, precond_not, variables) if operators.include?(first)
     precond_pos.uniq!
+    precond_not.uniq!
     # Variables
     possible_terms = first_terms + pre
     variables = first[1].select {|i| precond_pos.any? {|pre2| pre2.include?(i)} or possible_terms.include?(i)}
@@ -481,7 +484,7 @@ module Patterns
         # Positive preconditions
         type ? precond_pos_second + [pre] : precond_pos_second,
         # Negative preconditions
-        type ? [] : [pre],
+        type ? precond_not_second : precond_not_second + [pre],
         # Subtasks
         [[second.first, *second_terms]]
       ] unless first.first.start_with?(SWAP_PREFIX)
@@ -490,7 +493,7 @@ module Patterns
         # Positive preconditions
         type ? precond_pos : precond_pos + [pre],
         # Negative preconditions
-        type ? [pre] : [],
+        type ? precond_not + [pre] : precond_not,
         # Subtasks
         [
           [first.first, *first_terms],
