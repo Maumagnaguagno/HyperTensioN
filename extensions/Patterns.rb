@@ -391,9 +391,13 @@ module Patterns
       next unless op_dependencies
       # Cluster operators to compose methods
       if op_dependencies.size == 1
-        dep_first, dep_type, dep_pre = op_dependencies.first
-        compose_dependency_method(dep_first, op, dep_type, dep_pre, swaps, operators, methods, predicates, debug)
+        first, type, pre = op_dependencies.first
+        compose_dependency_method(first, op, type, pre, swaps, operators, methods, predicates, debug)
       else
+        op_dependencies.sort_by! {|i| relevance[i.first]}.each {|first,type,pre|
+          compose_dependency_method(first, op, type, pre, swaps, operators, methods, predicates, debug)
+        }
+        next unless debug
         # Sort dependencies
         same_dependency_predicate = {}
         swap_dependencies = []
@@ -405,20 +409,16 @@ module Patterns
           end
         }
         # Operators related to the same dependency generate an OR method, otherwise generate AND method
-        same_dependency_predicate.each {|(type,pre),list_of_op|
-          list_of_op.each {|op_first| compose_dependency_method(op_first, op, type, pre, swaps, operators, methods, predicates, debug)}
-        }
-        next unless debug
         puts "  #{op.first} requires a complex method\n    (and"
         same_dependency_predicate.each {|(type,pre),list_of_op|
-          if list_of_op.size != 1
-            puts '      (or'
-            indentation = '        '
-          else indentation = '      '
-          end
           list_of_op.each {|op_first|
-            op_name = op_first.first
-            puts "#{indentation}#{op_name} achieves (#{type ? pre.join(' ') : "not (#{pre.join(' ')})"})"
+            compose_dependency_method(op_first, op, type, pre, swaps, operators, methods, predicates, debug)
+            if list_of_op.size != 1
+              puts '      (or'
+              indentation = '        '
+            else indentation = '      '
+            end
+            puts "#{indentation}#{op_name = op_first.first} achieves (#{type ? pre.join(' ') : "not (#{pre.join(' ')})"})"
             methods.each {|met| puts "#{indentation}  consider to use method #{met.first}" if met.first =~ /^dependency_[\w-]+_before_#{op_name}$/o}
           }
           puts '      )' if list_of_op.size != 1
