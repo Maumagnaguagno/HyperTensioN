@@ -1,5 +1,5 @@
 # Dummy
-Based on [Complexity Results for HTN Planning](https://pdfs.semanticscholar.org/fa4e/c2d29c9942ad290e6ac485e9d2c93f842d1c.pdf), a process to convert a classical planning instance to a HTN planning instance.
+Based on [Complexity Results for HTN Planning - 3.3 Expressivity: HTNs versus STRIPS representation](https://pdfs.semanticscholar.org/fa4e/c2d29c9942ad290e6ac485e9d2c93f842d1c.pdf), a process to convert a classical planning instance to a HTN planning instance.
 Our implementation of the following algorithm has been expanded to limit the amount of repeated actions.
 This limitation purpose it to avoid infinite loops as some actions may undo previous effects, by marking actions once applied and only applying actions not marked more than a certain amount of times.
 The repetition expands the amount of methods of ``perform_goal_p/not_p try_o_to_perform_goal_p/not_p n``, ``mark`` and ``unmark`` operators.
