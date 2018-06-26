@@ -1,8 +1,9 @@
 # Dummy
-Based on [Complexity Results for HTN Planning](https://pdfs.semanticscholar.org/fa4e/c2d29c9942ad290e6ac485e9d2c93f842d1c.pdf)
-The implementation of the following algorithm has been expanded to support a limited number of repetitions.
-This limitation purpose it to avoid infinite loops by marking actions once applied.
+Based on [Complexity Results for HTN Planning](https://pdfs.semanticscholar.org/fa4e/c2d29c9942ad290e6ac485e9d2c93f842d1c.pdf), a process to convert a classical planning instance to a HTN planning instance.
+Our implementation of the following algorithm has been expanded to limit the amount of repeated actions.
+This limitation purpose it to avoid infinite loops as some actions may undo previous effects, by marking actions once applied and only applying actions not marked more than a certain amount of times.
 The repetition expands the amount of methods of ``perform_goal_p/not_p try_o_to_perform_goal_p/not_p n``, ``mark`` and ``unmark`` operators.
+Some problems may require more repetitions to satisfy a goal state.
 
 ```Ruby
 def dummy(operators, initial state, goal state)
@@ -75,11 +76,8 @@ Example of PDDL to JSHOP:
   )
   (:operator (!give ?a ?b ?x)
     (
-      (agent ?a)
-      (agent ?b)
-      (object ?x)
-      (have ?a ?x)
-      (not (have ?b ?x))
+      (agent ?a) (agent ?b) (object ?x)
+      (have ?a ?x) (not (have ?b ?x))
     )
     ((have ?a ?x))
     ((have ?b ?x) (happy ?b))
@@ -136,10 +134,8 @@ Example of PDDL to JSHOP:
   (:method (perform_goal_happy_bob)
     try_buy_to_perform_goal_happy_bob1
     (
-      (agent ?a)
-      (object ?x)
-      (got_money ?a)
-      (not (have ?a ?x))
+      (agent ?a) (object ?x)
+      (got_money ?a) (not (have ?a ?x))
     )
     (
       (!!mark_buy_1 ?a ?x)
@@ -151,11 +147,8 @@ Example of PDDL to JSHOP:
   (:method (perform_goal_happy_bob)
     try_give_to_perform_goal_happy_bob1
     (
-      (agent ?a)
-      (agent ?b)
-      (object ?x)
-      (have ?a ?x)
-      (not (have ?b ?x))
+      (agent ?a) (agent ?b) (object ?x)
+      (have ?a ?x) (not (have ?b ?x))
     )
     (
       (!!mark_give_1 ?a ?b ?x)
