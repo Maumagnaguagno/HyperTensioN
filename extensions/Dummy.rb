@@ -87,7 +87,7 @@ module Dummy
             # Positive preconditions
             op[2],
             # Negative preconditions
-            op[3],
+            i == 1 ? op[3] : [["visited_#{op.first}_#{i.pred}", *op[1]]].concat(op[3]),
             # Subtasks
             [
               ["invisible_visit_#{op.first}_#{i}", *op[1]],
