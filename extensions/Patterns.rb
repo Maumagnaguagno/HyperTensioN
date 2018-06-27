@@ -53,8 +53,7 @@ module Patterns
             swaps[op] = [pre, constraint]
             if debug
               swap_counter += 1
-              pre_join = pre.join(sep)
-              puts "  #{name} swaps (#{pre_join}) with constraint (#{constraint.join(sep)})"
+              puts "  #{name} swaps (#{pre_join = pre.join(sep)}) with constraint (#{constraint.join(sep)})"
               edges << "\n  #{namesub} -> \"(#{pre_join})\" [dir=both style=dashed]"
             end
             break
