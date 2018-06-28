@@ -546,7 +546,7 @@ module Patterns
   def bind_variables(free, root, ground_var, precond_pos, precond_not, operators, methods)
     new_free = []
     free.each {|f|
-      unless precond_pos.any? {|pre| pre.include?(f)}
+      if precond_pos.none? {|pre| pre.include?(f)}
         # DFS
         fringe = [root]
         visited = {}
