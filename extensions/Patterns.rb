@@ -390,8 +390,8 @@ module Patterns
       next unless op_dependencies
       # Cluster operators to compose methods
       if op_dependencies.size == 1
-        first, type, pre = op_dependencies.first
-        compose_dependency_method(first, op, type, pre, swaps, operators, methods, predicates, debug)
+        first_dep, type_dep, pre_dep = op_dependencies.first
+        compose_dependency_method(first_dep, op, type_dep, pre_dep, swaps, operators, methods, predicates, debug)
       else
         op_dependencies.sort_by! {|i| relevance[i.first]}.each {|first,type,pre|
           compose_dependency_method(first, op, type, pre, swaps, operators, methods, predicates, debug)
@@ -579,7 +579,7 @@ module Patterns
   #-----------------------------------------------
 
   def fill_preconditions(operator, predicates, precond_pos, precond_not, variables)
-    operator[2].each {|prec| precond_pos << prec if not predicates[prec.first] and prec.size == 1 || variables.any? {|i| prec.include?(i)}}
-    operator[3].each {|prec| precond_not << prec if not predicates[prec.first] and prec.size == 1 || variables.any? {|i| prec.include?(i)}}
+    operator[2].each {|pre| precond_pos << pre if not predicates[pre.first] and pre.size == 1 || variables.any? {|i| pre.include?(i)}}
+    operator[3].each {|pre| precond_not << pre if not predicates[pre.first] and pre.size == 1 || variables.any? {|i| pre.include?(i)}}
   end
 end
