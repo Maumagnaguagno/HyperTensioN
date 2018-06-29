@@ -75,23 +75,22 @@ class Paisley < Test::Unit::TestCase
       'bridge' => true,
       'empty' => true
     }
-    methods = []
-    Patterns.apply(cross_operator(['?from', '?to'], ['?from', '?to']), methods, predicates, [], [], [], [])
+    Patterns.apply(cross_operator(['?from', '?to'], ['?from', '?to']), methods = [], predicates, [], tasks = [], [], [])
     assert_equal(swap_cross_methods(['?current', '?intermediate'], ['?current', '?intermediate']), methods)
-    methods.clear
-    Patterns.apply(cross_operator(['?from', '?to'], ['?to', '?from']), methods, predicates, [], [], [], [])
+    assert_equal([false], tasks)
+    Patterns.apply(cross_operator(['?from', '?to'], ['?to', '?from']), methods.clear, predicates, [], tasks.clear, [], [])
     assert_equal(swap_cross_methods(['?current', '?intermediate'], ['?intermediate', '?current']), methods)
-    methods.clear
-    Patterns.apply(cross_operator(['?to', '?from'], ['?from', '?to']), methods, predicates, [], [], [], [])
+    assert_equal([false], tasks)
+    Patterns.apply(cross_operator(['?to', '?from'], ['?from', '?to']), methods.clear, predicates, [], tasks.clear, [], [])
     assert_equal(swap_cross_methods(['?intermediate', '?current'], ['?current', '?intermediate']), methods)
-    methods.clear
-    Patterns.apply(cross_operator(['?to', '?from'], ['?to', '?from']), methods, predicates, [], [], [], [])
+    assert_equal([false], tasks)
+    Patterns.apply(cross_operator(['?to', '?from'], ['?to', '?from']), methods.clear, predicates, [], tasks.clear, [], [])
     assert_equal(swap_cross_methods(['?intermediate', '?current'], ['?intermediate', '?current']), methods)
+    assert_equal([false], tasks)
   end
 
   def test_variable_introduction_in_dependency
     # Based on gripper domain
-    methods = []
     Patterns.apply(
       # Operators
       [
@@ -119,7 +118,7 @@ class Paisley < Test::Unit::TestCase
         ]
       ],
       # Methods
-      methods,
+      methods = [],
       # Predicates
       {
         'ball' => false,
@@ -134,7 +133,7 @@ class Paisley < Test::Unit::TestCase
       # State
       [],
       # Tasks
-      [],
+      tasks = [],
       # Goal_pos
       [],
       # Goal_not
@@ -232,5 +231,25 @@ class Paisley < Test::Unit::TestCase
       ],
       methods
     )
+    assert_equal([false], tasks)
+  end
+
+  def test_task_selection
+    predicates = {
+      'agent' => false,
+      'predicate' => false,
+      'predicate2' => false,
+      'adjacent' => false,
+      'at' => true,
+      'bridge' => true,
+      'empty' => true
+    }
+    state = [['agent', 'bob'], ['predicate'], ['predicate2', 'bridge'], ['adjacent' , 'a', 'b'], ['bridge', 'a', 'bridge', 'b'], ['at', 'bob', 'a'], ['empty', 'b']]
+    Patterns.apply(cross_operator(['?from', '?to'], ['?from', '?to']), [], predicates, state, tasks = [], [], [])
+    assert_equal([false], tasks)
+    Patterns.apply(cross_operator(['?from', '?to'], ['?from', '?to']), [], predicates, state, tasks = [], [['at', 'bob', 'a']], [])
+    assert_equal([false, ['swap_at_until_at', 'bob', 'a']], tasks)
+    Patterns.apply(cross_operator(['?from', '?to'], ['?from', '?to']), [], predicates, state, tasks = [], [['at', 'bob', 'b']], [])
+    assert_equal([false, ['swap_at_until_at', 'bob', 'b']], tasks)
   end
 end
