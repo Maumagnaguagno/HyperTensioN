@@ -204,7 +204,7 @@ class Miner < Test::Unit::TestCase
             ]
           ]
         ],
-        ['unify_dependency_pick_before_drop_for_on', ['?gold', '?drop_position'],
+        ['unify_agent_pick_position_before_dependency_pick_before_drop_for_on', ['?gold', '?drop_position'],
           ['agent_pick_position_from', ['?agent', '?pick_position', '?from'],
             # Preconditions
             [
@@ -253,9 +253,9 @@ class Miner < Test::Unit::TestCase
         ['blocked', 'p8_8']
       ),
       :tasks => [false,
-        ['unify_dependency_pick_before_drop_for_on', 'g1', 'p8_6'],
-        ['unify_dependency_pick_before_drop_for_on', 'g2', 'p8_6'],
-        ['unify_dependency_pick_before_drop_for_on', 'g3', 'p8_6']
+        ['unify_agent_pick_position_before_dependency_pick_before_drop_for_on', 'g1', 'p8_6'],
+        ['unify_agent_pick_position_before_dependency_pick_before_drop_for_on', 'g2', 'p8_6'],
+        ['unify_agent_pick_position_before_dependency_pick_before_drop_for_on', 'g3', 'p8_6']
       ],
       :goal_pos => [
         ['on', 'g1', 'p8_6'],

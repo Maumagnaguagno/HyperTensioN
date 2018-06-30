@@ -71,7 +71,7 @@ class Dependent < Test::Unit::TestCase
       # Domain
       DEPENDENCY_DOMAIN_JSHOP + UNIFY_BUY_GIVE,
       # Problem
-      DEPENDENCY_PROBLEM_JSHOP.sub('<pb>','1').sub!('<start>', "\n    (have ana gift)").sub!('<tasks>', '(unify_dependency_buy_before_give_for_happy bob)')
+      DEPENDENCY_PROBLEM_JSHOP.sub('<pb>','1').sub!('<start>', "\n    (have ana gift)").sub!('<tasks>', '(unify_a_x_before_dependency_buy_before_give_for_happy bob)')
     )
   end
 
@@ -85,7 +85,7 @@ class Dependent < Test::Unit::TestCase
       # Domain
       DEPENDENCY_DOMAIN_JSHOP + UNIFY_BUY_GIVE,
       # Problem
-      DEPENDENCY_PROBLEM_JSHOP.sub('<pb>','2').sub!('<start>', '').sub!('<tasks>', '(unify_dependency_buy_before_give_for_happy bob)')
+      DEPENDENCY_PROBLEM_JSHOP.sub('<pb>','2').sub!('<start>', '').sub!('<tasks>', '(unify_a_x_before_dependency_buy_before_give_for_happy bob)')
     )
   end
 
@@ -127,7 +127,7 @@ class Dependent < Test::Unit::TestCase
       # Domain
       DEPENDENCY_DOMAIN_JSHOP + UNIFY_BUY_GIVE,
       # Problem
-      DEPENDENCY_PROBLEM_JSHOP.sub('<pb>','5').sub!('<start>', "\n    (happy bob)").sub!('<tasks>', '(unify_dependency_buy_before_give_for_happy bob)')
+      DEPENDENCY_PROBLEM_JSHOP.sub('<pb>','5').sub!('<start>', "\n    (happy bob)").sub!('<tasks>', '(unify_a_x_before_dependency_buy_before_give_for_happy bob)')
     )
   end
 
@@ -306,7 +306,7 @@ class Dependent < Test::Unit::TestCase
 '
 
 UNIFY_BUY_GIVE = '
-  (:method (unify_dependency_buy_before_give_for_happy ?b)
+  (:method (unify_a_x_before_dependency_buy_before_give_for_happy ?b)
     a_x
     (
       (agent ?a)
@@ -373,8 +373,8 @@ module Dependency
       'dependency_buy_before_give_for_happy_satisfied',
       'dependency_buy_before_give_for_happy_unsatisfied'
     ],
-    'unify_dependency_buy_before_give_for_happy' => [
-      'unify_dependency_buy_before_give_for_happy_a_x'
+    'unify_a_x_before_dependency_buy_before_give_for_happy' => [
+      'unify_a_x_before_dependency_buy_before_give_for_happy_a_x'
     ]
   }
 
@@ -606,7 +606,7 @@ module Dependency
     end
   end
 
-  def unify_dependency_buy_before_give_for_happy_a_x(b)
+  def unify_a_x_before_dependency_buy_before_give_for_happy_a_x(b)
     a = ''
     x = ''
     generate(
@@ -652,7 +652,7 @@ Dependency.problem(
   },
   # Tasks
   [
-    ['unify_dependency_buy_before_give_for_happy', bob]
+    ['unify_a_x_before_dependency_buy_before_give_for_happy', bob]
   ],
   # Debug
   ARGV.first == 'debug',

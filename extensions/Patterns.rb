@@ -507,7 +507,6 @@ module Patterns
   #-----------------------------------------------
 
   def compose_unification_method(operators, methods, predicates, met, substitutions)
-    name = "unify_#{met.first}"
     # Split free variables from ground terms
     free, ground = substitutions.zip(met[1]).partition {|sub,var| sub.start_with?('?')}
     if ground.empty?
@@ -515,7 +514,7 @@ module Patterns
       ground_var = []
     else ground_sub, ground_var = ground.transpose
     end
-    if methods.none? {|m| m.first == name and m[1] == ground_var}
+    unless methods.assoc(name = "unify#{free.map! {|i| i.first}.join.tr!('?','_')}_before_#{met.first}")
       # For all decompositions, find invariant predicates that act as preconditions
       precond_pos = []
       precond_not = []
@@ -523,7 +522,7 @@ module Patterns
       precond_pos.uniq!
       precond_not.uniq!
       # Find other preconditions to bound free variables at run-time
-      bind_variables(free.map! {|i| i.first}, met, ground_var, precond_pos, precond_not, operators, methods)
+      bind_variables(free, met, ground_var, precond_pos, precond_not, operators, methods)
       methods << [name, ground_var,
         # Label and free variables
         [free.join('_').delete('?'), free,

@@ -297,7 +297,7 @@ class Rescue < Test::Unit::TestCase
     )
   )
 
-  (:method (unify_dependency_swap_at_until_at_before_report_for_reported ?bot ?beacon)
+  (:method (unify_source_before_dependency_swap_at_until_at_before_report_for_reported ?bot ?beacon)
     source
     (
       (robot ?bot)
@@ -351,7 +351,7 @@ class Rescue < Test::Unit::TestCase
 
   (:unordered
     (swap_at_until_at robby right)
-    (unify_dependency_swap_at_until_at_before_report_for_reported robby beacon1)
+    (unify_source_before_dependency_swap_at_until_at_before_report_for_reported robby beacon1)
   )
 )'
     )
