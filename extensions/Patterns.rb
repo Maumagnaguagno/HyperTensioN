@@ -521,8 +521,8 @@ module Patterns
       met.drop(2).each {|dec| fill_preconditions(dec, predicates, precond_pos, precond_not, met[1])}
       precond_pos.uniq!
       precond_not.uniq!
-      # Find other preconditions to bound free variables at run-time
-      bind_variables(free, met, ground_var, precond_pos, precond_not, operators, methods)
+      # Find other preconditions to bind free variables at run-time
+      bind_variables(free, met, ground_var, precond_pos, operators, methods)
       methods << [name, ground_var,
         # Label and free variables
         [free.join('_').delete('?'), free,
@@ -542,26 +542,24 @@ module Patterns
   # Bind variables
   #-----------------------------------------------
 
-  def bind_variables(free, root, ground_var, precond_pos, precond_not, operators, methods)
+  def bind_variables(free, root, ground_var, precond_pos, operators, methods)
     new_free = []
+    visited = {}
     free.each {|f|
       if precond_pos.none? {|pre| pre.include?(f)}
         # DFS
         fringe = [root]
-        visited = {}
+        visited.clear
         until fringe.empty?
           node = fringe.shift
           visited[node.first] = true
           if operators.assoc(node.first)
-            found = false
-            node[2].each {|pre|
+            break if node[2].any? {|pre|
               if pre.include?(f) and not precond_pos.assoc(pre.first)
                 precond_pos << pre
                 new_free.concat(pre.drop(1).select {|i| not ground_var.include?(i) || free.include?(i)})
-                found = true
               end
             }
-            break if found
           elsif node.first.start_with?(DEPENDENCY_PREFIX) or node.first.start_with?(SWAP_PREFIX)
             node.last[4].reverse_each {|i| fringe.unshift(operators.assoc(i.first) || methods.assoc(i.first)) unless visited.include?(i.first)}
           # TODO else support user provided methods
