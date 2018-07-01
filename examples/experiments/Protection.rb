@@ -17,7 +17,7 @@ module Protection
   end
 
   def protected?(effect_add, effect_del)
-    effect_add.any? {|pre| @state[:protection_not].include?(pre)} and effect_del.any? {|pre| @state[:protection_pos].include?(pre)}
+    effect_add.any? {|pre| @state[:protection_not].include?(pre)} or effect_del.any? {|pre| @state[:protection_pos].include?(pre)}
   end
 
   def apply(effect_add, effect_del)
@@ -37,18 +37,34 @@ if $0 == __FILE__
 
     def test_protection
       @state = {
-        :something => [['a'], ['b']],
+        :pre => [['a'], ['b']],
         :protection_pos => [],
         :protection_not => []
       }
-      protect([[:something, 'a']], [[:something, 'c']])
-      assert_equal([['a'],['b']], @state[:something])
-      assert_equal([[:something, 'a']], @state[:protection_pos])
-      assert_equal([[:something, 'c']], @state[:protection_not])
-      assert_nil(apply_operator([], [], [[:something, 'c']], [[:something, 'a']]))
-      assert_equal([['a'],['b']], @state[:something])
-      assert_equal(true, apply_operator([], [], [[:something, 'x']], [[:something, 'b']]))
-      assert_equal([['a'],['x']], @state[:something])
+      protect([[:pre, 'a']], [[:pre, 'c']])
+      assert_equal([['a'],['b']], @state[:pre])
+      assert_equal([[:pre, 'a']], @state[:protection_pos])
+      assert_equal([[:pre, 'c']], @state[:protection_not])
+      assert_equal(false, protected?([], []))
+      assert_equal(false, protected?([[:pre, 'a']], []))
+      assert_equal(false, protected?([], [[:pre, 'c']]))
+      assert_equal(true, protected?([], [[:pre, 'a']]))
+      assert_equal(true, protected?([[:pre, 'c']], []))
+      assert_equal(true, protected?([[:pre, 'c']], [[:pre, 'a']]))
+      assert_equal(true, apply_operator([], [], [], []))
+      assert_nil(apply_operator([], [], [], [[:pre, 'a']]))
+      assert_nil(apply_operator([], [], [[:pre, 'c']], []))
+      assert_equal([['a'],['b']], @state[:pre])
+      assert_equal(true, apply_operator([], [], [[:pre, 'x']], [[:pre, 'b']]))
+      assert_equal([['a'],['x']], @state[:pre])
+      assert_nil(apply_operator([], [], [], [[:pre, 'a']]))
+      assert_equal([[:pre, 'a']], @state[:protection_pos])
+      assert_equal([[:pre, 'c']], @state[:protection_not])
+      unprotect([[:pre, 'a']], [])
+      assert_equal([], @state[:protection_pos])
+      assert_equal([[:pre, 'c']], @state[:protection_not])
+      assert_equal(true, apply_operator([], [], [], [[:pre, 'a']]))
+      assert_equal([['x']], @state[:pre])
     end
   end
 end
