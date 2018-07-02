@@ -4,7 +4,7 @@ class Paisley < Test::Unit::TestCase
 
   def cross_operator(parameters, constraint_terms)
     [
-      ['cross', ['?agent', '?b', *parameters],
+      ['cross', ['?ag', '?b', *parameters],
         # Preconditions
         [
           ['agent', '?ag'], ['predicate'], ['predicate2', '?b'], ['adjacent' , *constraint_terms],
@@ -33,7 +33,7 @@ class Paisley < Test::Unit::TestCase
           [['at', '?ag', '?from'], ['visited_at', '?ag', '?intermediate']],
           # Subtasks
           [
-            ['cross', '?agent', '?b', *parameters],
+            ['cross', '?ag', '?b', *parameters],
             ['invisible_visit_at', '?ag', '?current'],
             ['swap_at_until_at', '?ag', '?from'],
             ['invisible_unvisit_at', '?ag', '?current']
@@ -54,7 +54,7 @@ class Paisley < Test::Unit::TestCase
           [['at', '?ag', '?from'], ['visited_at', '?ag', '?intermediate']],
           # Subtasks
           [
-            ['cross', '?agent', '?b', *parameters],
+            ['cross', '?ag', '?b', *parameters],
             ['invisible_visit_at', '?ag', '?current'],
             ['swap_at_until_empty', '?ag', '?from'],
             ['invisible_unvisit_at', '?ag', '?current']
