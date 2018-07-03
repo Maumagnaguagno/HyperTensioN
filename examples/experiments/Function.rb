@@ -91,6 +91,26 @@ module Continuous
     v
   end
 
+  def over_all_predicate(p, status, start, finish)
+    pre, *terms = p
+    v = @state[pre].include?(terms)
+    status = status == 'true'
+    start = start.to_f
+    finish = finish.to_f
+    t = 0
+    @state[:event].each {|type,g,value,time|
+      if p == g
+        if t <= time and time < start
+          t = start
+          v = value
+        elsif value != status and start <= time and time <= finish
+          return false
+        end
+      end
+    }
+    v == status
+  end
+
   def modify(p, value, start)
     @state[:event] << [nil, p, value == 'true', start.to_f]
     axioms_protected?
@@ -201,6 +221,14 @@ if $0 == __FILE__
       assert_equal(true, axioms_protected?)
       @state['protect_axiom'] << ['happy', 2]
       assert_equal(false, axioms_protected?)
+    end
+
+    def test_over_all_predicate
+      setup_initial_state
+      assert_equal(true, over_all_predicate(['happy', 'you'], 'true', 0, 1))
+      assert_equal(false, over_all_predicate(['happy', 'you'], 'false', 0, 1))
+      assert_equal(false, over_all_predicate(['happy', 'x'], 'true', 0, 1))
+      assert_equal(true, over_all_predicate(['happy', 'x'], 'false', 0, 1))
     end
   end
 end
