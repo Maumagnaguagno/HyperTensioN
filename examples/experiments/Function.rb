@@ -229,6 +229,17 @@ if $0 == __FILE__
       assert_equal(false, over_all_predicate(['happy', 'you'], 'false', 0, 1))
       assert_equal(false, over_all_predicate(['happy', 'x'], 'true', 0, 1))
       assert_equal(true, over_all_predicate(['happy', 'x'], 'false', 0, 1))
+      assert_equal(true, modify(['happy', 'you'], 'false', 0.5))
+      assert_equal(false, over_all_predicate(['happy', 'you'], 'true', 0, 1))
+      assert_equal(false, over_all_predicate(['happy', 'you'], 'false', 0, 1))
+      assert_equal(false, over_all_predicate(['happy', 'you'], 'true', 0, 0.5))
+      assert_equal(false, over_all_predicate(['happy', 'you'], 'false', 0, 0.5))
+      assert_equal(false, over_all_predicate(['happy', 'you'], 'true', 0.5, 1))
+      assert_equal(false, over_all_predicate(['happy', 'you'], 'false', 0.5, 1))
+      assert_equal(true, over_all_predicate(['happy', 'you'], 'true', 0, 0.45))
+      assert_equal(false, over_all_predicate(['happy', 'you'], 'false', 0, 0.45))
+      assert_equal(false, over_all_predicate(['happy', 'you'], 'true', 0.55, 1))
+      assert_equal(true, over_all_predicate(['happy', 'you'], 'false', 0.55, 1))
     end
   end
 end
