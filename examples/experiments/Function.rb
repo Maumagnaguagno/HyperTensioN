@@ -111,8 +111,9 @@ module Continuous
     v == status
   end
 
-  def modify(p, value, start)
-    @state[:event] << [nil, p, value == 'true', start.to_f]
+  def modify(p, status, start)
+    status = status == 'true'
+    @state[:event].each {|type,g,value,time| return status == value if start == time and p == g} << [nil, p, status, start.to_f]
     axioms_protected?
   end
 
@@ -221,6 +222,17 @@ if $0 == __FILE__
       assert_equal(true, axioms_protected?)
       @state['protect_axiom'] << ['happy', 2]
       assert_equal(false, axioms_protected?)
+    end
+
+    def test_modify_consistency
+      setup_initial_state
+      pre = ['happy', 'you']
+      assert_equal(true, modify(pre, 'true', 1))
+      assert_equal(true, modify(pre, 'true', 1))
+      assert_equal(false, modify(pre, 'false', 1))
+      assert_equal(true, modify(pre, 'false', 2))
+      assert_equal(true, modify(pre, 'false', 2))
+      assert_equal(false, modify(pre, 'true', 2))
     end
 
     def test_over_all_predicate
