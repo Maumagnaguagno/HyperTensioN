@@ -162,12 +162,13 @@ module Patterns
     goal_methods.each {|(type,goal),v|
       v.uniq!
       for_goal = "_for_#{goal.first}"
+      until_goal = "_until_#{goal.first}"
       # Give priority based on operator relevance to goal
       v.sort_by! {|mets,pred2|
         # Avoid swaps
         val = mets.first.include?(SWAP_PREFIX) ? 1 : 0
         # Prefer to match goal
-        val -= 1 if mets.first.end_with?(for_goal)
+        val -= 1 if mets.first.end_with?(for_goal) or mets.first.end_with?(until_goal)
         val - mets.drop(2).count {|dec| !dec[4].empty? and op = operators.assoc(dec[4].last.first) and op[type ? 4 : 5].assoc(goal.first)}
       }
       if debug
@@ -327,6 +328,7 @@ module Patterns
         # TODO better support of predicate terms
         original_current = (predicate_terms - [agent]).last
         original_intermediate = (constraint - [original_current]).last
+        predicate_terms2 = predicate_terms.map {|i| i == original_current ? original_intermediate : i}
         op[4].each {|eff|
           next if effects.include?(eff_name = eff.first)
           effects << eff_name
@@ -334,8 +336,7 @@ module Patterns
           # Swap method
           unless swap_method = methods.assoc(method_name)
             puts "  swap method composed: #{method_name}" if debug
-            methods << swap_method = [method_name, predicate_terms,
-              ['base', [], [predicate_terms.first(eff.size.pred).unshift(eff_name)], [], []]]
+            methods << swap_method = [method_name, predicate_terms2, ['base', [], [eff], [], []]]
           end
           # Add swap recursion
           swap_ops.each {|op2,constraint2|
@@ -354,19 +355,19 @@ module Patterns
               ],
               # Negative preconditions
               [
-                predicate,
+                [predicate_name, *predicate_terms2],
                 agent ? [visited, agent, intermediate] : [visited, intermediate]
               ],
               # Subtasks
               agent ? [
                 new_op2,
                 [visit, agent, current],
-                [method_name, *predicate_terms],
+                [method_name, *predicate_terms2],
                 [unvisit, agent, current]
               ] : [
                 new_op2,
                 [visit, current],
-                [method_name, *predicate_terms],
+                [method_name, *predicate_terms2],
                 [unvisit, current]
               ]
             ]

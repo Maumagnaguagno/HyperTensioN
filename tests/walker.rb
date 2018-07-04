@@ -50,10 +50,10 @@ class Walker < Test::Unit::TestCase
         ]
       ],
       :methods => [
-        ['swap_at_until_at', ['?start'],
+        ['swap_at_until_at', ['?finish'],
           ['base', [],
             # Preconditions
-            [['at', '?start']],
+            [['at', '?finish']],
             [],
             # Subtasks
             []
@@ -61,20 +61,20 @@ class Walker < Test::Unit::TestCase
           ['using_move', ['?current', '?intermediate'],
             # Preconditions
             [['at', '?current'], ['connected', '?current', '?intermediate']],
-            [['at', '?start'], ['visited_at', '?intermediate']],
+            [['at', '?finish'], ['visited_at', '?intermediate']],
             # Subtasks
             [
               ['move', '?current', '?intermediate'],
               ['invisible_visit_at', '?current'],
-              ['swap_at_until_at', '?start'],
+              ['swap_at_until_at', '?finish'],
               ['invisible_unvisit_at', '?current']
             ]
           ]
         ],
-        ['swap_at_until_visited', ['?start'],
+        ['swap_at_until_visited', ['?finish'],
           ['base', [],
             # Preconditions
-            [['visited', '?start']],
+            [['visited', '?finish']],
             [],
             # Subtasks
             []
@@ -82,12 +82,12 @@ class Walker < Test::Unit::TestCase
           ['using_move', ['?current', '?intermediate'],
             # Preconditions
             [['at', '?current'], ['connected', '?current', '?intermediate']],
-            [['at', '?start'], ['visited_at', '?intermediate']],
+            [['at', '?finish'], ['visited_at', '?intermediate']],
             # Subtasks
             [
               ['move', '?current', '?intermediate'],
               ['invisible_visit_at', '?current'],
-              ['swap_at_until_visited', '?start'],
+              ['swap_at_until_visited', '?finish'],
               ['invisible_unvisit_at', '?current']
             ]
           ]

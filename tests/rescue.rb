@@ -218,58 +218,58 @@ class Rescue < Test::Unit::TestCase
   ; Methods
   ;------------------------------
 
-  (:method (swap_at_until_at ?bot ?source)
+  (:method (swap_at_until_at ?bot ?destination)
     base
     (
-      (at ?bot ?source)
+      (at ?bot ?destination)
     )
     nil
   )
 
-  (:method (swap_at_until_at ?bot ?source)
+  (:method (swap_at_until_at ?bot ?destination)
     using_enter
     (
       (at ?bot ?current)
       (connected ?current ?intermediate)
-      (not (at ?bot ?source))
+      (not (at ?bot ?destination))
       (not (visited_at ?bot ?intermediate))
     )
     (
       (!enter ?bot ?current ?intermediate)
       (!!visit_at ?bot ?current)
-      (swap_at_until_at ?bot ?source)
+      (swap_at_until_at ?bot ?destination)
       (!!unvisit_at ?bot ?current)
     )
   )
 
-  (:method (swap_at_until_at ?bot ?source)
+  (:method (swap_at_until_at ?bot ?destination)
     using_exit
     (
       (at ?bot ?current)
       (connected ?current ?intermediate)
-      (not (at ?bot ?source))
+      (not (at ?bot ?destination))
       (not (visited_at ?bot ?intermediate))
     )
     (
       (!exit ?bot ?current ?intermediate)
       (!!visit_at ?bot ?current)
-      (swap_at_until_at ?bot ?source)
+      (swap_at_until_at ?bot ?destination)
       (!!unvisit_at ?bot ?current)
     )
   )
 
-  (:method (swap_at_until_at ?bot ?source)
+  (:method (swap_at_until_at ?bot ?destination)
     using_move
     (
       (at ?bot ?current)
       (connected ?current ?intermediate)
-      (not (at ?bot ?source))
+      (not (at ?bot ?destination))
       (not (visited_at ?bot ?intermediate))
     )
     (
       (!move ?bot ?current ?intermediate)
       (!!visit_at ?bot ?current)
-      (swap_at_until_at ?bot ?source)
+      (swap_at_until_at ?bot ?destination)
       (!!unvisit_at ?bot ?current)
     )
   )

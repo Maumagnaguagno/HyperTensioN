@@ -73,10 +73,10 @@ class Miner < Test::Unit::TestCase
         ]
       ],
       :methods => [
-        ['swap_at_until_at', ['?agent', '?from'],
+        ['swap_at_until_at', ['?agent', '?to'],
           ['base', [],
             # Preconditions
-            [['at', '?agent', '?from']],
+            [['at', '?agent', '?to']],
             [],
             # Subtasks
             []
@@ -88,14 +88,14 @@ class Miner < Test::Unit::TestCase
               ['adjacent', '?current', '?intermediate']
             ],
             [
-              ['at', '?agent', '?from'],
+              ['at', '?agent', '?to'],
               ['visited_at', '?agent', '?intermediate']
             ],
             # Subtasks
             [
               ['move', '?agent', '?current', '?intermediate'],
               ['invisible_visit_at', '?agent', '?current'],
-              ['swap_at_until_at', '?agent', '?from'],
+              ['swap_at_until_at', '?agent', '?to'],
               ['invisible_unvisit_at', '?agent', '?current']
             ]
           ]

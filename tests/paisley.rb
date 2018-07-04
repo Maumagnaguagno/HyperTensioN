@@ -20,30 +20,30 @@ class Paisley < Test::Unit::TestCase
 
   def swap_cross_methods(parameters, constraint_terms)
     [
-      ['swap_at_until_at', ['?ag', '?from'],
+      ['swap_at_until_at', ['?ag', '?to'],
         ['base', [],
           # Preconditions
-          [['at', '?ag', '?from']],
+          [['at', '?ag', '?to']],
           [],
           []
         ],
         ['using_cross', constraint_terms,
           # Preconditions
           [['at', '?ag', '?current'], ['adjacent', *constraint_terms]],
-          [['at', '?ag', '?from'], ['visited_at', '?ag', '?intermediate']],
+          [['at', '?ag', '?to'], ['visited_at', '?ag', '?intermediate']],
           # Subtasks
           [
             ['cross', '?ag', '?b', *parameters],
             ['invisible_visit_at', '?ag', '?current'],
-            ['swap_at_until_at', '?ag', '?from'],
+            ['swap_at_until_at', '?ag', '?to'],
             ['invisible_unvisit_at', '?ag', '?current']
           ]
         ]
       ],
-      ['swap_at_until_empty', ['?ag', '?from'],
+      ['swap_at_until_empty', ['?ag', '?to'],
         ['base', [],
           # Preconditions
-          [['empty', '?ag']],
+          [['empty', '?from']],
           [],
           # Subtasks
           []
@@ -51,12 +51,12 @@ class Paisley < Test::Unit::TestCase
         ['using_cross', constraint_terms,
           # Preconditions
           [['at', '?ag', '?current'], ['adjacent', *constraint_terms]],
-          [['at', '?ag', '?from'], ['visited_at', '?ag', '?intermediate']],
+          [['at', '?ag', '?to'], ['visited_at', '?ag', '?intermediate']],
           # Subtasks
           [
             ['cross', '?ag', '?b', *parameters],
             ['invisible_visit_at', '?ag', '?current'],
-            ['swap_at_until_empty', '?ag', '?from'],
+            ['swap_at_until_empty', '?ag', '?to'],
             ['invisible_unvisit_at', '?ag', '?current']
           ]
         ]
