@@ -161,12 +161,11 @@ module Patterns
     }
     goal_methods.each {|(type,goal),v|
       v.uniq!
-      for_goal = "_for_#{goal.first}"
-      until_goal = "_until_#{goal.first}"
+      for_goal = "_#{goal.first}"
       # Give priority based on operator relevance to goal
       v.sort_by! {|mets,pred2|
         # Prefer to match goal
-        val = mets.first.end_with?(for_goal) || mets.first.end_with?(until_goal) ? -1 : 0
+        val = mets.first.end_with?(for_goal) ? -1 : 0
         val - mets.drop(2).count {|dec| !dec[4].empty? and op = operators.assoc(dec[4].last.first) and op[type ? 4 : 5].assoc(goal.first)}
       }
       if debug
