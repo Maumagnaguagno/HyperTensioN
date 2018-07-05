@@ -252,19 +252,15 @@ module Patterns
     goal_methods.each {|(type,goal),v|
       puts "  #{'not ' unless type}(#{goal.join(' ')})" if debug
       # Ground
-      ground_task = false
-      v.each {|met,pred|
+      if v.none? {|met,pred|
         # TODO check free variable names in pred
         ground = met[1].map {|var| (i = pred.index(var)) ? goal[i] : var}
         if ground.none? {|var| var.start_with?('?')}
           puts "    Ground task #{met.first}(#{ground.join(' ')})" if debug
           tasks << ground.unshift(met.first)
-          ground_task = true
-          break
         end
       }
-      # Lifted
-      unless ground_task
+        # Lifted
         met, pred = v.first
         ground = met[1].map {|var| (i = pred.index(var)) ? goal[i] : var}
         puts "    Lifted task #{met.first}(#{ground.join(' ')})" if debug
