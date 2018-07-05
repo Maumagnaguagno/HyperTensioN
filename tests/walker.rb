@@ -17,8 +17,8 @@ class Walker < Test::Unit::TestCase
         ['move', ['?start', '?finish'],
           # Preconditions
           [
-             ['at', '?start'],
-             ['connected', '?start', '?finish']
+            ['at', '?start'],
+            ['connected', '?start', '?finish']
           ],
           [
             ['visited', '?finish']
