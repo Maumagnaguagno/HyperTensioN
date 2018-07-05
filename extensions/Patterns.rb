@@ -305,6 +305,7 @@ module Patterns
       predicate_name, *predicate_terms = predicate
       # Explicit or implicit agent
       agent = predicate_terms.first if predicate_terms.size != 1
+      original_current = predicate_terms.last
       # Add visit and unvisit operators and predicate
       visited = "visited_#{predicate_name}"
       visit = "invisible_visit_#{predicate_name}"
@@ -317,9 +318,6 @@ module Patterns
       # Swap for each possible goal
       effects = []
       swap_ops.each {|op,constraint|
-        # Parameters index
-        # TODO better support of predicate terms
-        original_current = (predicate_terms - [agent]).last
         original_intermediate = (constraint - [original_current]).last
         predicate_terms2 = predicate_terms.map {|i| i == original_current ? original_intermediate : i}
         op[4].each {|eff|
