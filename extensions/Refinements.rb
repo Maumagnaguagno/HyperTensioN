@@ -179,7 +179,7 @@ module Refinements
             puts "  Duplicate operator #{op.first}" if debug
           end
         end
-      }
+      }.clear
       parameters.uniq!
       # Variable usage may require a new macro operator
       parameters.each {|i| name << i.tr('?','_')}
@@ -188,7 +188,6 @@ module Refinements
         puts "  Macro operator #{name}" if debug
       end
       new_subtasks.unshift([name, *parameters])
-      macro.clear
     elsif macro.size == 1
       op, param = macro.shift
       new_subtasks << param.unshift(op.first)
