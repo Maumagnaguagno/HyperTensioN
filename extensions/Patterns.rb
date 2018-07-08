@@ -517,7 +517,7 @@ module Patterns
       bind_variables(free, met, ground_var, precond_pos, operators, methods)
       methods << [name, ground_var,
         # Label and free variables
-        [free.join('_').delete('?'), free,
+        [free.join('_').delete!('?'), free,
           # Positive preconditions
           precond_pos,
           # Negative preconditions
