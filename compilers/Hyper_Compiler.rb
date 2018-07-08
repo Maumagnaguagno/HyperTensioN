@@ -25,7 +25,7 @@ module Hyper_Compiler
     define_operators = ''
     operators.each_with_index {|op,i|
       domain_str << "\n    '#{op.first}' => #{!op.first.start_with?('invisible_')}#{',' if operators.size.pred != i or not methods.empty?}"
-      define_operators << "\n  def #{op.first}#{"(#{op[1].map {|j| j.sub(/^\?/,'')}.join(', ')})" unless op[1].empty?}\n    "
+      define_operators << "\n  def #{op.first}#{"(#{op[1].join(', ').delete!('?')})" unless op[1].empty?}\n    "
       if op[4].empty? and op[5].empty?
         if op[2].empty? and op[3].empty?
           # Empty
@@ -56,7 +56,7 @@ module Hyper_Compiler
     domain_str << "\n    # Methods"
     methods.each_with_index {|met,mi|
       domain_str << "\n    '#{met.first}' => [\n"
-      variables = met[1].empty? ? '' : "(#{met[1].map {|i| i.sub(/^\?/,'')}.join(', ')})"
+      variables = met[1].empty? ? '' : "(#{met[1].join(', ').delete!('?')})"
       met.drop(2).each_with_index {|dec,i|
         domain_str << "      '#{met.first}_#{dec.first}'#{',' if met.size - 3 != i}\n"
         define_methods << "\n  def #{met.first}_#{dec.first}#{variables}"
