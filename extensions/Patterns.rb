@@ -8,17 +8,14 @@ module Patterns
   # Apply
   #-----------------------------------------------
 
-  def apply(operators, methods, predicates, state, tasks, goal_pos, goal_not, debug = false, negative_patterns = false, dot = false)
+  def apply(operators, methods, predicates, state, tasks, goal_pos, goal_not, debug = false, negative_patterns = false)
     # Find patterns
     puts 'Patterns'.center(50,'-'), 'Identify patterns' if debug
     swaps = {}
     dependencies = {}
-    output = match_patterns(swaps, dependencies, operators, predicates, debug, negative_patterns)
+    match_patterns(swaps, dependencies, operators, predicates, debug, negative_patterns)
     # Compose methods
-    if debug
-      puts 'DOT output', output if dot
-      puts 'Compose methods'
-    end
+    puts 'Compose methods' if debug
     compose_swap_methods(swaps, operators, methods, predicates, debug)
     compose_dependency_methods(swaps, dependencies, operators, methods, predicates, debug)
     # Build HTN
@@ -105,9 +102,9 @@ module Patterns
     return unless debug
     puts 'Counter', "  Swaps: #{swap_counter}", "  Dependency: #{dependency_counter}"
     edges.uniq!
-    graph = 'digraph Patterns {'
-    operators.each {|op| graph << "\n  #{op.first.tr(hyphen, underscore)} [label=\"#{op.first}(#{op[1].join(sep)})\" shape=box]"}
-    graph << "\n#{edges.join}\n}"
+    graph = "digraph Patterns {\n"
+    operators.each {|op| graph << "  #{op.first.tr(hyphen, underscore)} [label=\"#{op.first}(#{op[1].join(sep)})\" shape=box]\n"}
+    puts 'DOT output', graph << edges.join << "}\n}"
   end
 
   #-----------------------------------------------
