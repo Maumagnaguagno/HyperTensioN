@@ -181,8 +181,7 @@ module Refinements
         end
       }.clear
       parameters.uniq!
-      # Variable usage may require a new macro operator
-      unless operators.assoc(name << parameters.join.tr!('?','_'))
+      unless operators.assoc(name)
         operators << [name, parameters, precond_pos, precond_not, effect_add, effect_del]
         puts "  Macro operator #{name}" if debug
       end
