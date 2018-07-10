@@ -5,7 +5,7 @@ module Refinements
   # Apply
   #-----------------------------------------------
 
-  def apply(operators, methods, predicates, state, tasks, goal_pos, goal_not, debug = true)
+  def apply(operators, methods, predicates, state, tasks, goal_pos, goal_not, debug = false)
     puts 'Refinements'.center(50,'-'), 'Simplify' if debug
     # Simplify
     # Initial state
