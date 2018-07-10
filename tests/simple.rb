@@ -186,6 +186,70 @@ class Simple < Test::Unit::TestCase
     )
   end
 
+  def test_basic_pb1_pddl_parsing_with_refinements
+    parser_tests(
+      # Files
+      'examples/basic/basic.jshop',
+      'examples/basic/pb1.jshop',
+      # Parser and extensions
+      JSHOP_Parser, ['refinements'],
+      # Attributes
+      :domain_name => 'basic',
+      :problem_name => 'pb1',
+      :operators => [
+        ['pickup', ['?a'],
+          # Preconditions
+          [],
+          [],
+          # Effects
+          [['have', '?a']],
+          []
+        ],
+        ['drop', ['?a'],
+          # Preconditions
+          [['have', '?a']],
+          [],
+          # Effects
+          [],
+          [['have', '?a']]
+        ],
+        ['drop_dup', ['?a'], [], [], [], []],
+        ['pickup_dup', ['?a'], [], [], [], []],
+        ['invisible_drop_and_pickup', ['?x', '?y'],
+          # Preconditions
+          [['have', '?x']],
+          [],
+          # Effects
+          [['have', '?y']],
+          [['have', '?x']]
+        ]
+      ],
+      :methods => [
+        ['swap', ['?x', '?y'],
+          ['case_0', [],
+            # Preconditions
+            [['have', '?x']],
+            [['have', '?y']],
+            # Subtasks
+            [['invisible_drop_and_pickup', '?x', '?y'], ['drop_dup', '?x'], ['pickup_dup', '?y']]
+          ],
+          ['case_1', [],
+            # Preconditions
+            [['have', '?y']],
+            [['have', '?x']],
+            # Subtasks
+            [['invisible_drop_and_pickup', '?y', '?x'], ['drop_dup', '?y'], ['pickup_dup', '?x']]
+          ]
+        ]
+      ],
+      :predicates => {'have' => true},
+      :state => [['have','kiwi']],
+      :tasks => [true, ['swap', 'banjo', 'kiwi']],
+      :goal_pos => [],
+      :goal_not => []
+    )
+  end
+
   def test_basic_pb1_pddl_parsing_with_dummy_compile_to_jshop
     compiler_tests(
       # Files
