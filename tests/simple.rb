@@ -176,22 +176,11 @@ class Simple < Test::Unit::TestCase
         ]
       ],
       :methods => [],
-      :predicates => {
-        'have' => true
-      },
-      :state => [
-        ['have', 'kiwi']
-      ],
-      :tasks => [false,
-        ['pickup', 'banjo'],
-        ['drop', 'kiwi']
-      ],
-      :goal_pos => [
-        ['have', 'banjo']
-      ],
-      :goal_not => [
-        ['have', 'kiwi']
-      ],
+      :predicates => {'have' => true},
+      :state => [['have', 'kiwi']],
+      :tasks => [false, ['pickup', 'banjo'], ['drop', 'kiwi']],
+      :goal_pos => [['have', 'banjo']],
+      :goal_not => [['have', 'kiwi']],
       :objects => ['kiwi', 'banjo'],
       :requirements => [':strips', ':negative-preconditions']
     )
