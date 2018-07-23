@@ -9,7 +9,7 @@
   (:predicates
     (at ?bot - robot ?place - location)
     (in ?beacon - beacon ?place - location)
-    (connected ?place1 - location ?place2 - location)
+    (connected ?place1 ?place2 - location)
     (reported ?bot - robot ?beacon - beacon)
   )
 
@@ -40,7 +40,7 @@
   )
 
   (:action move
-    :parameters (?bot - robot ?source - hallway ?destination - hallway)
+    :parameters (?bot - robot ?source ?destination - hallway)
     :precondition (and
       (at ?bot ?source)
       (not (at ?bot ?destination))

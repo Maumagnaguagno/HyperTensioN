@@ -1,7 +1,7 @@
 (define (domain dependency)
   (:requirements :strips :typing :negative-preconditions)
   (:types agent object)
-  (:predicates (have ?a ?x) (got_money ?a) (happy ?a))
+  (:predicates (have ?a - agent ?x - object) (got_money ?a - agent) (happy ?a - agent))
 
   (:action work
     :parameters (?a - agent)
