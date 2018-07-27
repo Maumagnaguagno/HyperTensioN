@@ -11,9 +11,7 @@ module Patterns
   def apply(operators, methods, predicates, state, tasks, goal_pos, goal_not, debug = false, negative_patterns = false)
     # Find patterns
     puts 'Patterns'.center(50,'-'), 'Identify patterns' if debug
-    swaps = {}
-    dependencies = {}
-    match_patterns(swaps, dependencies, operators, predicates, debug, negative_patterns)
+    match_patterns(swaps = {}, dependencies = {}, operators, predicates, debug, negative_patterns)
     # Compose methods
     puts 'Compose methods' if debug
     compose_swap_methods(swaps, operators, methods, predicates, debug)
