@@ -15,7 +15,7 @@ def dummy(operators, initial state, goal state)
     - method finish_goal_p
       - positive precondition p
       - subtasks []
-    - method try_o_to_perform_goal_p for each operator o
+    - method try_o_to_perform_goal_p for each o in operators
       - preconditions of o
       - subtasks [mark o, o, perform_goal_p, unmark o]
     add perform_goal_p to task list
@@ -26,13 +26,13 @@ def dummy(operators, initial state, goal state)
     - finish_goal_not_p
       - negative precondition p
       - subtasks []
-    - try_o_to_perform_goal_not_p for each operator o
+    - try_o_to_perform_goal_not_p for each o in operators
       - preconditions of o
       - subtasks [mark o, o, perform_goal_not_p, unmark o]
     add perform_goal_not_p to task list
   end
-  add operator mark o with negative precondition (marked o) and positive effect (marked o)
-  add operator unmark o with negative effect (marked o)
+  add mark o with negative precondition (marked o) and positive effect (marked o) to operators
+  add unmark o with negative effect (marked o) to operators
   return <operators, methods, initial state, task list>
 end
 ```
