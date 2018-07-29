@@ -68,10 +68,7 @@ module Patterns
       swap_op = swaps[op]
       operators.each {|op2|
         # Dependency cannot happen between related swap operators
-        if swap_op
-          swap_op2 = swaps[op2]
-          next if swap_op2 and swap_op.first == swap_op2.first
-        end
+        next if swap_op and swap_op2 = swaps[op2] and swap_op.first == swap_op2.first
         # TODO check mutex relations
         # Avoid same operator or operator with effect nullified
         next if op.equal?(op2) or ((effect_add - op2[2]).empty? and (effect_del - op2[3]).empty?)
