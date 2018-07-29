@@ -67,11 +67,11 @@ module Patterns
       # Dependency
       swap_op = swaps[op]
       operators.each {|op2|
-        # Dependency cannot happen between related swap operators
-        next if swap_op and swap_op2 = swaps[op2] and swap_op.first == swap_op2.first
+        # Avoid same operator, same swap or operator with effect nullified
+        next if op.equal?(op2) or
+          (swap_op and swap_op2 = swaps[op2] and swap_op.first == swap_op2.first) or
+          ((effect_add - op2[2]).empty? and (effect_del - op2[3]).empty?)
         # TODO check mutex relations
-        # Avoid same operator or operator with effect nullified
-        next if op.equal?(op2) or ((effect_add - op2[2]).empty? and (effect_del - op2[3]).empty?)
         op2_namesub = op2.first.tr(hyphen, underscore)
         precond_pos.each {|pre|
           if op2[4].assoc(pre.first)
