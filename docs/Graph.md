@@ -1,5 +1,5 @@
 # Graph
-Hype is able to generate a DOT output based on the domain provided that can be transformed into an image by Graphviz.
+Hype is able to compile a domain to a DOT output that can be transformed into a graph image by Graphviz.
 There is a high chance of obtaining a complex graph from a complex HTN domain... or even a simple one.
 The output is based on the interaction between the methods, how they decompose, and not just the operators.
 Therefore we start with the [basic JSHOP domain description](../examples/basic/basic.jshop) in order to obtain our graph.
