@@ -307,6 +307,9 @@ module Patterns
           [unvisit, predicate_terms, [], [], [], [[visited, *predicate_terms]]])
       end
       # Swap for each possible goal
+      effects = []
+      swap_ops.each {|op,constraint| effects.concat(op[4])}
+      effects.uniq!
       swap_ops.each {|op,constraint|
         original_intermediate = (constraint - [original_current]).last
         predicate_terms2 = predicate_terms.map {|i| i == original_current ? original_intermediate : i}
@@ -315,7 +318,7 @@ module Patterns
         # Add swap recursion
         constraint_terms = Array.new(constraint.size - 3) {|i| "?middle_#{i}"}.unshift(current) << intermediate
         constraint_terms.reverse! if original_current == constraint.last
-        op[4].each {|eff|
+        effects.each {|eff|
           method_name = "swap_#{predicate_name}_until_#{eff.first}"
           # Swap method
           unless swap_method = methods.assoc(method_name)
