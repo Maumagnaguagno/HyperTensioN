@@ -2,24 +2,22 @@ require './tests/hypest'
 
 class Paisley < Test::Unit::TestCase
 
-  def cross_operator(parameters, constraint_terms)
-    [
-      ['cross', ['?ag', '?b', *parameters],
-        # Preconditions
-        [
-          ['agent', '?ag'], ['predicate'], ['predicate2', '?b'], ['adjacent' , *constraint_terms],
-          ['bridge', '?from', '?b', '?to'], ['at', '?ag', '?from'], ['empty', '?to']
-        ],
-        [],
-        # Effects
-        [['at', '?ag', '?to'], ['empty', '?from']],
-        [['at', '?ag', '?from'], ['empty', '?to']]
-      ]
+  def swap_operator(name, parameters, constraint_terms = parameters, pos_effect = [['at', '?ag', '?to'], ['empty', '?from']])
+    [name, ['?ag', '?b', *parameters],
+      # Preconditions
+      [
+        ['agent', '?ag'], ['p'], ['p2', '?b'], ['adjacent' , *constraint_terms],
+        ['bridge', '?from', '?b', '?to'], ['at', '?ag', '?from'], ['empty', '?to']
+      ],
+      [],
+      # Effects
+      pos_effect,
+      [['at', '?ag', '?from'], ['empty', '?to']]
     ]
   end
 
-  def swap_cross_methods(parameters, constraint_terms)
-    [
+  def swap_methods(names, parameters, constraint_terms = parameters)
+    methods = [
       ['swap_at_until_at', ['?ag', '?to'],
         ['base', [],
           # Preconditions
@@ -27,18 +25,6 @@ class Paisley < Test::Unit::TestCase
           [],
           []
         ],
-        ['using_cross', constraint_terms,
-          # Preconditions
-          [['at', '?ag', '?current'], ['adjacent', *constraint_terms]],
-          [['at', '?ag', '?to'], ['visited_at', '?ag', '?intermediate']],
-          # Subtasks
-          [
-            ['cross', '?ag', '?b', *parameters],
-            ['invisible_visit_at', '?ag', '?current'],
-            ['swap_at_until_at', '?ag', '?to'],
-            ['invisible_unvisit_at', '?ag', '?current']
-          ]
-        ]
       ],
       ['swap_at_until_empty', ['?ag', '?to'],
         ['base', [],
@@ -47,49 +33,82 @@ class Paisley < Test::Unit::TestCase
           [],
           # Subtasks
           []
-        ],
-        ['using_cross', constraint_terms,
-          # Preconditions
-          [['at', '?ag', '?current'], ['adjacent', *constraint_terms]],
-          [['at', '?ag', '?to'], ['visited_at', '?ag', '?intermediate']],
-          # Subtasks
-          [
-            ['cross', '?ag', '?b', *parameters],
-            ['invisible_visit_at', '?ag', '?current'],
-            ['swap_at_until_empty', '?ag', '?to'],
-            ['invisible_unvisit_at', '?ag', '?current']
-          ]
         ]
       ]
     ]
+    names.each {|name|
+      methods.first << ["using_#{name}", constraint_terms,
+        # Preconditions
+        [['at', '?ag', '?current'], ['adjacent', *constraint_terms]],
+        [['at', '?ag', '?to'], ['visited_at', '?ag', '?intermediate']],
+        # Subtasks
+        [
+          [name, '?ag', '?b', *parameters],
+          ['invisible_visit_at', '?ag', '?current'],
+          ['swap_at_until_at', '?ag', '?to'],
+          ['invisible_unvisit_at', '?ag', '?current']
+        ]
+      ]
+      methods.last << ["using_#{name}", constraint_terms,
+        # Preconditions
+        [['at', '?ag', '?current'], ['adjacent', *constraint_terms]],
+        [['at', '?ag', '?to'], ['visited_at', '?ag', '?intermediate']],
+        # Subtasks
+        [
+          [name, '?ag', '?b', *parameters],
+          ['invisible_visit_at', '?ag', '?current'],
+          ['swap_at_until_empty', '?ag', '?to'],
+          ['invisible_unvisit_at', '?ag', '?current']
+        ]
+      ]
+    }
+    methods
   end
 
-  def test_flexible_parameters_in_swap
+  def test_swap_flexible_parameters
     # Based on planks domain
     predicates = {
       'agent' => false,
-      'predicate' => false,
-      'predicate2' => false,
+      'p' => false,
+      'p2' => false,
       'adjacent' => false,
       'at' => true,
       'bridge' => true,
       'empty' => true
     }
-    Patterns.apply(cross_operator(['?from', '?to'], ['?from', '?to']), methods = [], predicates, [], tasks = [], [], [])
-    assert_equal(swap_cross_methods(['?current', '?intermediate'], ['?current', '?intermediate']), methods)
+    Patterns.apply([swap_operator('cross', ['?from', '?to'])], methods = [], predicates, [], tasks = [], [], [])
+    assert_equal(swap_methods(['cross'], ['?current', '?intermediate']), methods)
     assert_equal([false], tasks)
-    Patterns.apply(cross_operator(['?from', '?to'], ['?to', '?from']), methods.clear, predicates, [], tasks.clear, [], [])
-    assert_equal(swap_cross_methods(['?current', '?intermediate'], ['?intermediate', '?current']), methods)
+    Patterns.apply([swap_operator('cross', ['?from', '?to'], ['?to', '?from'])], methods.clear, predicates, [], tasks.clear, [], [])
+    assert_equal(swap_methods(['cross'], ['?current', '?intermediate'], ['?intermediate', '?current']), methods)
     assert_equal([false], tasks)
-    Patterns.apply(cross_operator(['?to', '?from'], ['?from', '?to']), methods.clear, predicates, [], tasks.clear, [], [])
-    assert_equal(swap_cross_methods(['?intermediate', '?current'], ['?current', '?intermediate']), methods)
+    Patterns.apply([swap_operator('cross', ['?to', '?from'], ['?from', '?to'])], methods.clear, predicates, [], tasks.clear, [], [])
+    assert_equal(swap_methods(['cross'], ['?intermediate', '?current'], ['?current', '?intermediate']), methods)
     assert_equal([false], tasks)
-    Patterns.apply(cross_operator(['?to', '?from'], ['?to', '?from']), methods.clear, predicates, [], tasks.clear, [], [])
-    assert_equal(swap_cross_methods(['?intermediate', '?current'], ['?intermediate', '?current']), methods)
+    Patterns.apply([swap_operator('cross', ['?to', '?from'])], methods.clear, predicates, [], tasks.clear, [], [])
+    assert_equal(swap_methods(['cross'], ['?intermediate', '?current']), methods)
     assert_equal([false], tasks)
   end
 
-  def test_variable_introduction_in_dependency
+  def test_swap_effect_clustering
+    predicates = {
+      'agent' => false,
+      'p' => false,
+      'p2' => false,
+      'adjacent' => false,
+      'at' => true,
+      'bridge' => true,
+      'empty' => true
+    }
+    operators = [
+      swap_operator('cross', ['?from', '?to']),
+      swap_operator('walk', ['?from', '?to'], ['?from', '?to'], [['at', '?ag', '?to']])
+    ]
+    Patterns.apply(operators, methods = [], predicates, [], [], [], [])
+    assert_equal(swap_methods(['cross', 'walk'], ['?current', '?intermediate']), methods)
+  end
+
+  def test_dependency_variable_introduction
     # Based on gripper domain
     Patterns.apply(
       # Operators
@@ -237,19 +256,20 @@ class Paisley < Test::Unit::TestCase
   def test_task_selection
     predicates = {
       'agent' => false,
-      'predicate' => false,
-      'predicate2' => false,
+      'p' => false,
+      'p2' => false,
       'adjacent' => false,
       'at' => true,
       'bridge' => true,
       'empty' => true
     }
-    state = [['agent', 'bob'], ['predicate'], ['predicate2', 'bridge'], ['adjacent' , 'a', 'b'], ['bridge', 'a', 'bridge', 'b'], ['at', 'bob', 'a'], ['empty', 'b']]
-    Patterns.apply(cross_operator(['?from', '?to'], ['?from', '?to']), [], predicates, state, tasks = [], [], [])
+    operators = [swap_operator('cross', ['?from', '?to'])]
+    state = [['agent', 'bob'], ['p'], ['p2', 'bridge'], ['adjacent' , 'a', 'b'], ['bridge', 'a', 'bridge', 'b'], ['at', 'bob', 'a'], ['empty', 'b']]
+    Patterns.apply(operators, [], predicates, state, tasks = [], [], [])
     assert_equal([false], tasks)
-    Patterns.apply(cross_operator(['?from', '?to'], ['?from', '?to']), [], predicates, state, tasks = [], [['at', 'bob', 'a']], [])
+    Patterns.apply(operators, [], predicates, state, tasks = [], [['at', 'bob', 'a']], [])
     assert_equal([false, ['swap_at_until_at', 'bob', 'a']], tasks)
-    Patterns.apply(cross_operator(['?from', '?to'], ['?from', '?to']), [], predicates, state, tasks = [], [['at', 'bob', 'b']], [])
+    Patterns.apply(operators, [], predicates, state, tasks = [], [['at', 'bob', 'b']], [])
     assert_equal([false, ['swap_at_until_at', 'bob', 'b']], tasks)
   end
 end
