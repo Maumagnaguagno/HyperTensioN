@@ -164,12 +164,12 @@ module Refinements
         }
         # Effects
         op[4].each {|pre|
-          effect_add << pre = pre.map {|p| p.start_with?('?') ? param[op[1].index(p)] : p}
-          effect_del.delete(pre)
+          effect_del.delete(pre = pre.map {|p| p.start_with?('?') ? param[op[1].index(p)] : p})
+          effect_add << pre unless effect_add.include?(pre)
         }
         op[5].each {|pre|
-          effect_del << pre = pre.map {|p| p.start_with?('?') ? param[op[1].index(p)] : p}
-          effect_add.delete(pre)
+          effect_add.delete(pre = pre.map {|p| p.start_with?('?') ? param[op[1].index(p)] : p})
+          effect_del << pre unless effect_del.include?(pre)
         }
         # Duplicate visible operators without preconditions or effects to keep plan consistent
         unless op.first.start_with?('invisible_')
