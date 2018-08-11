@@ -108,7 +108,7 @@ module PDDL_Parser
         when ':predicates'
         when ':types'
           # Type hierarchy
-          raise 'Typing not required' unless @requirements.include?(':typing')
+          raise 'Expected :typing' unless @requirements.include?(':typing')
           group.shift
           raise 'Unexpected hyphen in types' if group.first == HYPHEN
           subtypes = []
