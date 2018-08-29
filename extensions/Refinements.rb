@@ -70,6 +70,8 @@ module Refinements
             true
           elsif t = operators.assoc(task.first) || methods.assoc(task.first)
             raise "#{label} subtask #{task.first} expected #{t[1].size} terms instead of #{task.size.pred}" if t[1].size != task.size.pred
+          elsif task.first.start_with?('?')
+            puts "#{label} subtask #{task.first} is variable" if debug
           else raise "#{label} subtask #{task.first} is unknown"
           end
         }
