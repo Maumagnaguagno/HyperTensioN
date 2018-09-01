@@ -63,20 +63,20 @@ Since HyperTensioN uses **metaprogramming**, there is a need to specify which Ru
 This specification declares operator visibility and the subtasks of each method in the domain structure.
 
 ### Example
-There is nothing better than an example to understand the behavior of something.
+There is nothing better than an example to understand the details of something.
 We will start with the [Rescue Robot Robby domain](examples/robby "Robby folder").
 Our rescue robot Robby is called to action, the robot is inside an office building trying to check the status of certain locations.
-Those locations are defined by the existence of a beacon, and the robot must be in the same hallway or room to check the status.
-Robby has a small set of actions available:
+Those locations are defined by the existence of a beacon, and the robot must be in the same hallway or room as each beacon to check its status.
+Robby has a small set of actions available to do so:
 - **Enter** a room connected to the current hallway
 - **Exit** the current room to a connected hallway
 - **Move** from hallway to hallway
 - **Report** status of beacon in the current room or hallway
 
-This is the set of primitive operators, not enough to HTN planning.
-We need to connect them to the hierarchy.
-We know Robby must move, enter and exit zero or more times to reach any beacon, report the beacon, and repeat this process for every beacon.
-The result is quite similar to the following regular expression:
+This is the set of primitive operators, enough for classical planning, but not for HTN planning.
+We need to create recipes to connect such operators, and for HTN planning our recipes will be defined in a hierarchical structure.
+We know Robby must move, enter and exit zero or more times to reach one beacon, report this beacon, and repeat the process for every beacon.
+The recipe is quite similar to the following regular expression:
 
 ```Ruby
 /((move|enter|exit)*report)*/
