@@ -88,7 +88,7 @@ The base of the recursion happens when the object (Robby) is already at the dest
 We need to remember to unvisit the locations once we reach our goal to be able to reuse them.
 
 ### Domain
-We start defininig all the nodes in the hierarchy.
+We start defining all the nodes in the hierarchy.
 Until now we have the basic operators, visit, unvisit and one method to swap positions defined by the **at** predicate:
 
 ```Ruby
@@ -297,7 +297,7 @@ my_var = free_variable
 
 Free variables can also be defined as arguments, no problem.
 You need to define which free variables being used by generate, this avoids the step of searching on every precondition which variables are empty and let you use empty strings as objects if needed.
-The example refactored looks like this:
+The refactored example looks like this:
 
 ```Ruby
 def swap_at__recursion_enter(object, goal, current = free_variable, intermediate = free_variable)
