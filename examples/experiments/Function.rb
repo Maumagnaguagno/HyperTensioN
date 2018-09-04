@@ -113,17 +113,17 @@ module Continuous
 
   def modify(p, status, start)
     status = status == 'true'
-    @state[:event].each {|type,g,value,time| return status == value if start == time and p == g} << [nil, p, status, start.to_f]
+    (@state[:event].each {|type,g,value,time| return status == value if start == time and p == g} << [nil, p, status, start.to_f]).sort_by! {|i| i.last}
     axioms_protected?
   end
 
   def event(type, f, value, start)
-    @state[:event] << [type, f, value.to_f, start.to_f]
+    (@state[:event] << [type, f, value.to_f, start.to_f]).sort_by! {|i| i.last}
     axioms_protected?
   end
 
   def process(type, f, expression, start, finish)
-    @state[:process] << [type, f, expression, start.to_f, finish.to_f]
+    (@state[:process] << [type, f, expression, start.to_f, finish.to_f]).sort_by! {|i| i[3]}
     axioms_protected?
   end
 end
@@ -181,6 +181,7 @@ if $0 == __FILE__
 
     def test_event
       setup_initial_state
+      assert_equal(true, event('scale_up', :x, 2, 10))
       assert_equal(true, event('increase', :x, 1, 1))
       assert_equal(0, function(:x))
       assert_equal(0, function(:x, 0.5))
@@ -190,6 +191,7 @@ if $0 == __FILE__
       assert_equal(true, axioms_protected?)
       @state['protect_axiom'] << ['x_less_than', 1, 1.5]
       assert_equal(false, axioms_protected?)
+      assert_equal(2, function(:x, 11))
     end
 
     def test_process
