@@ -217,11 +217,11 @@ if $0 == __FILE__
       assert_equal(false, axioms_protected?)
     end
 
-    def test_process2
+    def test_simultaneus_processes
       setup_initial_state
       assert_equal(true, process('increase', :x, :identity, 5, 15))
       assert_equal(true, process('increase', :x, :identity, 10, 20))
-      0.step(25, 0.5) {|i| assert_equal(i < 5 ? 0 : i < 10 ? i - 5 : i < 15 ? (i - 10) * 2 + 5 : i < 20 ? i : 20, function(:x, i))}
+      0.step(25, 0.5) {|i| assert_equal(i < 5 ? 0 : i < 10 ? i - 5 : i < 15 ? i * 2 - 15 : i < 20 ? i : 20, function(:x, i))}
     end
 
     def test_at_time
