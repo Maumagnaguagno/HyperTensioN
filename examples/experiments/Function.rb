@@ -56,7 +56,7 @@ module Continuous
     pr = @state[:process]
     ev_index = pr_index = 0
     while ev_index != ev.size or pr_index != pr.size
-      if not pr[pr_index] or (ev[ev_index] and ev[ev_index][3] <= pr[pr_index][3])
+      if ev[ev_index] and (not pr[pr_index] or ev[ev_index][3] <= pr[pr_index][3])
         type, g, value, start = ev[ev_index]
         if f == g and start <= time
           case type
