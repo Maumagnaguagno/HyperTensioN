@@ -43,7 +43,7 @@ module Patterns
       # Swap (+- => -+) or (-+ => +-) or (+? => -+) or (?- => -+)
       (precond_pos & effect_del).each {|pre|
         if pre2 = effect_add.assoc(pre.first)
-          cparam = (pre - pre2) | (pre2 - pre)
+          cparam = pre - pre2 | pre2 - pre
           # TODO constraint may not exist or exist more than once
           if constraint = constraints.find {|i| (cparam - i).empty?}
             swaps[op] = [pre, constraint]
