@@ -6,7 +6,7 @@ module Function
   end
 
   def function(f)
-    @state[:function][f]
+    @state[:function][f].to_s
   end
 
   def assign(f, value)
@@ -50,7 +50,7 @@ module Continuous
 
   def function(f, time = nil)
     v = @state[:function][f]
-    return v unless time
+    return v.to_s unless time
     time = time.to_f
     ev = @state[:event]
     pr = @state[:process]
@@ -81,7 +81,7 @@ module Continuous
         pr_index += 1
       end
     end
-    v
+    v.to_s
   end
 
   def at_time(p, time = nil)
@@ -151,7 +151,7 @@ if $0 == __FILE__
     end
 
     def x_less_than(y, time = nil)
-      function(:x, time) < y
+      function(:x, time).to_f < y
     end
 
     def happy(time = nil)
@@ -162,7 +162,7 @@ if $0 == __FILE__
       @state = {
         :event => [],
         :process => [],
-        :function => {:x => 0},
+        :function => {:x => 0.0},
         'happy' => [['you']],
         'protect_axiom' => []
       }
@@ -170,17 +170,17 @@ if $0 == __FILE__
 
     def test_instantaneous
       setup_initial_state
-      assert_equal(0, function(:x))
+      assert_equal('0.0', function(:x))
       assert_equal(true, increase(:x, 5))
-      assert_equal(5, function(:x))
+      assert_equal('5.0', function(:x))
       assert_equal(true, decrease(:x, 3))
-      assert_equal(2, function(:x))
+      assert_equal('2.0', function(:x))
       assert_equal(true, scale_up(:x, 2))
-      assert_equal(4, function(:x))
+      assert_equal('4.0', function(:x))
       assert_equal(true, scale_down(:x, 4))
-      assert_equal(1, function(:x))
+      assert_equal('1.0', function(:x))
       assert_equal(true, assign(:x, 10))
-      assert_equal(10, function(:x))
+      assert_equal('10.0', function(:x))
       @state['protect_axiom'] << ['x_less_than', 11]
       assert_equal(true, axioms_protected?)
       @state['protect_axiom'] << ['x_less_than', 10]
@@ -191,27 +191,27 @@ if $0 == __FILE__
       setup_initial_state
       assert_equal(true, event('scale_up', :x, 2, 10))
       assert_equal(true, event('increase', :x, 1, 1))
-      assert_equal(0, function(:x))
-      assert_equal(0, function(:x, 0.5))
-      assert_equal(1, function(:x, 1))
-      assert_equal(1, function(:x, 1.5))
+      assert_equal('0.0', function(:x))
+      assert_equal('0.0', function(:x, 0.5))
+      assert_equal('1.0', function(:x, 1))
+      assert_equal('1.0', function(:x, 1.5))
       @state['protect_axiom'].push(['x_less_than', 11], ['x_less_than', 11, 1.5])
       assert_equal(true, axioms_protected?)
       @state['protect_axiom'] << ['x_less_than', 1, 1.5]
       assert_equal(false, axioms_protected?)
-      assert_equal(2, function(:x, 11))
+      assert_equal('2.0', function(:x, 11))
     end
 
     def test_process
       setup_initial_state
       assert_equal(true, process('increase', :x, :identity, 1, 5))
-      assert_equal(0, function(:x))
-      assert_equal(0, function(:x, 0.5))
-      assert_equal(0, function(:x, 1))
-      assert_equal(0.5, function(:x, 1.5))
-      assert_equal(4, function(:x, 5))
-      assert_equal(4, function(:x, 6))
-      @state['protect_axiom'].push(['x_less_than', 11], ['x_less_than', 11, 6])
+      assert_equal('0.0', function(:x))
+      assert_equal('0.0', function(:x, 0.5))
+      assert_equal('0.0', function(:x, 1))
+      assert_equal('0.5', function(:x, 1.5))
+      assert_equal('4.0', function(:x, 5))
+      assert_equal('4.0', function(:x, 6))
+      @state['protect_axiom'].push(['x_less_than', 11], ['x_less_than', 11, 4.5])
       assert_equal(true, axioms_protected?)
       @state['protect_axiom'] << ['x_less_than', 4, 6]
       assert_equal(false, axioms_protected?)
@@ -221,7 +221,7 @@ if $0 == __FILE__
       setup_initial_state
       assert_equal(true, process('increase', :x, :identity, 5, 15))
       assert_equal(true, process('increase', :x, :identity, 10, 20))
-      0.step(25, 0.5) {|i| assert_equal(i < 5 ? 0 : i < 10 ? i - 5 : i < 15 ? i * 2 - 15 : i < 20 ? i : 20, function(:x, i))}
+      0.step(25, 0.5) {|i| assert_equal((i < 5 ? 0 : i < 10 ? i - 5 : i < 15 ? i * 2 - 15 : i < 20 ? i : 20).to_f.to_s, function(:x, i))}
     end
 
     def test_at_time
