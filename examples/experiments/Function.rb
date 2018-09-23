@@ -121,7 +121,8 @@ module Continuous
 
   def modify(p, status, start)
     status = status == 'true'
-    (@state[:event].each {|type,g,value,time| return status == value if start == time and p == g} << [nil, p, status, start.to_f]).sort_by! {|i| i.last}
+    start = start.to_f
+    (@state[:event].each {|type,g,value,time| return status == value if start == time and p == g} << [nil, p, status, start]).sort_by! {|i| i.last}
     axioms_protected?
   end
 
