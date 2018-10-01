@@ -38,21 +38,21 @@ module Hype
   # Predicates to string
   #-----------------------------------------------
 
-  def predicates_to_s(predicates, prefix)
-    predicates.map {|i| "#{prefix}(#{i.join(' ')})"}.join
+  def predicates_to_s(predicates, indent)
+    predicates.map {|i| "#{indent}(#{i.join(' ')})"}.join
   end
 
   #-----------------------------------------------
   # Subtasks to string
   #-----------------------------------------------
 
-  def subtasks_to_s(tasks, prefix, ordered = true)
+  def subtasks_to_s(tasks, indent, ordered = true)
     if tasks.empty?
-      "#{prefix}empty"
+      "#{indent}empty"
     else
       operators = @parser.operators
-      output = "#{prefix}#{'un' unless ordered}ordered"
-      tasks.each {|t| output << prefix << (operators.assoc(t.first) ? 'operator' : 'method  ') << " (#{t.join(' ')})"}
+      output = "#{indent}#{'un' unless ordered}ordered"
+      tasks.each {|t| output << indent << (operators.assoc(t.first) ? 'operator' : 'method  ') << " (#{t.join(' ')})"}
       output
     end
   end
