@@ -15,4 +15,8 @@ module Debug
     @state.each {|k,v| v.each {|i| puts "(#{k} #{i.join(' ')})"}}
     true
   end
+
+  def input
+    STDIN.gets.chomp!
+  end
 end
