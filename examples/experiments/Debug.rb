@@ -1,10 +1,5 @@
 module Debug
 
-  def breakpoint
-    STDIN.gets
-    true
-  end
-
   def print(*argv)
     puts argv.join(' ')
     true
