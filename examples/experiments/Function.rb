@@ -123,17 +123,21 @@ module Continuous
     status = status == 'true'
     start = start.to_f
     (@state[:event].each {|type,g,value,time| return status == value if start == time and p == g} << [nil, p, status, start]).sort_by! {|i| i.last}
-    axioms_protected?
+    axioms_protected_at_time?(start)
   end
 
   def event(type, f, value, start)
     (@state[:event] << [type, f, value.to_f, start.to_f]).sort_by! {|i| i.last}
-    axioms_protected?
+    axioms_protected_at_time?(start)
   end
 
   def process(type, f, expression, start, finish)
     (@state[:process] << [type, f, expression, start.to_f, finish.to_f]).sort_by! {|i| i[3]}
-    axioms_protected?
+    axioms_protected_at_time?(finish)
+  end
+
+  def axioms_protected_at_time?(time)
+    @state['protect_axiom'].all? {|i| send(*i, time)}
   end
 end
 
