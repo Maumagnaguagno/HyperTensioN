@@ -59,10 +59,10 @@ module JSHOP_Compiler
     # Methods
     domain_str << "\n\n  ;#{SPACER}\n  ; Methods\n  ;#{SPACER}"
     methods.each {|met|
-      header = "\n\n  (:method (#{met.first} #{met[1].join(' ')})\n"
+      header = "\n\n  (:method (#{met.first} #{met[1].join(' ')})\n    "
       met.drop(2).each {|dec|
         # Header and label
-        domain_str << header << "    #{dec.first}\n"
+        domain_str << header << "#{dec.first}\n"
         # Preconditions
         predicates_to_jshop(domain_str, dec[2], dec[3])
         # Subtasks
