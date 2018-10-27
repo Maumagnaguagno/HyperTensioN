@@ -6,15 +6,15 @@ HTN is used as an acronym for Hypertension in medical context, therefore the nam
 In order to support other planning languages a module named [**Hype**](#hype "Jump to Hype section") will take care of the conversion process.
 With hierarchical planning it is possible to describe a strategy to obtain a sequence of actions that executes a certain task.
 It works based on decomposition, which is very alike to how humans think, taking mental steps further into primitive operators.
+Expanded features to deal with numeric and external elements are in a separate repository, [HyperTensioN U](../../../HyperTensioN_U).
 This project was inspired by [Pyhop] and [JSHOP].
 
 [Download and play](../../archive/master.zip) or jump to each section to learn more:
 - [**Algorithm**](#algorithm "Jump to Algorithm section"): planning algorithm explanation
-- [**Getting started**](#getting-started "Jump to Getting started section"): Features explained while describing a domain with HyperTensioN
-- [**Hints**](#hints "Jump to Hints section"): a list of hints to keep in mind
-- [**Execution**](#execution "Jump to Execution section"): Command-line examples for the forgotten
 - [**API**](#api "Jump to API section"): Variables and methods defined by HyperTensioN
+- [**Getting started**](#getting-started "Jump to Getting started section"): Features explained while describing a domain with HyperTensioN
 - [**Hype**](#hype "Jump to Hype section"): Follow the Hype and let domain and problem be converted and executed automagically
+- [**Hints**](#hints "Jump to Hints section"): a list of hints to keep in mind
 - [**Comparison**](#comparison "Jump to Comparison section"): A brief comparison with JSHOP and Pyhop
 - [**Changelog**](#changelog "Jump to Changelog section"): a small list of things that happened
 - [**ToDo's**](#todos "Jump to ToDo's section"): a small list of things to be done
@@ -55,6 +55,62 @@ Algorithm planning(list tasks)
   return Failure
 end
 ```
+
+## API
+[**Hypertension**](Hypertension.rb) is a module with 3 attributes:
+- ``attr_accessor :state`` with the current state.
+- ``attr_accessor :domain`` with the decomposition rules that can be applied to the operators and methods.
+- ``attr_accessor :debug`` as a flag to print intermediate data during planning.
+
+They were defined as instance variables to be mixed in other classes if needed, that is why they are not class variables.
+
+```Ruby
+# Require and use
+require './Hypertension'
+
+Hypertension.state = {...}
+Hypertension.applicable?(...)
+```
+
+```Ruby
+# Mix in
+require './Hypertension'
+
+class Foo < Bar
+  include Hypertension
+
+  def method(...)
+    @state = {...}
+    applicable?(...)
+  end
+end
+```
+
+Having the state and domain as separate variables also means there is no need to propagate them.
+This also means you can, at any point, change more than the state.
+This may be useful to reorder method decompositions in the domain to modify the behavior without touching the methods or set the debug option only after an specific operator is called.
+You will notice that the plan is not a variable, as it is created during backtracking, which means you cannot reorder actions in the planning process using this algorithm, but it is possible with a variation that creates the plan during decomposition.
+
+The methods are few and simple to use:
+- ``planning(tasks, level = 0)`` receives a task list, ``[['task1', 'term1', 'term2'], ['task2', 'term3']]``, to decompose and the nesting level to help debug.
+Only call this method after domain and state were defined.
+This method is called recursively until it finds an empty task list, ``[]``, then it starts to build the plan while backtracking to save CPU (avoid intermediate plan creation).
+Therefore no plan actually exists before reaching an empty task list.
+In case of failure, ``nil`` is returned.
+
+- ``applicable?(precond_pos, precond_not)`` tests if the current state have all positive preconditions and not a single negative precondition. Returns ``true`` if applicable, ``false`` otherwise.
+- ``apply(effect_add, effect_del)`` modifies the current state, add or remove predicates present in the lists. Returns true.
+- ``apply_operator(precond_pos, precond_not, effect_add, effect_del)`` extends this idea applying effects if ``applicable?``. Returns ``true`` if applied, ``nil`` otherwise.
+- ``generate(precond_pos, precond_not, *free)`` yields all possible unifications to the free variables defined, therefore you need a block to capture the unifications. The return value is undefined.
+- ``print_data(data)`` can be used to print task and predicate lists, useful for debug.
+- ``problem(state, tasks, debug = false, goal_pos = [], goal_not = [])`` is used to simplify the setup of a problem instance, returns the value of planning. Use problem as a template to see how to add HyperTensioN in your project.
+- ``task_permutations(state, tasks, goal_pos, goal_not)`` tries several task permutations to achieve unordered decomposition, it is used by ``problem`` when explicit goals are given. Returns a plan or ``nil``.
+
+Domain operators can be defined without ``apply_operator`` and will have the return value considered.
+- ``false`` or ``nil`` means the operator has failed.
+- Any other value means the operator was applied with success.
+
+Domain methods must yield a task list or are nullified, having no decomposition.
 
 ## Getting started
 The idea is to [``include Hypertension`` in the domain module](#api "Jump to API section"), define the methods and primitive operators, and use this domain module for different problems.
@@ -367,21 +423,7 @@ Robby.problem(
 )
 ```
 
-## Hints
-Here are some hints to describe your domain:
-- Reuse objects in variables to compare faster (pointer comparison), only works for constant objects.
-- Use Symbols or constant frozen Strings, avoid repeated Strings in memory.
-- Order the method decomposition wisely, otherwise you may test a lot before actually going to the correct path.
-- Use preconditions at your favor, no need to test twice using a smart method decomposition, check out [And-or Trees](https://en.wikipedia.org/wiki/And%E2%80%93or_tree).
-- Unifications are costly, avoid generate, match your values once and propagate or use a custom unification process.
-- Even if a precondition or effect is empty you need to declare it, use ``[]``.
-- Empty predicate arrays must be declared in the initial state at the problem file. This avoids predicate typos, as all predicates must be previously defined. Or you can use ``Hash.new {|h,k| h[k] = []}`` to create arrays at run-time.
-- Explore further using ``Hash.compare_by_identity`` on domain and state.
-- Use different state structures to speed-up state operations and implement your own state duplication, preconditions applicable and effect application operations to better describe your domain.
-- Replace the state copy from ``apply`` with ``@state = Marshal.load(Marshal.dump(@state))`` to deep copy any state structure, otherwise keep the current fast version or use a custom implementation.
-
-## Execution
-The problem acts as the main function since the problems include the domain, and the domain include the planner.
+The problem acts as the main function since the problem include the domain, and the domain include the planner.
 Here we execute the problem 1 of Robby.
 
 ```Shell
@@ -389,15 +431,20 @@ cd HyperTensioN
 ruby examples/robby/pb1.rb
 ```
 
-If you described your domain and problem in another language you must convert it to Ruby before execution.
-Hype can do it for you, it requires a domain and a problem file to be compiled to a certain output type.
+If you described your domain and problem in [PDDL] or [JSHOP] description you must convert it to Ruby, which is a task for [Hype](#hype "Jump to Hype section").
+
+## Hype
+[**Hype**](Hype.rb) is the framework for parsers, extensions and compilers of planning descriptions.
+It will save time and avoid errors during conversion of domains and problems for comparison results with other planners.
+Such conversion step is not new, as JSHOP2 itself compiles the description to Java code to achieve a better performance.
+Hype requires a domain and a problem file to be compiled to a certain output type.
 The output can be ``print``, ``rb``, ``pddl``, ``jshop``, ``dot``, ``md``, ``run``, ``debug`` or ``nil``.
-If no output type is provided the system uses ``print`` as the default, it only prints out what was parsed from the files and the time taken.
+If no output type is provided the system uses ``print`` as the default and only prints out what was parsed from the files and the time taken.
 
 ```Shell
 cd HyperTensioN
 # ruby Hype.rb path/domain_filename path/problem_filename {extensions} [output]
-# Multiple extensions can be executed before the output happens, more on that to come.
+# Multiple extensions can be executed before the output happens
 ruby Hype.rb examples/basic/basic.jshop examples/basic/pb1.jshop rb
 ruby examples/basic/pb1.jshop.rb
 ```
@@ -410,66 +457,7 @@ ruby Hype.rb examples/basic/basic.jshop examples/basic/pb1.jshop run
 ruby Hype.rb examples/basic/basic.jshop examples/basic/pb1.jshop debug
 ```
 
-## API
-[**Hypertension**](Hypertension.rb) is a module with 3 attributes:
-- ``attr_accessor :state`` with the current state.
-- ``attr_accessor :domain`` with the decomposition rules that can be applied to the operators and methods.
-- ``attr_accessor :debug`` as a flag to print intermediate data during planning.
-
-They were defined as instance variables to be mixed in other classes if needed, that is why they are not class variables.
-
-```Ruby
-# Require and use
-require './Hypertension'
-
-Hypertension.state = {...}
-Hypertension.applicable?(...)
-```
-
-```Ruby
-# Mix in
-require './Hypertension'
-
-class Foo < Bar
-  include Hypertension
-
-  def method(...)
-    @state = {...}
-    applicable?(...)
-  end
-end
-```
-
-Having the state and domain as separate variables also means there is no need to propagate them.
-This also means you can, at any point, change more than the state.
-This may be useful to reorder method decompositions in the domain to modify the behavior without touching the methods or set the debug option only after an specific operator is called.
-You will notice that the plan is not a variable, as it is created during the backtracking, which means you cannot reorder actions in the planning process using this algorithm, but it is possible with a variation that creates the plan during decomposition.
-
-The methods are few and simple to use:
-- ``planning(tasks, level = 0)`` receives a task list, ``[['task1', 'term1', 'term2'], ['task2', 'term3']]``, to decompose and the nesting level to help debug.
-Only call this method after domain and state were defined.
-This method is called recursively until it finds an empty task list, ``[]``, then it starts to build the plan while backtracking to save CPU (avoid intermediate plan creation).
-Therefore no plan actually exists before reaching an empty task list.
-In case of failure, ``nil`` is returned.
-
-- ``applicable?(precond_pos, precond_not)`` tests if the current state have all positive preconditions and not a single negative precondition. Returns ``true`` if applicable, ``false`` otherwise.
-- ``apply(effect_add, effect_del)`` modifies the current state, add or remove predicates present in the lists. Returns true.
-- ``apply_operator(precond_pos, precond_not, effect_add, effect_del)`` extends this idea applying effects if ``applicable?``. Returns ``true`` if applied, ``nil`` otherwise.
-- ``generate(precond_pos, precond_not, *free)`` yields all possible unifications to the free variables defined, therefore you need a block to capture the unifications. The return value is undefined.
-- ``print_data(data)`` can be used to print task and predicate lists, useful for debug.
-- ``problem(state, tasks, debug = false, goal_pos = [], goal_not = [])`` is used to simplify the setup of a problem instance, returns the value of planning. Use problem as a template to see how to add HyperTensioN in your project.
-- ``task_permutations(state, tasks, goal_pos, goal_not)`` tries several task permutations to achieve unordered decomposition, it is used by ``problem`` when explicit goals are given. Returns a plan or ``nil``.
-
-Domain operators can be defined without ``apply_operator`` and will have the return value considered.
-- ``false`` or ``nil`` means the operator has failed.
-- Any other value means the operator was applied with success.
-
-Domain methods must yield a task list or are nullified, having no decomposition.
-
-## Hype
-[**Hype**](Hype.rb) is the framework for parsers, extensions and compilers of planning descriptions.
-It will save time and avoid errors during conversion of domains and problems for comparison results with other planners.
-Such conversion step is not new, as JSHOP2 itself compiles the description to Java code to achieve a better performance.
+Hype is composed of:
 
 **Parsers**:
 - [PDDL]
@@ -496,7 +484,7 @@ Both cases are supported, but we evaluate the preconditions of each set independ
 In order to copy the behavior we cannot simply copy the positive preconditions in the negative set and vice-versa.
 Sometimes only one predicate in the set is false, if we copied in the other set for the other methods it would never work.
 It is possible to declare the methods in the same Ruby method (losing label definition), but kills the simplicity we are trying to achieve.
-We also do not support [JSHOP] axioms and external calls, yet.
+We also do not support [JSHOP] axioms and external calls, but you can use [HyperTensioN U](../../../HyperTensioN_U) for greater JSHOP support with a simpler Hype.
 
 You can always not believe the **Hype** and convert descriptions manually, following a style that achieves a better or faster solution with the indentation that makes you happy.
 You could add counters in the methods and return after generate unified one or more times a specific value.
@@ -577,15 +565,28 @@ In fact this is the core idea behind Hype, be able to parse, modify and compile 
 Future languages compatible with the [Intermediate Representation] format could be supported by just adding a new parser and compiler.
 The compiler is expected to not modify any parameter, use an extension to achieve such result.
 
+## Hints
+Here are some hints to describe your domain:
+- Reuse objects in variables to compare faster (pointer comparison), only works for constant objects.
+- Use Symbols or constant frozen Strings, avoid repeated Strings in memory.
+- Order the method decomposition wisely, otherwise you may test a lot before actually going to the correct path.
+- Use preconditions at your favor, no need to test twice using a smart method decomposition, check out [And-or Trees](https://en.wikipedia.org/wiki/And%E2%80%93or_tree).
+- Unifications are costly, avoid generate, match your values once and propagate or use a custom unification process.
+- Even if a precondition or effect is empty you need to declare it, use ``[]``.
+- Empty predicate arrays must be declared in the initial state at the problem file. This avoids predicate typos, as all predicates must be previously defined. Or you can use ``Hash.new {|h,k| h[k] = []}`` to create arrays at run-time.
+- Explore further using ``Hash.compare_by_identity`` on domain and state.
+- Use different state structures to speed-up state operations and implement your own state duplication, preconditions applicable and effect application operations to better describe your domain.
+- Replace the state copy from ``apply`` with ``@state = Marshal.load(Marshal.dump(@state))`` to deep copy any state structure, otherwise keep the current fast version or use a custom implementation.
+
 ## Comparison
-The main advantage is to be able to define behavior in the core language, without losing clarity, this alone gives a lot of power.
-JSHOP2 requires the user to dive into a very complex structure to unlock such power.
-[Pyhop] is based on this feature, everything defined in Python, but does not support backtracking and unification, which means the user have to create its own unification system and a domain that does not require backtracking.
-The biggest advantage is not the planner itself, but the parsers and compilers built around it, so that descriptions can be converted automatically.
+The main advantage of HyperTensioN is to be able to define behavior in the core language, without losing clarity, this alone gives a lot of power.
+JSHOP2 requires the user to dive into a very complex structure to unlock such power, while [Pyhop] is based on this feature, with everything defined in Python, but does not support backtracking and unification.
+Without unification the user must ground or propagate variables by hand, and without backtracking the domain must never reach a dead-end during decomposition.
+HyperTensioN biggest advantage is not the planner itself, but the parsers, extensions and compilers built around it, so that descriptions can be converted automatically.
 Perhaps the most invisible advantage is the lack of custom classes, every object used during planning is defined as one of the core objects.
 Once Strings, Arrays and Hashes are understood, the entire HyperTensioN module is just a few methods away from complete understanding.
 
-Among the lacking features is interleaved/unordered execution of tasks, a feature that JSHOP2 supports and is extremely important to achieve good plans in some cases, and lazy variable evaluation.
+Among the lacking features is lazy variable evaluation and interleaved/unordered execution of tasks, a feature that JSHOP2 supports and important to achieve good plans in some cases.
 We only support unordered tasks at the problem level and do not interleave them during decomposition.
 Since we test for explicit goals only after the plan has been found with a sequence of tasks, a failure is considered enough proof to try other orderings, not other unifications with the same sequence of tasks.
 
