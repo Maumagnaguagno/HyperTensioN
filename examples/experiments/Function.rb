@@ -1,6 +1,8 @@
 module Function
 
   def problem(state, *args)
+    function = state[:function] = {}
+    state.delete('function').each {|f,v| function[f] = v.to_f}
     state['protect_axiom'] ||= []
     super(state, *args)
   end
