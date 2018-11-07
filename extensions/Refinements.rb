@@ -12,7 +12,7 @@ module Refinements
     state.reject! {|pre|
       # Unused predicate
       unless predicates.include?(pre.first)
-        puts "Initial state unused predicate: remove (#{pre.join(' ')})" if debug
+        puts "Initial state contains unused predicate (#{pre.join(' ')}): removed" if debug
         true
       end
     }
@@ -22,30 +22,30 @@ module Refinements
       prefix_variables(opname = "operator #{name}", param, debug)
       define_variables(opname, param, [precond_pos, precond_not, effect_add, effect_del], debug)
       # Precondition contradiction
-      (precond_pos & precond_not).each {|pre| puts "#{opname} preconditions: contains contradiction (#{pre.join(' ')}) and (not (#{pre.join(' ')}))"} if debug
-      # Remove effect contradiction
+      (precond_pos & precond_not).each {|pre| puts "#{opname} precondition contains contradicting (#{pre.join(' ')})"} if debug
+      # Remove null del effect
       (effect_add & effect_del).each {|pre|
-        puts "  #{opname} effect contradiction: remove (not (#{pre.join(' ')}))" if debug
+        puts "  #{opname} contains null del effect (#{pre.join(' ')}): removed" if debug
         effect_del.delete(pre)
       }
       # Effect contained in precondition
       effect_add.reject! {|pre|
         if precond_pos.include?(pre)
-          puts "  #{opname} effect present in precondition: remove (#{pre.join(' ')})" if debug
+          puts "  #{opname} effect (#{pre.join(' ')}) present in precondition: removed" if debug
           true
         end
       }
       effect_del.reject! {|pre|
         if precond_not.include?(pre)
-          puts "  #{opname} effect present in precondition: remove (not (#{pre.join(' ')}))" if debug
+          puts "  #{opname} del effect (#{pre.join(' ')}) present in add effect: removed" if debug
           true
         end
       }
       # Unknown previous state of effect
       if debug
         precond_all = precond_pos | precond_not
-        (effect_add - precond_all).each {|pre| puts "  #{opname} contains side effect: (#{pre.join(' ')})"}
-        (effect_del - precond_all).each {|pre| puts "  #{opname} contains side effect: (not (#{pre.join(' ')}))"}
+        (effect_add - precond_all).each {|pre| puts "  #{opname} contains side effect (#{pre.join(' ')})"}
+        (effect_del - precond_all).each {|pre| puts "  #{opname} contains side effect (not (#{pre.join(' ')}))"}
       end
       # Remove noops, invisible operators without preconditions and effects
       if name.start_with?('invisible_') and precond_pos.empty? and precond_not.empty? and effect_add.empty? and effect_del.empty?
@@ -61,12 +61,17 @@ module Refinements
         label = "#{name} #{label}"
         prefix_variables(label, free, debug)
         define_variables(label, param + free, [precond_pos, precond_not, subtasks], debug)
-        param.each {|p| puts "  #{label} shadowing variable #{p}" if free.include?(p)} if debug
-        (precond_pos & precond_not).each {|pre| puts "  #{label} preconditions contains contradiction (#{pre.join(' ')}) and (not (#{pre.join(' ')}))"} if debug
+        free.reject! {|v|
+          if param.include?(v)
+            puts "  #{label} free variable shadowing parameter #{p}: removed" if debug
+            true
+          end
+        }
+        (precond_pos & precond_not).each {|pre| puts "  #{label} precondition contains contradicting (#{pre.join(' ')})"} if debug
         # Subtask arity check and noops removal
         subtasks.reject! {|task|
           if noops.include?(task.first)
-            puts "  #{label} subtask #{task.first} removed" if debug
+            puts "  #{label} subtask #{task.first}: removed" if debug
             true
           elsif t = operators.assoc(task.first) || methods.assoc(task.first)
             raise "#{label} subtask #{task.first} expected #{t[1].size} terms instead of #{task.size.pred}" if t[1].size != task.size.pred
