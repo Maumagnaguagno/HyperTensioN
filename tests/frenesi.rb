@@ -20,7 +20,7 @@ class Frenesi < Test::Unit::TestCase
   end
 
   def test_unknown_extension_exception
-    e = assert_raises(RuntimeError) {Hype.extend(['blob'])}
+    e = assert_raises(RuntimeError) {Hype.extend('blob')}
     assert_equal('Unknown extension blob', e.message)
   end
 

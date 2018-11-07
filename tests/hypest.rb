@@ -5,7 +5,7 @@ module Hypest
 
   def parser_tests(domain, problem, parser, extensions, expected)
     Hype.parse(domain, problem)
-    Hype.extend(extensions)
+    extensions.each {|e| Hype.extend(e)}
     expected.each {|att,value| assert_equal(value, parser.send(att))}
   end
 
