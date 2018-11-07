@@ -186,13 +186,13 @@ class Simple < Test::Unit::TestCase
     )
   end
 
-  def test_basic_pb1_pddl_parsing_with_refinements
+  def test_basic_pb1_pddl_parsing_with_macro
     parser_tests(
       # Files
       'examples/basic/basic.jshop',
       'examples/basic/pb1.jshop',
       # Parser and extensions
-      JSHOP_Parser, ['refinements'],
+      JSHOP_Parser, ['macro'],
       # Attributes
       :domain_name => 'basic',
       :problem_name => 'pb1',

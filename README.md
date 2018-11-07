@@ -466,7 +466,8 @@ Hype is composed of:
 **Extensions**:
 - Patterns (generate methods based on operator patterns, map goal state to tasks)
 - [Dummy](docs/Dummy.md) (generate brute-force methods that try to achieve goal predicates)
-- Refinements (fix common mistakes and create operator macros to speed up decomposition)
+- Wise (warn and fix description mistakes)
+- Macro (optimize operator sequences to speed up decomposition)
 - Grammar (print domain methods as [production rules](https://en.wikipedia.org/wiki/Production_(computer_science)))
 - Complexity (print domain, problem and total complexity based on amount of terms)
 
@@ -478,7 +479,7 @@ Hype is composed of:
 - [Markdown](https://daringfireball.net/projects/markdown/)
 
 As any parser, the ones provided by Hype are limited in one way or another.
-[PDDL] have far more features than supported by most planners and [JSHOP] have 2 different ways to define methods.
+[PDDL] has far more features than supported by most planners and [JSHOP] have 2 different ways to define methods.
 Methods may be broken into several independent blocks or in the same block without the need to check the same preconditions again.
 Both cases are supported, but we evaluate the preconditions of each set independently while [JSHOP] only evaluates the last if the first ones evaluated to false in the same block.
 In order to copy the behavior we cannot simply copy the positive preconditions in the negative set and vice-versa.

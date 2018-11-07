@@ -30,7 +30,8 @@ module Hype
   Extensions:
     patterns    - add methods and tasks based on operator patterns
     dummy       - add brute-force methods to operators
-    refinements - check and refine hierarchical structure
+    wise        - warn and fix description mistakes
+    macro       - optimize operator sequences
     grammar     - print hierarchical structure grammar
     complexity  - print estimated complexity of planning description"
 
@@ -135,7 +136,8 @@ Problem #{@parser.problem_name}
     case extension
     when 'patterns' then Patterns
     when 'dummy' then Dummy
-    when 'refinements' then Refinements
+    when 'wise' then Wise
+    when 'macro' then Macro
     when 'grammar' then Grammar
     when 'complexity' then Complexity
     else raise "Unknown extension #{extension}"
