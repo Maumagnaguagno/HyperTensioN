@@ -13,8 +13,6 @@ Dir.glob(File.expand_path('../{parsers,compilers,extensions}/*.rb', __FILE__)) {
 module Hype
   extend self
 
-  attr_reader :parser
-
   HELP = "  Usage:
     Hype domain problem {extensions} [output]\n
   Output:
@@ -132,24 +130,26 @@ Problem #{@parser.problem_name}
   # Extend
   #-----------------------------------------------
 
-  def extend(extension)
-    case extension
-    when 'patterns' then Patterns
-    when 'dummy' then Dummy
-    when 'wise' then Wise
-    when 'macro' then Macro
-    when 'grammar' then Grammar
-    when 'complexity' then Complexity
-    else raise "Unknown extension #{extension}"
-    end.apply(
-      @parser.operators,
-      @parser.methods,
-      @parser.predicates,
-      @parser.state,
-      @parser.tasks,
-      @parser.goal_pos,
-      @parser.goal_not
-    )
+  def extend(extensions)
+    extensions.each {|ext|
+      case ext
+      when 'patterns' then Patterns
+      when 'dummy' then Dummy
+      when 'wise' then Wise
+      when 'macro' then Macro
+      when 'grammar' then Grammar
+      when 'complexity' then Complexity
+      else raise "Unknown extension #{ext}"
+      end.apply(
+        @parser.operators,
+        @parser.methods,
+        @parser.predicates,
+        @parser.state,
+        @parser.tasks,
+        @parser.goal_pos,
+        @parser.goal_not
+      )
+    }
   end
 
   #-----------------------------------------------
@@ -202,7 +202,7 @@ if $0 == __FILE__
       else
         t = Time.now.to_f
         Hype.parse(domain, problem)
-        extensions.each {|e| Hype.extend(e)}
+        Hype.extend(extensions)
         if not type or type == 'print'
           puts Hype.to_s
         elsif type == 'run' or type == (ARGV[0] = 'debug')
