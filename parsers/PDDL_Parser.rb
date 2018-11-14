@@ -154,17 +154,12 @@ module PDDL_Parser
               group.shift
               type = group.shift
               until index == @objects.size
-                @state << [type, o = @objects[index]]
+                @state << [subtype = type, o = @objects[index]]
                 index += 1
                 # Convert type hierarchy to initial state predicates
-                types = [type]
-                while subtype = types.shift
-                  @types.each {|sub,t|
-                    if sub == subtype
-                      @state << [t, o]
-                      types << t
-                    end
-                  }
+                while subtype = @types.assoc(subtype)
+                  raise 'Repeated object typing' if @state.include?(pre = [subtype = subtype.last, o])
+                  @state << pre
                 end
               end
             end
