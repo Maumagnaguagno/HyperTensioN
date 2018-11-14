@@ -152,15 +152,16 @@ module PDDL_Parser
             @objects << group.shift
             if group.first == HYPHEN
               group.shift
-              type = group.shift
+              types = [type = group.shift]
+              # Convert type hierarchy to initial state predicates
+              while type = @types.assoc(type)
+                raise 'Circular typing' if types.include?(type = type.last)
+                types << type
+              end
               until index == @objects.size
-                @state << [subtype = type, o = @objects[index]]
+                o = @objects[index]
                 index += 1
-                # Convert type hierarchy to initial state predicates
-                while subtype = @types.assoc(subtype)
-                  raise 'Repeated object typing' if @state.include?(pre = [subtype = subtype.last, o])
-                  @state << pre
-                end
+                types.each {|t| @state << [t, o]}
               end
             end
           end
