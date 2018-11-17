@@ -14,11 +14,13 @@ module Macro
         new_subtasks = []
         dec[4].each {|subtask|
           # Add operators to macro and skip methods
-          if op = operators.assoc(subtask.first)
-            macro << [op, subtask.drop(1)]
-          else
-            add_macro_to_subtasks(operators, macro, new_subtasks, debug)
-            new_subtasks << subtask
+          unless subtask.first.end_with?('_dup')
+            if op = operators.assoc(subtask.first)
+              macro << [op, subtask.drop(1)]
+            else
+              add_macro_to_subtasks(operators, macro, new_subtasks, debug)
+              new_subtasks << subtask
+            end
           end
         }
         add_macro_to_subtasks(operators, macro, new_subtasks, debug)
@@ -44,35 +46,35 @@ module Macro
       effect_del = []
       macro.each_with_index {|(op,param),i|
         # Header
-        next if op.first.end_with?('_dup')
         name << '_and_' unless i.zero?
         name << op.first.sub(/^invisible_/,'')
         parameters.concat(param)
+        variables = op[1]
         # Preconditions
         op[2].each {|pre|
-          pre = pre.map {|p| p.start_with?('?') ? param[op[1].index(p)] : p}
+          pre = pre.map {|p| p.start_with?('?') ? param[variables.index(p)] : p}
           puts "Precondition (not (#{pre.join(' ')})) will never be satisfied" if debug and (precond_not.include?(pre) or effect_del.include?(pre))
           precond_pos << pre unless precond_pos.include?(pre) or effect_add.include?(pre)
         }
         op[3].each {|pre|
-          pre = pre.map {|p| p.start_with?('?') ? param[op[1].index(p)] : p}
+          pre = pre.map {|p| p.start_with?('?') ? param[variables.index(p)] : p}
           puts "Precondition (#{pre.join(' ')}) will never be satisfied" if debug and (precond_pos.include?(pre) or effect_add.include?(pre))
           precond_not << pre unless precond_not.include?(pre) or effect_del.include?(pre)
         }
         # Effects
         op[4].each {|pre|
-          effect_del.delete(pre = pre.map {|p| p.start_with?('?') ? param[op[1].index(p)] : p})
+          effect_del.delete(pre = pre.map {|p| p.start_with?('?') ? param[variables.index(p)] : p})
           effect_add << pre unless effect_add.include?(pre)
         }
         op[5].each {|pre|
-          effect_add.delete(pre = pre.map {|p| p.start_with?('?') ? param[op[1].index(p)] : p})
+          effect_add.delete(pre = pre.map {|p| p.start_with?('?') ? param[variables.index(p)] : p})
           effect_del << pre unless effect_del.include?(pre)
         }
         # Duplicate visible operators without preconditions or effects to keep plan consistent
         unless op.first.start_with?('invisible_')
           new_subtasks << param.unshift(name_dup = "#{op.first}_dup")
           unless operators.assoc(name_dup)
-            operators << [name_dup, op[1], [], [], [], []]
+            operators << [name_dup, variables, [], [], [], []]
             puts "Duplicate operator #{op.first}" if debug
           end
         end
