@@ -44,7 +44,7 @@ module Macro
       effect_del = []
       macro.each_with_index {|(op,param),i|
         # Header
-        #next if op.first.end_with?('_dup')
+        next if op.first.end_with?('_dup')
         name << '_and_' unless i.zero?
         name << op.first.sub(/^invisible_/,'')
         parameters.concat(param)
