@@ -10,13 +10,13 @@ module Complexity
     domain_complexity = problem_complexity = 0
     # Domain
     operators.each {|op|
-      op_complexity = 0
+      op_complexity = op[1].size
       2.upto(5) {|i| op[i].each {|pre| op_complexity += pre.uniq.size}}
       domain_complexity += op_complexity
       puts "  #{op.first}: #{op_complexity}"
     }
     methods.each {|met|
-      met_complexity = 0
+      met_complexity = met[1].size
       met.drop(2).each {|dec| 2.upto(4) {|i| dec[i].each {|pre| met_complexity += pre.uniq.size}}}
       domain_complexity += met_complexity
       puts "  #{met.first}: #{met_complexity}"
