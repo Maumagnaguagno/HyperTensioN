@@ -2,7 +2,7 @@
 (defdomain basic (
 
   (:operator (!pickup ?a)
-    ()
+    ((not (have ?a)))
     ()
     ((have ?a))
   )
