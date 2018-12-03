@@ -44,13 +44,13 @@ module Patterns
       (precond_pos & effect_del).each {|pre|
         if pre2 = effect_add.assoc(pre.first)
           cparam = pre - pre2 | pre2 - pre
-          # TODO constraint may not exist or exist more than once
-          if constraint = constraints.find {|i| (cparam - i).empty?}
-            swaps[op] = [pre, constraint]
+          # TODO constraint may not exist
+          unless (pre_constraints = constraints.select {|i| (cparam - i).empty?}).empty?
+            swaps[op] = [pre, pre_constraints]
             if debug
               swap_counter += 1
-              puts "  #{name} swaps (#{pre_join = pre.join(sep)}) with constraint (#{constraint.join(sep)})"
-              edges << "\n  #{namesub} -> \"(#{pre_join})\" [dir=both style=dashed]"
+              edges << "\n  #{namesub} -> \"(#{pre_join = pre.join(sep)})\" [dir=both style=dashed]"
+              pre_constraints.each {|c| puts "  #{name} swaps (#{pre_join}) with constraint (#{c.join(sep)})"}
             end
             break
           end
@@ -291,7 +291,7 @@ module Patterns
     current = '?current'
     intermediate = '?intermediate'
     swap_predicates = Hash.new {|h,k| h[k] = []}
-    swaps.each {|op,m| swap_predicates[m.first] << [op, m.last]}
+    swaps.each {|op,(pre,constraints)| constraints.each {|constraint| swap_predicates[pre] << [op, constraint]}}
     swap_predicates.each {|predicate,swap_ops|
       predicate_name, *predicate_terms = predicate
       # Explicit or implicit agent
@@ -308,7 +308,7 @@ module Patterns
       end
       # Swap for each possible goal
       effects = []
-      swap_ops.each {|op,constraint| effects.concat(op[4])}
+      swap_ops.each {|op,_| effects.concat(op[4])}
       effects.uniq!
       swap_ops.each {|op,constraint|
         original_intermediate = (constraint - [original_current]).last
