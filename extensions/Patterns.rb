@@ -291,7 +291,7 @@ module Patterns
     current = '?current'
     intermediate = '?intermediate'
     swap_predicates = Hash.new {|h,k| h[k] = []}
-    swaps.each {|op,(pre,constraints)| constraints.each {|constraint| swap_predicates[pre] << [op, constraint]}}
+    swaps.each {|op,(pre,constraints)| swap_predicates[pre] << [op, constraints]}
     swap_predicates.each {|predicate,swap_ops|
       predicate_name, *predicate_terms = predicate
       # Explicit or implicit agent
@@ -310,7 +310,8 @@ module Patterns
       effects = []
       swap_ops.each {|op,_| effects.concat(op[4])}
       effects.uniq!
-      swap_ops.each {|op,constraint|
+      swap_ops.each {|op,constraints|
+        constraint = constraints.first
         original_intermediate = (constraint - [original_current]).last
         predicate_terms2 = predicate_terms.map {|i| i == original_current ? original_intermediate : i}
         # Replace signature with new variables
