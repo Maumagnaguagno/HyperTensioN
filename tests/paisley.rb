@@ -16,7 +16,7 @@ class Paisley < Test::Unit::TestCase
     ]
   end
 
-  def swap_methods(names, parameters, constraint_terms = parameters, extra_precond_pos = [['adjacent', *constraint_terms]])
+  def swap_methods(names, parameters, constraint_terms, extra_precond_pos)
     methods = [
       ['swap_at_until_at', ['?ag', '?to'],
         ['base', [],
@@ -78,16 +78,16 @@ class Paisley < Test::Unit::TestCase
       'empty' => true
     }
     Patterns.apply([swap_operator('cross', ['?from', '?to'])], methods = [], predicates, [], tasks = [], [], [])
-    assert_equal(swap_methods(['cross'], ['?current', '?intermediate']), methods)
+    assert_equal(swap_methods(['cross'], ['?current', '?intermediate'], ['?current', '?intermediate', '?b'], [['adjacent', '?current', '?intermediate']]), methods)
     assert_equal([false], tasks)
     Patterns.apply([swap_operator('cross', ['?from', '?to'], ['?to', '?from'])], methods.clear, predicates, [], tasks.clear, [], [])
-    assert_equal(swap_methods(['cross'], ['?current', '?intermediate'], ['?intermediate', '?current']), methods)
+    assert_equal(swap_methods(['cross'], ['?current', '?intermediate'], ['?intermediate', '?current', '?b'], [['adjacent', '?intermediate', '?current']]), methods)
     assert_equal([false], tasks)
     Patterns.apply([swap_operator('cross', ['?to', '?from'], ['?from', '?to'])], methods.clear, predicates, [], tasks.clear, [], [])
-    assert_equal(swap_methods(['cross'], ['?intermediate', '?current'], ['?current', '?intermediate']), methods)
+    assert_equal(swap_methods(['cross'], ['?intermediate', '?current'], ['?current', '?intermediate', '?b'], [['adjacent', '?current', '?intermediate']]), methods)
     assert_equal([false], tasks)
     Patterns.apply([swap_operator('cross', ['?to', '?from'])], methods.clear, predicates, [], tasks.clear, [], [])
-    assert_equal(swap_methods(['cross'], ['?intermediate', '?current']), methods)
+    assert_equal(swap_methods(['cross'], ['?intermediate', '?current'], ['?intermediate', '?current', '?b'], [['adjacent', '?intermediate', '?current']]), methods)
     assert_equal([false], tasks)
   end
 
@@ -106,7 +106,7 @@ class Paisley < Test::Unit::TestCase
       swap_operator('walk', ['?from', '?to'], ['?from', '?to'], [['at', '?ag', '?to']])
     ]
     Patterns.apply(operators, methods = [], predicates, [], [], [], [])
-    assert_equal(swap_methods(['cross', 'walk'], ['?current', '?intermediate']), methods)
+    assert_equal(swap_methods(['cross', 'walk'], ['?current', '?intermediate'], ['?current', '?intermediate', '?b'], [['adjacent', '?current', '?intermediate']]), methods)
   end
 
   def test_swap_multiple_constraints
@@ -121,7 +121,7 @@ class Paisley < Test::Unit::TestCase
     }
     operators = [swap_operator('cross', ['?from', '?to'])]
     Patterns.apply(operators, methods = [], predicates, [], [], [], [])
-    assert_equal(swap_methods(['cross'], ['?current', '?intermediate'], ['?current', '?middle_0', '?intermediate'], [['adjacent', '?current', '?intermediate'], ['bridge', '?current', '?middle_0', '?intermediate']]), methods)
+    assert_equal(swap_methods(['cross'], ['?current', '?intermediate'], ['?current', '?middle_0', '?intermediate', '?b'], [['adjacent', '?current', '?intermediate'], ['bridge', '?current', '?middle_0', '?intermediate']]), methods)
   end
 
   def test_dependency_variable_introduction

@@ -314,12 +314,11 @@ module Patterns
         constraint = constraints.first
         original_intermediate = (constraint - [original_current]).last
         predicate_terms2 = predicate_terms.map {|i| i == original_current ? original_intermediate : i}
-        # Replace signature with new variables
-        new_op = op[1].map {|var| var == original_current ? current : var == original_intermediate ? intermediate : var}.unshift(op.first)
         # Add swap recursion
         precond_pos = [agent ? [predicate_name, agent, current] : [predicate_name, current]]
         free_variables = []
         constraints.each {|c|
+          # TODO keep track of new free variables
           constraint_terms = Array.new(c.size - 3) {|i| "?middle_#{i}"}.unshift(current) << intermediate
           constraint_terms.reverse! if original_current == c.last
           free_variables = constraint_terms if free_variables.size < constraint_terms.size
@@ -329,6 +328,10 @@ module Patterns
           [predicate_name, *predicate_terms2],
           agent ? [visited, agent, intermediate] : [visited, intermediate]
         ]
+        # Replace signature with new variables
+        new_op = op[1].map {|var| var == original_current ? current : var == original_intermediate ? intermediate : var}
+        free_variables |= new_op
+        new_op.unshift(op.first)
         effects.each {|eff|
           # Swap method
           unless swap_method = methods.assoc(method_name = "swap_#{predicate_name}_until_#{eff.first}")
@@ -336,7 +339,7 @@ module Patterns
             methods << swap_method = [method_name, predicate_terms2, ['base', [], [eff], [], []]]
           end
           # Label and free variables
-          swap_method << ["using_#{op.first}", free_variables,
+          swap_method << ["using_#{op.first}", free_variables - swap_method[1],
             # Positive preconditions
             precond_pos,
             # Negative preconditions
