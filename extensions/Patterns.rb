@@ -317,12 +317,12 @@ module Patterns
         # Add swap recursion
         precond_pos = [agent ? [predicate_name, agent, current] : [predicate_name, current]]
         free_variables = []
+        rename_variables = Hash.new {|h,k| h[k] = "?middle_#{h.size - 2}"}
+        rename_variables[original_current] = current
+        rename_variables[original_intermediate] = intermediate
         constraints.each {|c|
-          # TODO keep track of new free variables
-          constraint_terms = Array.new(c.size - 3) {|i| "?middle_#{i}"}.unshift(current) << intermediate
-          constraint_terms.reverse! if original_current == c.last
+          precond_pos << [c.first, *constraint_terms = c.drop(1).map {|i| rename_variables[i]}]
           free_variables = constraint_terms if free_variables.size < constraint_terms.size
-          precond_pos << [c.first, *constraint_terms]
         }
         negative_preconditions = [
           [predicate_name, *predicate_terms2],
