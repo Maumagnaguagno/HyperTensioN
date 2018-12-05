@@ -311,27 +311,21 @@ module Patterns
       swap_ops.each {|op,_| effects.concat(op[4])}
       effects.uniq!
       swap_ops.each {|op,constraints|
-        constraint = constraints.first
-        original_intermediate = (constraint - [original_current]).last
+        original_intermediate = (constraints.first - [original_current]).last
         predicate_terms2 = predicate_terms.map {|i| i == original_current ? original_intermediate : i}
         # Add swap recursion
         precond_pos = [agent ? [predicate_name, agent, current] : [predicate_name, current]]
-        free_variables = []
-        rename_variables = Hash.new {|h,k| h[k] = "?middle_#{h.size - 2}"}
-        rename_variables[original_current] = current
-        rename_variables[original_intermediate] = intermediate
-        constraints.each {|c|
-          precond_pos << [c.first, *constraint_terms = c.drop(1).map {|i| rename_variables[i]}]
-          free_variables = constraint_terms if free_variables.size < constraint_terms.size
-        }
-        negative_preconditions = [
+        free_variables = Hash.new {|h,k| h[k] = "?middle_#{h.size - 2}"}
+        free_variables[original_current] = current
+        free_variables[original_intermediate] = intermediate
+        constraints.each {|c| precond_pos << c.drop(1).map {|i| free_variables[i]}.unshift(c.first)}
+        precond_not = [
           [predicate_name, *predicate_terms2],
           agent ? [visited, agent, intermediate] : [visited, intermediate]
         ]
-        # Replace signature with new variables
-        new_op = op[1].map {|var| var == original_current ? current : var == original_intermediate ? intermediate : var}
-        free_variables |= new_op
-        new_op.unshift(op.first)
+        # Replace signature with free variables
+        new_op = op[1].map {|var| var == agent ? var : free_variables[var]}.unshift(op.first)
+        free_variables = free_variables.values
         effects.each {|eff|
           # Swap method
           unless swap_method = methods.assoc(method_name = "swap_#{predicate_name}_until_#{eff.first}")
@@ -339,11 +333,11 @@ module Patterns
             methods << swap_method = [method_name, predicate_terms2, ['base', [], [eff], [], []]]
           end
           # Label and free variables
-          swap_method << ["using_#{op.first}", free_variables - swap_method[1],
+          swap_method << ["using_#{op.first}", free_variables,
             # Positive preconditions
             precond_pos,
             # Negative preconditions
-            negative_preconditions,
+            precond_not,
             # Subtasks
             agent ? [
               new_op,
