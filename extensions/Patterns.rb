@@ -317,28 +317,30 @@ module Patterns
         # Replace signature with new variables
         new_op = op[1].map {|var| var == original_current ? current : var == original_intermediate ? intermediate : var}.unshift(op.first)
         # Add swap recursion
-        constraint_terms = Array.new(constraint.size - 3) {|i| "?middle_#{i}"}.unshift(current) << intermediate
-        constraint_terms.reverse! if original_current == constraint.last
+        precond_pos = [agent ? [predicate_name, agent, current] : [predicate_name, current]]
+        free_variables = []
+        constraints.each {|c|
+          constraint_terms = Array.new(c.size - 3) {|i| "?middle_#{i}"}.unshift(current) << intermediate
+          constraint_terms.reverse! if original_current == c.last
+          free_variables = constraint_terms if free_variables.size < constraint_terms.size
+          precond_pos << [c.first, *constraint_terms]
+        }
+        negative_preconditions = [
+          [predicate_name, *predicate_terms2],
+          agent ? [visited, agent, intermediate] : [visited, intermediate]
+        ]
         effects.each {|eff|
-          method_name = "swap_#{predicate_name}_until_#{eff.first}"
           # Swap method
-          unless swap_method = methods.assoc(method_name)
+          unless swap_method = methods.assoc(method_name = "swap_#{predicate_name}_until_#{eff.first}")
             puts "  swap method composed: #{method_name}" if debug
             methods << swap_method = [method_name, predicate_terms2, ['base', [], [eff], [], []]]
           end
           # Label and free variables
-          swap_method << ["using_#{op.first}", constraint_terms,
+          swap_method << ["using_#{op.first}", free_variables,
             # Positive preconditions
-            [
-              agent ? [predicate_name, agent, current] : [predicate_name, current],
-              [constraint.first, *constraint_terms]
-              # TODO check other preconditions
-            ],
+            precond_pos,
             # Negative preconditions
-            [
-              [predicate_name, *predicate_terms2],
-              agent ? [visited, agent, intermediate] : [visited, intermediate]
-            ],
+            negative_preconditions,
             # Subtasks
             agent ? [
               new_op,
