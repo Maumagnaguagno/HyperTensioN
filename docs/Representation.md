@@ -133,20 +133,20 @@ And is represented by:
 
 ## Predicates
 Predicates are partitioned in three types to both planners and compilers to decide which informations are important.
-Predicates that appear in effects are considered mutable while predicates that appear only in preconditions are considered invariant.
+Predicates that appear in effects are considered fluent while predicates that appear only in preconditions are considered rigid.
 Other predicates are considered irrelevant and may be pruned without any problem.
-In order to obtain this knowledge we use a Hash that maps predicate name to ``true``, if mutable, or ``false``, if invariant.
+In order to obtain this knowledge we use a Hash that maps predicate name to ``true``, if fluent, or ``false``, if rigid.
 Irrelevant predicates are not stored.
 Note that frozen predicate strings avoid key duplication by the Hash implementation.
 
 ```Ruby
-pre_mutable    = ['have',   '?x']
-pre_invariant  = ['object', '?x']
+pre_fluent     = ['have',   '?x']
+pre_rigid      = ['object', '?x']
 pre_irrelevant = ['cookie', '?y']
 
 @predicates = {
-  pre_mutable.first.freeze   => true,
-  pre_invariant.first.freeze => false
+  pre_fluent.first.freeze   => true,
+  pre_rigid.first.freeze => false
 }
 ```
 

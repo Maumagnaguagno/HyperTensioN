@@ -494,7 +494,7 @@ module Patterns
     else ground_sub, ground_var = ground.transpose
     end
     unless methods.assoc(name = "unify#{free.map! {|i| i.first}.join.tr!('?','_')}_before_#{met.first}")
-      # For all decompositions, find invariant predicates that act as preconditions
+      # For all decompositions, find rigid predicates that act as preconditions
       precond_pos = []
       precond_not = []
       met.drop(2).each {|dec| fill_preconditions(dec, predicates, precond_pos, precond_not, met[1])}

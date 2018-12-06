@@ -344,7 +344,7 @@ class Simple < Test::Unit::TestCase
       # Domain
 '# Basic
 ## Predicates
-- **have**: mutable
+- **have**: fluent
 
 ## Operators
 Pickup | ?a
