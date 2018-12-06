@@ -317,13 +317,13 @@ module Patterns
         free_variables = Hash.new {|h,k| h[k] = "?middle_#{h.size - 2}"}
         free_variables[original_current] = current
         free_variables[original_intermediate] = intermediate
-        precond_pos = constraints.map {|c| c.drop(1).map {|i| free_variables[i]}.unshift(c.first)}.unshift(agent ? [predicate_name, agent, current] : [predicate_name, current])
+        precond_pos = constraints.map {|c| c.drop(1).map {|i| i.start_with?('?') ? free_variables[i] : i}.unshift(c.first)}.unshift(agent ? [predicate_name, agent, current] : [predicate_name, current])
         precond_not = [
           [predicate_name, *predicate_terms2],
           agent ? [visited, agent, intermediate] : [visited, intermediate]
         ]
         # Replace signature with free variables
-        new_op = op[1].map {|var| var == agent ? var : free_variables[var]}.unshift(op.first)
+        new_op = op[1].map {|i| i == agent ? i : free_variables[i]}.unshift(op.first)
         free_variables = free_variables.values
         effects.each {|eff|
           # Swap method
