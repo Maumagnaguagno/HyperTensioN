@@ -16,7 +16,7 @@ class Paisley < Test::Unit::TestCase
     ]
   end
 
-  def swap_methods(names, parameters, free_variables, extra_precond_pos)
+  def swap_methods(names, parameters, free_variables, precond_pos)
     methods = [
       ['swap_at_until_at', ['?ag', '?to'],
         ['base', [],
@@ -36,7 +36,7 @@ class Paisley < Test::Unit::TestCase
         ]
       ]
     ]
-    precond_pos = [['at', '?ag', '?current']].concat(extra_precond_pos)
+    precond_pos.unshift(['at', '?ag', '?current'])
     names.each {|name|
       methods.first << ["using_#{name}", free_variables,
         # Preconditions
