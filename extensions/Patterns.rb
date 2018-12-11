@@ -380,9 +380,7 @@ module Patterns
         same_dependency_predicate = {}
         swap_dependencies = []
         op_dependencies.sort_by! {|i| relevance[i.first]}.each {|first,type,pre|
-          if swaps.include?(first)
-            compose_dependency_method(first, op, type, pre, swaps, operators, methods, predicates, debug)
-            swap_dependencies << [first, type, pre]
+          if swaps.include?(first) then swap_dependencies << [first, type, pre]
           else (same_dependency_predicate[[type,pre]] ||= []) << first
           end
         }
@@ -390,7 +388,6 @@ module Patterns
         puts "  #{op.first} requires a complex method\n    (and"
         same_dependency_predicate.each {|(type,pre),list_of_op|
           list_of_op.each {|op_first|
-            compose_dependency_method(op_first, op, type, pre, swaps, operators, methods, predicates, debug)
             if list_of_op.size != 1
               puts '      (or'
               indentation = '        '
