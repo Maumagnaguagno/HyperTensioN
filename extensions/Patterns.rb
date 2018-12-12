@@ -44,7 +44,7 @@ module Patterns
       (precond_pos & effect_del).each {|pre|
         if pre2 = effect_add.assoc(pre.first)
           cparam = pre - pre2 | pre2 - pre
-          # TODO constraint may not exist
+          # At least one constraint must exist
           unless (pre_constraints = constraints.select {|i| (cparam - i).empty?}).empty?
             swaps[op] = [pre, pre_constraints]
             if debug
@@ -201,7 +201,7 @@ module Patterns
         end
         # Prefer dependency with same predicate goal
         methods.each {|met2|
-          if met != met2 and met2.first =~ /^dependency_swap_[\w-]+_until_[\w-]+_before_#{dependent}_for_([\w-]+)$/
+          if not met.equal?(met2) and met2.first =~ /^dependency_swap_[\w-]+_until_[\w-]+_before_#{dependent}_for_([\w-]+)$/
             if $1 == pred
               sub = met2
               break
