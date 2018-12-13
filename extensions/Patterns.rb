@@ -96,9 +96,9 @@ module Patterns
     return unless debug
     puts 'Counter', "  Swaps: #{swap_counter}", "  Dependency: #{dependency_counter}"
     edges.uniq!
-    graph = "digraph Patterns {\n"
-    operators.each {|op| graph << "  #{op.first.tr(hyphen, underscore)} [label=\"#{op.first}(#{op[1].join(sep)})\" shape=box]\n"}
-    puts 'DOT output', graph << edges.join << "}\n}"
+    graph = 'digraph Patterns {'
+    operators.each {|op| graph << "\n  #{op.first.tr(hyphen, underscore)} [label=\"#{op.first}(#{op[1].join(sep)})\" shape=box]"}
+    puts 'DOT output', graph << edges.join << "\n}"
   end
 
   #-----------------------------------------------
