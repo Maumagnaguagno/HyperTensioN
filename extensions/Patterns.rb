@@ -394,7 +394,7 @@ module Patterns
             else indentation = '      '
             end
             puts "#{indentation}#{op_name = op_first.first} achieves (#{type ? pre.join(' ') : "not (#{pre.join(' ')})"})"
-            methods.each {|met| puts "#{indentation}  consider to use method #{met.first}" if met.first =~ /^dependency_[\w-]+_before_#{op_name}_for_#{pre.first}+$/}
+            methods.each {|met| puts "#{indentation}  consider to use method #{met.first}" if met.first =~ /^dependency_[\w-]+_before_#{op_name}_for_#{pre.first}$/}
           }
           puts '      )' if list_of_op.size != 1
         }
