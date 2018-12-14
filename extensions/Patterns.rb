@@ -368,43 +368,9 @@ module Patterns
       op_dependencies = dependencies[op]
       next unless op_dependencies
       # Cluster operators to compose methods
-      if op_dependencies.size == 1
-        first_dep, type_dep, pre_dep = op_dependencies.first
-        compose_dependency_method(first_dep, op, type_dep, pre_dep, swaps, operators, methods, predicates, debug)
-      else
-        op_dependencies.sort_by! {|i| relevance[i.first]}.each {|first,type,pre|
-          compose_dependency_method(first, op, type, pre, swaps, operators, methods, predicates, debug)
-        }
-        next unless debug
-        # Sort dependencies
-        same_dependency_predicate = {}
-        swap_dependencies = []
-        op_dependencies.sort_by! {|i| relevance[i.first]}.each {|first,type,pre|
-          if swaps.include?(first) then swap_dependencies << [first, type, pre]
-          else (same_dependency_predicate[[type,pre]] ||= []) << first
-          end
-        }
-        # Operators related to the same dependency generate an OR method, otherwise generate AND method
-        puts "  #{op.first} requires a complex method\n    (and"
-        same_dependency_predicate.each {|(type,pre),list_of_op|
-          list_of_op.each {|op_first|
-            if list_of_op.size != 1
-              puts '      (or'
-              indentation = '        '
-            else indentation = '      '
-            end
-            puts "#{indentation}#{op_name = op_first.first} achieves (#{type ? pre.join(' ') : "not (#{pre.join(' ')})"})"
-            methods.each {|met| puts "#{indentation}  consider to use method #{met.first}" if met.first =~ /^dependency_[\w-]+_before_#{op_name}_for_#{pre.first}$/}
-          }
-          puts '      )' if list_of_op.size != 1
-        }
-        # Swaps must happen at the end of every branch ((op1 OR op2) AND op_swap AND op)
-        swap_dependencies.each {|op_swap,type,pre|
-          puts "      #{op_swap.first} achieves (#{type ? pre.join(' ') : "not (#{pre.join(' ')})"})"
-          methods.each {|met| puts "        consider to use method #{met.first}" if met.first =~ /^swap_[\w-]+_until_#{pre.first}$/}
-        }
-        puts "      #{op.first}\n    )"
-      end
+      op_dependencies.sort_by! {|i| relevance[i.first]}.each {|first,type,pre|
+        compose_dependency_method(first, op, type, pre, swaps, operators, methods, predicates, debug)
+      }
     }
   end
 
