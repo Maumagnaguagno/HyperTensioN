@@ -428,18 +428,20 @@ module Patterns
     name = "dependency_#{first.first}_before_#{second.first}"
     return if methods.any? {|met| met.first.start_with?(name)}
     # Preconditions
-    (variables = first_terms + second_terms).uniq!
     precond_pos_second = []
     precond_not_second = []
     fill_preconditions(second, predicates, precond_pos_second, precond_not_second, second_terms) if operators.include?(second)
     precond_pos = precond_pos_second.dup
     precond_not = precond_not_second.dup
-    fill_preconditions(first, predicates, precond_pos, precond_not, variables) if operators.include?(first)
+    if operators.include?(first)
+      (variables = first_terms + second_terms).uniq!
+      fill_preconditions(first, predicates, precond_pos, precond_not, variables)
+    end
     precond_pos.uniq!
     precond_not.uniq!
     # Variables
     possible_terms = first_terms + pre
-    variables = first[1].select {|i| precond_pos.any? {|pre2| pre2.include?(i)} or possible_terms.include?(i)}
+    variables = first_terms.select {|i| precond_pos.any? {|pre2| pre2.include?(i)} or possible_terms.include?(i)}
     variables.concat(second_terms).uniq!
     second_effects.each {|effect|
       puts "  dependency method composed: #{name}_for_#{effect.first}" if debug
