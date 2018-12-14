@@ -407,7 +407,7 @@ module Patterns
     precond_not.uniq!
     # Variables
     possible_terms = first_terms + pre
-    variables = first_terms.select {|i| precond_pos.any? {|pre2| pre2.include?(i)} or possible_terms.include?(i)}
+    variables = first[1].select {|i| precond_pos.any? {|pre2| pre2.include?(i)} or possible_terms.include?(i)}
     variables.concat(second_terms).uniq!
     second_effects.each {|effect|
       puts "  dependency method composed: #{name}_for_#{effect.first}" if debug
