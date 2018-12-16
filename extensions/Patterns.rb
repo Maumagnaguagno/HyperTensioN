@@ -381,10 +381,10 @@ module Patterns
         end
         name = "dependency_#{first.first}_before_#{seconds.map {|i| i.first}.join('_or_')}"
         next if methods.any? {|met| met.first.start_with?(name)}
-        v = []
+        # Variables
+        (variables = first_terms + second_terms).uniq!
         satisfied = []
         unsatisfied = []
-        possible_terms = first_terms + pre
         seconds.each {|second|
           # Preconditions
           precond_pos_second = []
@@ -392,16 +392,9 @@ module Patterns
           fill_preconditions(second, predicates, precond_pos_second, precond_not_second, second_terms) if operators.include?(second)
           precond_pos = precond_pos_second.dup
           precond_not = precond_not_second.dup
-          if operators.include?(first)
-            (variables = first_terms + second_terms).uniq!
-            fill_preconditions(first, predicates, precond_pos, precond_not, variables)
-          end
+          fill_preconditions(first, predicates, precond_pos, precond_not, first_terms) if operators.include?(first)
           precond_pos.uniq!
           precond_not.uniq!
-          # Variables
-          variables = first[1].select {|i| precond_pos.any? {|pre2| pre2.include?(i)} or possible_terms.include?(i)}.concat(second_terms)
-          variables.uniq!
-          v.replace(variables)
           # Label and free variables
           satisfied << [seconds.size == 1 ? 'satisfied' : "satisfied_#{second.first}", [],
             # Positive preconditions
@@ -427,7 +420,7 @@ module Patterns
         # Disjunctions share effects
         seconds[0][4].each {|effect|
           puts "  dependency method composed: #{name}_for_#{effect.first}" if debug
-          methods << ["#{name}_for_#{effect.first}", v,
+          methods << ["#{name}_for_#{effect.first}", variables,
             # Label and free variables
             ['goal-satisfied', [],
               # Positive preconditions

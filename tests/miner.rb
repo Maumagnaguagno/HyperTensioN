@@ -100,7 +100,7 @@ class Miner < Test::Unit::TestCase
             ]
           ]
         ],
-        ['dependency_swap_at_until_at_before_pick_for_have', ['?agent', '?gold', '?pick_position'],
+        ['dependency_swap_at_until_at_before_pick_for_have', ['?agent', '?pick_position', '?gold'],
           ['goal-satisfied', [],
             # Preconditions
             [['have', '?agent', '?gold']],
@@ -135,7 +135,7 @@ class Miner < Test::Unit::TestCase
             [['on', '?gold', '?pick_position']],
             [['blocked', '?pick_position']],
             # Subtasks
-            [['dependency_swap_at_until_at_before_pick_for_have', '?agent', '?gold', '?pick_position']]
+            [['dependency_swap_at_until_at_before_pick_for_have', '?agent', '?pick_position', '?gold']]
           ],
           ['unsatisfied', [],
             # Preconditions
@@ -147,12 +147,12 @@ class Miner < Test::Unit::TestCase
             ],
             # Subtasks
             [
-              ['dependency_swap_at_until_at_before_drop_for_on', '?agent', '?gold', '?drop_position'],
-              ['dependency_swap_at_until_at_before_pick_for_have', '?agent', '?gold', '?pick_position']
+              ['dependency_swap_at_until_at_before_drop_for_on', '?agent', '?drop_position', '?gold'],
+              ['dependency_swap_at_until_at_before_pick_for_have', '?agent', '?pick_position', '?gold']
             ]
           ]
         ],
-        ['dependency_swap_at_until_at_before_drop_for_on', ['?agent', '?gold', '?drop_position'],
+        ['dependency_swap_at_until_at_before_drop_for_on', ['?agent', '?drop_position', '?gold'],
           ['goal-satisfied', [],
             # Preconditions
             [['on', '?gold', '?drop_position']],
@@ -187,7 +187,7 @@ class Miner < Test::Unit::TestCase
             [['have', '?agent', '?gold']],
             [['blocked', '?drop_position']],
             # Subtasks
-            [['dependency_swap_at_until_at_before_drop_for_on', '?agent', '?gold', '?drop_position']]
+            [['dependency_swap_at_until_at_before_drop_for_on', '?agent', '?drop_position', '?gold']]
           ],
           ['unsatisfied', [],
             # Preconditions
@@ -199,8 +199,8 @@ class Miner < Test::Unit::TestCase
             ],
             # Subtasks
             [
-              ['dependency_swap_at_until_at_before_pick_for_have', '?agent', '?gold', '?pick_position'],
-              ['dependency_swap_at_until_at_before_drop_for_on', '?agent', '?gold', '?drop_position']
+              ['dependency_swap_at_until_at_before_pick_for_have', '?agent', '?pick_position', '?gold'],
+              ['dependency_swap_at_until_at_before_drop_for_on', '?agent', '?drop_position', '?gold']
             ]
           ]
         ],
