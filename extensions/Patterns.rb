@@ -360,8 +360,8 @@ module Patterns
     visited = []
     dependencies.each {|op,op_dependencies|
       next if visited.include?(op)
-      parameters = op[1]
-      seconds = disjunctions[[op[4], op[5]]].select {|op2| parameters == op2[1] and op_dependencies == dependencies[op2]}
+      second_terms = op[1]
+      seconds = disjunctions[[op[4], op[5]]].select {|op2| second_terms == op2[1] and op_dependencies == dependencies[op2]}
       visited.concat(seconds)
       # Cluster operators to compose methods
       op_dependencies.each {|first,pos,neg|
@@ -374,8 +374,7 @@ module Patterns
           first = methods.assoc("swap_#{m.first.first}_until_#{m.first.first}")
           first_terms = pre.drop(1) if pre.first == m.first.first
         end
-        second_terms = seconds[0][1]
-        if m = swaps[seconds[0]]
+        if m = swaps[op]
           seconds = [methods.assoc("swap_#{m.first.first}_until_#{m.first.first}")]
           second_terms = pre.drop(1) if pre.first == m.first.first
         end
@@ -418,7 +417,7 @@ module Patterns
           ]
         }
         # Disjunctions share effects
-        seconds[0][4].each {|effect|
+        op[4].each {|effect|
           puts "  dependency method composed: #{name}_for_#{effect.first}" if debug
           methods << ["#{name}_for_#{effect.first}", variables,
             # Label and free variables
