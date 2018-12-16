@@ -8,10 +8,10 @@ module Patterns
   # Apply
   #-----------------------------------------------
 
-  def apply(operators, methods, predicates, state, tasks, goal_pos, goal_not, debug = false, negative_patterns = false)
+  def apply(operators, methods, predicates, state, tasks, goal_pos, goal_not, debug = false)
     # Find patterns
     puts 'Patterns'.center(50,'-'), 'Identify patterns' if debug
-    match_patterns(swaps = {}, dependencies = {}, operators, predicates, debug, negative_patterns)
+    match_patterns(swaps = {}, dependencies = {}, operators, predicates, debug)
     # Compose methods
     puts 'Compose methods' if debug
     compose_swap_methods(swaps, operators, methods, predicates, debug)
@@ -26,7 +26,7 @@ module Patterns
   # Match patterns
   #-----------------------------------------------
 
-  def match_patterns(swaps, dependencies, operators, predicates, debug, negative_patterns)
+  def match_patterns(swaps, dependencies, operators, predicates, debug)
     sep = ' '
     hyphen = '-'
     underscore = '_'
@@ -71,26 +71,21 @@ module Patterns
         next if op.equal?(op2) or
           (swap_op and swap_op2 = swaps[op2] and swap_op.first == swap_op2.first) or
           ((effect_add - op2[2]).empty? and (effect_del - op2[3]).empty?)
-        op2_namesub = op2.first.tr(hyphen, underscore)
-        precond_pos.each {|pre|
-          if op2[4].assoc(pre.first)
-            (dependencies[op] ||= []) << [op2, true, pre]
-            next unless debug
-            dependency_counter += 1
-            puts "  #{op2.first} before #{name}, dependency (#{pre_join = pre.join(sep)})"
-            edges.push("\n  #{op2_namesub} -> \"(#{pre_join})\"", "\n  \"(#{pre_join})\" -> #{namesub}")
-          end
+        pos = precond_pos.select {|pre| op2[4].assoc(pre.first)}
+        #neg = precond_not.select {|pre| op2[5].assoc(pre.first)}
+        (dependencies[op] ||= []) << [op2, pos] unless pos.empty?# and neg.empty?
+        next unless debug
+        dependency_counter += pos.size# + neg.size
+        name2 = op2.first
+        op2_namesub = name2.tr(hyphen, underscore)
+        pos.each {|pre|
+          puts "  #{name2} before #{name}, dependency (#{pre_join = pre.join(sep)})"
+          edges.push("\n  #{op2_namesub} -> \"(#{pre_join})\"", "\n  \"(#{pre_join})\" -> #{namesub}")
         }
-        next unless negative_patterns
-        precond_not.each {|pre|
-          if op2[5].assoc(pre.first)
-            (dependencies[op] ||= []) << [op2, false, pre]
-            next unless debug
-            dependency_counter += 1
-            puts "  #{op2.first} before #{name}, dependency (not (#{pre_join = pre.join(sep)}))"
-            edges.push("\n  #{op2_namesub} -> \"(not (#{pre_join}))\"", "\n  \"(not (#{pre_join}))\" -> #{namesub}")
-          end
-        }
+        #neg.each {|pre|
+        #  puts "  #{name2} before #{name}, dependency (not (#{pre_join = pre.join(sep)}))"
+        #  edges.push("\n  #{op2_namesub} -> \"(not (#{pre_join}))\"", "\n  \"(not (#{pre_join}))\" -> #{namesub}")
+        #}
       }
     }
     return unless debug
@@ -360,89 +355,96 @@ module Patterns
   #-----------------------------------------------
 
   def compose_dependency_methods(swaps, dependencies, operators, methods, predicates, debug)
+    disjunctions = Hash.new {|h,k| h[k] = []}
+    operators.each {|op| disjunctions[[op[4], op[5]]] << op}
     # Operator relevance
     relevance = Hash.new(0)
-    dependencies.each {|second,met| relevance[second.first] = met.uniq {|i| i.first}.size}
+    # op => [[op2, true/false, pre], ...]
+    dependencies.each {|second,met| relevance[second.first] = met.size}
     swaps.each {|op,_| relevance[op.first] = 1}
+    visited = []
     operators.sort_by {|op| relevance[op.first]}.each {|op|
-      op_dependencies = dependencies[op]
-      next unless op_dependencies
+      next if visited.include?(op) or not op_dependencies = dependencies[op]
+      parameters = op[1]
+      seconds = disjunctions[[op[4], op[5]]].select {|op2| parameters == op2[1] and op_dependencies == dependencies[op2]}
+      visited.concat(seconds)
       # Cluster operators to compose methods
-      op_dependencies.sort_by! {|i| relevance[i.first]}.each {|first,type,pre|
-        compose_dependency_method(first, op, type, pre, swaps, operators, methods, predicates, debug)
+      op_dependencies.sort_by! {|i| relevance[i.first]}.each {|first,pos,neg|
+        # TODO consider all dependencies
+        type = true
+        pre = pos.first
+        # Dependency of dependency
+        first_terms = first[1]
+        if m = swaps[first]
+          first = methods.assoc("swap_#{m.first.first}_until_#{m.first.first}")
+          first_terms = pre.drop(1) if pre.first == m.first.first
+        end
+        second_terms = seconds[0][1]
+        if m = swaps[seconds[0]]
+          seconds = [methods.assoc("swap_#{m.first.first}_until_#{m.first.first}")]
+          second_terms = pre.drop(1) if pre.first == m.first.first
+        end
+        name = "dependency_#{first.first}_before_#{seconds.map {|i| i.first}.join('_or_')}"
+        next if methods.any? {|met| met.first.start_with?(name)}
+        seconds[0][4].each {|effect|
+          puts "  dependency method composed: #{name}_for_#{effect.first}" if debug
+          methods << met = ["#{name}_for_#{effect.first}", v = [],
+            # Label and free variables
+            ['goal-satisfied', [],
+              # Positive preconditions
+              [effect],
+              # Negative preconditions
+              [],
+              # Subtasks
+              []
+            ]
+          ]
+          satisfied = []
+          unsatisfied = []
+          seconds.each {|second|
+            # Preconditions
+            precond_pos_second = []
+            precond_not_second = []
+            fill_preconditions(second, predicates, precond_pos_second, precond_not_second, second_terms) if operators.include?(second)
+            precond_pos = precond_pos_second.dup
+            precond_not = precond_not_second.dup
+            if operators.include?(first)
+              (variables = first_terms + second_terms).uniq!
+              fill_preconditions(first, predicates, precond_pos, precond_not, variables)
+            end
+            precond_pos.uniq!
+            precond_not.uniq!
+            # Variables
+            possible_terms = first_terms + pre
+            variables = first[1].select {|i| precond_pos.any? {|pre2| pre2.include?(i)} or possible_terms.include?(i)}.concat(second_terms)
+            variables.uniq!
+            v.replace(variables)
+            # Label and free variables
+            satisfied << [seconds.size == 1 ? 'satisfied' : "satisfied_#{second.first}", [],
+              # Positive preconditions
+              type ? precond_pos_second + [pre] : precond_pos_second,
+              # Negative preconditions
+              type ? precond_not_second : precond_not_second + [pre],
+              # Subtasks
+              [[second.first, *second_terms]]
+            ] unless first.first.start_with?(SWAP_PREFIX)
+            # Label and free variables
+            unsatisfied << [seconds.size == 1 ? 'unsatisfied' : "unsatisfied_#{second.first}", [],
+              # Positive preconditions
+              type ? precond_pos : precond_pos + [pre],
+              # Negative preconditions
+              type ? precond_not + [pre] : precond_not,
+              # Subtasks
+              [
+                [first.first, *first_terms],
+                [second.first, *second_terms]
+              ]
+            ]
+          }
+          met.concat(satisfied)
+          met.concat(unsatisfied)
+        }
       }
-    }
-  end
-
-  #-----------------------------------------------
-  # Compose dependency method
-  #-----------------------------------------------
-
-  def compose_dependency_method(first, second, type, pre, swaps, operators, methods, predicates, debug)
-    # Dependency of dependency
-    first_terms = first[1]
-    if m = swaps[first]
-      first = methods.assoc("swap_#{m.first.first}_until_#{m.first.first}")
-      first_terms = pre.drop(1) if pre.first == m.first.first
-    end
-    second_effects = second[4]
-    second_terms = second[1]
-    if m = swaps[second]
-      second = methods.assoc("swap_#{m.first.first}_until_#{m.first.first}")
-      second_terms = pre.drop(1) if pre.first == m.first.first
-    end
-    name = "dependency_#{first.first}_before_#{second.first}"
-    return if methods.any? {|met| met.first.start_with?(name)}
-    # Preconditions
-    precond_pos_second = []
-    precond_not_second = []
-    fill_preconditions(second, predicates, precond_pos_second, precond_not_second, second_terms) if operators.include?(second)
-    precond_pos = precond_pos_second.dup
-    precond_not = precond_not_second.dup
-    if operators.include?(first)
-      (variables = first_terms + second_terms).uniq!
-      fill_preconditions(first, predicates, precond_pos, precond_not, variables)
-    end
-    precond_pos.uniq!
-    precond_not.uniq!
-    # Variables
-    possible_terms = first_terms + pre
-    variables = first[1].select {|i| precond_pos.any? {|pre2| pre2.include?(i)} or possible_terms.include?(i)}
-    variables.concat(second_terms).uniq!
-    second_effects.each {|effect|
-      puts "  dependency method composed: #{name}_for_#{effect.first}" if debug
-      methods << met = ["#{name}_for_#{effect.first}", variables,
-        # Label and free variables
-        ['goal-satisfied', [],
-          # Positive preconditions
-          [effect],
-          # Negative preconditions
-          [],
-          # Subtasks
-          []
-        ]
-      ]
-      # Label and free variables
-      met << ['satisfied', [],
-        # Positive preconditions
-        type ? precond_pos_second + [pre] : precond_pos_second,
-        # Negative preconditions
-        type ? precond_not_second : precond_not_second + [pre],
-        # Subtasks
-        [[second.first, *second_terms]]
-      ] unless first.first.start_with?(SWAP_PREFIX)
-      # Label and free variables
-      met << ['unsatisfied', [],
-        # Positive preconditions
-        type ? precond_pos : precond_pos + [pre],
-        # Negative preconditions
-        type ? precond_not + [pre] : precond_not,
-        # Subtasks
-        [
-          [first.first, *first_terms],
-          [second.first, *second_terms]
-        ]
-      ]
     }
   end
 
