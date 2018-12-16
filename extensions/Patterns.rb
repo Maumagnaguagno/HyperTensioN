@@ -381,9 +381,53 @@ module Patterns
         end
         name = "dependency_#{first.first}_before_#{seconds.map {|i| i.first}.join('_or_')}"
         next if methods.any? {|met| met.first.start_with?(name)}
+        v = []
+        satisfied = []
+        unsatisfied = []
+        possible_terms = first_terms + pre
+        seconds.each {|second|
+          # Preconditions
+          precond_pos_second = []
+          precond_not_second = []
+          fill_preconditions(second, predicates, precond_pos_second, precond_not_second, second_terms) if operators.include?(second)
+          precond_pos = precond_pos_second.dup
+          precond_not = precond_not_second.dup
+          if operators.include?(first)
+            (variables = first_terms + second_terms).uniq!
+            fill_preconditions(first, predicates, precond_pos, precond_not, variables)
+          end
+          precond_pos.uniq!
+          precond_not.uniq!
+          # Variables
+          variables = first[1].select {|i| precond_pos.any? {|pre2| pre2.include?(i)} or possible_terms.include?(i)}.concat(second_terms)
+          variables.uniq!
+          v.replace(variables)
+          # Label and free variables
+          satisfied << [seconds.size == 1 ? 'satisfied' : "satisfied_#{second.first}", [],
+            # Positive preconditions
+            type ? precond_pos_second + [pre] : precond_pos_second,
+            # Negative preconditions
+            type ? precond_not_second : precond_not_second + [pre],
+            # Subtasks
+            [[second.first, *second_terms]]
+          ] unless first.first.start_with?(SWAP_PREFIX)
+          # Label and free variables
+          unsatisfied << [seconds.size == 1 ? 'unsatisfied' : "unsatisfied_#{second.first}", [],
+            # Positive preconditions
+            type ? precond_pos : precond_pos + [pre],
+            # Negative preconditions
+            type ? precond_not + [pre] : precond_not,
+            # Subtasks
+            [
+              [first.first, *first_terms],
+              [second.first, *second_terms]
+            ]
+          ]
+        }
+        # Disjunctions share effects
         seconds[0][4].each {|effect|
           puts "  dependency method composed: #{name}_for_#{effect.first}" if debug
-          methods << met = ["#{name}_for_#{effect.first}", v = [],
+          methods << ["#{name}_for_#{effect.first}", v,
             # Label and free variables
             ['goal-satisfied', [],
               # Positive preconditions
@@ -392,51 +436,10 @@ module Patterns
               [],
               # Subtasks
               []
-            ]
+            ],
+            *satisfied,
+            *unsatisfied
           ]
-          satisfied = []
-          unsatisfied = []
-          seconds.each {|second|
-            # Preconditions
-            precond_pos_second = []
-            precond_not_second = []
-            fill_preconditions(second, predicates, precond_pos_second, precond_not_second, second_terms) if operators.include?(second)
-            precond_pos = precond_pos_second.dup
-            precond_not = precond_not_second.dup
-            if operators.include?(first)
-              (variables = first_terms + second_terms).uniq!
-              fill_preconditions(first, predicates, precond_pos, precond_not, variables)
-            end
-            precond_pos.uniq!
-            precond_not.uniq!
-            # Variables
-            possible_terms = first_terms + pre
-            variables = first[1].select {|i| precond_pos.any? {|pre2| pre2.include?(i)} or possible_terms.include?(i)}.concat(second_terms)
-            variables.uniq!
-            v.replace(variables)
-            # Label and free variables
-            satisfied << [seconds.size == 1 ? 'satisfied' : "satisfied_#{second.first}", [],
-              # Positive preconditions
-              type ? precond_pos_second + [pre] : precond_pos_second,
-              # Negative preconditions
-              type ? precond_not_second : precond_not_second + [pre],
-              # Subtasks
-              [[second.first, *second_terms]]
-            ] unless first.first.start_with?(SWAP_PREFIX)
-            # Label and free variables
-            unsatisfied << [seconds.size == 1 ? 'unsatisfied' : "unsatisfied_#{second.first}", [],
-              # Positive preconditions
-              type ? precond_pos : precond_pos + [pre],
-              # Negative preconditions
-              type ? precond_not + [pre] : precond_not,
-              # Subtasks
-              [
-                [first.first, *first_terms],
-                [second.first, *second_terms]
-              ]
-            ]
-          }
-          met.concat(satisfied).concat(unsatisfied)
         }
       }
     }
