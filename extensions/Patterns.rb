@@ -357,19 +357,14 @@ module Patterns
   def compose_dependency_methods(swaps, dependencies, operators, methods, predicates, debug)
     disjunctions = Hash.new {|h,k| h[k] = []}
     operators.each {|op| disjunctions[[op[4], op[5]]] << op}
-    # Operator relevance
-    relevance = Hash.new(0)
-    # op => [[op2, true/false, pre], ...]
-    dependencies.each {|second,met| relevance[second.first] = met.size}
-    swaps.each {|op,_| relevance[op.first] = 1}
     visited = []
-    operators.sort_by {|op| relevance[op.first]}.each {|op|
+    operators.each {|op|
       next if visited.include?(op) or not op_dependencies = dependencies[op]
       parameters = op[1]
       seconds = disjunctions[[op[4], op[5]]].select {|op2| parameters == op2[1] and op_dependencies == dependencies[op2]}
       visited.concat(seconds)
       # Cluster operators to compose methods
-      op_dependencies.sort_by! {|i| relevance[i.first]}.each {|first,pos,neg|
+      op_dependencies.each {|first,pos,neg|
         # TODO consider all dependencies
         type = true
         pre = pos.first
@@ -441,8 +436,7 @@ module Patterns
               ]
             ]
           }
-          met.concat(satisfied)
-          met.concat(unsatisfied)
+          met.concat(satisfied).concat(unsatisfied)
         }
       }
     }
