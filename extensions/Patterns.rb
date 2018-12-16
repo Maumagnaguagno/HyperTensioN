@@ -358,8 +358,8 @@ module Patterns
     disjunctions = Hash.new {|h,k| h[k] = []}
     operators.each {|op| disjunctions[[op[4], op[5]]] << op}
     visited = []
-    operators.each {|op|
-      next if visited.include?(op) or not op_dependencies = dependencies[op]
+    dependencies.each {|op,op_dependencies|
+      next if visited.include?(op)
       parameters = op[1]
       seconds = disjunctions[[op[4], op[5]]].select {|op2| parameters == op2[1] and op_dependencies == dependencies[op2]}
       visited.concat(seconds)
