@@ -382,8 +382,6 @@ module Patterns
         precond_pos = []
         precond_not = []
         fill_preconditions(first, predicates, precond_pos, precond_not, first_terms) if operators.include?(first)
-        # Variables
-        variables = first_terms | second_terms
         satisfied = []
         unsatisfied = []
         seconds.each {|second|
@@ -418,7 +416,7 @@ module Patterns
         # Disjunctions share effects
         op[4].each {|effect|
           puts "  dependency method composed: #{name}_for_#{effect.first}" if debug
-          methods << ["#{name}_for_#{effect.first}", variables,
+          methods << ["#{name}_for_#{effect.first}", first_terms | second_terms,
             # Label and free variables
             ['goal-satisfied', [],
               # Positive preconditions
