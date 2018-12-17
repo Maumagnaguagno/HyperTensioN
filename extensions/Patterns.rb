@@ -27,15 +27,8 @@ module Patterns
   #-----------------------------------------------
 
   def match_patterns(swaps, dependencies, operators, predicates, debug)
-    sep = ' '
-    hyphen = '-'
-    underscore = '_'
-    edges = []
     # TODO support negative patterns
-    swap_counter = dependency_counter = 0
     operators.each {|op|
-      name = op.first
-      namesub = name.tr(hyphen, underscore)
       precond_pos, constraints = op[2].partition {|pre| predicates[pre.first]}
       #precond_not = op[3].select {|pre| predicates[pre.first]}
       effect_add = op[4]
@@ -47,19 +40,12 @@ module Patterns
           # At least one constraint must exist
           unless (pre_constraints = constraints.select {|i| (cparam - i).empty?}).empty?
             swaps[op] = [pre, pre_constraints]
-            if debug
-              swap_counter += 1
-              edges << "\n  #{namesub} -> \"(#{pre_join = pre.join(sep)})\" [dir=both style=dashed]"
-              pre_constraints.each {|c| puts "  #{name} swaps (#{pre_join}) with constraint (#{c.join(sep)})"}
-            end
             break
           end
         end
       }
     }
     operators.each {|op|
-      name = op.first
-      namesub = name.tr(hyphen, underscore)
       precond_pos = op[2].select {|pre| predicates[pre.first]}
       precond_not = op[3].select {|pre| predicates[pre.first]}
       effect_add = op[4]
@@ -72,24 +58,37 @@ module Patterns
           (swap_op and swap_op2 = swaps[op2] and swap_op.first == swap_op2.first) or
           ((effect_add - op2[2]).empty? and (effect_del - op2[3]).empty?)
         pos = precond_pos.select {|pre| op2[4].assoc(pre.first)}
-        #neg = precond_not.select {|pre| op2[5].assoc(pre.first)}
-        (dependencies[op] ||= []) << [op2, pos] unless pos.empty?# and neg.empty?
-        next unless debug
-        dependency_counter += pos.size# + neg.size
-        name2 = op2.first
-        op2_namesub = name2.tr(hyphen, underscore)
+        neg = [] #precond_not.select {|pre| op2[5].assoc(pre.first)}
+        (dependencies[op] ||= []) << [op2, pos, neg] unless pos.empty? and neg.empty?
+      }
+    }
+    return unless debug
+    sep = ' '
+    hyphen = '-'
+    underscore = '_'
+    edges = []
+    swaps.each {|op,(pre,pre_constraints)|
+      namesub = (name = op.first).tr(hyphen, underscore)
+      edges << "\n  #{namesub} -> \"(#{pre_join = pre.join(sep)})\" [dir=both style=dashed]"
+      pre_constraints.each {|c| puts "  #{name} swaps (#{pre_join}) with constraint (#{c.join(sep)})"}
+    }
+    dependency_counter = 0
+    dependencies.each {|op,op_dependencies|
+      namesub = (name = op.first).tr(hyphen, underscore)
+      op_dependencies.each {|op2,pos,neg|
+        dependency_counter += pos.size + neg.size
+        op2_namesub = (name2 = op2.first).tr(hyphen, underscore)
         pos.each {|pre|
           puts "  #{name2} before #{name}, dependency (#{pre_join = pre.join(sep)})"
           edges.push("\n  #{op2_namesub} -> \"(#{pre_join})\"", "\n  \"(#{pre_join})\" -> #{namesub}")
         }
-        #neg.each {|pre|
-        #  puts "  #{name2} before #{name}, dependency (not (#{pre_join = pre.join(sep)}))"
-        #  edges.push("\n  #{op2_namesub} -> \"(not (#{pre_join}))\"", "\n  \"(not (#{pre_join}))\" -> #{namesub}")
-        #}
+        neg.each {|pre|
+          puts "  #{name2} before #{name}, dependency (not (#{pre_join = pre.join(sep)}))"
+          edges.push("\n  #{op2_namesub} -> \"(not (#{pre_join}))\"", "\n  \"(not (#{pre_join}))\" -> #{namesub}")
+        }
       }
     }
-    return unless debug
-    puts 'Counter', "  Swaps: #{swap_counter}", "  Dependency: #{dependency_counter}"
+    puts 'Counter', "  Swaps: #{swaps.size}", "  Dependencies: #{dependency_counter}"
     edges.uniq!
     graph = 'digraph Patterns {'
     operators.each {|op| graph << "\n  #{op.first.tr(hyphen, underscore)} [label=\"#{op.first}(#{op[1].join(sep)})\" shape=box]"}
