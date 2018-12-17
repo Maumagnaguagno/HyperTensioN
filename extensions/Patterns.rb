@@ -379,8 +379,11 @@ module Patterns
         end
         name = "dependency_#{first.first}_before_#{seconds.map {|i| i.first}.join('_or_')}"
         next if methods.any? {|met| met.first.start_with?(name)}
+        precond_pos = []
+        precond_not = []
+        fill_preconditions(first, predicates, precond_pos, precond_not, first_terms) if operators.include?(first)
         # Variables
-        (variables = first_terms + second_terms).uniq!
+        variables = first_terms | second_terms
         satisfied = []
         unsatisfied = []
         seconds.each {|second|
@@ -388,11 +391,8 @@ module Patterns
           precond_pos_second = []
           precond_not_second = []
           fill_preconditions(second, predicates, precond_pos_second, precond_not_second, second_terms) if operators.include?(second)
-          precond_pos = precond_pos_second.dup
-          precond_not = precond_not_second.dup
-          fill_preconditions(first, predicates, precond_pos, precond_not, first_terms) if operators.include?(first)
-          precond_pos.uniq!
-          precond_not.uniq!
+          precond_pos_first = precond_pos_second | precond_pos
+          precond_not_first = precond_not_second | precond_not
           # Label and free variables
           satisfied << [seconds.size == 1 ? 'satisfied' : "satisfied_#{second.first}", [],
             # Positive preconditions
@@ -405,9 +405,9 @@ module Patterns
           # Label and free variables
           unsatisfied << [seconds.size == 1 ? 'unsatisfied' : "unsatisfied_#{second.first}", [],
             # Positive preconditions
-            type ? precond_pos : precond_pos + [pre],
+            type ? precond_pos_first : precond_pos_first + [pre],
             # Negative preconditions
-            type ? precond_not + [pre] : precond_not,
+            type ? precond_not_first + [pre] : precond_not_first,
             # Subtasks
             [
               [first.first, *first_terms],
