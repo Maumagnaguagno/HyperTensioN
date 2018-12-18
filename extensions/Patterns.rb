@@ -297,8 +297,10 @@ module Patterns
       unvisit = "invisible_unvisit_#{predicate_name}"
       unless operators.assoc(visit)
         predicates[visited] = true
-        operators.push([visit, predicate_terms, [], [], [[visited, *predicate_terms]], []],
-          [unvisit, predicate_terms, [], [], [], [[visited, *predicate_terms]]])
+        operators.push(
+          [visit, predicate_terms, [], [], [[visited, *predicate_terms]], []],
+          [unvisit, predicate_terms, [], [], [], [[visited, *predicate_terms]]]
+        )
       end
       # Swap for each possible goal
       effects = []
@@ -368,11 +370,11 @@ module Patterns
         pre = pos.first
         # Dependency of dependency
         first_terms = first[1]
-        if m = swaps[first]
+        if swaps.include?(first)
           first = methods.assoc("swap_#{pre.first}_until_#{pre.first}")
           first_terms = pre.drop(1)
         end
-        if m = swaps[op]
+        if swaps.include?(op)
           seconds = [methods.assoc("swap_#{pre.first}_until_#{pre.first}")]
           second_terms = pre.drop(1)
         end
