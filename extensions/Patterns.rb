@@ -354,10 +354,9 @@ module Patterns
   #-----------------------------------------------
 
   def compose_dependency_methods(swaps, dependencies, operators, methods, predicates, debug)
-    disjunctions = Hash.new {|h,k| h[k] = []}
-    operators.each {|op| disjunctions[[op[4], op[5]]] << op}
     visited = []
-    dependencies.each {|op,op_dependencies|
+    disjunctions = Hash.new {|h,k| h[k] = []}
+    dependencies.each_key {|op| disjunctions[[op[4], op[5]]] << op}.each {|op,op_dependencies|
       next if visited.include?(op)
       second_terms = op[1]
       seconds = disjunctions[[op[4], op[5]]].select {|op2| second_terms == op2[1] and op_dependencies == dependencies[op2]}
