@@ -369,12 +369,12 @@ module Patterns
         # Dependency of dependency
         first_terms = first[1]
         if m = swaps[first]
-          first = methods.assoc("swap_#{m.first.first}_until_#{m.first.first}")
-          first_terms = pre.drop(1) if pre.first == m.first.first
+          first = methods.assoc("swap_#{pre.first}_until_#{pre.first}")
+          first_terms = pre.drop(1)
         end
         if m = swaps[op]
-          seconds = [methods.assoc("swap_#{m.first.first}_until_#{m.first.first}")]
-          second_terms = pre.drop(1) if pre.first == m.first.first
+          seconds = [methods.assoc("swap_#{pre.first}_until_#{pre.first}")]
+          second_terms = pre.drop(1)
         end
         name = "dependency_#{first.first}_before_#{seconds.map {|i| i.first}.join('_or_')}"
         next if methods.any? {|met| met.first.start_with?(name)}
