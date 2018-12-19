@@ -373,8 +373,7 @@ module Patterns
         if swaps.include?(first)
           first = methods.assoc("swap_#{pre.first}_until_#{pre.first}")
           first_terms = pre.drop(1)
-        end
-        if swaps.include?(op)
+        elsif swaps.include?(op)
           seconds = [methods.assoc("swap_#{pre.first}_until_#{pre.first}")]
           second_terms = pre.drop(1)
         end
