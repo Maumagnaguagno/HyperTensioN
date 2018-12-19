@@ -47,7 +47,7 @@ module Patterns
     }
     operators.each {|op|
       precond_pos = op[2].select {|pre| predicates[pre.first]}
-      precond_not = op[3].select {|pre| predicates[pre.first]}
+      #precond_not = op[3].select {|pre| predicates[pre.first]}
       effect_add = op[4]
       effect_del = op[5]
       # Dependency
