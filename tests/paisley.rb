@@ -36,7 +36,7 @@ class Paisley < Test::Unit::TestCase
         ]
       ]
     ]
-    free_variables = parameters.dup.sort! << '?middle_0'
+    free_variables = parameters.dup.sort! << '?b'
     precond_pos.unshift(['at', '?ag', '?current'])
     names.each {|name|
       methods.first << ["using_#{name}", free_variables,
@@ -45,7 +45,7 @@ class Paisley < Test::Unit::TestCase
         [['at', '?ag', '?to'], ['visited_at', '?ag', '?intermediate']],
         # Subtasks
         [
-          [name, '?ag', '?middle_0', *parameters],
+          [name, '?ag', '?b', *parameters],
           ['invisible_visit_at', '?ag', '?current'],
           ['swap_at_until_at', '?ag', '?to'],
           ['invisible_unvisit_at', '?ag', '?current']
@@ -57,7 +57,7 @@ class Paisley < Test::Unit::TestCase
         [['at', '?ag', '?to'], ['visited_at', '?ag', '?intermediate']],
         # Subtasks
         [
-          [name, '?ag', '?middle_0', *parameters],
+          [name, '?ag', '?b', *parameters],
           ['invisible_visit_at', '?ag', '?current'],
           ['swap_at_until_empty', '?ag', '?to'],
           ['invisible_unvisit_at', '?ag', '?current']
@@ -122,7 +122,7 @@ class Paisley < Test::Unit::TestCase
     }
     operators = [swap_operator('cross', ['?from', '?to'])]
     Patterns.apply(operators, methods = [], predicates, [], [], [], [])
-    assert_equal(swap_methods(['cross'], ['?current', '?intermediate'], [['adjacent', '?current', '?intermediate'], ['bridge', '?current', '?middle_0', '?intermediate']]), methods)
+    assert_equal(swap_methods(['cross'], ['?current', '?intermediate'], [['adjacent', '?current', '?intermediate'], ['bridge', '?current', '?b', '?intermediate']]), methods)
   end
 
   def test_dependency_variable_introduction

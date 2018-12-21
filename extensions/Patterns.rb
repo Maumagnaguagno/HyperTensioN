@@ -310,7 +310,7 @@ module Patterns
         original_intermediate = (constraints.first - [original_current]).last
         predicate_terms2 = predicate_terms.map {|i| i == original_current ? original_intermediate : i}
         # Add swap recursion
-        free_variables = Hash.new {|h,k| h[k] = "?middle_#{h.size - 2}"}
+        free_variables = Hash.new {|h,k| h[k] = k}
         free_variables[original_current] = current
         free_variables[original_intermediate] = intermediate
         precond_pos = constraints.map {|c| c.drop(1).map! {|i| i.start_with?('?') ? free_variables[i] : i}.unshift(c.first)}.unshift(agent ? [predicate_name, agent, current] : [predicate_name, current])
