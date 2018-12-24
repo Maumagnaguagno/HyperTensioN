@@ -39,8 +39,7 @@ module Patterns
           cparam = pre - pre2 | pre2 - pre
           # At least one constraint must exist
           unless (pre_constraints = constraints.select {|i| (cparam - i).empty?}).empty?
-            swaps[op] = [pre, pre_constraints]
-            break
+            (swaps[op] ||= []) << [pre, pre_constraints]
           end
         end
       }
@@ -285,7 +284,7 @@ module Patterns
     current = '?current'
     intermediate = '?intermediate'
     swap_predicates = Hash.new {|h,k| h[k] = []}
-    swaps.each {|op,(pre,constraints)| swap_predicates[pre] << [op, constraints]}
+    swaps.each {|op,pre_constraints| pre_constraints.each {|pre,constraints| swap_predicates[pre] << [op, constraints]}}
     swap_predicates.each {|predicate,swap_ops|
       predicate_name, *predicate_terms = predicate
       # Explicit or implicit agent
@@ -493,6 +492,7 @@ module Patterns
               end
             }
           elsif node.first.start_with?(DEPENDENCY_PREFIX) or node.first.start_with?(SWAP_PREFIX)
+            # TODO fix new multiple unsatisfied dependencies and multiple swap operators over same predicate
             node.last[4].reverse_each {|i| fringe.unshift(operators.assoc(i.first) || methods.assoc(i.first)) unless visited.include?(i.first)}
           # TODO else support user provided methods
           end
