@@ -324,7 +324,13 @@ module Patterns
           # Swap method
           unless swap_method = methods.assoc(method_name = "swap_#{predicate_name}_until_#{eff.first}")
             puts "  swap method composed: #{method_name}" if debug
-            methods << swap_method = [method_name, predicate_terms2, ['base', [], [eff], [], []]]
+            methods << swap_method = [method_name, predicate_terms2]
+            if (predicate_terms2 - eff).empty?
+              swap_method << ['base', [], [eff], [], []]
+            else
+              eff = [*constraints, eff]
+              swap_method << ['base', eff.flatten.select {|i| i.start_with?('?') and not predicate_terms2.include?(i)}.uniq, eff, [], []]
+            end
           end
           # Label and free variables
           swap_method << ["using_#{op.first}", free_variables,
