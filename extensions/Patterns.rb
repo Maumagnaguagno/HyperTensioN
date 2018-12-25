@@ -399,18 +399,18 @@ module Patterns
           # Label and free variables
           satisfied << [seconds.size == 1 ? 'satisfied' : "satisfied_#{second.first}", [],
             # Positive preconditions
-            type ? precond_pos_second + [pre] : precond_pos_second,
+            type ? precond_pos_second << pre : precond_pos_second,
             # Negative preconditions
-            type ? precond_not_second : precond_not_second + [pre],
+            type ? precond_not_second : precond_not_second << pre,
             # Subtasks
             [[second.first, *second_terms]]
           ] unless first.first.start_with?(SWAP_PREFIX)
           # Label and free variables
           unsatisfied << [seconds.size == 1 ? 'unsatisfied' : "unsatisfied_#{second.first}", [],
             # Positive preconditions
-            type ? precond_pos_first : precond_pos_first + [pre],
+            type ? precond_pos_first : precond_pos_first << pre,
             # Negative preconditions
-            type ? precond_not_first + [pre] : precond_not_first,
+            type ? precond_not_first << pre : precond_not_first,
             # Subtasks
             [
               [first.first, *first_terms],
