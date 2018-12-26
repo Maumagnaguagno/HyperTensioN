@@ -54,7 +54,7 @@ module Patterns
       operators.each {|op2|
         # Avoid same operator, same swap or operator with effect nullified
         next if op.equal?(op2) or
-          (swap_op and swap_op2 = swaps[op2] and swap_op.first == swap_op2.first) or
+          (swap_op and swap_op2 = swaps[op2] and swap_op.any? {|i| swap_op2.assoc(i.first)}) or
           ((effect_add - op2[2]).empty? and (effect_del - op2[3]).empty?)
         pos = precond_pos.select {|pre| op2[4].assoc(pre.first)}
         neg = [] #precond_not.select {|pre| op2[5].assoc(pre.first)}
