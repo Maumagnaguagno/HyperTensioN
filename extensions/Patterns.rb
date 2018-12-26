@@ -437,12 +437,16 @@ module Patterns
     else ground_sub, ground_var = ground.transpose
     end
     unless methods.assoc(name = "unify#{free.map! {|i| i.first}.join.tr!('?','_')}_before_#{met.first}")
-      # For all decompositions, find rigid predicates that act as preconditions
+      # Find rigid predicates shared across decompositions to act as preconditions
       precond_pos = []
       precond_not = []
-      met.drop(2).each {|dec| fill_preconditions(dec, predicates, precond_pos, precond_not, met[1])}
-      precond_pos.uniq!
-      precond_not.uniq!
+      met.drop(3).each {|dec|
+        if dec.first.start_with?('unsatisfied') or dec.first.start_with?('using_')
+          fill_preconditions(dec, predicates, precond_pos_local = [], precond_not_local = [], met[1])
+          precond_pos.empty? ? precond_pos = precond_pos_local : precond_pos &= precond_pos_local
+          precond_not.empty? ? precond_not = precond_not_local : precond_not &= precond_not_local
+        end
+      }
       # Find other preconditions to bind free variables at run-time
       bind_variables(free, met, ground_var, precond_pos, operators, methods)
       methods << [name, ground_var,
