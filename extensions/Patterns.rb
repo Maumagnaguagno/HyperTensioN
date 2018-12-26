@@ -167,7 +167,6 @@ module Patterns
     # Inject dependencies
     puts 'Inject dependencies' if debug
     methods.each {|met|
-      # TODO apply to any method
       if met.first =~ /^dependency_([\w-]+)_before_([\w-]+)_for_([\w-]+)$/
         dependency = $1
         dependent = $2
@@ -184,12 +183,8 @@ module Patterns
           end
         }
         if sub
-          puts "  #{met.last[4][0].first} to #{sub.first} in #{met.first}" if debug
-          met.last[4][0] = sub.first(2).flatten
-          # Fill missing variables and preconditions related
-          met.last[1].concat(new_variables = sub[1] - met[1])
-          fill_preconditions(sub[2], predicates, met.last[2], met.last[3], new_variables)
-          # TODO add unification if any variable is still free
+          puts "  #{dependency} to #{sub.first} in #{met.first}" if debug
+          met.drop(3).each {|dec| dec[4][0] = sub.first(2).flatten if dec[4][0].first == dependency}
           sub = nil
         end
         # Prefer dependency with same predicate goal
@@ -203,22 +198,12 @@ module Patterns
           end
         }
         if sub
-          puts "  #{met[3][4][0].first} to #{sub.first} in #{met.first}" if debug
-          if met[4]
-            met[3][4][0] = met[4][4][1] = sub.first(2).flatten
-          else
-            met[3][4][0] = sub.first(2).flatten
-          end
-          # TODO fill preconditions
+          puts "  #{dependent} to #{sub.first} in #{met.first}" if debug
+          dependent_split = dependent.split('_or_')
+          met.drop(3).each {|dec|
+            dec[4].each_with_index {|subtask,i| dec[4][i] = sub.first(2).flatten if dependent_split.include?(subtask.first)}
+          }
         end
-=begin
-        if sub = swaps.find {|op,_| op.first == dependent}
-          # TODO how to deal with swap here?
-          # - remove constraint precondition
-          # - remove current parameter, which may require to scan all other methods
-          met[3][4][0] = met[4][4][1] = ?
-        end
-=end
       end
     }
   end
