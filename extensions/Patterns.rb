@@ -238,24 +238,22 @@ module Patterns
     }
     # Goal primitives
     goal_pos.each {|goal|
-      next if goal_methods.include?([true, goal])
       operators.each {|op|
         if group = op[4].assoc(goal.first)
           # TODO add unification method when required
           tasks << op[1].map {|var| (i = group.index(var)) ? goal[i] : var}.unshift(op.first)
           break
         end
-      }
+      } unless goal_methods.include?([true, goal])
     }
     goal_not.each {|goal|
-      next if goal_methods.include?([false, goal])
       operators.each {|op|
         if group = op[5].assoc(goal.first)
           # TODO add unification method when required
           tasks << op[1].map {|var| (i = group.index(var)) ? goal[i] : var}.unshift(op.first)
           break
         end
-      }
+      } unless goal_methods.include?([false, goal])
     }
   end
 
