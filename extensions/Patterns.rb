@@ -95,7 +95,7 @@ module Patterns
   end
 
   #-----------------------------------------------
-  # Fill goal tasks
+  # Fill goal methods
   #-----------------------------------------------
 
   def fill_goal_methods(goal_methods, goal_pos, goal_not, source_parameters, source_pos, source_not, met, parameters)
@@ -147,7 +147,7 @@ module Patterns
       v.uniq!
       for_goal = "_#{goal.first}"
       # Give priority based on operator relevance to goal
-      v.sort_by! {|mets,pred2|
+      v.sort_by! {|mets,_|
         # Prefer to match goal
         val = mets.first.end_with?(for_goal) ? -1 : 0
         val - mets.drop(2).count {|dec| !dec[4].empty? and op = operators.assoc(dec[4].last.first) and op[type ? 4 : 5].assoc(goal.first)}
@@ -213,7 +213,7 @@ module Patterns
   #-----------------------------------------------
 
   def add_tasks(goal_methods, operators, methods, predicates, tasks, goal_pos, goal_not, debug)
-    # TODO Interference topological sort to avoid unordered tasks
+    tasks_goals = []
     # Add tasks as unordered
     tasks[0] = false if tasks.empty? or tasks.first
     # Select task
@@ -226,14 +226,14 @@ module Patterns
         ground = met[1].map {|var| (i = pred.index(var)) ? goal[i] : var}
         if ground.none? {|var| var.start_with?('?')}
           puts "    Ground task #{met.first}(#{ground.join(' ')})" if debug
-          tasks << ground.unshift(met.first)
+          tasks_goals << [ground.unshift(met.first), type, goal]
         end
       }
         # Lifted
         met, pred = v.first
         ground = met[1].map {|var| (i = pred.index(var)) ? goal[i] : var}
         puts "    Lifted task #{met.first}(#{ground.join(' ')})" if debug
-        tasks << compose_unification_method(operators, methods, predicates, met, ground)
+        tasks_goals << [compose_unification_method(operators, methods, predicates, met, ground), type, goal]
       end
     }
     # Goal primitives
@@ -241,7 +241,7 @@ module Patterns
       operators.each {|op|
         if group = op[4].assoc(goal.first)
           # TODO add unification method when required
-          tasks << op[1].map {|var| (i = group.index(var)) ? goal[i] : var}.unshift(op.first)
+          tasks_goals << [op[1].map {|var| (i = group.index(var)) ? goal[i] : var}.unshift(op.first), true, goal]
           break
         end
       } unless goal_methods.include?([true, goal])
@@ -250,11 +250,18 @@ module Patterns
       operators.each {|op|
         if group = op[5].assoc(goal.first)
           # TODO add unification method when required
-          tasks << op[1].map {|var| (i = group.index(var)) ? goal[i] : var}.unshift(op.first)
+          tasks_goals << [op[1].map {|var| (i = group.index(var)) ? goal[i] : var}.unshift(op.first), false, goal]
           break
         end
       } unless goal_methods.include?([false, goal])
     }
+    total_order = Knoblock.create_hierarchy(operators, predicates)
+    total_order.map! {|i| i.first.instance_of?(Array) ? i.map {|type,goal| [type, goal.first]} : [[i.first, i.last.first]]}
+    tasks_goals.sort_by! {|met,type,goal|
+      goal = [type, goal.first]
+      -total_order.index {|i| i.include?(goal)}
+    }
+    tasks.concat(tasks_goals.map {|i| i.first})
   end
 
   #-----------------------------------------------
