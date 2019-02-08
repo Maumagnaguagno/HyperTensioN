@@ -256,7 +256,12 @@ module Patterns
       } unless goal_methods.include?([false, goal])
     }
     total_order = Knoblock.create_hierarchy(operators, predicates)
-    total_order.map! {|i| i.first.instance_of?(Array) ? i.map {|type,goal| [type, goal.first]} : [[i.first, i.last.first]]}
+    puts 'total_order'
+    p *total_order
+    puts 'tasks_goals'
+    p *tasks_goals
+    puts '---'
+    total_order.map! {|i| i.first.instance_of?(Array) ? i.map! {|type,goal| [type, goal.first]} : [[i.first, i.last.first]]}
     tasks_goals.sort_by! {|met,type,goal|
       goal = [type, goal.first]
       -total_order.index {|i| i.include?(goal)}
