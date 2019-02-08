@@ -226,14 +226,14 @@ module Patterns
         ground = met[1].map {|var| (i = pred.index(var)) ? goal[i] : var}
         if ground.none? {|var| var.start_with?('?')}
           puts "    Ground task #{met.first}(#{ground.join(' ')})" if debug
-          tasks_goals << [ground.unshift(met.first), type, goal]
+          tasks_goals.unshift([ground.unshift(met.first), type, goal])
         end
       }
         # Lifted
         met, pred = v.first
         ground = met[1].map {|var| (i = pred.index(var)) ? goal[i] : var}
         puts "    Lifted task #{met.first}(#{ground.join(' ')})" if debug
-        tasks_goals << [compose_unification_method(operators, methods, predicates, met, ground), type, goal]
+        tasks_goals.unshift([compose_unification_method(operators, methods, predicates, met, ground), type, goal])
       end
     }
     # Goal primitives
@@ -241,7 +241,7 @@ module Patterns
       operators.each {|op|
         if group = op[4].assoc(goal.first)
           # TODO add unification method when required
-          tasks_goals << [op[1].map {|var| (i = group.index(var)) ? goal[i] : var}.unshift(op.first), true, goal]
+          tasks_goals.unshift([op[1].map {|var| (i = group.index(var)) ? goal[i] : var}.unshift(op.first), true, goal])
           break
         end
       } unless goal_methods.include?([true, goal])
@@ -250,7 +250,7 @@ module Patterns
       operators.each {|op|
         if group = op[5].assoc(goal.first)
           # TODO add unification method when required
-          tasks_goals << [op[1].map {|var| (i = group.index(var)) ? goal[i] : var}.unshift(op.first), false, goal]
+          tasks_goals.unshift([op[1].map {|var| (i = group.index(var)) ? goal[i] : var}.unshift(op.first), false, goal])
           break
         end
       } unless goal_methods.include?([false, goal])
