@@ -213,11 +213,11 @@ module Patterns
   #-----------------------------------------------
 
   def add_tasks(goal_methods, operators, methods, predicates, tasks, goal_pos, goal_not, debug)
-    tasks_goals = []
     # Add tasks as unordered
     tasks[0] = false if tasks.empty? or tasks.first
     # Select task
     puts 'Goal to Task' if debug
+    tasks_goals = []
     goal_methods.each {|(type,goal),v|
       puts "  #{'not ' unless type}(#{goal.join(' ')})" if debug
       # Ground
@@ -255,20 +255,13 @@ module Patterns
         end
       } unless goal_methods.include?([false, goal])
     }
-    total_order = Knoblock.create_hierarchy(operators, predicates)
-    puts 'total_order'
-    p *total_order
-    puts 'tasks_goals'
-    p *tasks_goals
-    total_order.map! {|i| i.first.instance_of?(Array) ? i.map! {|type,goal| [type, goal.first]} : [[i.first, i.last.first]]}
-    tasks_goals.sort_by! {|met,type,goal|
-      goal = [type, goal.first]
-      -total_order.index {|i| i.include?(goal)}
+    ordered_tasks = []
+    Knoblock.create_hierarchy(operators, predicates).each {|i|
+      step = i.first.instance_of?(Array) ? i.map! {|type,goal| [type, goal.first]} : [[i.first, i.last.first]]
+      tasks_goals.reject! {|met,type,goal| ordered_tasks.unshift(met) if step.include?([type, goal.first])}
+      break if tasks_goals.empty?
     }
-    puts 'sort_by!'
-    p *tasks_goals
-    puts '---'
-    tasks.concat(tasks_goals.map! {|i| i.first})
+    tasks.concat(ordered_tasks)
   end
 
   #-----------------------------------------------

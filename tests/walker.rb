@@ -117,10 +117,10 @@ class Walker < Test::Unit::TestCase
       ],
       :tasks => [false,
         ['swap_at_until_visited', 'albany'],
-        ['swap_at_until_visited', 'boston'],
-        ['swap_at_until_visited', 'newyork'],
         ['swap_at_until_visited', 'toronto'],
         ['swap_at_until_visited', 'pittsburgh'],
+        ['swap_at_until_visited', 'newyork'],
+        ['swap_at_until_visited', 'boston'],
         ['swap_at_until_at', 'pittsburgh']
       ],
       :goal_pos => [
