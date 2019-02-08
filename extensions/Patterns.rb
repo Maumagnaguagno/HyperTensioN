@@ -260,13 +260,15 @@ module Patterns
     p *total_order
     puts 'tasks_goals'
     p *tasks_goals
-    puts '---'
     total_order.map! {|i| i.first.instance_of?(Array) ? i.map! {|type,goal| [type, goal.first]} : [[i.first, i.last.first]]}
     tasks_goals.sort_by! {|met,type,goal|
       goal = [type, goal.first]
       -total_order.index {|i| i.include?(goal)}
     }
-    tasks.concat(tasks_goals.map {|i| i.first})
+    puts 'sort_by!'
+    p *tasks_goals
+    puts '---'
+    tasks.concat(tasks_goals.map! {|i| i.first})
   end
 
   #-----------------------------------------------
