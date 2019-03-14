@@ -9,13 +9,11 @@ rvm:
   - 2.5.0
   - 2.6.0
   # Others
-  - jruby
-  - rbx-3
+  - jruby-9.1.17.0
   - truffleruby
 matrix:
   allow_failures:
-  - rvm: jruby
-  - rvm: rbx-3
+  - jruby-9.1.17.0
   - rvm: truffleruby
 script:
   # Tests
