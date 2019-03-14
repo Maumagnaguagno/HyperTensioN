@@ -8,8 +8,15 @@ rvm:
   - 2.4.0
   - 2.5.0
   - 2.6.0
-  # JRuby
+  # Others
   - jruby
+  - rbx-3
+  - truffleruby
+matrix:
+  allow_failures:
+  - rvm: jruby
+  - rvm: rbx-3
+  - rvm: truffleruby
 script:
   # Tests
   - ruby tests/sphygmomanometer.rb
