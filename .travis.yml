@@ -13,7 +13,7 @@ rvm:
   - truffleruby
 matrix:
   allow_failures:
-  - jruby-9.1.17.0
+  - rvm: jruby-9.1.17.0
   - rvm: truffleruby
 script:
   # Tests
