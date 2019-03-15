@@ -53,8 +53,7 @@ module Wise
       end
     }
     # Methods
-    methods.each {|met|
-      name, param, *decompositions = met
+    methods.each {|name,param,*decompositions|
       prefix_variables(name = "method #{name}", param, debug)
       decompositions.each {|label,free,precond_pos,precond_not,subtasks|
         prefix_variables(label = "#{name} #{label}", free, debug)
