@@ -67,10 +67,8 @@ module Knoblock
     goals.each {|literal|
       unless @graph.include?(literal)
         operators.each {|op|
-          effects = map(op[4], op[5], predicates)
-          if effects.include?(literal)
-            preconditions = map(op[2], op[3], predicates)
-            @graph[literal].concat(preconditions).concat(effects).delete(literal)
+          if (effects = map(op[4], op[5], predicates)).include?(literal)
+            @graph[literal].concat(preconditions = map(op[2], op[3], predicates)).concat(effects).delete(literal)
             find_problem_dependent_constraints(operators, predicates, preconditions)
           end
         }
