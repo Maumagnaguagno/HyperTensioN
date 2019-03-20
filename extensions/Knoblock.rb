@@ -44,7 +44,7 @@ module Knoblock
   #-----------------------------------------------
 
   def map(positive, negative, predicates)
-    positive.select {|pre| predicates[pre.first]}.map! {|pre| [true, pre]} + negative.select {|pre| predicates[pre.first]}.map! {|pre| [false, pre]}
+    positive.select {|pre| predicates[pre.first]}.map! {|pre| [true, pre]}.concat(negative.select {|pre| predicates[pre.first]}.map! {|pre| [false, pre]})
   end
 
   #-----------------------------------------------
@@ -54,9 +54,7 @@ module Knoblock
   def find_problem_independent_constraints(operators, predicates)
     operators.each {|op|
       preconditions_effects = map(op[2], op[3], predicates).concat(effects = map(op[4], op[5], predicates))
-      effects.each {|literal|
-        @graph[literal].concat(preconditions_effects).delete(literal)
-      }
+      effects.each {|literal| @graph[literal].concat(preconditions_effects).delete(literal)}
     }
     @graph.each_value {|v| v.uniq!}
   end
