@@ -53,10 +53,9 @@ module Knoblock
 
   def find_problem_independent_constraints(operators, predicates)
     operators.each {|op|
-      preconditions = map(op[2], op[3], predicates)
-      effects = map(op[4], op[5], predicates)
+      preconditions_effects = map(op[2], op[3], predicates).concat(effects = map(op[4], op[5], predicates))
       effects.each {|literal|
-        @graph[literal].concat(preconditions).concat(effects).delete(literal)
+        @graph[literal].concat(preconditions_effects).delete(literal)
       }
     }
     @graph.each_value {|v| v.uniq!}
