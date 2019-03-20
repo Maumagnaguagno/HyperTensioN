@@ -116,10 +116,10 @@ module Knoblock
 end
 
 if $0 == __FILE__
-  require_relative 'HyperTensioN/parsers/PDDL_Parser'
+  require_relative '../parsers/PDDL_Parser'
   begin
     PDDL_Parser.parse_domain(ARGV.first)
-    Knoblock.create_hierarchy(PDDL_Parser.operators, PDDL_Parser.predicates)
+    Knoblock.create_hierarchy(PDDL_Parser.operators, PDDL_Parser.predicates, nil, true)
   rescue
     puts $!, $@
   end
