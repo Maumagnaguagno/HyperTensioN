@@ -7,14 +7,6 @@ module Knoblock
   extend self
 
   #-----------------------------------------------
-  # Apply
-  #-----------------------------------------------
-
-  def apply(operators, methods, predicates, state, tasks, goal_pos, goal_not)
-    create_hierarchy(operators, map(goal_pos, goal_not))
-  end
-
-  #-----------------------------------------------
   # Create hierarchy
   #-----------------------------------------------
 
