@@ -256,9 +256,10 @@ module Patterns
       } unless goal_methods.include?([false, goal])
     }
     ordered_tasks = []
-    Knoblock.create_hierarchy(operators, predicates).each {|i|
-      step = i.first.instance_of?(Array) ? i.map! {|type,goal| [type, goal.first]} : [[i.first, i.last.first]]
-      tasks_goals.reject! {|met,type,goal| ordered_tasks.unshift(met) if step.include?([type, goal.first])}
+    Knoblock.create_hierarchy(operators, predicates).each {|order|
+      order = [order] unless order.first.instance_of?(Array)
+      order.each {|i| i[1] = i[1].first}
+      tasks_goals.reject! {|met,type,goal| ordered_tasks.unshift(met) if order.include?([type, goal.first])}
       break if tasks_goals.empty?
     }
     tasks.concat(ordered_tasks)
