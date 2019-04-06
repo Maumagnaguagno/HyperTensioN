@@ -65,23 +65,12 @@ module Wise
           end
         }
         (precond_pos & precond_not).each {|pre| puts "#{label} precondition contains contradicting (#{pre.join(' ')})"} if debug
-        # Subtask arity check and noops removal
-        subtasks.reject! {|task|
-          if noops.include?(task.first)
-            puts "#{label} subtask #{task.first}: removed" if debug
-            true
-          elsif t = operators.assoc(task.first) || methods.assoc(task.first)
-            raise "#{label} subtask #{task.first} expected #{t[1].size} terms instead of #{task.size.pred}" if t[1].size != task.size.pred
-          elsif task.first.start_with?('?')
-            puts "#{label} subtask #{task.first} is variable" if debug
-          else raise "#{label} subtask #{task.first} is unknown"
-          end
-        }
+        verify_tasks("#{label} subtask", subtasks, noops, operators, methods, debug)
       }
     }
     # Tasks
     ordered = tasks.shift
-    tasks.reject! {|task| noops.include?(task.first)}
+    verify_tasks('task', tasks, noops, operators, methods, debug)
     tasks.unshift(ordered) unless tasks.empty?
   end
 
@@ -114,6 +103,25 @@ module Wise
           end
         }
       }
+    }
+  end
+
+  #-----------------------------------------------
+  # Verify tasks
+  #-----------------------------------------------
+
+  def verify_tasks(name, tasks, noops, operators, methods, debug)
+    # Task arity check and noops removal
+    tasks.reject! {|task|
+      if noops.include?(task.first)
+        puts "#{name} #{task.first}: removed" if debug
+        true
+      elsif t = operators.assoc(task.first) || methods.assoc(task.first)
+        raise "#{name} #{task.first} expected #{t[1].size} terms instead of #{task.size.pred}" if t[1].size != task.size.pred
+      elsif task.first.start_with?('?')
+        puts "#{name} #{task.first} is variable" if debug
+      else raise "#{name} #{task.first} is unknown"
+      end
     }
   end
 end
