@@ -194,9 +194,9 @@ if $0 == __FILE__
       type = ARGV.pop
       extensions = ARGV
       if not File.exist?(domain)
-        abort("Domain file #{domain} not found")
+        abort("Domain not found: #{domain}")
       elsif not File.exist?(problem)
-        abort("Problem file #{problem} not found")
+        abort("Problem not found: #{problem}")
       else
         t = Time.now.to_f
         Hype.parse(domain, problem)
