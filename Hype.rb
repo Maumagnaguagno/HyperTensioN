@@ -188,29 +188,24 @@ if $0 == __FILE__
   begin
     if ARGV.size < 2 or ARGV.first == '-h'
       puts Hype::HELP
+    elsif not File.exist?(domain = ARGV.shift)
+      abort("Domain not found: #{domain}")
+    elsif not File.exist?(problem = ARGV.shift)
+      abort("Problem not found: #{problem}")
     else
-      domain = ARGV.shift
-      problem = ARGV.shift
       type = ARGV.pop
-      extensions = ARGV
-      if not File.exist?(domain)
-        abort("Domain not found: #{domain}")
-      elsif not File.exist?(problem)
-        abort("Problem not found: #{problem}")
-      else
-        t = Time.now.to_f
-        Hype.parse(domain, problem)
-        extensions.each {|e| Hype.extend(e)}
-        if not type or type == 'print'
-          puts Hype.to_s
-        elsif type == 'run' or type == (ARGV[0] = 'debug')
-          Hype.compile(domain, problem, 'rb')
-          require File.expand_path(problem)
-        elsif type != 'nil'
-          Hype.compile(domain, problem, type)
-        end
-        puts "Total time: #{Time.now.to_f - t}s"
+      t = Time.now.to_f
+      Hype.parse(domain, problem)
+      ARGV.each {|e| Hype.extend(e)}
+      if not type or type == 'print'
+        puts Hype.to_s
+      elsif type == 'run' or type == (ARGV[0] = 'debug')
+        Hype.compile(domain, problem, 'rb')
+        require File.expand_path(problem)
+      elsif type != 'nil'
+        Hype.compile(domain, problem, type)
       end
+      puts "Total time: #{Time.now.to_f - t}s"
     end
   rescue
     puts $!, $@
