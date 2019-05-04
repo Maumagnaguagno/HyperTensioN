@@ -199,7 +199,7 @@ if $0 == __FILE__
       ARGV.each {|e| Hype.extend(e)}
       if not type or type == 'print'
         puts Hype.to_s
-      elsif type == 'run' or type == (ARGV[0] = 'debug')
+      elsif type == 'run' or (ARGV[0] = type) == 'debug'
         Hype.compile(domain, problem, 'rb')
         require File.expand_path(problem)
       elsif type != 'nil'
