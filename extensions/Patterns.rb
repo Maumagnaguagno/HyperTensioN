@@ -446,7 +446,7 @@ module Patterns
       precond_pos = []
       precond_not = []
       met.drop(3).each {|dec|
-        if dec.first.start_with?('unsatisfied') or dec.first.start_with?('using_')
+        if dec.first.start_with?('unsatisfied', 'using_')
           fill_preconditions(dec, predicates, precond_pos_local = [], precond_not_local = [], met[1])
           precond_pos.empty? ? precond_pos = precond_pos_local : precond_pos &= precond_pos_local
           precond_not.empty? ? precond_not = precond_not_local : precond_not &= precond_not_local
@@ -491,7 +491,7 @@ module Patterns
                 new_free.concat(pre.drop(1).select {|i| not ground_var.include?(i) || free.include?(i)})
               end
             }
-          elsif node.first.start_with?(DEPENDENCY_PREFIX) or node.first.start_with?(SWAP_PREFIX)
+          elsif node.first.start_with?(DEPENDENCY_PREFIX, SWAP_PREFIX)
             # TODO fix new multiple unsatisfied dependencies and multiple swap operators over same predicate
             node.last[4].reverse_each {|i| fringe.unshift(operators.assoc(i.first) || methods.assoc(i.first)) unless visited.include?(i.first)}
           # TODO else support user provided methods
