@@ -66,6 +66,7 @@ module Continuous
           when 'decrease' then v -= value
           when 'scale_up' then v *= value
           when 'scale_down' then v /= value
+          when 'assign' then v = value
           end
         end
         ev_index += 1
@@ -198,6 +199,7 @@ if $0 == __FILE__
       setup_initial_state
       assert_equal(true, event('scale_up', :x, 2, 10))
       assert_equal(true, event('increase', :x, 1, 1))
+      assert_equal(true, event('assign', :x, 100, 15))
       assert_equal('0.0', function(:x))
       assert_equal('0.0', function(:x, 0.5))
       assert_equal('1.0', function(:x, 1))
@@ -207,6 +209,7 @@ if $0 == __FILE__
       @state['protect_axiom'] << ['x_less_than', 1, 1.5]
       assert_equal(false, axioms_protected?)
       assert_equal('2.0', function(:x, 11))
+      assert_equal('100.0', function(:x, 15))
     end
 
     def test_process
