@@ -50,9 +50,9 @@ module Continuous
     super(state, *args)
   end
 
-  def function(f, time = nil)
+  def function(f, time = nil, string = true)
     v = @state[:function][f]
-    return v.to_s unless time
+    return string ? v.to_s : v unless time
     time = time.to_f
     ev = @state[:event]
     pr = @state[:process]
@@ -84,7 +84,7 @@ module Continuous
         pr_index += 1
       end
     end
-    v.to_s
+    string ? v.to_s : v
   end
 
   def at_time(p, time = nil)
@@ -231,7 +231,7 @@ if $0 == __FILE__
       setup_initial_state
       assert_equal(true, process('increase', :x, :identity, 5, 15))
       assert_equal(true, process('increase', :x, :identity, 10, 20))
-      0.step(25, 0.5) {|i| assert_equal((i < 5 ? 0 : i < 10 ? i - 5 : i < 15 ? i * 2 - 15 : i < 20 ? i : 20).to_f.to_s, function(:x, i))}
+      0.step(25, 0.5) {|i| assert_equal((i < 5 ? 0 : i < 10 ? i - 5 : i < 15 ? i * 2 - 15 : i < 20 ? i : 20).to_f, function(:x, i, false))}
     end
 
     def test_at_time
