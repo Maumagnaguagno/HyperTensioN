@@ -125,18 +125,23 @@ module Continuous
   def modify(p, status, start)
     status = status == 'true'
     start = start.to_f
-    (@state[:event].each {|type,g,value,time| return status == value if start == time and p == g} << [nil, p, status, start]).sort_by! {|i| i.last}
+    insert_ordered(@state[:event].each {|type,g,value,time| return status == value if start == time and p == g}, [nil, p, status, start])
     axioms_protected_at_time?(start)
   end
 
   def event(type, f, value, start)
-    (@state[:event] << [type, f, value.to_f, start.to_f]).sort_by! {|i| i.last}
+    insert_ordered(@state[:event], [type, f, value.to_f, start.to_f])
     axioms_protected_at_time?(start)
   end
 
   def process(type, f, expression, start, finish)
-    (@state[:process] << [type, f, expression, start.to_f, finish.to_f]).sort_by! {|i| i[3]}
+    insert_ordered(@state[:process], [type, f, expression, start.to_f, finish.to_f])
     axioms_protected_at_time?(finish)
+  end
+
+  def insert_ordered(array, n)
+    value = n[3]
+    array.insert((0...array.size).bsearch {|i| value < array[i][3]} || array.size, n)
   end
 
   def axioms_protected_at_time?(time)
