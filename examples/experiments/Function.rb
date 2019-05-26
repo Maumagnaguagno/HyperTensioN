@@ -60,7 +60,8 @@ module Continuous
     while ev_index != ev.size or pr_index != pr.size
       if ev[ev_index] and (not pr[pr_index] or ev[ev_index][3] <= pr[pr_index][3])
         type, g, value, start = ev[ev_index]
-        if f == g and start <= time
+        break if start > time
+        if f == g
           case type
           when 'increase' then v += value
           when 'decrease' then v -= value
@@ -72,7 +73,8 @@ module Continuous
         ev_index += 1
       else
         type, g, expression, start, finish = pr[pr_index]
-        if f == g and start <= time
+        break if start > time
+        if f == g
           value = send(*expression, (time > finish ? finish : time) - start)
           case type
           when 'increase' then v += value
