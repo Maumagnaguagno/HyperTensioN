@@ -9,11 +9,11 @@ rvm:
   - 2.5.0
   - 2.6.0
   # Others
-  - jruby-9.1.17.0
+  - jruby-9.2.7.0
   - truffleruby
 matrix:
   allow_failures:
-  - rvm: jruby-9.1.17.0
+  - rvm: jruby-9.2.7.0
   - rvm: truffleruby
 script:
   # Tests
