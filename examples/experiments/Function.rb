@@ -89,6 +89,48 @@ module Continuous
     string ? v.to_s : v
   end
 
+  def function_interval(f, start_time, finish_time, string = true, step = 1)
+    v = @state[:function][f]
+    ev = @state[:event]
+    pr = @state[:process]
+    time = start_time.to_f
+    finish_time = finish_time.to_f
+    ev_index = pr_index = 0
+    while ev_index != ev.size or pr_index != pr.size
+      if ev[ev_index] and (not pr[pr_index] or ev[ev_index][3] <= pr[pr_index][3])
+        type, g, value, start = ev[ev_index]
+        break if start > finish_time
+        if f == g and start <= time
+          value *= (finish_time - start)
+          case type
+          when 'increase' then v += value
+          when 'decrease' then v -= value
+          when 'scale_up' then v *= value
+          when 'scale_down' then v /= value
+          when 'assign' then v = value
+          end
+        end
+        ev_index += 1
+      else
+        type, g, expression, start, finish = pr[pr_index]
+        break if start > finish_time
+        if f == g and start <= time
+          time.step(finish_time, step) {|t|
+            value = send(*expression, (t > finish ? finish : t) - start)
+            case type
+            when 'increase' then v += value
+            when 'decrease' then v -= value
+            when 'scale_up' then v *= value
+            when 'scale_down' then v /= value
+            end
+          }
+        end
+        pr_index += 1
+      end
+    end
+    string ? v.to_s : v
+  end
+
   def at_time(p, time = nil)
     pre, *terms = p
     v = @state[pre].include?(terms)
