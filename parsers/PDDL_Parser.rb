@@ -53,8 +53,8 @@ module PDDL_Parser
           if group.first == HYPHEN
             group.shift
             @predicates[(type = group.shift).freeze] ||= false
-            until index == free_variables.size
-              pos << [type, free_variables[index]]
+            while fv = free_variables[index]
+              pos << [type, fv]
               index += 1
             end
           end
@@ -158,8 +158,7 @@ module PDDL_Parser
                 raise 'Circular typing' if types.include?(type = type.last)
                 types << type
               end
-              until index == @objects.size
-                o = @objects[index]
+              while o = @objects[index]
                 index += 1
                 types.each {|t| @state << [t, o]}
               end
