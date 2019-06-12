@@ -101,7 +101,7 @@ module Continuous
         type, g, value, start = ev[ev_index]
         break if start > finish_time
         if f == g and start <= time
-          value *= (finish_time - start)
+          value *= finish_time - start
           case type
           when 'increase' then v += value
           when 'decrease' then v -= value
@@ -208,7 +208,7 @@ if $0 == __FILE__
     end
 
     def x_less_than(y, time = nil)
-      function(:x, time).to_f < y
+      function(:x, time, false) < y
     end
 
     def happy(time = nil)
