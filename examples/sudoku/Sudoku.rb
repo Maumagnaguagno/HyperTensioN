@@ -44,8 +44,9 @@ module Sudoku
       :box => box
     }
     tasks = [
-      [:solve, counter, box_width * box_height]
+      [:solve, counter, cells = box_width * box_height]
     ]
+    @all_symbols = Array.new(cells) {|i| i.succ}
     if verbose
       problem(state, tasks, debug)
     else
@@ -92,7 +93,7 @@ module Sudoku
     box = @state[:box]
     @state[:at].each {|x,y,b,symbol|
       if symbol == 0
-        symbols = Array.new(cells) {|i| i.succ.to_s}
+        symbols = @all_symbols.dup
         collumn.each {|i,s| symbols.delete(s) if i == x}
         row.each {|i,s| symbols.delete(s) if i == y}
         box.each {|i,s| symbols.delete(s) if i == b}
