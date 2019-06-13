@@ -4,8 +4,6 @@ module Sudoku
   include Hypertension
   extend self
 
-  EMPTY = '.'
-
   #-----------------------------------------------
   # Domain
   #-----------------------------------------------
@@ -30,9 +28,8 @@ module Sudoku
     raise "Expected #{total_width * total_height} symbols, received #{board_str.size}" if board_str.size != total_width * total_height
     board_str.each_char.with_index {|symbol,i|
       y, x = i.divmod(total_width)
-      b = "box_#{x / width + y / height * box_width}"
-      board << [x = x.to_s, y = y.to_s, b, symbol]
-      if symbol != EMPTY
+      board << [x, y, b = x / width + y / height * box_width, symbol = symbol.to_i]
+      if symbol != 0
         collumn << [x, symbol]
         row << [y, symbol]
         box << [b, symbol]
@@ -75,7 +72,7 @@ module Sudoku
       ],
       # Del effects
       [
-        [:at, x, y, box, EMPTY]
+        [:at, x, y, box, 0]
       ]
     )
   end
@@ -94,7 +91,7 @@ module Sudoku
     row = @state[:row]
     box = @state[:box]
     @state[:at].each {|x,y,b,symbol|
-      if symbol == EMPTY
+      if symbol == 0
         symbols = Array.new(cells) {|i| i.succ.to_s}
         collumn.each {|i,s| symbols.delete(s) if i == x}
         row.each {|i,s| symbols.delete(s) if i == y}
