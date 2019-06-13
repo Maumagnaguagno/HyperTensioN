@@ -41,7 +41,6 @@ module Sudoku
     }
     # Setup
     state = {
-      :symbol => Array.new(total_width) {|i| [i.succ.to_s]},
       :at => board,
       :collumn => collumn,
       :row => row,
