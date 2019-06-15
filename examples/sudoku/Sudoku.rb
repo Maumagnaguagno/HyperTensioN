@@ -85,12 +85,12 @@ module Sudoku
   def try_next(counter, cells)
     puts counter if @debug
     return yield [] if counter.zero?
-    counter -= 1
     # Find available symbols for each empty cell
     available = Array.new(cells - 2) {[]}
     collumn = @state[:collumn]
     row = @state[:row]
     box = @state[:box]
+    singles = []
     @state[:at].each {|x,y,b,symbol|
       if symbol == 0
         symbols = @all_symbols.dup
@@ -100,14 +100,16 @@ module Sudoku
         if symbols.empty?
           return
         elsif symbols.size == 1
-          return yield [
-            [:put_symbol, x, y, b, symbols.first],
-            [:solve, counter, cells]
-          ]
+          singles << [:put_symbol, x, y, b, s = symbols.first]
+          collumn << [x, s]
+          row << [y, s]
+          box << [b, s]
+        else available[symbols.size - 2] << [x, y, b, symbols]
         end
-        available[symbols.size - 2] << [x, y, b, symbols]
       end
     }
+    return yield singles << [:solve, counter - singles.size, cells] unless singles.empty?
+    counter -= 1
     # Explore empty cells with fewest available symbols first
     available.each {|set|
       set.each {|x,y,b,symbols|
