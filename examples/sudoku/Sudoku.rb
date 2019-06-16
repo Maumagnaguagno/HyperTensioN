@@ -19,34 +19,33 @@ module Sudoku
     # Parser
     total_width = width * box_width
     total_height = height * box_height
-    counter = 0
-    collumn = []
-    row = []
-    box = []
-    board = []
     board_str.delete!(" \n|+-")
     raise "Expected #{total_width * total_height} symbols, received #{board_str.size}" if board_str.size != total_width * total_height
+    cells = box_width * box_height
+    symbols = Array.new(cells) {|i| i.succ}
+    collumns = Array.new(total_width) {symbols.dup}
+    rows = Array.new(total_height) {symbols.dup}
+    boxes = Array.new(width * height) {symbols.dup}
+    board = []
+    counter = 0
     board_str.each_char.with_index {|symbol,i|
       y, x = i.divmod(total_width)
       board << [x, y, b = x / width + y / height * box_width, symbol = symbol.to_i]
       if symbol != 0
-        collumn << [x, symbol]
-        row << [y, symbol]
-        box << [b, symbol]
+        collumns[x].delete(symbol)
+        rows[y].delete(symbol)
+        boxes[b].delete(symbol)
       else counter += 1
       end
     }
     # Setup
-    state = {
-      :at => board,
-      :collumn => collumn,
-      :row => row,
-      :box => box
-    }
+    state = {:at => board}
+    collumns.each_with_index {|s,i| state["c#{i}"] = s}
+    rows.each_with_index {|s,i| state["r#{i}"] = s}
+    boxes.each_with_index {|s,i| state["b#{i}"] = s}
     tasks = [
-      [:solve, counter, cells = box_width * box_height]
+      [:solve, counter, cells]
     ]
-    @all_symbols = Array.new(cells) {|i| i.succ}
     if verbose
       problem(state, tasks, debug)
     else
@@ -62,20 +61,17 @@ module Sudoku
   # Operators
   #-----------------------------------------------
 
-  def put_symbol(x, y, box, symbol)
+  def put_symbol(x, y, b, symbol)
     apply(
       # Add effects
-      [
-        [:at, x, y, box, symbol],
-        [:collumn, x, symbol],
-        [:row, y, symbol],
-        [:box, box, symbol]
-      ],
+      [[:at, x, y, b, symbol]],
       # Del effects
-      [
-        [:at, x, y, box, 0]
-      ]
+      [[:at, x, y, b, 0]]
     )
+    @state["c#{x}"].delete(symbol)
+    @state["r#{y}"].delete(symbol)
+    @state["b#{b}"].delete(symbol)
+    true
   end
 
   #-----------------------------------------------
@@ -87,23 +83,20 @@ module Sudoku
     return yield [] if counter.zero?
     # Find available symbols for each empty cell
     available = Array.new(cells - 2) {[]}
-    collumn = @state[:collumn]
-    row = @state[:row]
-    box = @state[:box]
     singles = []
     @state[:at].each {|x,y,b,symbol|
       if symbol == 0
-        symbols = @all_symbols.dup
-        collumn.each {|i,s| symbols.delete(s) if i == x}
-        row.each {|i,s| symbols.delete(s) if i == y}
-        box.each {|i,s| symbols.delete(s) if i == b}
+        col = @state["c#{x}"]
+        row = @state["r#{y}"]
+        box = @state["b#{b}"]
+        symbols = col & row & box
         if symbols.empty?
           return
         elsif symbols.size == 1
           singles << [:put_symbol, x, y, b, s = symbols.first]
-          collumn << [x, s]
-          row << [y, s]
-          box << [b, s]
+          col.delete(s)
+          row.delete(s)
+          box.delete(s)
         else available[symbols.size - 2] << [x, y, b, symbols]
         end
       end
