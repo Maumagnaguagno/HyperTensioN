@@ -114,8 +114,8 @@ module Continuous
       else
         type, g, expression, start, finish = pr[pr_index]
         break if start > finish_time
-        if f == g and start <= time
-          time.step(finish_time, step) {|t|
+        if f == g
+          (start > time ? start : time).step(finish_time, step) {|t|
             value = send(*expression, (t > finish ? finish : t) - start)
             case type
             when 'increase' then v += value
@@ -270,6 +270,7 @@ if $0 == __FILE__
       assert_equal('0.5', function(:x, 1.5))
       assert_equal('4.0', function(:x, 5))
       assert_equal('4.0', function(:x, 6))
+      assert_equal('14.0', function_interval(:x, 0, 6))
       @state['protect_axiom'].push(['x_less_than', 11], ['x_less_than', 11, 4.5])
       assert_equal(true, axioms_protected?)
       @state['protect_axiom'] << ['x_less_than', 4, 6]
