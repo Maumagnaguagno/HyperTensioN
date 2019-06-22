@@ -100,7 +100,7 @@ module Continuous
       if ev[ev_index] and (not pr[pr_index] or ev[ev_index][3] <= pr[pr_index][3])
         type, g, value, start = ev[ev_index]
         break if start > finish_time
-        if f == g and start <= time
+        if f == g
           value *= finish_time - start
           case type
           when 'increase' then v += value
@@ -253,6 +253,7 @@ if $0 == __FILE__
       assert_equal('0.0', function(:x, 0.5))
       assert_equal('1.0', function(:x, 1))
       assert_equal('1.0', function(:x, 1.5))
+      assert_equal('5.0', function_interval(:x, 0, 6))
       @state['protect_axiom'].push(['x_less_than', 11], ['x_less_than', 11, 1.5])
       assert_equal(true, axioms_protected?)
       @state['protect_axiom'] << ['x_less_than', 1, 1.5]
