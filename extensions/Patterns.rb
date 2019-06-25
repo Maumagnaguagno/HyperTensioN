@@ -175,11 +175,8 @@ module Patterns
         sub = nil
         methods.each {|met2|
           if met2.first =~ /^dependency_(?!#{dependent})[\w-]+_before_#{dependency}_for_([\w-]+)$/
-            if $1 == pred
-              sub = met2
-              break
-            else sub ||= met2
-            end
+            sub = met2
+            break if $1 == pred
           end
         }
         if sub
@@ -190,11 +187,8 @@ module Patterns
         # Prefer dependency with same predicate goal
         methods.each {|met2|
           if not met.equal?(met2) and met2.first =~ /^dependency_swap_[\w-]+_until_[\w-]+_before_#{dependent}_for_([\w-]+)$/
-            if $1 == pred
-              sub = met2
-              break
-            else sub ||= met2
-            end
+            sub = met2
+            break if $1 == pred
           end
         }
         if sub
