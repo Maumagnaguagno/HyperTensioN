@@ -67,7 +67,7 @@ module PDDL_Parser
           group.first == AND ? group.shift : group = [group]
           group.each {|pre|
             raise "Error with #{name} precondition" unless pre.instance_of?(Array)
-            pre.first != NOT ? pos << pre : pre.size == 2 ? neg << pre = pre.last : raise("Error with #{name} negative precondition")
+            pre.first != NOT ? pos << pre : pre.size == 2 ? neg << pre = pre.last : raise("Unexpected not in #{name} precondition")
             pre.map! {|i| free_variables.find {|j| j == i} || i}
             @predicates[pre.first.freeze] ||= false
           }
@@ -79,7 +79,7 @@ module PDDL_Parser
           group.first == AND ? group.shift : group = [group]
           group.each {|pre|
             raise "Error with #{name} effect" unless pre.instance_of?(Array)
-            pre.first != NOT ? add << pre : pre.size == 2 ? del << pre = pre.last : raise("Error with #{name} negative effect")
+            pre.first != NOT ? add << pre : pre.size == 2 ? del << pre = pre.last : raise("Unexpected not in #{name} effect")
             pre.map! {|i| free_variables.find {|j| j == i} || i}
             @predicates[pre.first.freeze] = true
           }
@@ -174,7 +174,7 @@ module PDDL_Parser
             # Conjunction or atom
             group.first == AND ? group.shift : group = [group]
             group.each {|pre|
-              pre.first != NOT ? @goal_pos << pre : pre.size == 2 ? @goal_not << pre = pre.last : raise('Error with goals')
+              pre.first != NOT ? @goal_pos << pre : pre.size == 2 ? @goal_not << pre = pre.last : raise('Unexpected not in goal')
               @predicates[pre.first.freeze] ||= false
             }
           end
