@@ -2,8 +2,8 @@
   (:requirements :strips :typing :negative-preconditions)
 
   (:types
-    robot beacon location - object
     hallway room - location
+    robot beacon
   )
 
   (:predicates

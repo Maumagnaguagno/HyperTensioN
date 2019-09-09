@@ -85,21 +85,15 @@ class Rescue < Test::Unit::TestCase
       },
       :state => [
         ['robot', 'robby'],
-        ['object', 'robby'],
         ['hallway', 'left'],
         ['location', 'left'],
-        ['object', 'left'],
         ['hallway', 'middle'],
         ['location', 'middle'],
-        ['object', 'middle'],
         ['hallway', 'right'],
         ['location', 'right'],
-        ['object', 'right'],
         ['room', 'room1'],
         ['location', 'room1'],
-        ['object', 'room1'],
         ['beacon', 'beacon1'],
-        ['object', 'beacon1'],
         ['at', 'robby', 'left'],
         ['in', 'beacon1', 'room1'],
         ['connected', 'middle', 'room1'],
@@ -320,21 +314,15 @@ class Rescue < Test::Unit::TestCase
 
   (
     (robot robby)
-    (object robby)
     (hallway left)
     (location left)
-    (object left)
     (hallway middle)
     (location middle)
-    (object middle)
     (hallway right)
     (location right)
-    (object right)
     (room room1)
     (location room1)
-    (object room1)
     (beacon beacon1)
-    (object beacon1)
     (at robby left)
     (in beacon1 room1)
     (connected middle room1)
