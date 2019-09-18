@@ -4,7 +4,7 @@ module Function
     function = state[:function] = {}
     state.delete('function').each {|f,v| function[f] = v.to_f}
     state['protect_axiom'] ||= []
-    super(state, *args)
+    super
   end
 
   def function(f)
@@ -47,7 +47,7 @@ module Continuous
   def problem(state, *args)
     state[:event] = []
     state[:process] = []
-    super(state, *args)
+    super
   end
 
   def function(f, time = nil, string = true)

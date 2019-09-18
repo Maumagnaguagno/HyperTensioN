@@ -3,7 +3,7 @@ module Protection
   def problem(state, *args)
     state[:protection_pos] = []
     state[:protection_not] = []
-    super(state, *args)
+    super
   end
 
   def protect(protection_pos, protection_not)
@@ -21,7 +21,7 @@ module Protection
   end
 
   def apply(effect_add, effect_del)
-    super(effect_add, effect_del) unless protected?(effect_add, effect_del)
+    super unless protected?(effect_add, effect_del)
   end
 end
 
