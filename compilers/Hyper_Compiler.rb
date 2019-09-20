@@ -74,7 +74,7 @@ module Hyper_Compiler
           dec[1].each {|free| define_methods << "\n    #{free.delete('?')} = ''"}
           predicates_to_hyper(define_methods << "\n    generate(\n      # Positive preconditions", dec[2])
           predicates_to_hyper(define_methods << ",\n      # Negative preconditions", dec[3])
-          dec[1].each {|free| define_methods << ', ' << free.delete('?')}
+          define_methods << ', ' << dec[1].join(', ').delete!('?')
           predicates_to_hyper(define_methods << "\n    ) {", dec[4], '      ', 'yield ')
           define_methods << "\n    }"
         end
