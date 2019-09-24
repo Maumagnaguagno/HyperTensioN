@@ -21,6 +21,7 @@ script:
   - ruby tests/frenesi.rb
   - ruby tests/dependent.rb
   - ruby tests/miner.rb
+  - ruby tests/painter.rb
   - ruby tests/paisley.rb
   - ruby tests/rescue.rb
   - ruby tests/simple.rb
