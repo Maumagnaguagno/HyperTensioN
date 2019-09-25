@@ -16,7 +16,7 @@
     (right top_left top_right) (right bottom_left bottom_right)
   )
   (:goal (and
-    (painted top_right white)
+    (painted top_right black)
     (painted bottom_left white)
   ))
 )

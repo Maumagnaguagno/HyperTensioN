@@ -120,7 +120,7 @@ class Painter < Test::Unit::TestCase
       ],
       :tasks => [],
       :goal_pos => [
-        ['painted', 'top_right', 'white'],
+        ['painted', 'top_right', 'black'],
         ['painted', 'bottom_left', 'white']
       ],
       :goal_not => [],
@@ -651,7 +651,7 @@ class Painter < Test::Unit::TestCase
       (not (robot-has ?r ?c))
     )
     (
-      (!change-color ?r ?c ?c2)
+      (!change-color ?r ?c2 ?c)
       (dependency_swap_robot-at_until_robot-at_before_paint-up_or_paint-down_for_painted ?r ?x ?y ?c)
     )
   )
@@ -669,7 +669,7 @@ class Painter < Test::Unit::TestCase
       (not (robot-has ?r ?c))
     )
     (
-      (!change-color ?r ?c ?c2)
+      (!change-color ?r ?c2 ?c)
       (dependency_swap_robot-at_until_robot-at_before_paint-up_or_paint-down_for_painted ?r ?x ?y ?c)
     )
   )
@@ -767,7 +767,7 @@ class Painter < Test::Unit::TestCase
   ;------------------------------
 
   (:unordered
-    (unify_r_c2_x_before_dependency_change-color_before_paint-up_or_paint-down_for_painted white top_right)
+    (unify_r_c2_x_before_dependency_change-color_before_paint-up_or_paint-down_for_painted black top_right)
     (unify_r_c2_x_before_dependency_change-color_before_paint-up_or_paint-down_for_painted white bottom_left)
   )
 )'
