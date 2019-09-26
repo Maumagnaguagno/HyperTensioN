@@ -374,14 +374,12 @@ module Patterns
         if operators.include?(first)
           fill_preconditions(first, predicates, precond_pos, precond_not, first_terms)
           # Replace different variables between first and second
-          if pre != first_pre = first[type ? 4 : 5].find {|p| p.first == pre.first}
-            pre.zip(first_pre) {|a,b|
-              if a != b
-                replacements[a] = b
-                replacements[b] ||= a
-              end
-            }
-          end
+          pre.zip(first[type ? 4 : 5].assoc(pre.first)) {|a,b|
+            if a != b
+              replacements[a] = b
+              replacements[b] ||= a
+            end
+          }
         end
         satisfied = []
         unsatisfied = []
