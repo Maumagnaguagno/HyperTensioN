@@ -407,7 +407,7 @@ module Patterns
             type ? precond_not_first << pre : precond_not_first,
             # Subtasks
             [
-              [first.first, *first_terms.map {|i| replacements[i] || i}],
+              first_terms.map {|i| replacements[i] || i}.unshift(first.first),
               [second.first, *second_terms]
             ]
           ]
