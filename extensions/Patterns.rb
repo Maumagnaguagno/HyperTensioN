@@ -370,16 +370,18 @@ module Patterns
         next if methods.any? {|met| met.first.start_with?(name)}
         precond_pos = []
         precond_not = []
-        fill_preconditions(first, predicates, precond_pos, precond_not, first_terms) if operators.include?(first)
-        # Replace different variables between first and second
         replacements = {}
-        if operators.include?(first) and pre != first_pre = first[type ? 4 : 5].find {|p| p.first == pre.first}
-          pre.zip(first_pre) {|a,b|
-            if a != b
-              replacements[a] = b
-              replacements[b] = a unless replacements.include?(b)
-            end
-          }
+        if operators.include?(first)
+          fill_preconditions(first, predicates, precond_pos, precond_not, first_terms)
+          # Replace different variables between first and second
+          if pre != first_pre = first[type ? 4 : 5].find {|p| p.first == pre.first}
+            pre.zip(first_pre) {|a,b|
+              if a != b
+                replacements[a] = b
+                replacements[b] ||= a
+              end
+            }
+          end
         end
         satisfied = []
         unsatisfied = []
