@@ -68,7 +68,7 @@ module Dummy
     ]
     # Tail is composed of operators
     operators.each {|op|
-      act = op.first(2).flatten
+      act = op.first(2).flatten!
       if repetitions.zero? # Actions can be reused
         perform << ["try_#{op.first}_to_#{task}", op[1],
           # Positive preconditions

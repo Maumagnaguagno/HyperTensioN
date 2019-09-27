@@ -181,7 +181,7 @@ module Patterns
         }
         if sub
           puts "  #{dependency} to #{sub.first} in #{met.first}" if debug
-          met.drop(3).each {|dec| dec[4][0] = sub.first(2).flatten if dec[4][0].first == dependency}
+          met.drop(3).each {|dec| dec[4][0] = sub.first(2).flatten! if dec[4][0].first == dependency}
           sub = nil
         end
         # Prefer dependency with same predicate goal
@@ -195,7 +195,7 @@ module Patterns
           puts "  #{dependent} to #{sub.first} in #{met.first}" if debug
           dependent_split = dependent.split('_or_')
           met.drop(3).each {|dec|
-            dec[4].each_with_index {|subtask,i| dec[4][i] = sub.first(2).flatten if dependent_split.include?(subtask.first)}
+            dec[4].each_with_index {|subtask,i| dec[4][i] = sub.first(2).flatten! if dependent_split.include?(subtask.first)}
           }
         end
       end
@@ -466,7 +466,7 @@ module Patterns
           # Negative preconditions
           precond_not,
           # Subtasks
-          [met.first(2).flatten]
+          [met.first(2).flatten!]
         ]
       ]
     end
