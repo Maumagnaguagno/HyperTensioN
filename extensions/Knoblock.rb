@@ -99,7 +99,7 @@ module Knoblock
   end
 
   def dot_str(i)
-    i.first.instance_of?(Array) ? i.map {|j| dot_str(j)}.join(' ') : i.first ? i.last.join(' ') : "not #{i.last.join(' ')}"
+    i.first.instance_of?(Array) ? i.map {|j| dot_str(j)}.join(' &and; ') : i.first ? i.last.join(' ') : "not #{i.last.join(' ')}"
   end
 end
 
