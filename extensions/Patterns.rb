@@ -66,10 +66,12 @@ module Patterns
     hyphen = '-'
     underscore = '_'
     edges = []
-    swaps.each {|op,(pre,pre_constraints)|
+    swaps.each {|op,pre_constraints|
       namesub = (name = op.first).tr(hyphen, underscore)
-      edges << "\n  #{namesub} -> \"(#{pre_join = pre.join(sep)})\" [dir=both style=dashed]"
-      pre_constraints.each {|c| puts "  #{name} swaps (#{pre_join}) with constraint (#{c.join(sep)})"}
+      pre_constraints.each {|pre,constraints|
+        edges << "\n  #{namesub} -> \"(#{pre_join = pre.join(sep)})\" [dir=both style=dashed]"
+        puts "  #{name} swaps (#{pre_join}) with constraint (#{constraints.join(sep)})"
+      }
     }
     dependency_counter = 0
     dependencies.each {|op,op_dependencies|
