@@ -362,11 +362,27 @@ module Patterns
         # Dependency of dependency
         first_terms = first[1]
         if swaps.include?(first)
-          first = methods.assoc("swap_#{pre.first}_until_#{pre.first}")
-          first_terms = pre.drop(1)
+          swaps[first].each {|p,_|
+            if m = methods.assoc("swap_#{p.first}_until_#{p.first}")
+              first = m
+              if p.first == pre.first
+                first_terms = pre.drop(1)
+                break
+              else first_terms = p.drop(1)
+              end
+            end
+          }
         elsif swaps.include?(op)
-          seconds = [methods.assoc("swap_#{pre.first}_until_#{pre.first}")]
-          second_terms = pre.drop(1)
+          swaps[op].each {|p,_|
+            if m = methods.assoc("swap_#{p.first}_until_#{p.first}")
+              seconds = [m]
+              if p.first == pre.first
+                second_terms = pre.drop(1)
+                break
+              else second_terms = p.drop(1)
+              end
+            end
+          }
         end
         name = "dependency_#{first.first}_before_#{seconds.map {|i| i.first}.join('_or_')}"
         next if methods.any? {|met| met.first.start_with?(name)}
