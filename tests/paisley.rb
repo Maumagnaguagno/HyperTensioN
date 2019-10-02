@@ -2,6 +2,16 @@ require './tests/hypest'
 
 class Paisley < Test::Unit::TestCase
 
+  SWAP_PREDICATES = {
+    'agent' => false,
+    'p' => false,
+    'p2' => false,
+    'adjacent' => false,
+    'at' => true,
+    'bridge' => true,
+    'empty' => true
+  }
+
   def swap_operator(name, parameters, constraint_terms = parameters)
     [name, ['?ag', '?b', *parameters],
       # Preconditions
@@ -92,57 +102,32 @@ class Paisley < Test::Unit::TestCase
 
   def test_swap_flexible_parameters
     # Based on planks domain
-    predicates = {
-      'agent' => false,
-      'p' => false,
-      'p2' => false,
-      'adjacent' => false,
-      'at' => true,
-      'bridge' => true,
-      'empty' => true
-    }
-    Patterns.apply([swap_operator('cross', ['?from', '?to'])], methods = [], predicates, [], tasks = [], [], [])
+    Patterns.apply([swap_operator('cross', ['?from', '?to'])], methods = [], SWAP_PREDICATES, [], tasks = [], [], [])
     assert_equal(swap_methods(['cross'], ['?current', '?intermediate'], [['adjacent', '?current', '?intermediate']]), methods)
     assert_equal([false], tasks)
-    Patterns.apply([swap_operator('cross', ['?from', '?to'], ['?to', '?from'])], methods.clear, predicates, [], tasks.clear, [], [])
+    Patterns.apply([swap_operator('cross', ['?from', '?to'], ['?to', '?from'])], methods.clear, SWAP_PREDICATES, [], tasks.clear, [], [])
     assert_equal(swap_methods(['cross'], ['?current', '?intermediate'], [['adjacent', '?intermediate', '?current']]), methods)
     assert_equal([false], tasks)
-    Patterns.apply([swap_operator('cross', ['?to', '?from'], ['?from', '?to'])], methods.clear, predicates, [], tasks.clear, [], [])
+    Patterns.apply([swap_operator('cross', ['?to', '?from'], ['?from', '?to'])], methods.clear, SWAP_PREDICATES, [], tasks.clear, [], [])
     assert_equal(swap_methods(['cross'], ['?intermediate', '?current'], [['adjacent', '?current', '?intermediate']]), methods)
     assert_equal([false], tasks)
-    Patterns.apply([swap_operator('cross', ['?to', '?from'])], methods.clear, predicates, [], tasks.clear, [], [])
+    Patterns.apply([swap_operator('cross', ['?to', '?from'])], methods.clear, SWAP_PREDICATES, [], tasks.clear, [], [])
     assert_equal(swap_methods(['cross'], ['?intermediate', '?current'], [['adjacent', '?intermediate', '?current']]), methods)
     assert_equal([false], tasks)
   end
 
   def test_swap_effect_clustering
-    predicates = {
-      'agent' => false,
-      'p' => false,
-      'p2' => false,
-      'adjacent' => false,
-      'at' => true,
-      'bridge' => true,
-      'empty' => true
-    }
     operators = [
       swap_operator('cross', ['?from', '?to']),
       swap_operator('walk', ['?from', '?to'], ['?from', '?to'])
     ]
-    Patterns.apply(operators, methods = [], predicates, [], [], [], [])
+    Patterns.apply(operators, methods = [], SWAP_PREDICATES, [], [], [], [])
     assert_equal(swap_methods(['cross', 'walk'], ['?current', '?intermediate'], [['adjacent', '?current', '?intermediate']]), methods)
   end
 
   def test_swap_multiple_constraints
-    predicates = {
-      'agent' => false,
-      'p' => false,
-      'p2' => false,
-      'adjacent' => false,
-      'at' => true,
-      'bridge' => false,
-      'empty' => true
-    }
+    predicates = SWAP_PREDICATES.dup
+    predicates['bridge'] = false
     operators = [swap_operator('cross', ['?from', '?to'])]
     Patterns.apply(operators, methods = [], predicates, [], [], [], [])
     assert_equal(swap_methods(['cross'], ['?current', '?intermediate'], [['adjacent', '?current', '?intermediate'], ['bridge', '?current', '?b', '?intermediate']], ['?current', '?intermediate', '?b', '?ag']), methods)
@@ -294,22 +279,13 @@ class Paisley < Test::Unit::TestCase
   end
 
   def test_task_selection
-    predicates = {
-      'agent' => false,
-      'p' => false,
-      'p2' => false,
-      'adjacent' => false,
-      'at' => true,
-      'bridge' => true,
-      'empty' => true
-    }
     operators = [swap_operator('cross', ['?from', '?to'])]
     state = [['agent', 'bob'], ['p'], ['p2', 'bridge'], ['adjacent' , 'a', 'b'], ['bridge', 'a', 'bridge', 'b'], ['at', 'bob', 'a'], ['empty', 'b']]
-    Patterns.apply(operators, [], predicates, state, tasks = [], [], [])
+    Patterns.apply(operators, [], SWAP_PREDICATES, state, tasks = [], [], [])
     assert_equal([false], tasks)
-    Patterns.apply(operators, [], predicates, state, tasks = [], [['at', 'bob', 'a']], [])
+    Patterns.apply(operators, [], SWAP_PREDICATES, state, tasks = [], [['at', 'bob', 'a']], [])
     assert_equal([false, ['swap_at_until_at', 'bob', 'a']], tasks)
-    Patterns.apply(operators, [], predicates, state, tasks = [], [['at', 'bob', 'b']], [])
+    Patterns.apply(operators, [], SWAP_PREDICATES, state, tasks = [], [['at', 'bob', 'b']], [])
     assert_equal([false, ['swap_at_until_at', 'bob', 'b']], tasks)
   end
 end
