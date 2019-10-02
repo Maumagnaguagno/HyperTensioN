@@ -9,7 +9,8 @@ class Paisley < Test::Unit::TestCase
     'adjacent' => false,
     'at' => true,
     'bridge' => true,
-    'empty' => true
+    'empty' => true,
+    'observed' => true
   }
 
   def swap_operator(name, parameters, constraint_terms = parameters)
@@ -276,6 +277,45 @@ class Paisley < Test::Unit::TestCase
       methods
     )
     assert_equal([false], tasks)
+  end
+
+  def test_dependency_of_swap_before_operator
+    operators = [
+      swap_operator('walk', ['?from', '?to']),
+      ['observe', ['?ag', '?from'],
+        # Preconditions
+        [['at', '?ag', '?room']],
+        [['observed', '?ag', '?from']],
+        # Effects
+        [['observed', '?ag', '?from']],
+        []
+      ]
+    ]
+    Patterns.apply(operators, methods = [], SWAP_PREDICATES, [], [], [], [])
+    assert_equal(
+      [
+        ['dependency_swap_at_until_at_before_observe_for_observed', ['?ag', '?room', '?from'],
+          ['goal-satisfied', [],
+            # Preconditions
+            [['observed', '?ag', '?from']],
+            [],
+            # Subtasks
+            []
+          ],
+          ['unsatisfied', [],
+            # Preconditions
+            [],
+            [['at', '?ag', '?room']],
+            # Subtasks
+            [
+              ['swap_at_until_at', '?ag', '?room'],
+              ['observe', '?ag', '?from']
+            ]
+          ]
+        ]
+      ],
+      methods.select {|met| met.first.start_with?('dependency_')}
+    )
   end
 
   def test_task_selection
