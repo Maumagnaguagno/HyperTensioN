@@ -318,6 +318,65 @@ class Paisley < Test::Unit::TestCase
     )
   end
 
+  def test_dependency_of_operator_before_swap
+    operators = [
+      swap_operator('walk', ['?from', '?to']),
+      ['abstract', ['?from', '?b', '?to'],
+        # Preconditions
+        [],
+        [],
+        # Effects
+        [['bridge', '?from', '?b', '?to']],
+        []
+      ]
+    ]
+    Patterns.apply(operators, methods = [], SWAP_PREDICATES, [], [], [], [])
+    assert_equal(
+      [
+        ['dependency_abstract_before_swap_empty_until_empty_for_at', ['?from', '?b', '?to'],
+          ['goal-satisfied', [], [['at', '?ag', '?to']], [], []],
+          ['satisfied', [],
+            # Preconditions
+            [['bridge', '?from', '?b', '?to']],
+            [],
+            # Subtasks
+            [['swap_empty_until_empty', '?to']]],
+          ['unsatisfied', [],
+            # Preconditions
+            [],
+            [['bridge', '?from', '?b', '?to']],
+            # Subtasks
+            [
+              ['abstract', '?from', '?b', '?to'],
+              ['swap_empty_until_empty', '?to']
+            ]
+          ]
+        ],
+        ['dependency_abstract_before_swap_empty_until_empty_for_empty', ['?from', '?b', '?to'],
+          ['goal-satisfied', [], [['empty', '?from']], [], []],
+          ['satisfied', [],
+            # Preconditions
+            [['bridge', '?from', '?b', '?to']],
+            [],
+            # Subtasks
+            [['swap_empty_until_empty', '?to']]
+          ],
+          ['unsatisfied', [],
+            # Preconditions
+            [],
+            [['bridge', '?from', '?b', '?to']],
+            # Subtasks
+            [
+              ['abstract', '?from', '?b', '?to'],
+              ['swap_empty_until_empty', '?to']
+            ]
+          ]
+        ]
+      ],
+      methods.select {|met| met.first.start_with?('dependency_')}
+    )
+  end
+
   def test_task_selection
     operators = [swap_operator('cross', ['?from', '?to'])]
     state = [['agent', 'bob'], ['p'], ['p2', 'bridge'], ['adjacent' , 'a', 'b'], ['bridge', 'a', 'bridge', 'b'], ['at', 'bob', 'a'], ['empty', 'b']]
