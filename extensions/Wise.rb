@@ -84,6 +84,7 @@ module Wise
         puts "#{name} parameter #{var} modified to ?#{var}" if debug
         var.prepend('?')
       end
+      raise "#{name} contains invalid #{var}" if var !~ /^\?[a-z_][\w-]+$/
     }
   end
 
