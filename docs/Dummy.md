@@ -1,9 +1,10 @@
 # Dummy
-Hype is able to extend classical planning instances and generate methods and tasks to solve them with a HTN planner based on the transformation of STRIPS to HTN presented in [Complexity Results for HTN Planning - 3.3 Expressivity: HTNs versus STRIPS representation](https://pdfs.semanticscholar.org/fa4e/c2d29c9942ad290e6ac485e9d2c93f842d1c.pdf).
-Our implementation of the following algorithm has been expanded to limit the amount of repeated actions.
+Hype is able to extend classical planning instances and generate methods and tasks to solve them with a HTN planner based on the transformation of STRIPS to HTN presented in [Complexity Results for HTN Planning - 3.3 Expressivity: HTNs versus STRIPS representation](http://www.cs.umd.edu/~nau/papers/erol1996complexity.pdf).
+Our [implementation](../extensions/Dummy.rb) of the following algorithm has been expanded to limit the amount of repeated action application.
 This limitation purpose it to avoid infinite loops as some actions may undo previous effects, by marking actions once applied and only applying actions not marked more than a certain amount of times.
 The repetition expands the amount of methods of ``perform_goal_p/not_p try_o_to_perform_goal_p/not_p n``, ``mark`` and ``unmark`` operators.
 Some problems may require more repetitions to satisfy a goal state.
+Note that the original algorithm can be used using [stochastic search](../examples/experiments/Stochastic.rb) and no repetition control.
 
 ```Ruby
 def dummy(operators, initial state, goal state)
