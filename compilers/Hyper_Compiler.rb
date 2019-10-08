@@ -23,43 +23,43 @@ module Hyper_Compiler
     domain_str = "module #{domain_name.capitalize}\n  include Hypertension\n  extend self\n\n  ##{SPACER}\n  # Domain\n  ##{SPACER}\n\n  @domain = {\n    # Operators"
     # Operators
     define_operators = ''
-    operators.each_with_index {|op,i|
-      domain_str << "\n    '#{op.first}' => #{!op.first.start_with?('invisible_')}#{',' unless operators.size.pred == i and methods.empty?}"
-      define_operators << "\n  def #{op.first}#{"(#{op[1].join(', ').delete!('?')})" unless op[1].empty?}\n    "
-      if op[4].empty? and op[5].empty?
-        if op[2].empty? and op[3].empty?
+    operators.each_with_index {|(name,param,precond_pos,precond_not,effect_add,effect_del),i|
+      domain_str << "\n    '#{name}' => #{!name.start_with?('invisible_')}#{',' unless operators.size.pred == i and methods.empty?}"
+      define_operators << "\n  def #{name}#{"(#{param.join(', ').delete!('?')})" unless param.empty?}\n    "
+      if effect_add.empty? and effect_del.empty?
+        if precond_pos.empty? and precond_not.empty?
           # Empty
           define_operators << "true\n  end\n"
         else
           # Sensing
-          predicates_to_hyper(define_operators << "applicable?(\n      # Positive preconditions", op[2])
-          predicates_to_hyper(define_operators << ",\n      # Negative preconditions", op[3])
+          predicates_to_hyper(define_operators << "applicable?(\n      # Positive preconditions", precond_pos)
+          predicates_to_hyper(define_operators << ",\n      # Negative preconditions", precond_not)
           define_operators << "    )\n  end\n"
         end
       else
-        if op[2].empty? and op[3].empty?
+        if precond_pos.empty? and precond_not.empty?
           # Effective
           define_operators << 'apply('
         else
           # Effective if preconditions hold
-          predicates_to_hyper(define_operators << "apply_operator(\n      # Positive preconditions", op[2])
-          predicates_to_hyper(define_operators << ",\n      # Negative preconditions", op[3])
+          predicates_to_hyper(define_operators << "apply_operator(\n      # Positive preconditions", precond_pos)
+          predicates_to_hyper(define_operators << ",\n      # Negative preconditions", precond_not)
           define_operators << ','
         end
-        predicates_to_hyper(define_operators << "\n      # Add effects", op[4])
-        predicates_to_hyper(define_operators << ",\n      # Del effects", op[5])
+        predicates_to_hyper(define_operators << "\n      # Add effects", effect_add)
+        predicates_to_hyper(define_operators << ",\n      # Del effects", effect_del)
         define_operators << "\n    )\n  end\n"
       end
     }
     # Methods
     define_methods = ''
     domain_str << "\n    # Methods"
-    methods.each_with_index {|met,mi|
-      domain_str << "\n    '#{met.first}' => [\n"
-      variables = met[1].empty? ? nil : "(#{met[1].join(', ').delete!('?')})"
-      met.drop(2).each_with_index {|dec,i|
-        domain_str << "      '#{met.first}_#{dec.first}'#{',' if met.size - 3 != i}\n"
-        define_methods << "\n  def #{met.first}_#{dec.first}#{variables}"
+    methods.each_with_index {|(name,param,*decompositions),mi|
+      domain_str << "\n    '#{name}' => [\n"
+      variables = param.empty? ? nil : "(#{param.join(', ').delete!('?')})"
+      decompositions.each_with_index {|dec,i|
+        domain_str << "      '#{name}_#{dec.first}'#{',' if decompositions.size - 1 != i}\n"
+        define_methods << "\n  def #{name}_#{dec.first}#{variables}"
         # No preconditions
         if dec[2].empty? and dec[3].empty?
           predicates_to_hyper(define_methods, dec[4], '    ', 'yield ')
