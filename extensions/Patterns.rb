@@ -503,8 +503,7 @@ module Patterns
         # DFS
         fringe = [root]
         visited.clear
-        until fringe.empty?
-          node = fringe.shift
+        while node = fringe.shift
           visited[node.first] = true
           if operators.assoc(node.first)
             break if node[2].any? {|pre|
