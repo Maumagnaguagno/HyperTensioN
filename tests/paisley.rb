@@ -37,10 +37,10 @@ class Paisley < Test::Unit::TestCase
         ['base', [], [['at', '?ag', '?to']], [], []],
       ],
       ['swap_at_until_empty', ['?ag', '?to'],
-        ['base', base_precond1.flatten.select {|i| i.start_with?('?') and i != '?ag' and i != '?to'}.uniq, base_precond1, [], []]
+        ['base', base_precond1.flatten.keep_if {|i| i.start_with?('?') and i != '?ag' and i != '?to'}.uniq, base_precond1, [], []]
       ],
       ['swap_empty_until_at', ['?from'],
-        ['base', base_precond2.flatten.select {|i| i.start_with?('?') and i != '?from'}.uniq, base_precond2, [], []],
+        ['base', base_precond2.flatten.keep_if {|i| i.start_with?('?') and i != '?from'}.uniq, base_precond2, [], []],
       ],
       ['swap_empty_until_empty', ['?from'],
         ['base', [], [['empty', '?from']], [], []]

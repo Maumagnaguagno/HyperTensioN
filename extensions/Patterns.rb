@@ -315,7 +315,7 @@ module Patterns
               swap_method << ['base', [], [eff], [], []]
             else
               eff = [*constraints, eff]
-              swap_method << ['base', eff.flatten.select {|i| i.start_with?('?') and not predicate_terms2.include?(i)}.uniq, eff, [], []]
+              swap_method << ['base', eff.flatten.keep_if {|i| i.start_with?('?') and not predicate_terms2.include?(i)}.uniq, eff, [], []]
             end
           end
           # Label and free variables
@@ -509,7 +509,7 @@ module Patterns
             break if node[2].any? {|pre|
               if pre.include?(f) and not precond_pos.assoc(pre.first)
                 precond_pos << pre
-                new_free.concat(pre.drop(1).select {|i| not ground_var.include?(i) || free.include?(i)})
+                new_free.concat(pre.drop(1).keep_if {|i| not ground_var.include?(i) || free.include?(i)})
               end
             }
           elsif node.first.start_with?(DEPENDENCY_PREFIX, SWAP_PREFIX)
