@@ -39,6 +39,10 @@ module Function
   def axioms_protected?
     @state['protect_axiom'].all? {|i| send(*i)}
   end
+
+  def function_effect
+    (@state = @state.dup)[:function] = @state[:function].dup
+  end
 end
 
 module Continuous
@@ -190,6 +194,11 @@ module Continuous
 
   def axioms_protected_at_time?(time)
     @state['protect_axiom'].all? {|i| send(*i, time)}
+  end
+
+  def event_process_effect
+    (@state = @state.dup)[:event] = @state[:event].dup
+    @state[:process] = @state[:process].dup
   end
 end
 
