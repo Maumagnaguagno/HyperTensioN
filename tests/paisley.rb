@@ -27,7 +27,7 @@ class Paisley < Test::Unit::TestCase
     ]
   end
 
-  def swap_methods(names, parameters, precond_pos, free_variables2 = nil)
+  def swap_methods(names, parameters, precond_pos, free_variables2 = parameters.sort.push('?ag', '?b'))
     precond_pos2 = precond_pos.map {|pre| pre.map {|i| i == '?current' ? '?intermediate' : i == '?intermediate' ? '?current' : i}}.unshift(['empty', '?current'])
     base_precond1 = precond_pos.map {|pre| pre.map {|i| i == '?current' ? '?from' : i == '?intermediate' ? '?to' : i}} << ['empty', '?from']
     base_precond2 = precond_pos.map {|pre| pre.map {|i| i == '?current' ? '?from' : i == '?intermediate' ? '?to' : i}} << ['at', '?ag', '?to']
@@ -47,7 +47,6 @@ class Paisley < Test::Unit::TestCase
       ]
     ]
     free_variables1 = parameters.sort << '?b'
-    free_variables2 = parameters.sort.push('?ag', '?b') unless free_variables2
     names.each {|name|
       methods[0] << ["using_#{name}", free_variables1,
         # Preconditions
