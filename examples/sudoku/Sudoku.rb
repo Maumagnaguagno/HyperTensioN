@@ -62,15 +62,12 @@ module Sudoku
   #-----------------------------------------------
 
   def put_symbol(x, y, b, symbol)
-    apply(
-      # Add effects
-      [[:at, x, y, b, symbol]],
-      # Del effects
-      [[:at, x, y, b, 0]]
-    )
+    @state = @state.each_with_object({}) {|(k,v),state| state[k] = v.dup}
     @state["c#{x}"].delete(symbol)
     @state["r#{y}"].delete(symbol)
     @state["b#{b}"].delete(symbol)
+    @state[:at].delete([x, y, b, 0])
+    @state[:at] << [x, y, b, symbol]
     true
   end
 
