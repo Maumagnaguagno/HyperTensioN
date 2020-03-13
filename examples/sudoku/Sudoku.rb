@@ -54,7 +54,7 @@ module Sudoku
       planning(tasks)
     end
     # Display board
-    @state[:at].sort_by {|i| i.first(2).reverse!}.map {|i| i.last}.each_slice(total_width) {|i| puts i.join}
+    @state[:at].sort_by {|i| i.first(2).reverse!}.map! {|i| i.last}.each_slice(total_width) {|i| puts i.join}
   end
 
   #-----------------------------------------------
