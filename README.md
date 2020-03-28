@@ -3,7 +3,7 @@
 
 HyperTensioN is a [Hierarchical Task Network](https://en.wikipedia.org/wiki/Hierarchical_task_network) planner written in Ruby, in which a method decomposition description of how tasks can be accomplished is used to achieve a plan.
 HTN is used as an acronym for Hypertension in medical context, therefore the name was given.
-In order to support other planning languages a module named [**Hype**](#hype "Jump to Hype section") will take care of the conversion process.
+In order to support other planning languages a module named [Hype](#hype "Jump to Hype section") will take care of the conversion process.
 With hierarchical planning it is possible to describe a strategy to obtain a sequence of actions that executes a certain task.
 It works based on decomposition, which is very alike to how humans think, taking mental steps further into primitive operators.
 Expanded features to deal with numeric and external elements are in a separate repository, [HyperTensioN U](../../../HyperTensioN_U).
@@ -487,7 +487,7 @@ Sometimes only one predicate in the set is false, if we copied in the other set 
 It is possible to declare the methods in the same Ruby method (losing label definition), but kills the simplicity we are trying to achieve.
 We also do not support [JSHOP] axioms and external calls, but you can use [HyperTensioN U](../../../HyperTensioN_U) for greater JSHOP support with a simpler Hype.
 
-You can always not believe the **Hype** and convert descriptions manually, following a style that achieves a better or faster solution with the indentation that makes you happy.
+You can always not believe the Hype and convert descriptions manually, following a style that achieves a better or faster solution with the indentation that makes you happy.
 You could add counters in the methods and return after generate unified one or more times a specific value.
 It is possible to support [JSHOP] behavior putting several generators in one method and returning if the previous one ever unified.
 Well, Hype can do most of the boring stuff so you can play with the details.
