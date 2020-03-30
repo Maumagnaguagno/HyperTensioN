@@ -509,7 +509,7 @@ module Patterns
             break if node[2].any? {|pre|
               if pre.include?(f) and not precond_pos.assoc(pre.first)
                 precond_pos << pre
-                new_free.concat(pre.drop(1).select! {|i| not ground_var.include?(i) || free.include?(i)})
+                new_free.concat(pre.drop(1).reject! {|i| ground_var.include?(i) or free.include?(i)})
               end
             }
           elsif node.first.start_with?(DEPENDENCY_PREFIX, SWAP_PREFIX)
