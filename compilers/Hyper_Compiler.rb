@@ -34,7 +34,7 @@ module Hyper_Compiler
           # Sensing
           predicates_to_hyper(define_operators << "applicable?(\n      # Positive preconditions", precond_pos)
           predicates_to_hyper(define_operators << ",\n      # Negative preconditions", precond_not)
-          define_operators << "    )\n  end\n"
+          define_operators << "\n    )\n  end\n"
         end
       else
         if precond_pos.empty? and precond_not.empty?
