@@ -30,6 +30,7 @@ module Hype
     dummy       - add brute-force methods to operators
     wise        - warn and fix description mistakes
     macro       - optimize operator sequences
+    pullup      - optimize preconditions
     grammar     - print hierarchical structure grammar
     complexity  - print estimated complexity of planning description"
 
@@ -136,6 +137,7 @@ Problem #{@parser.problem_name}
     when 'dummy' then Dummy
     when 'wise' then Wise
     when 'macro' then Macro
+    when 'pullup' then Pullup
     when 'grammar' then Grammar
     when 'complexity' then Complexity
     else raise "Unknown extension #{extension}"

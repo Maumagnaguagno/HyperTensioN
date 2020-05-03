@@ -468,6 +468,7 @@ Hype is composed of:
 - [Dummy](docs/Dummy.md) (generate brute-force methods that try to achieve goal predicates)
 - Wise (warn and fix description mistakes)
 - Macro (optimize operator sequences to speed up decomposition)
+- Pull up (optimize preconditions to avoid backtracking)
 - Grammar (print domain methods as [production rules](https://en.wikipedia.org/wiki/Production_(computer_science)))
 - Complexity (print domain, problem and total complexity based on amount of terms)
 
