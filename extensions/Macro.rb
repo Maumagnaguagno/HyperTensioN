@@ -42,13 +42,10 @@ module Macro
       effect_add = []
       effect_del = []
       index = new_subtasks.size
-      first_task = false
+      first_task = true
       macro.each {|op,param|
         # Header
-        unless first_task
-          name << '_and_'
-          first_task = true
-        end
+        first_task ? first_task = false : name << '_and_'
         name << op.first.sub(/^invisible_/,'')
         parameters.concat(param)
         variables = op[1]
