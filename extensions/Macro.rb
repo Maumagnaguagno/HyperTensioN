@@ -27,9 +27,6 @@ module Macro
         dec[4] = new_subtasks
       }
     }
-    # TODO pull up preconditions based on hierarchy
-    # TODO compress variable/method/invisible operator names
-    # TODO compress predicate names (changes final state description)
   end
 
   #-----------------------------------------------
@@ -44,9 +41,14 @@ module Macro
       precond_not = []
       effect_add = []
       effect_del = []
-      macro.each_with_index {|(op,param),i|
+      index = new_subtasks.size
+      first_task = false
+      macro.each {|op,param|
         # Header
-        name << '_and_' unless i.zero?
+        unless first_task
+          name << '_and_'
+          first_task = true
+        end
         name << op.first.sub(/^invisible_/,'')
         parameters.concat(param)
         variables = op[1]
@@ -84,7 +86,7 @@ module Macro
         operators << [name, parameters, precond_pos, precond_not, effect_add, effect_del]
         puts "Macro operator #{name}" if debug
       end
-      new_subtasks.unshift([name, *parameters])
+      new_subtasks.insert(index, [name, *parameters])
     elsif macro.size == 1
       op, param = macro.shift
       new_subtasks << param.unshift(op.first)
