@@ -50,7 +50,7 @@ module Pullup
       methods.map! {|name,param,*decompositions|
         decompositions.select! {|label,free,precond_pos,precond_not,subtasks|
           first_task = operator_sequence = true
-          effects = []
+          effects = {}
           old_precond_pos_size = precond_pos.size
           old_precond_not_size = precond_not.size
           subtasks.each {|s|
@@ -62,8 +62,8 @@ module Pullup
               if operator_sequence
                 op[2].each {|pre| precond_pos << pre.map {|t| (j = op[1].index(t)) ? s[j + 1] : t} unless effects.include?(pre.first)}
                 op[3].each {|pre| precond_not << pre.map {|t| (j = op[1].index(t)) ? s[j + 1] : t} unless effects.include?(pre.first)}
-                op[4].each {|pre| effects << pre.first}
-                op[5].each {|pre| effects << pre.first}
+                op[4].each {|pre| effects[pre.first] = nil}
+                op[5].each {|pre| effects[pre.first] = nil}
               else
                 op[2].each {|pre| precond_pos << pre.map {|t| (j = op[1].index(t)) ? s[j + 1] : t} unless predicates[pre.first]}
                 op[3].each {|pre| precond_not << pre.map {|t| (j = op[1].index(t)) ? s[j + 1] : t} unless predicates[pre.first]}
