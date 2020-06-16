@@ -48,7 +48,7 @@ module Pullup
       repeat = false
       methods.map! {|name,param,*decompositions|
         decompositions.select! {|label,free,precond_pos,precond_not,subtasks|
-          first_task = operator_sequence = true
+          first_task = true
           effects = Hash.new(0)
           old_precond_pos_size = precond_pos.size
           old_precond_not_size = precond_not.size
@@ -58,15 +58,10 @@ module Pullup
               subtasks.each {|i| operators.delete_if {|op| op.first == i.first} if (counter[i.first] -= 1) == 0}
               break
             elsif op = operators.assoc(s.first)
-              if operator_sequence
-                op[2].each {|pre| precond_pos << pre.map {|t| (j = op[1].index(t)) ? s[j + 1] : t} if effects[pre.first].even?}
-                op[3].each {|pre| precond_not << pre.map {|t| (j = op[1].index(t)) ? s[j + 1] : t} if effects[pre.first] < 2}
-                op[4].each {|pre| effects[pre.first] |= 1}
-                op[5].each {|pre| effects[pre.first] |= 2}
-              else
-                op[2].each {|pre| precond_pos << pre.map {|t| (j = op[1].index(t)) ? s[j + 1] : t} unless predicates[pre.first]}
-                op[3].each {|pre| precond_not << pre.map {|t| (j = op[1].index(t)) ? s[j + 1] : t} unless predicates[pre.first]}
-              end
+              op[2].each {|pre| precond_pos << pre.map {|t| (j = op[1].index(t)) ? s[j + 1] : t} if effects[pre.first].even?}
+              op[3].each {|pre| precond_not << pre.map {|t| (j = op[1].index(t)) ? s[j + 1] : t} if effects[pre.first] < 2}
+              op[4].each {|pre| effects[pre.first] |= 1}
+              op[5].each {|pre| effects[pre.first] |= 2}
               if first_task and counter[s.first] == 1
                 op[2].clear
                 op[3].clear
@@ -77,13 +72,9 @@ module Pullup
               (metdecompositions = (met = methods.assoc(s.first)).drop(2)).each {|m|
                 pos = []
                 neg = []
-                if operator_sequence
-                  m[2].each {|pre| pos << pre.map {|t| (j = met[1].index(t)) ? s[j + 1] : t} if effects[pre.first].even? and (pre & m[1]).empty?}
-                  m[3].each {|pre| neg << pre.map {|t| (j = met[1].index(t)) ? s[j + 1] : t} if effects[pre.first] < 2 and (pre & m[1]).empty?}
-                else
-                  m[2].each {|pre| pos << pre.map {|t| (j = met[1].index(t)) ? s[j + 1] : t} if not predicates[pre.first] and (pre & m[1]).empty?}
-                  m[3].each {|pre| neg << pre.map {|t| (j = met[1].index(t)) ? s[j + 1] : t} if not predicates[pre.first] and (pre & m[1]).empty?}
-                end
+                m[2].each {|pre| pos << pre.map {|t| (j = met[1].index(t)) ? s[j + 1] : t} if effects[pre.first].even? and (pre & m[1]).empty?}
+                m[3].each {|pre| neg << pre.map {|t| (j = met[1].index(t)) ? s[j + 1] : t} if effects[pre.first] < 2 and (pre & m[1]).empty?}
+                mark_effects(operators, methods, metdecompositions, effects)
                 if all_pos
                   all_pos &= pos
                   all_neg &= neg
@@ -95,7 +86,6 @@ module Pullup
               clear_met << [metdecompositions, all_pos, all_neg] unless tasks.assoc(s.first)
               precond_pos.concat(all_pos)
               precond_not.concat(all_neg)
-              operator_sequence = false
             end
             precond_pos.uniq!
             precond_not.uniq!
@@ -180,6 +170,26 @@ module Pullup
         precond_pos_all.select! {|pre| predicates[pre.first] and pre.all? {|i| not i.start_with?('?') or param.include?(i)}}
         precond_not_recursion.concat(precond_pos_all).uniq!
       end
+    }
+  end
+
+  #-----------------------------------------------
+  # Mark effects
+  #-----------------------------------------------
+
+  def mark_effects(operators, methods, decompositions, effects, visited = [])
+    decompositions.each {|label,free,precond_pos,precond_not,subtasks|
+      subtasks.each {|s|
+        unless visited.include?(s.first)
+          visited << s.first
+          if op = operators.assoc(s.first)
+            op[4].each {|pre| effects[pre.first] |= 1}
+            op[5].each {|pre| effects[pre.first] |= 2}
+          elsif met = methods.assoc(s.first)
+            mark_effects(operators, methods, met.drop(2), effects, visited)
+          end
+        end
+      }
     }
   end
 end
