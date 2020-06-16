@@ -35,7 +35,6 @@ module Pullup
       }
       if decompositions.empty?
         impossible << name
-        repeat = true
         nil
       else decompositions.unshift(name, param)
       end
@@ -50,7 +49,7 @@ module Pullup
       methods.map! {|name,param,*decompositions|
         decompositions.select! {|label,free,precond_pos,precond_not,subtasks|
           first_task = operator_sequence = true
-          effects = {}
+          effects = Hash.new(0)
           old_precond_pos_size = precond_pos.size
           old_precond_not_size = precond_not.size
           subtasks.each {|s|
@@ -60,10 +59,10 @@ module Pullup
               break
             elsif op = operators.assoc(s.first)
               if operator_sequence
-                op[2].each {|pre| precond_pos << pre.map {|t| (j = op[1].index(t)) ? s[j + 1] : t} unless effects.include?(pre.first)}
-                op[3].each {|pre| precond_not << pre.map {|t| (j = op[1].index(t)) ? s[j + 1] : t} unless effects.include?(pre.first)}
-                op[4].each {|pre| effects[pre.first] = nil}
-                op[5].each {|pre| effects[pre.first] = nil}
+                op[2].each {|pre| precond_pos << pre.map {|t| (j = op[1].index(t)) ? s[j + 1] : t} if effects[pre.first].even?}
+                op[3].each {|pre| precond_not << pre.map {|t| (j = op[1].index(t)) ? s[j + 1] : t} if effects[pre.first] < 2}
+                op[4].each {|pre| effects[pre.first] |= 1}
+                op[5].each {|pre| effects[pre.first] |= 2}
               else
                 op[2].each {|pre| precond_pos << pre.map {|t| (j = op[1].index(t)) ? s[j + 1] : t} unless predicates[pre.first]}
                 op[3].each {|pre| precond_not << pre.map {|t| (j = op[1].index(t)) ? s[j + 1] : t} unless predicates[pre.first]}
@@ -79,8 +78,8 @@ module Pullup
                 pos = []
                 neg = []
                 if operator_sequence
-                  m[2].each {|pre| pos << pre.map {|t| (j = met[1].index(t)) ? s[j + 1] : t} if not effects.include?(pre.first) and (pre & m[1]).empty?}
-                  m[3].each {|pre| neg << pre.map {|t| (j = met[1].index(t)) ? s[j + 1] : t} if not effects.include?(pre.first) and (pre & m[1]).empty?}
+                  m[2].each {|pre| pos << pre.map {|t| (j = met[1].index(t)) ? s[j + 1] : t} if effects[pre.first].even? and (pre & m[1]).empty?}
+                  m[3].each {|pre| neg << pre.map {|t| (j = met[1].index(t)) ? s[j + 1] : t} if effects[pre.first] < 2 and (pre & m[1]).empty?}
                 else
                   m[2].each {|pre| pos << pre.map {|t| (j = met[1].index(t)) ? s[j + 1] : t} if not predicates[pre.first] and (pre & m[1]).empty?}
                   m[3].each {|pre| neg << pre.map {|t| (j = met[1].index(t)) ? s[j + 1] : t} if not predicates[pre.first] and (pre & m[1]).empty?}
