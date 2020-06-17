@@ -185,7 +185,8 @@ module Pullup
           if op = operators.assoc(s.first)
             op[4].each {|pre| effects[pre.first] |= 1}
             op[5].each {|pre| effects[pre.first] |= 2}
-          else mark_effects(operators, methods, methods.assoc(s.first).drop(2), effects, visited)
+          elsif met = methods.assoc(s.first)
+            mark_effects(operators, methods, met.drop(2), effects, visited)
           end
         end
       }
