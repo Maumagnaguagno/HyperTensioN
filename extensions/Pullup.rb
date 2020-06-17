@@ -74,7 +74,6 @@ module Pullup
                 neg = []
                 m[2].each {|pre| pos << pre.map {|t| (j = met[1].index(t)) ? s[j + 1] : t} if effects[pre.first].even? and (pre & m[1]).empty?}
                 m[3].each {|pre| neg << pre.map {|t| (j = met[1].index(t)) ? s[j + 1] : t} if effects[pre.first] < 2 and (pre & m[1]).empty?}
-                mark_effects(operators, methods, metdecompositions, effects)
                 if all_pos
                   all_pos &= pos
                   all_neg &= neg
@@ -83,6 +82,7 @@ module Pullup
                   all_neg = neg
                 end
               }
+              mark_effects(operators, methods, metdecompositions, effects)
               clear_met << [metdecompositions, all_pos, all_neg] unless tasks.assoc(s.first)
               precond_pos.concat(all_pos)
               precond_not.concat(all_neg)
@@ -185,8 +185,7 @@ module Pullup
           if op = operators.assoc(s.first)
             op[4].each {|pre| effects[pre.first] |= 1}
             op[5].each {|pre| effects[pre.first] |= 2}
-          elsif met = methods.assoc(s.first)
-            mark_effects(operators, methods, met.drop(2), effects, visited)
+          else mark_effects(operators, methods, methods.assoc(s.first).drop(2), effects, visited)
           end
         end
       }
