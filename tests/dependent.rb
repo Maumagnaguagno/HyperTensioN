@@ -663,5 +663,5 @@ Dependency.problem(
   # Negative goals
   [
   ]
-)"
+) or abort"
 end
