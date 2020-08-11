@@ -196,9 +196,12 @@ module Continuous
     @state['protect_axiom'].all? {|i| send(*i, time)}
   end
 
-  def event_process_effect
+  def event_effect
     (@state = @state.dup)[:event] = @state[:event].dup
-    @state[:process] = @state[:process].dup
+  end
+
+  def process_effect
+    (@state = @state.dup)[:process] = @state[:process].dup
   end
 end
 
