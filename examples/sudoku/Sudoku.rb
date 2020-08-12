@@ -79,7 +79,8 @@ module Sudoku
     puts counter if @debug
     return yield [] if counter.zero?
     # Find available symbols for each empty cell
-    available = Array.new(cells - 2) {[]}
+    best = 100
+    available = nil
     singles = []
     @state[:at].each {|x,y,b,symbol|
       if symbol == 0
@@ -94,14 +95,16 @@ module Sudoku
           col.delete(s)
           row.delete(s)
           box.delete(s)
-        else available[symbols.size - 2] << [x, y, b, symbols]
+        elsif symbols.size < best
+          best = symbols.size
+          available = [x, y, b, symbols]
         end
       end
     }
     return yield singles << [:solve, counter - singles.size, cells] unless singles.empty?
     counter -= 1
-    # Explore empty cells with fewest available symbols first
-    x, y, b, symbols = available.first.first
+    # Explore empty cell with fewest available symbols
+    x, y, b, symbols = available
     symbols.each {|symbol|
       yield [
         [:put_symbol, x, y, b, symbol],
