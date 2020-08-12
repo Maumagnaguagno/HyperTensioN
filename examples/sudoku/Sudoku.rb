@@ -101,15 +101,12 @@ module Sudoku
     return yield singles << [:solve, counter - singles.size, cells] unless singles.empty?
     counter -= 1
     # Explore empty cells with fewest available symbols first
-    available.each {|set|
-      set.each {|x,y,b,symbols|
-        symbols.each {|symbol|
-          yield [
-            [:put_symbol, x, y, b, symbol],
-            [:solve, counter, cells]
-          ]
-        }
-      }
+    x, y, b, symbols = available.first.first
+    symbols.each {|symbol|
+      yield [
+        [:put_symbol, x, y, b, symbol],
+        [:solve, counter, cells]
+      ]
     }
   end
 end
