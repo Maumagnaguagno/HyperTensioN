@@ -8,6 +8,8 @@ module Sudoku
   # Domain
   #-----------------------------------------------
 
+  AT = 0
+
   @domain = {
     # Operators
     :put_symbol => true,
@@ -38,11 +40,14 @@ module Sudoku
       else counter += 1
       end
     }
+    @x = 1
+    @y = @x + total_width
+    @b = @y + total_height
     # Setup
-    state = {:at => board}
-    collumns.each_with_index {|s,i| state["c#{i}"] = s}
-    rows.each_with_index {|s,i| state["r#{i}"] = s}
-    boxes.each_with_index {|s,i| state["b#{i}"] = s}
+    state = [board]
+    collumns.each_with_index {|s,i| state[@x + i] = s}
+    rows.each_with_index {|s,i| state[@y + i] = s}
+    boxes.each_with_index {|s,i| state[@b + i] = s}
     tasks = [
       [:solve, counter, cells]
     ]
@@ -54,7 +59,7 @@ module Sudoku
       planning(tasks)
     end
     # Display board
-    @state[:at].sort_by {|i| i.first(2).reverse!}.map! {|i| i.last}.each_slice(total_width) {|i| puts i.join}
+    @state[AT].sort_by {|i| i.first(2).reverse!}.map! {|i| i.last}.each_slice(total_width) {|i| puts i.join}
   end
 
   #-----------------------------------------------
@@ -62,12 +67,12 @@ module Sudoku
   #-----------------------------------------------
 
   def put_symbol(x, y, b, symbol)
-    @state = @state.each_with_object({}) {|(k,v),state| state[k] = v.dup}
-    @state["c#{x}"].delete(symbol)
-    @state["r#{y}"].delete(symbol)
-    @state["b#{b}"].delete(symbol)
-    @state[:at].delete([x, y, b, 0])
-    @state[:at] << [x, y, b, symbol]
+    @state = @state.map {|i| i.dup}
+    @state[@x + x].delete(symbol)
+    @state[@y + y].delete(symbol)
+    @state[@b + b].delete(symbol)
+    @state[AT].delete([x, y, b, 0])
+    @state[AT] << [x, y, b, symbol]
     true
   end
 
@@ -82,11 +87,11 @@ module Sudoku
     best = 100
     available = nil
     singles = []
-    @state[:at].each {|x,y,b,symbol|
+    @state[AT].each {|x,y,b,symbol|
       if symbol == 0
-        col = @state["c#{x}"]
-        row = @state["r#{y}"]
-        box = @state["b#{b}"]
+        col = @state[@x + x]
+        row = @state[@y + y]
+        box = @state[@b + b]
         symbols = col & row & box
         if symbols.empty?
           return
