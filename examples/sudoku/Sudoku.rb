@@ -24,10 +24,9 @@ module Sudoku
     @b = @y + total_height = height * box_height
     board_str.delete!(" \n|+-")
     raise "Expected #{total_width * total_height} symbols, received #{board_str.size}" if board_str.size != total_width * total_height
-    cells = box_width * box_height
-    symbols = Array.new(cells) {|i| i.succ}
+    symbols = Array.new(box_width * box_height) {|i| i.succ}
     state = [board = []]
-    (total_width + total_height + width * height).times {|i| state[i + 1] = symbols.dup}
+    (total_width + total_height + width * height).times {state << symbols.dup}
     counter = 0
     board_str.each_char.with_index {|symbol,i|
       y, x = i.divmod(total_width)
@@ -41,7 +40,7 @@ module Sudoku
     }
     # Setup
     tasks = [
-      [:solve, counter, cells]
+      [:solve, counter]
     ]
     if verbose
       problem(state, tasks, debug)
@@ -51,7 +50,7 @@ module Sudoku
       planning(tasks)
     end
     # Display board
-    @state[AT].sort_by {|i| i.first(2).reverse!}.map! {|i| i.last}.each_slice(total_width) {|i| puts i.join}
+    @state[AT].sort_by! {|i| i.first(2).reverse!}.map! {|i| i.last}.each_slice(total_width) {|i| puts i.join}
   end
 
   #-----------------------------------------------
@@ -72,7 +71,7 @@ module Sudoku
   # Methods
   #-----------------------------------------------
 
-  def try_next(counter, cells)
+  def try_next(counter)
     puts counter if @debug
     return yield [] if counter.zero?
     # Find available symbols for each empty cell
@@ -98,14 +97,14 @@ module Sudoku
         end
       end
     }
-    return yield singles << [:solve, counter - singles.size, cells] unless singles.empty?
+    return yield singles << [:solve, counter - singles.size] unless singles.empty?
     counter -= 1
     # Explore empty cell with fewest available symbols
     x, y, b, symbols = available
     symbols.each {|symbol|
       yield [
         [:put_symbol, x, y, b, symbol],
-        [:solve, counter, cells]
+        [:solve, counter]
       ]
     }
   end
