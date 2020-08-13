@@ -19,35 +19,27 @@ module Sudoku
 
   def solve(board_str, width, height, box_width, box_height, debug, verbose)
     # Parser
-    total_width = width * box_width
-    total_height = height * box_height
+    @x = 1
+    @y = @x + total_width = width * box_width
+    @b = @y + total_height = height * box_height
     board_str.delete!(" \n|+-")
     raise "Expected #{total_width * total_height} symbols, received #{board_str.size}" if board_str.size != total_width * total_height
     cells = box_width * box_height
     symbols = Array.new(cells) {|i| i.succ}
-    collumns = Array.new(total_width) {symbols.dup}
-    rows = Array.new(total_height) {symbols.dup}
-    boxes = Array.new(width * height) {symbols.dup}
-    board = []
+    state = [board = []]
+    (total_width + total_height + width * height).times {|i| state[i + 1] = symbols.dup}
     counter = 0
     board_str.each_char.with_index {|symbol,i|
       y, x = i.divmod(total_width)
       board << [x, y, b = x / width + y / height * box_width, symbol = symbol.to_i]
       if symbol != 0
-        collumns[x].delete(symbol)
-        rows[y].delete(symbol)
-        boxes[b].delete(symbol)
+        state[@x + x].delete(symbol)
+        state[@y + y].delete(symbol)
+        state[@b + b].delete(symbol)
       else counter += 1
       end
     }
-    @x = 1
-    @y = @x + total_width
-    @b = @y + total_height
     # Setup
-    state = [board]
-    collumns.each_with_index {|s,i| state[@x + i] = s}
-    rows.each_with_index {|s,i| state[@y + i] = s}
-    boxes.each_with_index {|s,i| state[@b + i] = s}
     tasks = [
       [:solve, counter, cells]
     ]
