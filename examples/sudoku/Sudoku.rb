@@ -9,6 +9,7 @@ module Sudoku
   #-----------------------------------------------
 
   AT = 0
+  EMPTY = 1
 
   @domain = {
     # Operators
@@ -19,23 +20,27 @@ module Sudoku
 
   def solve(board_str, width, height, box_width, box_height, debug, verbose)
     # Parser
-    @x = 1
+    @x = 2
     @y = @x + total_width = width * box_width
     @b = @y + total_height = height * box_height
     board_str.delete!(" \n|+-")
     raise "Expected #{total_width * total_height} symbols, received #{board_str.size}" if board_str.size != total_width * total_height
     symbols = Array.new(box_width * box_height) {|i| i.succ}
-    state = [board = []]
+    state = [board = [], empty = []]
     (total_width + total_height + width * height).times {state << symbols.dup}
     counter = 0
     board_str.each_char.with_index {|symbol,i|
+      symbol = symbol.to_i
       y, x = i.divmod(total_width)
-      board << [x, y, b = x / width + y / height * box_width, symbol = symbol.to_i]
+      b = x / width + y / height * box_width + @b
       if symbol != 0
-        state[@x + x].delete(symbol)
-        state[@y + y].delete(symbol)
-        state[@b + b].delete(symbol)
-      else counter += 1
+        board << [y += @y, x += @x, symbol]
+        state[x].delete(symbol)
+        state[y].delete(symbol)
+        state[b].delete(symbol)
+      else
+        empty << [@x + x, @y + y, b]
+        counter += 1
       end
     }
     # Setup
@@ -50,7 +55,7 @@ module Sudoku
       planning(tasks)
     end
     # Display board
-    @state[AT].sort_by! {|i| i.first(2).reverse!}.map! {|i| i.last}.each_slice(total_width) {|i| puts i.join}
+    @state[AT].sort_by! {|i| i.first(2)}.map! {|i| i.last}.each_slice(total_width) {|i| puts i.join}
   end
 
   #-----------------------------------------------
@@ -59,11 +64,11 @@ module Sudoku
 
   def put_symbol(x, y, b, symbol)
     @state = @state.map {|i| i.dup}
-    @state[@x + x].delete(symbol)
-    @state[@y + y].delete(symbol)
-    @state[@b + b].delete(symbol)
-    @state[AT].delete([x, y, b, 0])
-    @state[AT] << [x, y, b, symbol]
+    @state[x].delete(symbol)
+    @state[y].delete(symbol)
+    @state[b].delete(symbol)
+    @state[EMPTY].delete([x, y, b])
+    @state[AT] << [y, x, symbol]
     true
   end
 
@@ -78,23 +83,21 @@ module Sudoku
     best = 100
     available = nil
     singles = []
-    @state[AT].each {|x,y,b,symbol|
-      if symbol == 0
-        col = @state[@x + x]
-        row = @state[@y + y]
-        box = @state[@b + b]
-        symbols = col & row & box
-        if symbols.empty?
-          return
-        elsif symbols.size == 1
-          singles << [:put_symbol, x, y, b, s = symbols.first]
-          col.delete(s)
-          row.delete(s)
-          box.delete(s)
-        elsif symbols.size < best
-          best = symbols.size
-          available = [x, y, b, symbols]
-        end
+    @state[EMPTY].each {|x,y,b|
+      col = @state[x]
+      row = @state[y]
+      box = @state[b]
+      symbols = col & row & box
+      if symbols.empty?
+        return
+      elsif symbols.size == 1
+        singles << [:put_symbol, x, y, b, s = symbols.first]
+        col.delete(s)
+        row.delete(s)
+        box.delete(s)
+      elsif symbols.size < best
+        best = symbols.size
+        available = [x, y, b, symbols]
       end
     }
     return yield singles << [:solve, counter - singles.size] unless singles.empty?
