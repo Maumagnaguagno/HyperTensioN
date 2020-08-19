@@ -27,7 +27,7 @@ module Hypest
     else assert_equal(false, File.exist?(problem_type))
     end
   ensure
-    File.delete(domain_type) if domain_expected
-    File.delete(problem_type) if problem_expected
+    File.delete(domain_type) if File.exist?(domain_type)
+    File.delete(problem_type) if File.exist?(problem_type)
   end
 end
