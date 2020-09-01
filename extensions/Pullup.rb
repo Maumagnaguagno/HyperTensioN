@@ -155,22 +155,6 @@ module Pullup
       op[2].select! {|pre| predicates[pre.first]}
       op[3].select! {|pre| predicates[pre.first]}
     }
-    # Move missing base condition to recursion
-    methods.each {|name,param,*decompositions|
-      precond_pos_all = []
-      precond_not_recursion = nil
-      decompositions.each {|label,free,precond_pos,precond_not,subtasks|
-        if not subtasks.empty? and subtasks.first.first.start_with?('invisible_')
-          precond_not_recursion = precond_not
-        else precond_pos_all.concat(precond_pos)
-        end
-      }
-      if precond_not_recursion
-        precond_pos_all.uniq!
-        precond_pos_all.select! {|pre| predicates[pre.first] and pre.all? {|i| not i.start_with?('?') or param.include?(i)}}
-        precond_not_recursion.concat(precond_pos_all).uniq!
-      end
-    }
   end
 
   #-----------------------------------------------
