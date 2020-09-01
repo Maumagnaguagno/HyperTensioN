@@ -34,7 +34,7 @@ If no decomposition happens, failure is returned.
 ```Ruby
 Algorithm planning(list tasks)
   return empty plan if tasks = empty
-  current_task <- pop first element of tasks
+  current_task <- shift element from tasks
   if current_task is an Operator
     if applicable(current_task)
       apply(current_task)
@@ -437,14 +437,39 @@ If you described your domain and problem in [PDDL] or [JSHOP] description you mu
 [**Hype**](Hype.rb) is the framework for parsers, extensions and compilers of planning descriptions.
 It will save time and avoid errors during conversion of domains and problems for comparison results with other planners.
 Such conversion step is not new, as JSHOP2 itself compiles the description to Java code to achieve a better performance.
-Hype requires a domain and a problem file to be compiled to a certain output type.
-The output can be ``print``, ``rb``, ``pddl``, ``jshop``, ``dot``, ``md``, ``run``, ``debug`` or ``nil``.
-If no output type is provided the system uses ``print`` as the default and only prints out what was parsed from the files and the time taken.
+Hype requires a domain and a problem files with the correct extension type to be parsed correctly, while the output type must be specified to match a compiler.
+If no output type is provided the system uses the default ``print`` to show what was parsed from the files and the time taken.
+Multiple extensions can be executed before the output happens, even repeatedly.
+
+```
+Usage:
+  Hype domain problem {extensions} [output=print]
+
+Output:
+  print - print parsed data(default)
+  rb    - generate Ruby files to HyperTensioN
+  pddl  - generate PDDL files
+  jshop - generate JSHOP files
+  dot   - generate DOT file
+  md    - generate Markdown file
+  run   - same as rb with execution
+  debug - same as run with execution log
+  nil   - avoid print parsed data
+
+Extensions:
+  patterns    - add methods and tasks based on operator patterns
+  dummy       - add brute-force methods to operators
+  wise        - warn and fix description mistakes
+  macro       - optimize operator sequences
+  pullup      - optimize preconditions
+  grammar     - print hierarchical structure grammar
+  complexity  - print estimated complexity of planning description
+```
+
+To convert and execute the Basic example is simple, you can compile once and execute multiple times the compiled output.
 
 ```Shell
 cd HyperTensioN
-# ruby Hype.rb path/domain_filename path/problem_filename {extensions} [output]
-# Multiple extensions can be executed before the output happens
 ruby Hype.rb examples/basic/basic.jshop examples/basic/pb1.jshop rb
 ruby examples/basic/pb1.jshop.rb
 ```
