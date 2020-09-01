@@ -154,7 +154,7 @@ class Simple < Test::Unit::TestCase
     )
   end
 
-  def test_basic_pb1_pddl_parsing_with_macro
+  def test_basic_pb1_jshop_parsing_with_macro
     parser_tests(
       # Files
       'examples/basic/basic.jshop',
