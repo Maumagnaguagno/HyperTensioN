@@ -165,7 +165,7 @@ module PDDL_Parser
             end
           end
           raise 'Repeated object definition' if @objects.uniq!
-          @objects.each {|obj| @state << [EQUAL, obj, obj]} if @requirements.include?(':equality')
+          @objects.each {|obj| @state << [EQUAL, obj, obj]} if @predicates.include?(EQUAL)
         when ':init'
           group.shift
           @state.concat(group)
