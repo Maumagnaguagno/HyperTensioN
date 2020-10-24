@@ -22,10 +22,13 @@ module Hypertension
     when true, false
       puts "#{'  ' * level}#{current_task.first}(#{current_task.drop(1).join(' ')})" if @debug
       old_state = @state
-      # Keep decomposing the hierarchy if operator applied
-      if send(*current_task) and plan = planning(tasks, level)
-        # Add visible operator to plan
-        return decomposition ? plan.unshift(current_task) : plan
+      begin
+        # Keep decomposing the hierarchy if operator applied
+        if send(*current_task) and plan = planning(tasks, level)
+          # Add visible operator to plan
+          return decomposition ? plan.unshift(current_task) : plan
+        end
+      rescue SystemStackError
       end
       @state = old_state
     # Method
@@ -33,11 +36,14 @@ module Hypertension
       # Keep decomposing the hierarchy
       task_name = current_task.shift
       level += 1
-      decomposition.each {|method|
-        puts "#{'  ' * level.pred}#{method}(#{current_task.join(' ')})" if @debug
-        # Every unification is tested
-        send(method, *current_task) {|subtasks| return plan if plan = planning(subtasks.concat(tasks), level)}
-      }
+      begin
+        decomposition.each {|method|
+          puts "#{'  ' * level.pred}#{method}(#{current_task.join(' ')})" if @debug
+          # Every unification is tested
+          send(method, *current_task) {|subtasks| return plan if plan = planning(subtasks.concat(tasks), level)}
+        }
+      rescue SystemStackError
+      end
       current_task.unshift(task_name)
     # Error
     else raise "Domain defines no decomposition for #{current_task.first}"
