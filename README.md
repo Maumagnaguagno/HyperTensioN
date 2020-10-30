@@ -1,4 +1,5 @@
-# HyperTensioN [![Build Status](https://travis-ci.org/Maumagnaguagno/HyperTensioN.svg)](https://travis-ci.org/Maumagnaguagno/HyperTensioN)
+# HyperTensioN [![Build Status](https://travis-ci.org/Maumagnaguagno/HyperTensioN.svg)](https://travis-ci.org/Maumagnaguagno/HyperTensioN) [![IPC](https://img.shields.io/badge/winner-HTN%20IPC%202020-D50.svg)](http://gki.informatik.uni-freiburg.de/competition/results.pdf)
+
 **Hierarchical Task Network planning in Ruby**
 
 HyperTensioN is a [Hierarchical Task Network](https://en.wikipedia.org/wiki/Hierarchical_task_network) planner written in Ruby, in which a method decomposition description of how tasks can be accomplished is used to achieve a plan.
@@ -8,6 +9,10 @@ With hierarchical planning it is possible to describe a strategy to obtain a seq
 It works based on decomposition, which is very alike to how humans think, taking mental steps further into primitive operators.
 Expanded features to deal with numeric and external elements are in a separate repository, [HyperTensioN U](../../../HyperTensioN_U).
 This project was inspired by [Pyhop] and [JSHOP].
+
+[Hypertension won the HTN IPC 2020!](http://gki.informatik.uni-freiburg.de/competition/results.pdf)
+Newer commits will contain the optimizations done for the competition, with new documentation and tests.
+Please use the [last stable release](https://github.com/Maumagnaguagno/HyperTensioN/releases/tag/v1.1) until everything is updated.
 
 [Download and play](../../archive/master.zip) or jump to each section to learn more:
 - [**Algorithm**](#algorithm "Jump to Algorithm section"): planning algorithm explanation
