@@ -1,4 +1,4 @@
-# HyperTensioN [![Build Status](https://travis-ci.org/Maumagnaguagno/HyperTensioN.svg)](https://travis-ci.org/Maumagnaguagno/HyperTensioN) [![IPC](https://img.shields.io/badge/winner-HTN%20IPC%202020-D50.svg)](http://gki.informatik.uni-freiburg.de/competition/results.pdf)
+# HyperTensioN [![Build Status](https://travis-ci.org/Maumagnaguagno/HyperTensioN.svg)](https://travis-ci.org/Maumagnaguagno/HyperTensioN) [![IPC](https://img.shields.io/badge/winner-HTN%20IPC%202020%20Total%20Order%20track-D50.svg)](http://gki.informatik.uni-freiburg.de/competition/results.pdf)
 
 **Hierarchical Task Network planning in Ruby**
 
@@ -10,7 +10,7 @@ It works based on decomposition, which is very alike to how humans think, taking
 Expanded features to deal with numeric and external elements are in a separate repository, [HyperTensioN U](../../../HyperTensioN_U).
 This project was inspired by [Pyhop] and [JSHOP].
 
-[Hypertension won the HTN IPC 2020!](http://gki.informatik.uni-freiburg.de/competition/results.pdf)
+[Hypertension won the HTN IPC 2020 Total order track!](http://gki.informatik.uni-freiburg.de/competition/results.pdf)
 Newer commits will contain the optimizations done for the competition, with new documentation and tests.
 Please use the [last stable release](https://github.com/Maumagnaguagno/HyperTensioN/releases/tag/v1.1) until everything is updated.
 
@@ -609,6 +609,7 @@ Here are some hints to describe your domain:
 - Explore further using ``Hash.compare_by_identity`` on domain and state.
 - Use different state structures to speed-up state operations and implement your own state duplication, preconditions applicable and effect application operations to better describe your domain.
 - Replace the state copy from ``apply`` with ``@state = Marshal.load(Marshal.dump(@state))`` to deep copy any state structure, otherwise keep the current fast version or use a custom implementation.
+- Increase ``RUBY_THREAD_VM_STACK_SIZE`` to avoid stack overflows in very large planning instances.
 
 ## Comparison
 The main advantage of HyperTensioN is to be able to define behavior in the core language, without losing clarity, this alone gives a lot of power.
