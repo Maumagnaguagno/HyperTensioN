@@ -228,30 +228,17 @@ class Miner < Test::Unit::TestCase
         'on' => true,
         'visited_at' => true
       },
-      :state => Grid.generate(10,10).map! {|i| i.unshift('adjacent')}.push(
-        ['at', 'ag1', 'p1_6'],
-        ['on', 'g1', 'p4_0'],
-        ['on', 'g2', 'p4_3'],
-        ['on', 'g3', 'p5_9'],
-        ['blocked', 'p1_1'],
-        ['blocked', 'p2_1'],
-        ['blocked', 'p3_1'],
-        ['blocked', 'p4_1'],
-        ['blocked', 'p5_1'],
-        ['blocked', 'p6_1'],
-        ['blocked', 'p7_1'],
-        ['blocked', 'p8_1'],
-        ['blocked', 'p3_6'],
-        ['blocked', 'p6_6'],
-        ['blocked', 'p3_7'],
-        ['blocked', 'p6_7'],
-        ['blocked', 'p1_8'],
-        ['blocked', 'p2_8'],
-        ['blocked', 'p3_8'],
-        ['blocked', 'p6_8'],
-        ['blocked', 'p7_8'],
-        ['blocked', 'p8_8']
-      ),
+      :state => {
+        'adjacent' => Grid.generate(10,10),
+        'at' => [['ag1', 'p1_6']],
+        'on' => [['g1', 'p4_0'], ['g2', 'p4_3'], ['g3', 'p5_9']],
+        'blocked' => [
+          ['p1_1'], ['p2_1'], ['p3_1'], ['p4_1'], ['p5_1'], ['p6_1'], ['p7_1'], ['p8_1'],
+          ['p3_6'], ['p6_6'],
+          ['p3_7'], ['p6_7'],
+          ['p1_8'], ['p2_8'], ['p3_8'], ['p6_8'], ['p7_8'], ['p8_8']
+        ]
+      },
       :tasks => [false,
         ['unify_agent_pick_position_before_dependency_pick_before_drop_for_on', 'g1', 'p8_6'],
         ['unify_agent_pick_position_before_dependency_pick_before_drop_for_on', 'g2', 'p8_6'],
