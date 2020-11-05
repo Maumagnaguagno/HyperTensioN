@@ -22,7 +22,7 @@ module Complexity
       puts "  #{met.first}: #{met_complexity}"
     }
     # Problem
-    state.each {|pre| problem_complexity += pre.uniq.size}
+    state.each {|pre,k| k.each {|terms| problem_complexity += terms.uniq.size + 1}}
     goal_pos.each {|pre| problem_complexity += pre.uniq.size}
     goal_not.each {|pre| problem_complexity += pre.uniq.size}
     tasks.drop(1).each {|t| problem_complexity += t.uniq.size}
