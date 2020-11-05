@@ -7,10 +7,8 @@ module Markdown_Compiler
 
   def compile_domain(domain_name, problem_name, operators, methods, predicates, state, tasks, goal_pos, goal_not)
     output = "# #{domain_name.capitalize}\n## Predicates\n"
-    predicates.each {|k,v| output << "- **#{k}**: #{v ? 'fluent' : 'rigid'}\n"}
-    unused_predicates = {}
-    state.each {|pre| unused_predicates[pre.first] = nil unless predicates.include?(pre.first)}
-    unused_predicates.each_key {|pre| output << "- **#{pre}**: irrelevant\n"}
+    predicates.each {|pre,v| output << "- **#{pre}**: #{v ? 'fluent' : 'rigid'}\n"}
+    state.each_key {|pre| output << "- **#{pre}**: irrelevant\n" unless predicates.include?(pre)}
     unless operators.empty?
       output << "\n## Operators"
       operators.each {|name,param,precond_pos,precond_not,effect_add,effect_del|
@@ -50,7 +48,7 @@ module Markdown_Compiler
 
   def compile_problem(domain_name, problem_name, operators, methods, predicates, state, tasks, goal_pos, goal_not, domain_filename)
     output = "# #{problem_name.capitalize} of #{domain_name.capitalize}\n## Initial state"
-    state.each {|pre| output << "\n- (#{pre.join(' ')})"}
+    state.each {|pre,k| k.each {|terms| output << "\n- (#{[pre, *terms].join(' ')})"}}
     unless tasks.empty?
       ordered = tasks.shift
       output << "\n\n## Tasks" << (ordered ? "\n**ordered**" : "\n**unordered**")
