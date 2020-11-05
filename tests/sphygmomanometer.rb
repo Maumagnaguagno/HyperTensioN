@@ -3,13 +3,19 @@ require './examples/n_queens/N_Queens'
 
 class Sphygmomanometer < Test::Unit::TestCase
 
+  # Predicate indexes
+  A = 0
+  B = 1
+  C = 2
+  D = 3
+
   def simple_state
-    {
-      'a' => [['1'], ['2'], ['3']],
-      'b' => [['3'], ['4'], ['5']],
-      'c' => [['a','b'], ['c','d']],
-      'd' => [['d','x']]
-    }
+    [
+      [['1'], ['2'], ['3']], # A
+      [['3'], ['4'], ['5']], # B
+      [['a','b'], ['c','d']], # C
+      [['d','x']] # D
+    ]
   end
 
   def test_attributes
@@ -71,13 +77,13 @@ class Sphygmomanometer < Test::Unit::TestCase
     # Generate x y w z based on state and preconditions
     Hypertension.generate(
       [
-        ['a', x],
-        ['b', y],
-        ['c', w, z],
-        ['d', z, 'x']
+        [A, x],
+        [B, y],
+        [C, w, z],
+        [D, z, 'x']
       ],
       [
-        ['a', y]
+        [A, y]
       ], x, y, w, z
     ) {
       assert_equal(expected.shift, [x,y,w,z])
@@ -97,13 +103,13 @@ class Sphygmomanometer < Test::Unit::TestCase
     exist_y = nil # One unification of y is enough
     Hypertension.generate(
       [
-        ['a', x],
-        ['b', y],
-        ['c', w, z],
-        ['d', z, 'x']
+        [A, x],
+        [B, y],
+        [C, w, z],
+        [D, z, 'x']
       ],
       [
-        ['a', y]
+        [A, y]
       ], y, x, w, z # Sort exist variables
     ) {
       break if (exist_y ||= y.dup) != y
@@ -125,14 +131,14 @@ class Sphygmomanometer < Test::Unit::TestCase
 
   def test_applicable_success
     Hypertension.state = original_state = simple_state
-    assert_equal(true, Hypertension.applicable?([['a','1']],[['a','x']]))
+    assert_equal(true, Hypertension.applicable?([[A,'1']],[[A,'x']]))
     # No state was created
     assert_same(original_state, Hypertension.state)
   end
 
   def test_applicable_failure
     Hypertension.state = original_state = simple_state
-    assert_equal(false, Hypertension.applicable?([['a','1']],[['a','2']]))
+    assert_equal(false, Hypertension.applicable?([[A,'1']],[[A,'2']]))
     # No state was created
     assert_same(original_state, Hypertension.state)
   end
@@ -154,12 +160,12 @@ class Sphygmomanometer < Test::Unit::TestCase
   def test_apply_success
     Hypertension.state = original_state = simple_state
     # Successfully applied
-    assert_equal(true, Hypertension.apply([['a','y']],[['a','y']]))
+    assert_equal(true, Hypertension.apply([[A,'y']],[[A,'y']]))
     # New state was created
     assert_not_same(original_state, Hypertension.state)
     # Delete effects must happen before addition, otherwise the effect nullifies itself
     expected = simple_state
-    expected['a'] << ['y']
+    expected[A] << ['y']
     assert_equal(expected, Hypertension.state)
   end
 
@@ -170,7 +176,7 @@ class Sphygmomanometer < Test::Unit::TestCase
   def test_apply_operator_empty_effects
     Hypertension.state = original_state = simple_state
     # Successfully applied
-    assert_equal(true, Hypertension.apply_operator([['a','1']],[['a','x']],[],[]))
+    assert_equal(true, Hypertension.apply_operator([[A,'1']],[[A,'x']],[],[]))
     # New state was created
     assert_not_same(original_state, Hypertension.state)
     # Same content
@@ -180,19 +186,19 @@ class Sphygmomanometer < Test::Unit::TestCase
   def test_apply_operator_success
     Hypertension.state = original_state = simple_state
     # Successfully applied
-    assert_equal(true, Hypertension.apply_operator([['a','1']],[['a','x']],[['a','y']],[['a','y']]))
+    assert_equal(true, Hypertension.apply_operator([[A,'1']],[[A,'x']],[[A,'y']],[[A,'y']]))
     # New state was created
     assert_not_same(original_state, Hypertension.state)
     # Delete effects must happen before addition, otherwise the effect nullifies itself
     expected = simple_state
-    expected['a'] << ['y']
+    expected[A] << ['y']
     assert_equal(expected, Hypertension.state)
   end
 
   def test_apply_operator_failure
     Hypertension.state = original_state = simple_state
     # Precondition failure
-    assert_nil(Hypertension.apply_operator([],[['a','2']],[['a','y']],[]))
+    assert_nil(Hypertension.apply_operator([],[[A,'2']],[[A,'y']],[]))
     # No state was created
     assert_same(original_state, Hypertension.state)
   end
