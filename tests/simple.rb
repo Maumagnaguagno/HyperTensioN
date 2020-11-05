@@ -51,7 +51,7 @@ class Simple < Test::Unit::TestCase
         ]
       ],
       :predicates => {'have' => true},
-      :state => [['have','kiwi']],
+      :state => {'have' => [['kiwi']]},
       :tasks => [true, ['swap', 'banjo', 'kiwi']],
       :goal_pos => [],
       :goal_not => []
@@ -71,7 +71,7 @@ class Simple < Test::Unit::TestCase
       :operators => [PICKUP, DROP],
       :methods => [],
       :predicates => {'have' => true},
-      :state => [],
+      :state => {},
       :tasks => [],
       :goal_pos => [['have', 'banjo']],
       :goal_not => [],
@@ -145,7 +145,7 @@ class Simple < Test::Unit::TestCase
       :operators => [PICKUP, DROP],
       :methods => [],
       :predicates => {'have' => true},
-      :state => [['have', 'kiwi']],
+      :state => {'have' => [['kiwi']]},
       :tasks => [false, ['pickup', 'banjo'], ['drop', 'kiwi']],
       :goal_pos => [['have', 'banjo']],
       :goal_not => [['have', 'kiwi']],
@@ -197,7 +197,7 @@ class Simple < Test::Unit::TestCase
         ]
       ],
       :predicates => {'have' => true},
-      :state => [['have','kiwi']],
+      :state => {'have' => [['kiwi']]},
       :tasks => [true, ['swap', 'banjo', 'kiwi']],
       :goal_pos => [],
       :goal_not => []

@@ -133,7 +133,7 @@ module PDDL_Parser
 
   def parse_problem(problem_filename)
     if (tokens = scan_tokens(problem_filename)).instance_of?(Array) and tokens.shift == 'define'
-      @state = []
+      @state = {}
       @objects = []
       @goal_pos = []
       @goal_not = []
@@ -159,15 +159,15 @@ module PDDL_Parser
               end
               while o = @objects[index]
                 index += 1
-                types.each {|t| @state << [t, o]}
+                types.each {|t| (@state[t] ||= []) << [o]}
               end
             end
           end
           raise 'Repeated object definition' if @objects.uniq!
-          @objects.each {|obj| @state << [EQUAL, obj, obj]} if @predicates.include?(EQUAL)
+          @state[EQUAL] = @objects.map {|obj| [obj, obj]} if @predicates.include?(EQUAL)
         when ':init'
           group.shift
-          @state.concat(group)
+          group.each {|pre| (@state[pre.shift] ||= []) << pre}
         when ':goal'
           if group = group[1]
             # Conjunction or atom

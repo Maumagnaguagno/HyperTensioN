@@ -41,11 +41,11 @@ module PDDL_Compiler
   def compile_problem(domain_name, problem_name, operators, methods, predicates, state, tasks, goal_pos, goal_not, domain_filename)
     objects = []
     start_str = ''
-    state.each {|pre|
-      if predicates.include?(pre.first)
-        objects.concat(pre.drop(1))
-        start_str << "    (#{pre.join(' ')})\n"
-      end
+    state.each {|pre,k|
+      objects.concat(k.each {|terms|
+        start_str << "    (#{terms.unshift(pre).join(' ')})\n"
+        terms.shift
+      }.flatten) if predicates.include?(pre)
     }
     tasks.drop(1).each {|pre,*terms| objects.concat(terms)}
     goal_str = ''

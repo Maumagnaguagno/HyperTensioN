@@ -47,12 +47,11 @@ class Dependent < Test::Unit::TestCase
         'got_money' => true,
         'happy' => true
       },
-      :state => [
-        ['agent', 'ana'],
-        ['agent', 'bob'],
-        ['object', 'gift'],
-        ['have', 'ana', 'gift']
-      ],
+      :state => {
+        'agent' => [['ana'], ['bob']],
+        'object' => [['gift']],
+        'have' => [['ana', 'gift']]
+      },
       :tasks => [],
       :goal_pos => [['happy', 'bob']],
       :goal_not => [],
