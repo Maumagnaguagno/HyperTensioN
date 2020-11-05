@@ -1,7 +1,7 @@
 module PDDL_Parser
   extend self
 
-  attr_reader :domain_name, :problem_name, :operators, :methods, :predicates, :state, :tasks, :goal_pos, :goal_not, :objects, :requirements
+  attr_reader :domain_name, :problem_name, :operators, :methods, :predicates, :state, :tasks, :goal_pos, :goal_not, :objects, :requirements, :types
 
   AND = 'and'
   NOT = 'not'
