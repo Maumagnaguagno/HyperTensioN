@@ -165,11 +165,9 @@ class Simple < Test::Unit::TestCase
       :domain_name => 'basic',
       :problem_name => 'pb1',
       :operators => [
-        PICKUP,
-        DROP,
-        ['drop_dup', ['?a'], [], [], [], []],
-        ['pickup_dup', ['?a'], [], [], [], []],
-        ['invisible_drop_and_pickup', ['?x', '?y'],
+        ['pickup', ['?a'], [], [], [], []],
+        ['drop', ['?a'], [], [], [], []],
+        ['invisible_macro_drop_and_pickup', ['?x', '?y'],
           # Preconditions
           [['have', '?x']],
           [['have', '?y']],
@@ -185,14 +183,14 @@ class Simple < Test::Unit::TestCase
             [['have', '?x']],
             [['have', '?y']],
             # Subtasks
-            [['invisible_drop_and_pickup', '?x', '?y'], ['drop_dup', '?x'], ['pickup_dup', '?y']]
+            [['invisible_macro_drop_and_pickup', '?x', '?y'], ['drop', '?x'], ['pickup', '?y']]
           ],
           ['case_1', [],
             # Preconditions
             [['have', '?y']],
             [['have', '?x']],
             # Subtasks
-            [['invisible_drop_and_pickup', '?y', '?x'], ['drop_dup', '?y'], ['pickup_dup', '?x']]
+            [['invisible_macro_drop_and_pickup', '?y', '?x'], ['drop', '?y'], ['pickup', '?x']]
           ]
         ]
       ],
