@@ -83,26 +83,23 @@ class Rescue < Test::Unit::TestCase
         'connected' => false,
         'reported' => true
       },
-      :state => [
-        ['robot', 'robby'],
-        ['hallway', 'left'],
-        ['location', 'left'],
-        ['hallway', 'middle'],
-        ['location', 'middle'],
-        ['hallway', 'right'],
-        ['location', 'right'],
-        ['room', 'room1'],
-        ['location', 'room1'],
-        ['beacon', 'beacon1'],
-        ['at', 'robby', 'left'],
-        ['in', 'beacon1', 'room1'],
-        ['connected', 'middle', 'room1'],
-        ['connected', 'room1', 'middle'],
-        ['connected', 'left', 'middle'],
-        ['connected', 'middle', 'left'],
-        ['connected', 'middle', 'right'],
-        ['connected', 'right', 'middle']
-      ],
+      :state => {
+        'robot' => [['robby']],
+        'hallway' => [['left'], ['middle'], ['right']],
+        'location' => [['left'], ['middle'], ['right'], ['room1']],
+        'room' => [['room1']],
+        'beacon' => [['beacon1']],
+        'at' => [['robby', 'left']],
+        'in' => [['beacon1', 'room1']],
+        'connected' => [
+          ['middle', 'room1'],
+          ['room1', 'middle'],
+          ['left', 'middle'],
+          ['middle', 'left'],
+          ['middle', 'right'],
+          ['right', 'middle']
+        ]
+      },
       :tasks => [],
       :goal_pos => [['reported', 'robby', 'beacon1'], ['at', 'robby', 'right']],
       :goal_not => [],
@@ -315,13 +312,13 @@ class Rescue < Test::Unit::TestCase
   (
     (robot robby)
     (hallway left)
-    (location left)
     (hallway middle)
-    (location middle)
     (hallway right)
+    (location left)
+    (location middle)
     (location right)
-    (room room1)
     (location room1)
+    (room room1)
     (beacon beacon1)
     (at robby left)
     (in beacon1 room1)
