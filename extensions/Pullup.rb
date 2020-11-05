@@ -11,12 +11,12 @@ module Pullup
     counter = Hash.new(0)
     tasks.drop(1).each {|t| counter[t.first] += 1}
     methods.map! {|name,param,*decompositions|
-      decompositions.select! {|label,free,precond_pos,precond_not,subtasks|
+      decompositions.select! {|_,free,precond_pos,precond_not,subtasks|
         substitutions = []
-        if precond_pos.each {|pre|
-          unless predicates[pre.first]
-            if (s = state.select {|i| i.zip(pre).all? {|a,b| a == b or b.start_with?('?')}}).empty? then break
-            elsif s.size == 1 and not (pre & free).empty? then substitutions.concat(pre.zip(s.first).select! {|a,b| a != b})
+        if precond_pos.each {|pre,*terms|
+          unless predicates[pre]
+            if not s = state[pre] or (s = s.select {|i| i.zip(terms).all? {|a,b| a == b or b.start_with?('?')}}).empty? then break
+            elsif s.size == 1 and not (terms & free).empty? then terms.zip(s.first) {|t| substitutions << t if t.first != t.last}
             end
           end
         }
@@ -34,12 +34,13 @@ module Pullup
         end
       }
       if decompositions.empty?
+        raise "Domain defines no decomposition for #{name}" if tasks.assoc(name)
         impossible << name
         nil
       else decompositions.unshift(name, param)
       end
     }.compact!
-    operators.reject! {|op| impossible << op.first if not counter.include?(op.first) or op[2].any? {|pre| not predicates[pre.first] and state.none? {|i| i.first == pre.first}}}
+    operators.reject! {|op| impossible << op.first if not counter.include?(op.first) or op[2].any? {|pre| not predicates[pre.first] and not state.include?(pre.first)}}
     # Move current or rigid predicates from leaves to root/entry tasks
     clear_ops = []
     clear_met = []
@@ -89,11 +90,40 @@ module Pullup
             end
             precond_pos.uniq!
             precond_not.uniq!
+            # Add equality duplicates
+            equalities = Hash.new {|h,k| h[k] = []}
+            precond_pos.each {|pre|
+              if pre.first == '='
+                if pre[1].start_with?('?') and not pre[2].start_with?('?')
+                  equalities[pre[2]] << pre[1]
+                elsif not pre[1].start_with?('?') and pre[2].start_with?('?')
+                  equalities[pre[1]] << pre[2]
+                end
+              end
+            }
+            unless equalities.empty?
+              new_precond_pos = []
+              precond_pos.each {|pre|
+                if pre.first != '='
+                  modified = false
+                  npre = pre.drop(1).map! {|i|
+                    if equalities.include?(i)
+                      modified = true
+                      equalities[i]
+                    else [i]
+                    end
+                  }
+                  new_precond_pos.concat([pre.first].product(*npre)) if modified
+                end
+              }
+              precond_pos.concat(new_precond_pos).uniq!
+            end
             repeat = true if old_precond_pos_size != precond_pos.size or old_precond_not_size != precond_not.size
             first_task = false
           }
         }
         if decompositions.empty?
+          raise "Domain defines no decomposition for #{name}" if tasks.assoc(name)
           impossible << name
           repeat = true
           nil
@@ -108,9 +138,9 @@ module Pullup
         possible_decomposition = true
         # Remove unnecessary free variables
         substitutions = []
-        precond_pos.each {|pre|
-          if not predicates[pre.first] and not (pre & free).empty? and (s = state.select {|i| i.zip(pre).all? {|a,b| a == b or b.start_with?('?')}}).size == 1
-            substitutions.concat(pre.zip(s.first).select! {|a,b| a != b})
+        precond_pos.each {|pre,*terms|
+          if not predicates[pre] and not (terms & free).empty? and s = state[pre] and (s = s.select {|i| i.zip(terms).all? {|a,b| a == b or b.start_with?('?')}}).size == 1
+            terms.zip(s.first) {|t| substitutions << t if t.first != t.last}
           end
         }
         unless substitutions.empty?
@@ -121,7 +151,7 @@ module Pullup
         end
         precond_pos.reject! {|pre|
           if not predicates[pre.first] and pre.none? {|i| i.start_with?('?')}
-            unless state.include?(pre)
+            unless s = state[pre.first] and s.include?(pre.drop(1))
               possible_decomposition = false
               break
             end
@@ -131,7 +161,7 @@ module Pullup
         if possible_decomposition
           precond_not.reject! {|pre|
             if not predicates[pre.first] and pre.none? {|i| i.start_with?('?')}
-              if state.include?(pre)
+              if s = state[pre.first] and s.include?(pre.drop(1))
                 possible_decomposition = false
                 break
               end
@@ -162,8 +192,8 @@ module Pullup
   #-----------------------------------------------
 
   def mark_effects(operators, methods, decompositions, effects, visited = [])
-    decompositions.each {|label,free,precond_pos,precond_not,subtasks|
-      subtasks.each {|s|
+    decompositions.each {|decomposition|
+      decomposition.last.each {|s|
         unless visited.include?(s.first)
           visited << s.first
           if op = operators.assoc(s.first)
