@@ -12,7 +12,7 @@ This project was inspired by [Pyhop] and [JSHOP].
 
 [Hypertension won the HTN IPC 2020 Total order track!](http://gki.informatik.uni-freiburg.de/competition/results.pdf)
 Newer commits will contain the optimizations done for the competition, with new documentation and tests.
-Please use the [last stable release](https://github.com/Maumagnaguagno/HyperTensioN/releases/tag/v1.1) until everything is updated.
+Please use the [last stable release](https://github.com/Maumagnaguagno/HyperTensioN/releases/latest) until everything is updated.
 
 [Download and play](../../archive/master.zip) or jump to each section to learn more:
 - [**Algorithm**](#algorithm "Jump to Algorithm section"): planning algorithm explanation
