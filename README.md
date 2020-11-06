@@ -73,7 +73,7 @@ They were defined as instance variables to be mixed in other classes if needed, 
 # Require and use
 require './Hypertension'
 
-Hypertension.state = {...}
+Hypertension.state = [...]
 Hypertension.applicable?(...)
 ```
 
@@ -85,7 +85,7 @@ class Foo < Bar
   include Hypertension
 
   def method(...)
-    @state = {...}
+    @state = [...]
     applicable?(...)
   end
 end
@@ -208,23 +208,23 @@ def enter(bot, source, destination)
   apply_operator(
     # Positive preconditions
     [
-      ['robot', bot],
-      ['hallway', source],
-      ['room', destination],
-      ['at', bot, source],
-      ['connected', source, destination]
+      [ROBOT, bot],
+      [HALLWAY, source],
+      [ROOM, destination],
+      [AT, bot, source],
+      [CONNECTED, source, destination]
     ],
     # Negative preconditions
     [
-      ['at', bot, destination]
+      [AT, bot, destination]
     ],
     # Add effects
     [
-      ['at', bot, destination]
+      [AT, bot, destination]
     ],
     # Del effects
     [
-      ['at', bot, source]
+      [AT, bot, source]
     ]
   )
 end
@@ -286,7 +286,7 @@ def swap_at__base(object, goal)
   if applicable?(
     # Positive preconditions
     [
-      ['at', object, goal]
+      [AT, object, goal]
     ],
     # Negative preconditions
     []
@@ -321,12 +321,12 @@ def swap_at__recursion_enter(object, goal)
   generate(
     # Positive preconditions
     [
-      ['at', object, current],
-      ['connected', current, intermediate]
+      [AT, object, current],
+      [CONNECTED, current, intermediate]
     ],
     # Negative preconditions
     [
-      ['at', object, goal]
+      [AT, object, goal]
     ], current, intermediate
   ) {
     unless @visited_at[object].include?(intermediate)
@@ -366,12 +366,12 @@ def swap_at__recursion_enter(object, goal, current = free_variable, intermediate
   generate(
     # Positive preconditions
     [
-      ['at', object, current],
-      ['connected', current, intermediate]
+      [AT, object, current],
+      [CONNECTED, current, intermediate]
     ],
     # Negative preconditions
     [
-      ['at', object, goal]
+      [AT, object, goal]
     ], current, intermediate
   ) {
     block_removed
@@ -381,15 +381,27 @@ end
 
 ### Problem
 With the domain ready all you need is to define the initial state and the task list.
-The initial state is defined as a Hash table in which the keys are the predicates while the value is an array of possible terms.
+The initial state is defined as an Array in which each index represent one predicate while the value is an array of possible terms.
 The task list follows the same principle, an array of each task to be solved.
-Note that the names must match the ones defined in the domain and tasks will be decomposed in the same order they are described (in ordered mode).
-Even predicates that do not appear in the initial state must be declared, as ``reported => []`` is declared in the example.
+Note that the names must match the ones defined in the domain and tasks are be decomposed in the same order they are described (in ordered mode).
+Even predicates that do not appear in the initial state must be declared, in this example nothing is reported so ``state[REPORTED]`` is declared as ``[]``.
 If your problem does not generate objects during run-time a speed improvement can be obtained moving them to variables, therefore the comparisons will be pointer-based.
-An interesting idea is to have debug being activated by a command line argument, in this case ``ruby pb1.rb debug`` activates debug mode.
+It is possible to activate debug mode with a command line argument, in this case ``ruby pb1.rb debug``.
 
 ```Ruby
 require './Robby'
+
+# Predicates
+AT = 0
+IN = 1
+CONNECTED = 2
+ROBOT = 3
+OBJECT = 4
+LOCATION = 5
+HALLWAY = 6
+ROOM = 7
+BEACON = 8
+REPORTED = 9
 
 # Objects
 robby = 'robby'
@@ -401,22 +413,22 @@ beacon1 = 'beacon1'
 
 Robby.problem(
   # Start
-  {
-    'at' => [ [robby, left] ],
-    'in' => [ [beacon1, room1] ],
-    'connected' => [
+  [
+    [ [robby, left] ], # AT
+    [ [beacon1, room1] ], # IN
+    [ # CONNECTED
       [middle, room1],  [room1, middle],
       [left, middle],   [middle, left],
       [middle, right],  [right, middle]
     ],
-    'robot' => [ [robby] ],
-    'object'=> [ [robby], [beacon1] ],
-    'location' => [ [left], [middle], [right], [room1] ],
-    'hallway' => [ [left], [middle], [right] ],
-    'room' => [ [room1] ],
-    'beacon' => [ [beacon1] ],
-    'reported' => []
-  },
+    [ [robby] ], # ROBOT
+    [ [robby], [beacon1] ], # OBJECT
+    [ [left], [middle], [right], [room1] ], # LOCATION
+    [ [left], [middle], [right] ], # HALLWAY
+    [ [room1] ], # ROOM
+    [ [beacon1] ], # BEACON
+    [] # REPORTED
+  ],
   # Tasks
   [
     ['swap_at', robby, room1],
@@ -605,11 +617,12 @@ Here are some hints to describe your domain:
 - Use preconditions at your favor, no need to test twice using a smart method decomposition, check out [And-or Trees](https://en.wikipedia.org/wiki/And%E2%80%93or_tree).
 - Unifications are costly, avoid generate, match your values once and propagate or use a custom unification process.
 - Even if a precondition or effect is empty you need to declare it, use ``[]``.
-- Empty predicate arrays must be declared in the initial state at the problem file. This avoids predicate typos, as all predicates must be previously defined. Or you can use ``Hash.new {|h,k| h[k] = []}`` to create arrays at run-time.
-- Explore further using ``Hash.compare_by_identity`` on domain and state.
+- Empty predicate arrays must be declared in the initial state at the problem file. This avoids predicate typos, as all predicates must be previously defined.
+- Explore further using ``Hash.compare_by_identity`` on domain.
 - Use different state structures to speed-up state operations and implement your own state duplication, preconditions applicable and effect application operations to better describe your domain.
 - Replace the state copy from ``apply`` with ``@state = Marshal.load(Marshal.dump(@state))`` to deep copy any state structure, otherwise keep the current fast version or use a custom implementation.
 - Increase ``RUBY_THREAD_VM_STACK_SIZE`` to avoid stack overflows in very large planning instances.
+- Execute the Ruby with the ``--disable=all`` flag to load the interpreter faster.
 
 ## Comparison
 The main advantage of HyperTensioN is to be able to define behavior in the core language, without losing clarity, this alone gives a lot of power.
