@@ -1,20 +1,27 @@
 require_relative 'Travel'
 
+AT = 0
+CASH = 1
+STAMINA = 2
+OWE = 3
+DISTANCE = 4
+CONNECTED = 5
+
 plan = Travel.problem(
   # Start
-  {
-    'at' => [
+  [
+    [
       ['me', 'home'],
       ['taxi', 'park']
     ],
-    'cash' => [
+    [
       ['me', '20']
     ],
-    'stamina' => [
+    [
       ['me', '2']
     ],
-    'owe' => [],
-    'distance' => [
+    [],
+    [
       ['home', 'park', '8'],
       ['home', 'friend', '10'],
       ['park', 'home', '8'],
@@ -22,7 +29,7 @@ plan = Travel.problem(
       ['friend', 'home', '10'],
       ['friend', 'park', '2']
     ],
-    'connected' => [
+    [
       ['home', 'park'],
       ['park', 'home'],
       ['home', 'friend'],
@@ -30,7 +37,7 @@ plan = Travel.problem(
       ['friend', 'park'],
       ['park', 'friend']
     ]
-  },
+  ],
   # Tasks
   [
     ['travel', 'me', 'friend'],
