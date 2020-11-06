@@ -40,20 +40,20 @@ module Goldminer
     apply_operator(
       # Positive preconditions
       [
-        ['at', agent, from],
-        ['adjacent', from, to]
+        [AT, agent, from],
+        [ADJACENT, from, to]
       ],
       # Negative preconditions
       [
-        ['blocked', to]
+        [BLOCKED, to]
       ],
       # Add effects
       [
-        ['at', agent, to]
+        [AT, agent, to]
       ],
       # Del effects
       [
-        ['at', agent, from]
+        [AT, agent, from]
       ]
     )
   end
@@ -62,18 +62,18 @@ module Goldminer
     apply_operator(
       # Positive preconditions
       [
-        ['at', agent, where],
-        ['on', gold, where]
+        [AT, agent, where],
+        [ON, gold, where]
       ],
       # Negative preconditions
       [],
       # Add effects
       [
-        ['have', agent, gold]
+        [HAVE, agent, gold]
       ],
       # Del effects
       [
-        ['on', gold, where]
+        [ON, gold, where]
       ]
     )
   end
@@ -82,17 +82,17 @@ module Goldminer
     apply_operator(
       # Positive preconditions
       [
-        ['at', agent, where]
+        [AT, agent, where]
       ],
       # Negative preconditions
       [],
       # Add effects
       [
-        ['on', gold, where]
+        [ON, gold, where]
       ],
       # Del effects
       [
-        ['have', agent, gold]
+        [HAVE, agent, gold]
       ]
     )
   end
@@ -101,7 +101,7 @@ module Goldminer
     apply(
       # Add effects
       [
-        ['dibs', gold]
+        [DIBS, gold]
       ],
       # Del effects
       []
@@ -112,11 +112,11 @@ module Goldminer
     apply(
       # Add effects
       [
-        ['duty', other]
+        [DUTY, other]
       ],
       # Del effects
       [
-        ['duty', agent]
+        [DUTY, agent]
       ]
     )
   end
@@ -139,7 +139,7 @@ module Goldminer
     if applicable?(
       # Positive preconditions
       [
-        ['at', agent, to]
+        [AT, agent, to]
       ],
       # Negative preconditions
       []
@@ -157,14 +157,14 @@ module Goldminer
     generate(
       # Positive preconditions
       [
-        ['at', agent, from],
-        ['adjacent', from, place]
+        [AT, agent, from],
+        [ADJACENT, from, place]
       ],
       # Negative preconditions
       [
-        ['at', agent, to],
-        ['blocked', place],
-        ['blocked', to]
+        [AT, agent, to],
+        [BLOCKED, place],
+        [BLOCKED, to]
       ], place
     ) {
       unless @visited_at[agent].include?(place)
@@ -179,9 +179,9 @@ module Goldminer
 
   def travel__bfs(agent, from, to)
     # Unreachable
-    blocked = @state['blocked']
+    blocked = @state[BLOCKED]
     return if blocked.include?([to])
-    adjacent = @state['adjacent']
+    adjacent = @state[ADJACENT]
     frontier = [from]
     visited = {}
     until frontier.empty?
@@ -208,7 +208,7 @@ module Goldminer
 
   def travel__bfs_generate(agent, from, to)
     # Unreachable
-    return if @state['blocked'].include?([to])
+    return if @state[BLOCKED].include?([to])
     frontier = [from]
     visited = {}
     # Generate as a generic method of unification
@@ -220,11 +220,11 @@ module Goldminer
       generate(
         # Positive preconditions
         [
-          ['adjacent', current, place]
+          [ADJACENT, current, place]
         ],
         # Negative preconditions
         [
-          ['blocked', place]
+          [BLOCKED, place]
         ], place
       ) {
         next if visited.include?(place)
@@ -256,15 +256,15 @@ module Goldminer
     generate(
       # Positive preconditions
       [
-        ['duty', agent],
-        ['at', agent, agent_pos],
-        ['on', gold, gold_pos],
-        ['deposit', deposit_pos],
-        ['next', agent, other]
+        [DUTY, agent],
+        [AT, agent, agent_pos],
+        [ON, gold, gold_pos],
+        [DEPOSIT, deposit_pos],
+        [NEXT, agent, other]
       ],
       # Negative preconditions
       [
-        ['dibs', gold]
+        [DIBS, gold]
       ], agent, agent_pos, other, gold, gold_pos, deposit_pos
     ) {
       yield [

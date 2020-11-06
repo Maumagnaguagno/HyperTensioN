@@ -1,5 +1,16 @@
 require_relative 'Goldminer'
 
+# Predicates
+DUTY = 0
+NEXT = 1
+DEPOSIT = 2
+ON = 3
+BLOCKED = 4
+AT = 5
+ADJACENT = 6
+DIBS = 7
+HAVE = 8
+
 # Objects
 ag1 = 'ag1'
 g1 = 'g1'
@@ -108,22 +119,22 @@ p9_9 = 'p9_9'
 
 plan = Goldminer.problem(
   # Start
-  {
-    'duty' => [
+  [
+    [
       [ag1]
     ],
-    'next' => [
+    [
       [ag1, ag1]
     ],
-    'deposit' => [
+    [
       [p8_6]
     ],
-    'on' => [
+    [
       [g1, p4_0],
       [g2, p4_3],
       [g3, p5_9]
     ],
-    'blocked' => [
+    [
       [p1_1],
       [p2_1],
       [p3_1],
@@ -143,10 +154,10 @@ plan = Goldminer.problem(
       [p7_8],
       [p8_8]
     ],
-    'at' => [
+    [
       [ag1, p1_6]
     ],
-    'adjacent' => [
+    [
       [p0_0, p1_0],
       [p0_0, p0_1],
       [p1_0, p0_0],
@@ -508,9 +519,9 @@ plan = Goldminer.problem(
       [p9_9, p8_9],
       [p9_9, p9_8]
     ],
-    'dibs' => [],
-    'have' => []
-  },
+    [],
+    []
+  ],
   # Tasks
   [
     ['get_gold']

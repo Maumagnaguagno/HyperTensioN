@@ -1,24 +1,35 @@
 require_relative 'Goldminer'
 require_relative '../experiments/Grid'
 
+# Predicates
+DUTY = 0
+NEXT = 1
+DEPOSIT = 2
+ON = 3
+BLOCKED = 4
+AT = 5
+ADJACENT = 6
+DIBS = 7
+HAVE = 8
+
 plan = Goldminer.problem(
   # Start
-  {
-    'duty' => [
+  [
+    [
       ['ag1']
     ],
-    'next' => [
+    [
       ['ag1', 'ag1']
     ],
-    'deposit' => [
+    [
       ['p8_6']
     ],
-    'on' => [
+    [
       ['g1', 'p4_0'],
       ['g2', 'p4_3'],
       ['g3', 'p5_9']
     ],
-    'blocked' => [
+    [
       ['p1_1'],
       ['p2_1'],
       ['p3_1'],
@@ -38,13 +49,13 @@ plan = Goldminer.problem(
       ['p7_8'],
       ['p8_8']
     ],
-    'at' => [
+    [
       ['ag1', 'p1_6']
     ],
-    'adjacent' => Grid.generate(10,10),
-    'dibs' => [],
-    'have' => []
-  },
+    Grid.generate(10,10),
+    [],
+    []
+  ],
   # Tasks
   [
     ['get_gold']
