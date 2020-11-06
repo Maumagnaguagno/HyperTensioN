@@ -35,23 +35,23 @@ module Robby
     apply_operator(
       # Positive preconditions
       [
-        ['robot', bot],
-        ['hallway', source],
-        ['room', destination],
-        ['at', bot, source],
-        ['connected', source, destination]
+        [ROBOT, bot],
+        [HALLWAY, source],
+        [ROOM, destination],
+        [AT, bot, source],
+        [CONNECTED, source, destination]
       ],
       # Negative preconditions
       [
-        ['at', bot, destination]
+        [AT, bot, destination]
       ],
       # Add effects
       [
-        ['at', bot, destination]
+        [AT, bot, destination]
       ],
       # Del effects
       [
-        ['at', bot, source]
+        [AT, bot, source]
       ]
     )
   end
@@ -60,23 +60,23 @@ module Robby
     apply_operator(
       # Positive preconditions
       [
-        ['robot', bot],
-        ['room', source],
-        ['hallway', destination],
-        ['at', bot, source],
-        ['connected', source, destination]
+        [ROBOT, bot],
+        [ROOM, source],
+        [HALLWAY, destination],
+        [AT, bot, source],
+        [CONNECTED, source, destination]
       ],
       # Negative preconditions
       [
-        ['at', bot, destination]
+        [AT, bot, destination]
       ],
       # Add effects
       [
-        ['at', bot, destination]
+        [AT, bot, destination]
       ],
       # Del effects
       [
-        ['at', bot, source]
+        [AT, bot, source]
       ]
     )
   end
@@ -85,23 +85,23 @@ module Robby
     apply_operator(
       # Positive preconditions
       [
-        ['robot', bot],
-        ['hallway', source],
-        ['hallway', destination],
-        ['at', bot, source],
-        ['connected', source, destination]
+        [ROBOT, bot],
+        [HALLWAY, source],
+        [HALLWAY, destination],
+        [AT, bot, source],
+        [CONNECTED, source, destination]
       ],
       # Negative preconditions
       [
-        ['at', bot, destination]
+        [AT, bot, destination]
       ],
       # Add effects
       [
-        ['at', bot, destination]
+        [AT, bot, destination]
       ],
       # Del effects
       [
-        ['at', bot, source]
+        [AT, bot, source]
       ]
     )
   end
@@ -110,19 +110,19 @@ module Robby
     apply_operator(
       # Positive preconditions
       [
-        ['robot', bot],
-        ['location', source],
-        ['beacon', beacon],
-        ['at', bot, source],
-        ['in', beacon, source]
+        [ROBOT, bot],
+        [LOCATION, source],
+        [BEACON, beacon],
+        [AT, bot, source],
+        [IN, beacon, source]
       ],
       # Negative preconditions
       [
-        ['reported', bot, beacon]
+        [REPORTED, bot, beacon]
       ],
       # Add effects
       [
-        ['reported', bot, beacon]
+        [REPORTED, bot, beacon]
       ],
       # Del effects
       []
@@ -147,7 +147,7 @@ module Robby
     if applicable?(
       # Positive preconditions
       [
-        ['at', object, goal]
+        [AT, object, goal]
       ],
       # Negative preconditions
       []
@@ -166,12 +166,12 @@ module Robby
     generate(
       # Positive preconditions
       [
-        ['at', object, current],
-        ['connected', current, intermediate]
+        [AT, object, current],
+        [CONNECTED, current, intermediate]
       ],
       # Negative preconditions
       [
-        ['at', object, goal]
+        [AT, object, goal]
       ], current, intermediate
     ) {
       unless @visited_at[object].include?(intermediate)
@@ -192,12 +192,12 @@ module Robby
     generate(
       # Positive preconditions
       [
-        ['at', object, current],
-        ['connected', current, intermediate]
+        [AT, object, current],
+        [CONNECTED, current, intermediate]
       ],
       # Negative preconditions
       [
-        ['at', object, goal]
+        [AT, object, goal]
       ], current, intermediate
     ) {
       unless @visited_at[object].include?(intermediate)
@@ -218,12 +218,12 @@ module Robby
     generate(
       # Positive preconditions
       [
-        ['at', object, current],
-        ['connected', current, intermediate]
+        [AT, object, current],
+        [CONNECTED, current, intermediate]
       ],
       # Negative preconditions
       [
-        ['at', object, goal]
+        [AT, object, goal]
       ], current, intermediate
     ) {
       unless @visited_at[object].include?(intermediate)
