@@ -622,7 +622,7 @@ Here are some hints to describe your domain:
 - Use different state structures to speed-up state operations and implement your own state duplication, preconditions applicable and effect application operations to better describe your domain.
 - Replace the state copy from ``apply`` with ``@state = Marshal.load(Marshal.dump(@state))`` to deep copy any state structure, otherwise keep the current fast version or use a custom implementation.
 - Increase ``RUBY_THREAD_VM_STACK_SIZE`` to avoid stack overflows in very large planning instances.
-- Execute the Ruby with the ``--disable=all`` flag to load the interpreter faster.
+- Execute the interpreter with the ``--disable=all`` flag to load it faster.
 
 ## Comparison
 The main advantage of HyperTensioN is to be able to define behavior in the core language, without losing clarity, this alone gives a lot of power.
