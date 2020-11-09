@@ -382,72 +382,36 @@ module Dependency
   #-----------------------------------------------
 
   def work(a)
-    apply_operator(
-      # Positive preconditions
-      [
-        [AGENT, a]
-      ],
-      # Negative preconditions
-      [
-        [GOT_MONEY, a]
-      ],
-      # Add effects
-      [
-        [GOT_MONEY, a]
-      ],
-      # Del effects
-      [
-        [HAPPY, a]
-      ]
-    )
+    return unless AGENT.include?(a)
+    return if @state[GOT_MONEY].include?(a)
+    @state = @state.dup
+    (@state[HAPPY] = @state[HAPPY].dup).delete(a)
+    (@state[GOT_MONEY] = @state[GOT_MONEY].dup).unshift(a)
+    true
   end
 
   def buy(a, x)
-    apply_operator(
-      # Positive preconditions
-      [
-        [AGENT, a],
-        [OBJECT, x],
-        [GOT_MONEY, a]
-      ],
-      # Negative preconditions
-      [
-        [HAVE, a, x]
-      ],
-      # Add effects
-      [
-        [HAVE, a, x]
-      ],
-      # Del effects
-      [
-        [GOT_MONEY, a]
-      ]
-    )
+    return unless AGENT.include?(a)
+    return unless OBJECT.include?(x)
+    return unless @state[GOT_MONEY].include?(a)
+    return if @state[HAVE].include?([a, x])
+    @state = @state.dup
+    (@state[GOT_MONEY] = @state[GOT_MONEY].dup).delete(a)
+    (@state[HAVE] = @state[HAVE].dup).unshift([a, x])
+    true
   end
 
   def give(a, b, x)
-    apply_operator(
-      # Positive preconditions
-      [
-        [AGENT, a],
-        [AGENT, b],
-        [OBJECT, x],
-        [HAVE, a, x]
-      ],
-      # Negative preconditions
-      [
-        [HAVE, b, x]
-      ],
-      # Add effects
-      [
-        [HAVE, b, x],
-        [HAPPY, b]
-      ],
-      # Del effects
-      [
-        [HAVE, a, x]
-      ]
-    )
+    return unless AGENT.include?(a)
+    return unless AGENT.include?(b)
+    return unless OBJECT.include?(x)
+    return unless @state[HAVE].include?([a, x])
+    return if @state[HAVE].include?([b, x])
+    @state = @state.dup
+    (@state[HAVE] = @state[HAVE].dup).delete([a, x])
+    @state[HAVE].unshift([b, x])
+    (@state[HAPPY] = @state[HAPPY].dup).unshift(b)
+    true
   end
 
   #-----------------------------------------------

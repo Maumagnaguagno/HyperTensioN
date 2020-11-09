@@ -16,6 +16,20 @@ module Hyper_Compiler
     end
   end
 
+  def predicate_to_hyper(output, pre, terms, predicates)
+    if predicates[pre] then output << "@state[#{pre.upcase}].include?(#{terms_to_hyper(terms)})"
+    else output << "#{pre.upcase}.include?(#{terms_to_hyper(terms)})"
+    end
+  end
+
+  #-----------------------------------------------
+  # Terms to Hyper
+  #-----------------------------------------------
+
+  def terms_to_hyper(terms)
+    terms.size == 1 ? terms.map! {|t| term(t)}.join(', ') : "[#{terms.map! {|t| term(t)}.join(', ')}]"
+  end
+
   #-----------------------------------------------
   # Subtasks to Hyper
   #-----------------------------------------------
@@ -44,31 +58,41 @@ module Hyper_Compiler
     define_operators = ''
     operators.each_with_index {|(name,param,precond_pos,precond_not,effect_add,effect_del),i|
       domain_str << "\n    :#{name} => #{!name.start_with?('invisible_')}#{',' unless operators.size.pred == i and methods.empty?}"
-      define_operators << "\n  def #{name}#{"(#{param.join(', ').delete!('?')})" unless param.empty?}\n    "
-      if effect_add.empty? and effect_del.empty?
-        if precond_pos.empty? and precond_not.empty?
-          # Empty
-          define_operators << "true\n  end\n"
-        else
-          # Sensing
-          predicates_to_hyper(define_operators << "applicable?(\n      # Positive preconditions", precond_pos)
-          predicates_to_hyper(define_operators << ",\n      # Negative preconditions", precond_not)
-          define_operators << "\n    )\n  end\n"
+      define_operators << "\n  def #{name}#{"(#{param.join(', ').delete!('?')})" unless param.empty?}"
+      equality = []
+      precond_pos.each {|pre,*terms|
+        if pre == '=' then equality << "#{term(terms[0])} != #{term(terms[1])}"
+        elsif not predicates[pre] and not state.include?(pre) then define_operators << "\n    return"
+        else predicate_to_hyper(define_operators << "\n    return unless ", pre, terms, predicates)
         end
-      else
-        if precond_pos.empty? and precond_not.empty?
-          # Effective
-          define_operators << 'apply('
-        else
-          # Effective if preconditions hold
-          predicates_to_hyper(define_operators << "apply_operator(\n      # Positive preconditions", precond_pos)
-          predicates_to_hyper(define_operators << ",\n      # Negative preconditions", precond_not)
-          define_operators << ','
+      }
+      precond_not.each {|pre,*terms|
+        if pre == '=' then equality << "#{term(terms[0])} == #{term(terms[1])}"
+        elsif predicates[pre] or state.include?(pre) then predicate_to_hyper(define_operators << "\n    return if ", pre, terms, predicates)
         end
-        predicates_to_hyper(define_operators << "\n      # Add effects", effect_add)
-        predicates_to_hyper(define_operators << ",\n      # Del effects", effect_del)
-        define_operators << "\n    )\n  end\n"
+      }
+      define_operators << "\n    return if #{equality.join(' or ')}" unless equality.empty?
+      unless effect_add.empty? and effect_del.empty?
+        define_operators << "\n    @state = @state.dup"
+        duplicated = {}
+        effect_del.each {|pre,*terms|
+          if duplicated.include?(pre)
+            define_operators << "\n    @state[#{pre.upcase}].delete(#{terms_to_hyper(terms)})"
+          else
+            define_operators << "\n    (@state[#{pre.upcase}] = @state[#{pre.upcase}].dup).delete(#{terms_to_hyper(terms)})"
+            duplicated[pre] = nil
+          end
+        }
+        effect_add.each {|pre,*terms|
+          if duplicated.include?(pre)
+            define_operators << "\n    @state[#{pre.upcase}].unshift(#{terms_to_hyper(terms)})"
+          else
+            define_operators << "\n    (@state[#{pre.upcase}] = @state[#{pre.upcase}].dup).unshift(#{terms_to_hyper(terms)})"
+            duplicated[pre] = nil
+          end
+        }
       end
+      define_operators << "\n    true\n  end\n"
     }
     # Methods
     define_methods = ''
