@@ -37,8 +37,8 @@ plan = Travel.problem(
   ],
   # Tasks
   [
-    ['travel', 'me', 'friend'],
-    ['travel', 'me', 'park']
+    [:travel, 'me', 'friend'],
+    [:travel, 'me', 'park']
   ],
   # Debug
   ARGV.first == 'debug'
@@ -46,6 +46,6 @@ plan = Travel.problem(
 
 # Test
 abort('Test failed') if plan != [
-  ['walk', 'me', 'home', 'friend'],
-  ['walk', 'me', 'friend', 'park']
+  [:walk, 'me', 'home', 'friend'],
+  [:walk, 'me', 'friend', 'park']
 ]

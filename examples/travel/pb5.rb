@@ -40,8 +40,8 @@ plan = Travel.problem(
   ],
   # Tasks
   [
-    ['travel', 'me', 'friend'],
-    ['travel', 'me', 'park']
+    [:travel, 'me', 'friend'],
+    [:travel, 'me', 'park']
   ],
   # Debug
   ARGV.first == 'debug'
@@ -49,10 +49,10 @@ plan = Travel.problem(
 
 # Test
 abort('Test failed') if plan != [
-  ['call_taxi', 'park', 'home'],
-  ['ride_taxi', 'me', 'home', 'friend', '6.5'],
-  ['pay_driver', 'me', '20', '6.5'],
-  ['call_taxi', 'friend', 'home'],
-  ['ride_taxi', 'me', 'home', 'park', '5.5'],
-  ['pay_driver', 'me', '13.5', '5.5']
+  [:call_taxi, 'park', 'home'],
+  [:ride_taxi, 'me', 'home', 'friend', '6.5'],
+  [:pay_driver, 'me', '20', '6.5'],
+  [:call_taxi, 'friend', 'home'],
+  [:ride_taxi, 'me', 'home', 'park', '5.5'],
+  [:pay_driver, 'me', '13.5', '5.5']
 ]

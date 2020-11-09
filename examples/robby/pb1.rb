@@ -65,9 +65,9 @@ plan = Robby.problem(
   ],
   # Tasks
   [
-    ['swap_at', robby, room1],
-    ['report', robby, room1, beacon1],
-    ['swap_at', robby, right]
+    [:swap_at, robby, room1],
+    [:report, robby, room1, beacon1],
+    [:swap_at, robby, right]
   ],
   # Debug
   ARGV.first == 'debug'
@@ -75,9 +75,9 @@ plan = Robby.problem(
 
 # Test
 abort('Test failed') if plan != [
-  ['move', robby, left, middle],
-  ['enter', robby, middle, room1],
-  ['report', robby, room1, beacon1],
-  ['exit', robby, room1, middle],
-  ['move', robby, middle, right]
+  [:move, robby, left, middle],
+  [:enter, robby, middle, room1],
+  [:report, robby, room1, beacon1],
+  [:exit, robby, room1, middle],
+  [:move, robby, middle, right]
 ]

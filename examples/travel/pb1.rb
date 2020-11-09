@@ -37,11 +37,11 @@ plan = Travel.problem(
   ],
   # Tasks
   [
-    ['travel', 'me', 'park']
+    [:travel, 'me', 'park']
   ],
   # Debug
   ARGV.first == 'debug'
 )
 
 # Test
-abort('Test failed') if plan != [['walk', 'me', 'home', 'park']]
+abort('Test failed') if plan != [[:walk, 'me', 'home', 'park']]

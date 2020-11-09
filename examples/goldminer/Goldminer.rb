@@ -10,22 +10,22 @@ module Goldminer
 
   @domain = {
     # Operators
-    'move' => true,
-    'pick' => true,
-    'drop' => true,
-    'see' => false,
-    'shift' => false,
-    'visit_at' => false,
-    'unvisit_at' => false,
+    :move => true,
+    :pick => true,
+    :drop => true,
+    :see => false,
+    :shift => false,
+    :visit_at => false,
+    :unvisit_at => false,
     # Methods
-    'travel' => [
-      'travel__bfs', # Optimal
-      'travel__base',
-      'travel__recursion'
+    :travel => [
+      :travel__bfs, # Optimal
+      :travel__base,
+      :travel__recursion
     ],
-    'get_gold' => [
-      'get_gold__recursion',
-      'get_gold__base'
+    :get_gold => [
+      :get_gold__recursion,
+      :get_gold__base
     ]
   }
 
@@ -145,7 +145,7 @@ module Goldminer
       []
     )
       yield [
-        ['unvisit_at', agent]
+        [:unvisit_at, agent]
       ]
     end
   end
@@ -169,9 +169,9 @@ module Goldminer
     ) {
       unless @visited_at[agent].include?(place)
         yield [
-          ['move', agent, from, place],
-          ['visit_at', agent, from],
-          ['travel', agent, place, to]
+          [:move, agent, from, place],
+          [:visit_at, agent, from],
+          [:travel, agent, place, to]
         ]
       end
     }
@@ -190,11 +190,11 @@ module Goldminer
       adjacent.each {|c,place|
         if c == current and not blocked.include?([place]) and not visited.include?(place)
           if place == to
-            solution = [['move', agent, current, to]]
+            solution = [[:move, agent, current, to]]
             while plan
               to = current
               current, plan = plan
-              solution.unshift(['move', agent, current, to])
+              solution.unshift([:move, agent, current, to])
             end
             yield solution
             return
@@ -229,11 +229,11 @@ module Goldminer
       ) {
         next if visited.include?(place)
         if place == to
-          solution = [['move', agent, current, to]]
+          solution = [[:move, agent, current, to]]
           while plan
             to = current
             current, plan = plan
-            solution.unshift(['move', agent, current, to])
+            solution.unshift([:move, agent, current, to])
           end
           yield solution
           return
@@ -268,13 +268,13 @@ module Goldminer
       ], agent, agent_pos, other, gold, gold_pos, deposit_pos
     ) {
       yield [
-        ['see', gold],
-        ['travel', agent, agent_pos, gold_pos],
-        ['pick', agent, gold, gold_pos],
-        ['travel', agent, gold_pos, deposit_pos],
-        ['drop', agent, gold, deposit_pos],
-        ['shift', agent, other],
-        ['get_gold']
+        [:see, gold],
+        [:travel, agent, agent_pos, gold_pos],
+        [:pick, agent, gold, gold_pos],
+        [:travel, agent, gold_pos, deposit_pos],
+        [:drop, agent, gold, deposit_pos],
+        [:shift, agent, other],
+        [:get_gold]
       ]
     }
   end

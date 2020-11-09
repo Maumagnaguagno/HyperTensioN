@@ -10,15 +10,15 @@ module Travel
 
   @domain = {
     # Operators
-    'walk' => true,
-    'call_taxi' => true,
-    'ride_taxi' => true,
-    'pay_driver' => true,
+    :walk => true,
+    :call_taxi => true,
+    :ride_taxi => true,
+    :pay_driver => true,
     # Methods
-    'travel' => [
-      'stay_here',
-      'travel_by_taxi',
-      'travel_by_foot'
+    :travel => [
+      :stay_here,
+      :travel_by_taxi,
+      :travel_by_foot
     ]
   }
 
@@ -157,9 +157,9 @@ module Travel
         if amount_of_money.to_f >= cost
           cost = cost.to_s
           yield [
-            ['call_taxi', taxi_position, source],
-            ['ride_taxi', agent, source, destination, cost],
-            ['pay_driver', agent, amount_of_money, cost]
+            [:call_taxi, taxi_position, source],
+            [:ride_taxi, agent, source, destination, cost],
+            [:pay_driver, agent, amount_of_money, cost]
           ]
         end
       end
@@ -181,7 +181,7 @@ module Travel
       ], source
     ) {
       yield [
-        ['walk', agent, source, destination]
+        [:walk, agent, source, destination]
       ]
     }
   end

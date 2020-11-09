@@ -10,18 +10,18 @@ module Robby
 
   @domain = {
     # Operators
-    'enter' => true,
-    'exit' => true,
-    'move' => true,
-    'report' => true,
-    'visit_at' => false,
-    'unvisit_at' => false,
+    :enter => true,
+    :exit => true,
+    :move => true,
+    :report => true,
+    :visit_at => false,
+    :unvisit_at => false,
     # Methods
-    'swap_at' => [
-      'swap_at__base',
-      'swap_at__recursion_enter',
-      'swap_at__recursion_exit',
-      'swap_at__recursion_move'
+    :swap_at => [
+      :swap_at__base,
+      :swap_at__recursion_enter,
+      :swap_at__recursion_exit,
+      :swap_at__recursion_move
     ]
   }
   # Memory
@@ -153,7 +153,7 @@ module Robby
       []
     )
       yield [
-        ['unvisit_at', object]
+        [:unvisit_at, object]
       ]
     end
   end
@@ -176,9 +176,9 @@ module Robby
     ) {
       unless @visited_at[object].include?(intermediate)
         yield [
-          ['enter', object, current, intermediate],
-          ['visit_at', object, current],
-          ['swap_at', object, goal]
+          [:enter, object, current, intermediate],
+          [:visit_at, object, current],
+          [:swap_at, object, goal]
         ]
       end
     }
@@ -202,9 +202,9 @@ module Robby
     ) {
       unless @visited_at[object].include?(intermediate)
         yield [
-          ['exit', object, current, intermediate],
-          ['visit_at', object, current],
-          ['swap_at', object, goal]
+          [:exit, object, current, intermediate],
+          [:visit_at, object, current],
+          [:swap_at, object, goal]
         ]
       end
     }
@@ -228,9 +228,9 @@ module Robby
     ) {
       unless @visited_at[object].include?(intermediate)
         yield [
-          ['move', object, current, intermediate],
-          ['visit_at', object, current],
-          ['swap_at', object, goal]
+          [:move, object, current, intermediate],
+          [:visit_at, object, current],
+          [:swap_at, object, goal]
         ]
       end
     }
