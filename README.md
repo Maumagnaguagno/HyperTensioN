@@ -97,7 +97,7 @@ This may be useful to reorder method decompositions in the domain to modify the 
 You will notice that the plan is not a variable, as it is created during backtracking, which means you cannot reorder actions in the planning process using this algorithm, but it is possible with a variation that creates the plan during decomposition.
 
 The methods are few and simple to use:
-- ``planning(tasks, level = 0)`` receives a task list, ``[['task1', 'term1', 'term2'], ['task2', 'term3']]``, to decompose and the nesting level to help debug.
+- ``planning(tasks, level = 0)`` receives a task list, ``[[:task1, 'term1', 'term2'], [:task2, 'term3']]``, to decompose and the nesting level to help debug.
 Only call this method after domain and state were defined.
 This method is called recursively until it finds an empty task list, ``[]``, then it starts to build the plan while backtracking to save CPU (avoid intermediate plan creation).
 Therefore no plan actually exists before reaching an empty task list.
@@ -161,18 +161,18 @@ module Robby
 
   @domain = {
     # Operators
-    'enter' => true,
-    'exit' => true,
-    'move' => true,
-    'report' => true,
-    'visit_at' => false,
-    'unvisit_at' => false,
+    :enter => true,
+    :exit => true,
+    :move => true,
+    :report => true,
+    :visit_at => false,
+    :unvisit_at => false,
     # Methods
-    'swap_at' => [
-      'swap_at__base',
-      'swap_at__recursion_enter',
-      'swap_at__recursion_exit',
-      'swap_at__recursion_move'
+    :swap_at => [
+      :swap_at__base,
+      :swap_at__recursion_enter,
+      :swap_at__recursion_exit,
+      :swap_at__recursion_move
     ]
   }
 end
@@ -185,7 +185,7 @@ Each method ``swap_at__XYZ`` describe one possible case of decomposition of ``sw
 It is also possible to avoid listing all of them and filter based on their name (after they were declared):
 
 ```Ruby
-@domain['swap_at'] = instance_methods.find_all {|method| method =~ /^swap_at/}
+@domain[:swap_at] = instance_methods.find_all {|method| method =~ /^swap_at/}
 ```
 
 The enter operator appears to be a good starting point, we need to define our preconditions and effects.
@@ -271,7 +271,7 @@ This example is not part of the current implementation of Robby.
 ```Ruby
 def swap_at__jump(object, goal)
     yield [
-      ['jump', object]
+      [:jump, object]
     ]
   end
 end
@@ -292,7 +292,7 @@ def swap_at__base(object, goal)
     []
   )
     yield [
-      ['unvisit_at', object]
+      [:unvisit_at, object]
     ]
   end
 end
@@ -331,9 +331,9 @@ def swap_at__recursion_enter(object, goal)
   ) {
     unless @visited_at[object].include?(intermediate)
       yield [
-        ['enter', object, current, intermediate],
-        ['visit_at', object, current],
-        ['swap_at', object, goal]
+        [:enter, object, current, intermediate],
+        [:visit_at, object, current],
+        [:swap_at, object, goal]
       ]
     end
   }
@@ -431,9 +431,9 @@ Robby.problem(
   ],
   # Tasks
   [
-    ['swap_at', robby, room1],
-    ['report', robby, room1, beacon1],
-    ['swap_at', robby, right]
+    [:swap_at, robby, room1],
+    [:report, robby, room1, beacon1],
+    [:swap_at, robby, right]
   ],
   # Debug
   ARGV.first == 'debug'
@@ -510,7 +510,7 @@ Hype is composed of:
 - [Dummy](docs/Dummy.md) (generate brute-force methods that try to achieve goal predicates)
 - Wise (warn and fix description mistakes)
 - Macro (optimize operator sequences to speed up decomposition)
-- Pull up (optimize preconditions to avoid backtracking)
+- Pullup (optimize preconditions to avoid backtracking)
 - Grammar (print domain methods as [production rules](https://en.wikipedia.org/wiki/Production_(computer_science)))
 - Complexity (print domain, problem and total complexity based on amount of terms)
 
@@ -630,7 +630,7 @@ JSHOP2 requires the user to dive into a very complex structure to unlock such po
 Without unification the user must ground or propagate variables by hand, and without backtracking the domain must never reach a dead-end during decomposition.
 HyperTensioN biggest advantage is not the planner itself, but the parsers, extensions and compilers built around it, so that descriptions can be converted automatically.
 Perhaps the most invisible advantage is the lack of custom classes, every object used during planning is defined as one of the core objects.
-Once Strings, Arrays and Hashes are understood, the entire HyperTensioN module is just a few methods away from complete understanding.
+Once Strings, Symbols, Arrays and Hashes are understood, the entire HyperTensioN module is just a few methods away from complete understanding.
 
 Among the lacking features is lazy variable evaluation and interleaved/unordered execution of tasks, a feature that JSHOP2 supports and important to achieve good plans in some cases.
 We only support unordered tasks at the problem level and do not interleave them during decomposition.

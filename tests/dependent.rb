@@ -353,27 +353,27 @@ module Dependency
 
   @domain = {
     # Operators
-    'work' => true,
-    'buy' => true,
-    'give' => true,
+    :work => true,
+    :buy => true,
+    :give => true,
     # Methods
-    'dependency_work_before_buy_for_have' => [
-      'dependency_work_before_buy_for_have_goal_satisfied',
-      'dependency_work_before_buy_for_have_satisfied',
-      'dependency_work_before_buy_for_have_unsatisfied'
+    :dependency_work_before_buy_for_have => [
+      :dependency_work_before_buy_for_have_goal_satisfied,
+      :dependency_work_before_buy_for_have_satisfied,
+      :dependency_work_before_buy_for_have_unsatisfied
     ],
-    'dependency_buy_before_give_for_have' => [
-      'dependency_buy_before_give_for_have_goal_satisfied',
-      'dependency_buy_before_give_for_have_satisfied',
-      'dependency_buy_before_give_for_have_unsatisfied'
+    :dependency_buy_before_give_for_have => [
+      :dependency_buy_before_give_for_have_goal_satisfied,
+      :dependency_buy_before_give_for_have_satisfied,
+      :dependency_buy_before_give_for_have_unsatisfied
     ],
-    'dependency_buy_before_give_for_happy' => [
-      'dependency_buy_before_give_for_happy_goal_satisfied',
-      'dependency_buy_before_give_for_happy_satisfied',
-      'dependency_buy_before_give_for_happy_unsatisfied'
+    :dependency_buy_before_give_for_happy => [
+      :dependency_buy_before_give_for_happy_goal_satisfied,
+      :dependency_buy_before_give_for_happy_satisfied,
+      :dependency_buy_before_give_for_happy_unsatisfied
     ],
-    'unify_a_x_before_dependency_buy_before_give_for_happy' => [
-      'unify_a_x_before_dependency_buy_before_give_for_happy_a_x'
+    :unify_a_x_before_dependency_buy_before_give_for_happy => [
+      :unify_a_x_before_dependency_buy_before_give_for_happy_a_x
     ]
   }
 
@@ -479,7 +479,7 @@ module Dependency
       []
     )
       yield [
-        ['buy', a, x]
+        [:buy, a, x]
       ]
     end
   end
@@ -497,8 +497,8 @@ module Dependency
       ]
     )
       yield [
-        ['work', a],
-        ['buy', a, x]
+        [:work, a],
+        [:buy, a, x]
       ]
     end
   end
@@ -529,7 +529,7 @@ module Dependency
       []
     )
       yield [
-        ['give', a, b, x]
+        [:give, a, b, x]
       ]
     end
   end
@@ -548,8 +548,8 @@ module Dependency
       ]
     )
       yield [
-        ['dependency_work_before_buy_for_have', a, x],
-        ['give', a, b, x]
+        [:dependency_work_before_buy_for_have, a, x],
+        [:give, a, b, x]
       ]
     end
   end
@@ -580,7 +580,7 @@ module Dependency
       []
     )
       yield [
-        ['give', a, b, x]
+        [:give, a, b, x]
       ]
     end
   end
@@ -599,8 +599,8 @@ module Dependency
       ]
     )
       yield [
-        ['dependency_work_before_buy_for_have', a, x],
-        ['give', a, b, x]
+        [:dependency_work_before_buy_for_have, a, x],
+        [:give, a, b, x]
       ]
     end
   end
@@ -619,7 +619,7 @@ module Dependency
       [], a, x
     ) {
       yield [
-        ['dependency_buy_before_give_for_happy', a, x, b]
+        [:dependency_buy_before_give_for_happy, a, x, b]
       ]
     }
   end
@@ -658,7 +658,7 @@ Dependency.problem(
   ],
   # Tasks
   [
-    ['unify_a_x_before_dependency_buy_before_give_for_happy', bob]
+    [:unify_a_x_before_dependency_buy_before_give_for_happy, bob]
   ],
   # Debug
   ARGV.first == 'debug',

@@ -7,13 +7,31 @@ module Hyper_Compiler
   # Predicates to Hyper
   #-----------------------------------------------
 
-  def predicates_to_hyper(output, predicates, indentation = '      ', yielder = '')
+  def predicates_to_hyper(output, predicates)
     if predicates.empty?
-      output << "\n#{indentation}#{yielder}[]"
+      output << "\n      []"
     else
-      predicates = predicates.map {|g| g.map.with_index {|i,j| j == 0 ? "?#{i == '=' ? 'EQUAL' : i.upcase}" : i}} if yielder.empty?
-      output << "\n#{indentation}#{yielder}[\n#{indentation}  [" << predicates.map {|g| g.map {|i| i.start_with?('?') ? i.delete('?') : "'#{i}'"}.join(', ')}.join("],\n#{indentation}  [") << "]\n#{indentation}]"
+      predicates = predicates.map {|g| g.map.with_index {|i,j| j == 0 ? "?#{i == '=' ? 'EQUAL' : i.upcase}" : i}}
+      output << "\n      [\n        [" << predicates.map {|g| g.map {|i| i.start_with?('?') ? i.delete('?') : "'#{i}'"}.join(', ')}.join("],\n        [") << "]\n      ]"
     end
+  end
+
+  #-----------------------------------------------
+  # Subtasks to Hyper
+  #-----------------------------------------------
+
+  def subtasks_to_hyper(tasks, indentation)
+    if tasks.empty? then "#{indentation}yield []"
+    else "#{indentation}yield [#{indentation}  [" << tasks.map {|g| g.map {|i| term(i)}.join(', ')}.join("],#{indentation}  [") << "]#{indentation}]"
+    end
+  end
+
+  #-----------------------------------------------
+  # Term
+  #-----------------------------------------------
+
+  def term(t)
+    t.start_with?('?') ? t.delete('?') : ":#{t}"
   end
 
   #-----------------------------------------------
@@ -25,7 +43,7 @@ module Hyper_Compiler
     # Operators
     define_operators = ''
     operators.each_with_index {|(name,param,precond_pos,precond_not,effect_add,effect_del),i|
-      domain_str << "\n    '#{name}' => #{!name.start_with?('invisible_')}#{',' unless operators.size.pred == i and methods.empty?}"
+      domain_str << "\n    :#{name} => #{!name.start_with?('invisible_')}#{',' unless operators.size.pred == i and methods.empty?}"
       define_operators << "\n  def #{name}#{"(#{param.join(', ').delete!('?')})" unless param.empty?}\n    "
       if effect_add.empty? and effect_del.empty?
         if precond_pos.empty? and precond_not.empty?
@@ -56,28 +74,26 @@ module Hyper_Compiler
     define_methods = ''
     domain_str << "\n    # Methods"
     methods.each_with_index {|(name,param,*decompositions),mi|
-      domain_str << "\n    '#{name}' => [\n"
+      domain_str << "\n    :#{name} => [\n"
       variables = param.empty? ? nil : "(#{param.join(', ').delete!('?')})"
       decompositions.each_with_index {|dec,i|
-        domain_str << "      '#{name}_#{dec.first}'#{',' if decompositions.size - 1 != i}\n"
+        domain_str << "      :#{name}_#{dec.first}#{',' if decompositions.size - 1 != i}\n"
         define_methods << "\n  def #{name}_#{dec.first}#{variables}"
         # No preconditions
         if dec[2].empty? and dec[3].empty?
-          predicates_to_hyper(define_methods, dec[4], '    ', 'yield ')
+          define_methods << subtasks_to_hyper(dec[4], "\n    ")
         # Ground
         elsif dec[1].empty?
           predicates_to_hyper(define_methods << "\n    if applicable?(\n      # Positive preconditions", dec[2])
           predicates_to_hyper(define_methods << ",\n      # Negative preconditions", dec[3])
-          predicates_to_hyper(define_methods << "\n    )", dec[4], '      ', 'yield ')
-          define_methods << "\n    end"
+          define_methods << "\n    )" << subtasks_to_hyper(dec[4], "\n      ") << "\n    end"
         # Lifted
         else
           dec[1].each {|free| define_methods << "\n    #{free.delete('?')} = ''"}
           predicates_to_hyper(define_methods << "\n    generate(\n      # Positive preconditions", dec[2])
           predicates_to_hyper(define_methods << ",\n      # Negative preconditions", dec[3])
           define_methods << ', ' << dec[1].join(', ').delete!('?')
-          predicates_to_hyper(define_methods << "\n    ) {", dec[4], '      ', 'yield ')
-          define_methods << "\n    }"
+          define_methods << "\n    ) {" << subtasks_to_hyper(dec[4], "\n      ") << "\n    }"
         end
         define_methods << "\n  end\n"
       }
@@ -120,12 +136,12 @@ module Hyper_Compiler
     problem_str << "\n#{domain_name.capitalize}.problem(\n  # Start\n  [\n"
     # Start
     start.each_with_index {|v,i|
-      problem_str << "    ["
+      problem_str << '    ['
       problem_str << "\n      [" << v.map! {|obj| obj.join(', ')}.join("],\n      [") << "]\n    " unless v.empty?
       problem_str << (start.size.pred == i ? ']' : "],\n")
     }
     # Tasks
-    problem_str << "\n  ],\n  # Tasks\n  [" << tasks.map {|g| "\n    ['#{g.first}'#{', ' if g.size > 1}#{g.drop(1).join(', ')}]"}.join(',') << "\n  ],\n  # Debug\n  ARGV.first == 'debug'"
+    problem_str << "\n  ],\n  # Tasks\n  [" << tasks.map {|g| "\n    [:#{g.first}#{', ' if g.size > 1}#{g.drop(1).join(', ')}]"}.join(',') << "\n  ],\n  # Debug\n  ARGV.first == 'debug'"
     tasks.unshift(ordered) unless tasks.empty?
     unless ordered
       problem_str << ",\n  # Positive goals\n  [" << goal_pos.map {|g| "\n    [#{g.first.upcase}#{', ' if g.size > 1}#{g.drop(1).join(', ')}]"}.join(',') <<
