@@ -18,7 +18,7 @@ module Hyper_Compiler
   #-----------------------------------------------
 
   def terms_to_hyper(terms)
-    terms.size == 1 ? terms.map! {|t| term(t)}.join(', ') : "[#{terms.map! {|t| term(t)}.join(', ')}]"
+    terms.size == 1 ? term(terms[0]) : "[#{terms.map! {|t| term(t)}.join(', ')}]"
   end
 
   #-----------------------------------------------
