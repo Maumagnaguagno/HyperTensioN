@@ -537,6 +537,6 @@ Dependency.problem(
   ARGV.first == 'debug'
 ) {
   # Goal
-  @state[HAPPY].include?(:bob)
+  Dependency.state[HAPPY].include?(:bob)
 } or abort"
 end
