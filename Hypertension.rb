@@ -160,7 +160,7 @@ module Hypertension
   # Problem
   #-----------------------------------------------
 
-  def problem(state, tasks, debug = false, goal_pos = [], goal_not = [])
+  def problem(state, tasks, debug = false, &goal)
     @debug = debug
     @state = state
     puts 'Tasks'.center(50,'-')
@@ -168,7 +168,7 @@ module Hypertension
     puts 'Planning'.center(50,'-')
     t = Time.now.to_f
     # Ordered or unordered tasks
-    plan = goal_pos.empty? && goal_not.empty? ? planning(tasks) : task_permutations(state, tasks, goal_pos, goal_not)
+    plan = block_given? ? task_permutations(state, tasks, &goal) : planning(tasks)
     puts "Time: #{Time.now.to_f - t}s", 'Plan'.center(50,'-')
     if plan
       if plan.empty? then puts 'Empty plan'
@@ -187,12 +187,12 @@ module Hypertension
   # Task permutations
   #-----------------------------------------------
 
-  def task_permutations(state, tasks, goal_pos, goal_not)
+  def task_permutations(state, tasks)
     # All permutations are considered
     tasks.permutation {|task_list|
       @state = state
       plan = planning(Marshal.load(Marshal.dump(task_list)))
-      return plan if applicable?(goal_pos, goal_not)
+      return plan if yield
     }
     nil
   end

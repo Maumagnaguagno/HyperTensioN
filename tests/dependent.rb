@@ -534,13 +534,9 @@ Dependency.problem(
     [:unify_a_x_before_dependency_buy_before_give_for_happy, :bob]
   ],
   # Debug
-  ARGV.first == 'debug',
-  # Positive goals
-  [
-    [HAPPY, :bob]
-  ],
-  # Negative goals
-  [
-  ]
-) or abort"
+  ARGV.first == 'debug'
+) {
+  # Goal
+  @state[HAPPY].include?(:bob)
+} or abort"
 end
