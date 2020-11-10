@@ -419,173 +419,89 @@ module Dependency
   #-----------------------------------------------
 
   def dependency_work_before_buy_for_have_goal_satisfied(a, x)
-    if applicable?(
-      # Positive preconditions
-      [
-        [HAVE, a, x]
-      ],
-      # Negative preconditions
-      []
-    )
-      yield []
-    end
+    return unless @state[HAVE].include?([a, x])
+    yield []
   end
 
   def dependency_work_before_buy_for_have_satisfied(a, x)
-    if applicable?(
-      # Positive preconditions
-      [
-        [AGENT, a],
-        [OBJECT, x],
-        [GOT_MONEY, a]
-      ],
-      # Negative preconditions
-      []
-    )
-      yield [
-        [:buy, a, x]
-      ]
-    end
+    return unless AGENT.include?(a)
+    return unless OBJECT.include?(x)
+    return unless @state[GOT_MONEY].include?(a)
+    yield [
+      [:buy, a, x]
+    ]
   end
 
   def dependency_work_before_buy_for_have_unsatisfied(a, x)
-    if applicable?(
-      # Positive preconditions
-      [
-        [AGENT, a],
-        [OBJECT, x]
-      ],
-      # Negative preconditions
-      [
-        [GOT_MONEY, a]
-      ]
-    )
-      yield [
-        [:work, a],
-        [:buy, a, x]
-      ]
-    end
+    return unless AGENT.include?(a)
+    return unless OBJECT.include?(x)
+    return if @state[GOT_MONEY].include?(a)
+    yield [
+      [:work, a],
+      [:buy, a, x]
+    ]
   end
 
   def dependency_buy_before_give_for_have_goal_satisfied(a, x, b)
-    if applicable?(
-      # Positive preconditions
-      [
-        [HAVE, b, x]
-      ],
-      # Negative preconditions
-      []
-    )
-      yield []
-    end
+    return unless @state[HAVE].include?([b, x])
+    yield []
   end
 
   def dependency_buy_before_give_for_have_satisfied(a, x, b)
-    if applicable?(
-      # Positive preconditions
-      [
-        [AGENT, a],
-        [AGENT, b],
-        [OBJECT, x],
-        [HAVE, a, x]
-      ],
-      # Negative preconditions
-      []
-    )
-      yield [
-        [:give, a, b, x]
-      ]
-    end
+    return unless @state[HAVE].include?([a, x])
+    return unless OBJECT.include?(x)
+    return unless AGENT.include?(b)
+    return unless AGENT.include?(a)
+    yield [
+      [:give, a, b, x]
+    ]
   end
 
   def dependency_buy_before_give_for_have_unsatisfied(a, x, b)
-    if applicable?(
-      # Positive preconditions
-      [
-        [AGENT, a],
-        [AGENT, b],
-        [OBJECT, x]
-      ],
-      # Negative preconditions
-      [
-        [HAVE, a, x]
-      ]
-    )
-      yield [
-        [:dependency_work_before_buy_for_have, a, x],
-        [:give, a, b, x]
-      ]
-    end
+    return unless AGENT.include?(a)
+    return unless AGENT.include?(b)
+    return unless OBJECT.include?(x)
+    return if @state[HAVE].include?([a, x])
+    yield [
+      [:dependency_work_before_buy_for_have, a, x],
+      [:give, a, b, x]
+    ]
   end
 
   def dependency_buy_before_give_for_happy_goal_satisfied(a, x, b)
-    if applicable?(
-      # Positive preconditions
-      [
-        [HAPPY, b]
-      ],
-      # Negative preconditions
-      []
-    )
-      yield []
-    end
+    return unless @state[HAPPY].include?(b)
+    yield []
   end
 
   def dependency_buy_before_give_for_happy_satisfied(a, x, b)
-    if applicable?(
-      # Positive preconditions
-      [
-        [AGENT, a],
-        [AGENT, b],
-        [OBJECT, x],
-        [HAVE, a, x]
-      ],
-      # Negative preconditions
-      []
-    )
-      yield [
-        [:give, a, b, x]
-      ]
-    end
+    return unless @state[HAVE].include?([a, x])
+    return unless OBJECT.include?(x)
+    return unless AGENT.include?(b)
+    return unless AGENT.include?(a)
+    yield [
+      [:give, a, b, x]
+    ]
   end
 
   def dependency_buy_before_give_for_happy_unsatisfied(a, x, b)
-    if applicable?(
-      # Positive preconditions
-      [
-        [AGENT, a],
-        [AGENT, b],
-        [OBJECT, x]
-      ],
-      # Negative preconditions
-      [
-        [HAVE, a, x]
-      ]
-    )
-      yield [
-        [:dependency_work_before_buy_for_have, a, x],
-        [:give, a, b, x]
-      ]
-    end
+    return unless AGENT.include?(a)
+    return unless AGENT.include?(b)
+    return unless OBJECT.include?(x)
+    return if @state[HAVE].include?([a, x])
+    yield [
+      [:dependency_work_before_buy_for_have, a, x],
+      [:give, a, b, x]
+    ]
   end
 
   def unify_a_x_before_dependency_buy_before_give_for_happy_a_x(b)
-    a = ''
-    x = ''
-    generate(
-      # Positive preconditions
-      [
-        [AGENT, a],
-        [AGENT, b],
-        [OBJECT, x]
-      ],
-      # Negative preconditions
-      [], a, x
-    ) {
+    return unless AGENT.include?(b)
+    AGENT.each {|a|
+    OBJECT.each {|x|
       yield [
         [:dependency_buy_before_give_for_happy, a, x, b]
       ]
-    }
+    }}
   end
 end"
 

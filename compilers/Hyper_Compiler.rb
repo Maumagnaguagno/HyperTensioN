@@ -7,15 +7,6 @@ module Hyper_Compiler
   # Predicates to Hyper
   #-----------------------------------------------
 
-  def predicates_to_hyper(output, predicates)
-    if predicates.empty?
-      output << "\n      []"
-    else
-      predicates = predicates.map {|g| g.map.with_index {|i,j| j == 0 ? "?#{i == '=' ? 'EQUAL' : i.upcase}" : i}}
-      output << "\n      [\n        [" << predicates.map {|g| g.map {|i| i.start_with?('?') ? i.delete('?') : "'#{i}'"}.join(', ')}.join("],\n        [") << "]\n      ]"
-    end
-  end
-
   def predicate_to_hyper(output, pre, terms, predicates)
     if predicates[pre] then output << "@state[#{pre.upcase}].include?(#{terms_to_hyper(terms)})"
     else output << "#{pre.upcase}.include?(#{terms_to_hyper(terms)})"
@@ -99,25 +90,96 @@ module Hyper_Compiler
     domain_str << "\n    # Methods"
     methods.each_with_index {|(name,param,*decompositions),mi|
       domain_str << "\n    :#{name} => [\n"
-      variables = param.empty? ? nil : "(#{param.join(', ').delete!('?')})"
+      paramstr = "(#{param.join(', ').delete!('?')})" unless param.empty?
       decompositions.each_with_index {|dec,i|
         domain_str << "      :#{name}_#{dec.first}#{',' if decompositions.size - 1 != i}\n"
-        define_methods << "\n  def #{name}_#{dec.first}#{variables}"
-        # No preconditions
-        if dec[2].empty? and dec[3].empty?
-          define_methods << subtasks_to_hyper(dec[4], "\n    ")
+        define_methods << "\n  def #{name}_#{dec.first}#{paramstr}"
+        equality = []
+        define_methods_comparison = ''
+        f = dec[1]
+        precond_pos = dec[2].sort_by {|pre| (pre & param).size * -100 - (pre & f).size}
+        precond_pos.reject! {|pre,*terms|
+          if (terms & f).empty?
+            if pre == '=' then equality << "#{term(terms[0])} != #{term(terms[1])}"
+            elsif not predicates[pre] and not state.include?(pre) then define_methods << "\n    return"
+            else predicate_to_hyper(define_methods_comparison << "\n    return unless ", pre, terms, predicates)
+            end
+          end
+        }
+        precond_not = dec[3].reject {|pre,*terms|
+          if not predicates[pre] and not state.include?(pre) then true
+          elsif (terms & f).empty?
+            if pre == '=' then equality << "#{term(terms[0])} == #{term(terms[1])}"
+            elsif predicates[pre] or state.include?(pre) then predicate_to_hyper(define_methods_comparison << "\n    return if ", pre, terms, predicates)
+            end
+          end
+        }
+        define_methods << "\n    return if #{equality.join(' or ')}" unless equality.empty?
+        define_methods << define_methods_comparison
         # Ground
-        elsif dec[1].empty?
-          predicates_to_hyper(define_methods << "\n    if applicable?(\n      # Positive preconditions", dec[2])
-          predicates_to_hyper(define_methods << ",\n      # Negative preconditions", dec[3])
-          define_methods << "\n    )" << subtasks_to_hyper(dec[4], "\n      ") << "\n    end"
+        if f.empty? then define_methods << subtasks_to_hyper(dec[4], "\n    ")
         # Lifted
         else
-          dec[1].each {|free| define_methods << "\n    #{free.delete('?')} = ''"}
-          predicates_to_hyper(define_methods << "\n    generate(\n      # Positive preconditions", dec[2])
-          predicates_to_hyper(define_methods << ",\n      # Negative preconditions", dec[3])
-          define_methods << ', ' << dec[1].join(', ').delete!('?')
-          define_methods << "\n    ) {" << subtasks_to_hyper(dec[4], "\n      ") << "\n    }"
+          iterator_count = 0
+          ground = param.dup
+          until precond_pos.empty?
+            pre, *terms = precond_pos.shift
+            equality.clear
+            define_methods_comparison.clear
+            new_grounds = false
+            terms2 = terms.map {|j|
+              if not j.start_with?('?')
+                equality << "_#{j}_ground != :#{j}"
+                "_#{j}_ground"
+              elsif ground.include?(j)
+                equality << "#{j}_ground != #{j}".delete!('?')
+                term("#{j}_ground")
+              else
+                new_grounds = true
+                ground << f.delete(j)
+                term(j)
+              end
+            }
+            if new_grounds
+              if predicates[pre] then define_methods << "\n    @state[#{pre.upcase}].each {|#{terms2.join(', ')}|"
+              else
+                define_methods << "\n    return" unless state.include?(pre)
+                define_methods << "\n    #{pre == '=' ? 'EQUAL' : pre.upcase}.each {|#{terms2.join(', ')}|"
+              end
+              iterator_count += 1
+            elsif pre == '=' then equality << "#{terms2[0]} != #{terms2[1]}"
+            elsif not predicates[pre] and not state.include?(pre) then define_methods << "\n    return"
+            else predicate_to_hyper(define_methods_comparison << "\n    next unless ", pre, terms, predicates)
+            end
+            precond_pos.reject! {|pre,*terms|
+              if (terms & f).empty?
+                if pre == '=' then equality << "#{term(terms[0])} != #{term(terms[1])}"
+                elsif not predicates[pre] and not state.include?(pre) then define_methods << "\n    return"
+                else predicate_to_hyper(define_methods_comparison << "\n    next unless ", pre, terms, predicates)
+                end
+              end
+            }
+            precond_not.reject! {|pre,*terms|
+              if (terms & f).empty?
+                if pre == '=' then equality << "#{term(terms[0])} == #{term(terms[1])}"
+                elsif predicates[pre] or state.include?(pre) then predicate_to_hyper(define_methods_comparison << "\n    next if ", pre, terms, predicates)
+                end
+              end
+            }
+            define_methods << "\n    next if #{equality.join(' or ')}" unless equality.empty?
+            define_methods << define_methods_comparison
+          end
+          equality.clear
+          define_methods_comparison.clear
+          precond_not.each {|pre,*terms|
+            if (terms & f).empty?
+              if pre == '=' then equality << "#{term(terms[0])} == #{term(terms[1])}"
+              elsif predicates[pre] or state.include?(pre) then predicate_to_hyper(define_methods_comparison << "\n    next if ", pre, terms, predicates)
+              end
+            end
+          }
+          define_methods << "\n    next if #{equality.join(' or ')}" unless equality.empty?
+          define_methods << define_methods_comparison << subtasks_to_hyper(dec[4], "\n      ") << "\n    " << '}' * iterator_count
         end
         define_methods << "\n  end\n"
       }
