@@ -31,6 +31,7 @@ module Hype
     wise        - warn and fix description mistakes
     macro       - optimize operator sequences
     pullup      - optimize preconditions
+    typredicate - optimize typed predicates
     grammar     - print hierarchical structure grammar
     complexity  - print estimated complexity of planning description"
 
@@ -138,6 +139,7 @@ Problem #{@parser.problem_name}
     when 'wise' then Wise
     when 'macro' then Macro
     when 'pullup' then Pullup
+    when 'typredicate' then Typredicate
     when 'grammar' then Grammar
     when 'complexity' then Complexity
     else raise "Unknown extension #{extension}"

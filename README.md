@@ -104,9 +104,9 @@ Therefore no plan actually exists before reaching an empty task list.
 In case of failure, ``nil`` is returned.
 
 - ``applicable?(precond_pos, precond_not)`` tests if the current state have all positive preconditions and not a single negative precondition. Returns ``true`` if applicable, ``false`` otherwise.
-- ``apply(effect_add, effect_del)`` modifies the current state, add or remove predicates present in the lists. Returns true.
-- ``apply_operator(precond_pos, precond_not, effect_add, effect_del)`` extends this idea applying effects if ``applicable?``. Returns ``true`` if applied, ``nil`` otherwise.
-- ``generate(precond_pos, precond_not, *free)`` yields all possible unifications to the free variables defined, therefore you need a block to capture the unifications. The return value is undefined.
+- ``apply(effect_add, effect_del)`` modifies the current state, add or remove predicates present in the lists. Returns ``true``.
+- ``apply_operator(precond_pos, precond_not, effect_add, effect_del)`` applies effects if ``applicable?``. Returns ``true`` if applied, ``nil`` otherwise.
+- ``generate(precond_pos, precond_not, *free)`` yields all possible unifications to the free variables defined, therefore you need a block to capture the unifications. Return value is undefined.
 - ``print_data(data)`` can be used to print task and predicate lists, useful for debug.
 - ``problem(state, tasks, debug = false, &goal)`` simplifies the setup of a problem instance, returns the value of planning. Use problem as a template to see how to add HyperTensioN in a project.
 - ``task_permutations(state, tasks)`` tries several task permutations to achieve unordered decomposition, it is used by ``problem`` when a goal block is provided. Returns a plan or ``nil``.
@@ -143,7 +143,7 @@ The recipe is quite similar to the following regular expression:
 /((move|enter|exit)*report)*/
 ```
 
-We need to match the movement pattern first, the trick part is to avoid repetitions or our robot may be stuck in a loop of A to B and B to A during [search](examples/search/search.jshop).
+We need to match the movement pattern first, the tricky part is to avoid repetitions or our robot may be stuck in a loop of A to B and B to A during [search](examples/search/search.jshop).
 Robby needs to remember which locations were visited, let us see this in a recursive format.
 The base of the recursion happens when the object (Robby) is already at the destination, otherwise use move, enter or exit, mark the position and call the recursion again.
 We need to remember to unvisit the locations once we reach our goal to be able to reuse them.
@@ -479,6 +479,7 @@ Extensions:
   wise        - warn and fix description mistakes
   macro       - optimize operator sequences
   pullup      - optimize preconditions
+  typredicate - optimize typed predicates
   grammar     - print hierarchical structure grammar
   complexity  - print estimated complexity of planning description
 ```
@@ -511,6 +512,7 @@ Hype is composed of:
 - Wise (warn and fix description mistakes)
 - Macro (optimize operator sequences to speed up decomposition)
 - Pullup (optimize preconditions to avoid backtracking)
+- Typredicate (optimize typed predicates)
 - Grammar (print domain methods as [production rules](https://en.wikipedia.org/wiki/Production_(computer_science)))
 - Complexity (print domain, problem and total complexity based on amount of terms)
 
