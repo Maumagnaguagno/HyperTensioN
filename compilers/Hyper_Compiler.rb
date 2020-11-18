@@ -172,10 +172,8 @@ module Hyper_Compiler
           equality.clear
           define_methods_comparison.clear
           precond_not.each {|pre,*terms|
-            if (terms & f).empty?
-              if pre == '=' then equality << "#{term(terms[0])} == #{term(terms[1])}"
-              elsif predicates[pre] or state.include?(pre) then predicate_to_hyper(define_methods_comparison << "\n    next if ", pre, terms, predicates)
-              end
+            if pre == '=' then equality << "#{term(terms[0])} == #{term(terms[1])}"
+            elsif predicates[pre] or state.include?(pre) then predicate_to_hyper(define_methods_comparison << "\n    next if ", pre, terms, predicates)
             end
           }
           define_methods << "\n    next if #{equality.join(' or ')}" unless equality.empty?
@@ -219,7 +217,7 @@ module Hyper_Compiler
     problem_str << start_str << "  ],\n  # Tasks\n  [" << tasks.map {|g| "\n    [:#{g.join(', :')}]"}.join(',') << "\n  ],\n  # Debug\n  ARGV.first == 'debug'\n)"
     tasks.unshift(ordered) unless tasks.empty?
     unless ordered
-      problem_str << (goal_pos.empty? && goal_not.empty? ? " { true }" :
+      problem_str << (goal_pos.empty? && goal_not.empty? ? ' {true}' :
       " {\n  # Goal\n  " << goal_pos.map {|pre,*terms| "#{domain}.state[#{pre.upcase}].include?(#{terms_to_hyper(terms)})"}.concat(goal_not.map {|pre,*terms| "not #{domain}.state[#{pre.upcase}].include?(#{terms_to_hyper(terms)})"}).join(" and\n  ") << "\n}")
     end
     problem_str.gsub!(/\b-\b/,'_')
