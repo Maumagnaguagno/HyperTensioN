@@ -48,7 +48,7 @@ module Pullup
     while repeat
       repeat = false
       methods.map! {|name,param,*decompositions|
-        decompositions.select! {|label,free,precond_pos,precond_not,subtasks|
+        decompositions.select! {|_,free,precond_pos,precond_not,subtasks|
           first_task = true
           effects = Hash.new(0)
           old_precond_pos_size = precond_pos.size
@@ -73,8 +73,18 @@ module Pullup
               (metdecompositions = (met = methods.assoc(s.first)).drop(2)).each {|m|
                 pos = []
                 neg = []
-                m[2].each {|pre| pos << pre.map {|t| (j = met[1].index(t)) ? s[j + 1] : t} if effects[pre.first].even? and (pre & m[1]).empty?}
-                m[3].each {|pre| neg << pre.map {|t| (j = met[1].index(t)) ? s[j + 1] : t} if effects[pre.first] < 2 and (pre & m[1]).empty?}
+                m[2].each {|pre|
+                  if effects[pre.first].even?
+                    pre = pre.map {|t| (j = met[1].index(t)) ? s[j + 1] : t}
+                    pos << pre if (pre & m[1]).empty?
+                  end
+                }
+                m[3].each {|pre|
+                  if effects[pre.first] < 2
+                    pre = pre.map {|t| (j = met[1].index(t)) ? s[j + 1] : t}
+                    neg << pre if (pre & m[1]).empty?
+                  end
+                }
                 if all_pos
                   all_pos &= pos
                   all_neg &= neg
@@ -134,7 +144,7 @@ module Pullup
     end
     # Remove dead branches
     methods.map! {|name,param,*decompositions|
-      decompositions.select! {|label,free,precond_pos,precond_not,subtasks|
+      decompositions.select! {|_,free,precond_pos,precond_not,subtasks|
         possible_decomposition = true
         # Remove unnecessary free variables
         substitutions = []
