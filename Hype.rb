@@ -137,6 +137,7 @@ Problem #{@parser.problem_name}
     case extension
     when 'patterns' then Patterns
     when 'dummy' then Dummy
+    when 'dejavu' then Dejavu
     when 'wise' then Wise
     when 'macro' then Macro
     when 'pullup' then Pullup

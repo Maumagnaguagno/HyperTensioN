@@ -20,6 +20,7 @@ script:
   # Tests
   - ruby tests/sphygmomanometer.rb
   - ruby tests/frenesi.rb
+  - ruby tests/again.rb
   - ruby tests/dependent.rb
   - ruby tests/miner.rb
   - ruby tests/painter.rb

@@ -1,7 +1,7 @@
-require './tests/hypest'
+require 'test/unit'
+require './Hype'
 
 class Frenesi < Test::Unit::TestCase
-  include Hypest
 
   #-----------------------------------------------
   # Exception
