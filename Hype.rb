@@ -28,6 +28,7 @@ module Hype
   Extensions:
     patterns    - add methods and tasks based on operator patterns
     dummy       - add brute-force methods to operators
+    dejavu      - add invisible visit operators
     wise        - warn and fix description mistakes
     macro       - optimize operator sequences
     pullup      - optimize preconditions

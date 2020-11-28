@@ -1,4 +1,4 @@
-# HyperTensioN [![Build Status](https://travis-ci.org/Maumagnaguagno/HyperTensioN.svg)](https://travis-ci.org/Maumagnaguagno/HyperTensioN) [![IPC](https://img.shields.io/badge/winner-HTN%20IPC%202020%20Total%20Order%20track-D50.svg)](http://gki.informatik.uni-freiburg.de/competition/results.pdf)
+# HyperTensioN [![Build Status](https://travis-ci.org/Maumagnaguagno/HyperTensioN.svg)](https://travis-ci.org/Maumagnaguagno/HyperTensioN) [![IPC](https://img.shields.io/badge/HTN%20IPC%202020%20Total%20Order%20track-winner-D50.svg)](http://gki.informatik.uni-freiburg.de/competition/results.pdf)
 
 **Hierarchical Task Network planning in Ruby**
 
@@ -476,6 +476,7 @@ Output:
 Extensions:
   patterns    - add methods and tasks based on operator patterns
   dummy       - add brute-force methods to operators
+  dejavu      - add invisible visit operators
   wise        - warn and fix description mistakes
   macro       - optimize operator sequences
   pullup      - optimize preconditions
@@ -507,8 +508,9 @@ Hype is composed of:
 - [JSHOP]
 
 **Extensions**:
-- Patterns (generate methods based on operator patterns, map goal state to tasks)
-- [Dummy](docs/Dummy.md) (generate brute-force methods that try to achieve goal predicates)
+- Patterns (add methods based on operator patterns, map goal state to tasks)
+- [Dummy](docs/Dummy.md) (add brute-force methods that try to achieve goal predicates)
+- Dejavu (add invisible visit/unvisit operators to avoid repeated decompositions)
 - Wise (warn and fix description mistakes)
 - Macro (optimize operator sequences to speed up decomposition)
 - Pullup (optimize preconditions to avoid backtracking)
@@ -582,7 +584,7 @@ end
 Extensions are supposed to be executed between the parsing and compilation phases.
 More than one extension may be executed in the process, even repeatedly.
 They can be used to clean, warn and fill gaps left by the original description.
-Since extensions transform existing structures no value is expected to be returned by ``apply``.
+Since extensions transform existing structures, the value returned by ``apply`` is undefined.
 
 ### Compilers
 Compilers are modules that write planning descriptions based on the information available in the [Intermediate Representation] format.
