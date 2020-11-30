@@ -197,7 +197,7 @@ module HDDL_Parser
       precondition.each {|pre|
         if pre.first == 'forall'
           pre[2].first == AND ? pre[2].shift : pre[2] = [pre[2]]
-          pre[2].each {|p| (p.first != NOT ? p : p[1]).map! {|i| variables.find {|j| j == i} || i}}
+          pre[2].each {|g| (g.first != NOT ? g : g[1]).map! {|i| variables.find {|j| j == i} || i}}
           @foralls << [pos, neg, pre, false]
         else
           pre.first != NOT ? pos << pre : pre.size == 2 ? neg << pre = pre.last : raise("Error with #{name} negative precondition")
@@ -310,9 +310,9 @@ module HDDL_Parser
         when ':objects'
           parse_objects(group)
           # Expand foralls
-          @foralls.each {|pos,neg,(_,(fv,_,fvtype),group),mutable|
+          @foralls.each {|pos,neg,(_,(fv,_,fvtype),g),mutable|
             s = @state[fvtype] and s.each {|obj,|
-              group.each {|pre|
+              g.each {|pre|
                 pre.first != NOT ? pos << pre.map {|j| j == fv ? obj : j} : pre.size == 2 ? neg << pre = pre.last.map {|j| j == fv ? obj : j} : raise('Unexpected not in forall')
                 @predicates[pre.first.freeze] ||= mutable
               }
@@ -368,8 +368,8 @@ module HDDL_Parser
                   end
                 end
               end
-              @methods << [invisible_top_level = '__top', [], ['__top_method', free_variables, pos, [], @tasks]]
-              @tasks = [true, [invisible_top_level]]
+              @methods << [top_level = '__top', [], ['__top_method', free_variables, pos, [], @tasks]]
+              @tasks = [true, [top_level]]
             else @tasks.unshift(true)
             end
           end
