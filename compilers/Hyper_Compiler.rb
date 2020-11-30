@@ -4,7 +4,7 @@ module Hyper_Compiler
   SPACER = '-' * 47
 
   #-----------------------------------------------
-  # Predicates to Hyper
+  # Predicate to Hyper
   #-----------------------------------------------
 
   def predicate_to_hyper(output, pre, terms, predicates)
@@ -47,9 +47,23 @@ module Hyper_Compiler
     domain_str = "module #{domain_name.capitalize}\n  include Hypertension\n  extend self\n\n  ##{SPACER}\n  # Domain\n  ##{SPACER}\n\n  @domain = {\n    # Operators"
     # Operators
     define_operators = ''
+    state_visit = -1 if operators.any? {|name,param| param.empty? and name.start_with?('invisible_visit_', 'invisible_mark_')}
     operators.each_with_index {|(name,param,precond_pos,precond_not,effect_add,effect_del),i|
       domain_str << "\n    :#{name} => #{!name.start_with?('invisible_')}#{',' unless operators.size.pred == i and methods.empty?}"
-      define_operators << "\n  def #{name}#{"(#{param.join(', ').delete!('?')})" unless param.empty?}"
+      define_operators << "\n  def #{name}#{"(#{paramstr = param.join(', ').delete!('?')})" unless param.empty?}"
+      if state_visit
+        if name.start_with?('invisible_visit_', 'invisible_mark_')
+          define_operators << "\n    return if @state_visit#{state_visit += 1}.include?(@state)\n    @state_visit#{state_visit} << @state\n    true\n  end\n"
+          next
+        elsif name.start_with?('invisible_unvisit_', 'invisible_unmark_')
+          define_operators << "\n    true\n  end\n"
+          next
+        end
+      elsif name.start_with?('invisible_visit_')
+        define_operators << "\n    @visit[#{param.size > 1 ? "[#{paramstr}]" : paramstr}] = nil"
+      elsif name.start_with?('invisible_unvisit_')
+        define_operators << "\n    @visit.clear"
+      end
       equality = []
       precond_pos.each {|pre,*terms|
         if pre == '=' then equality << "#{term(terms[0])} != #{term(terms[1])}"
@@ -86,14 +100,23 @@ module Hyper_Compiler
       define_operators << "\n    true\n  end\n"
     }
     # Methods
+    visit = false
     define_methods = ''
     domain_str << "\n    # Methods"
     methods.each_with_index {|(name,param,*decompositions),mi|
       domain_str << "\n    :#{name} => [\n"
-      paramstr = "(#{param.join(', ').delete!('?')})" unless param.empty?
+      variables = "(#{param.join(', ').delete!('?')})" unless param.empty?
       decompositions.each_with_index {|dec,i|
         domain_str << "      :#{name}_#{dec.first}#{',' if decompositions.size - 1 != i}\n"
-        define_methods << "\n  def #{name}_#{dec.first}#{paramstr}"
+        define_methods << "\n  def #{name}_#{dec.first}#{variables}"
+        paramstr = nil
+        dec[4].each {|s|
+          if s.size > 1 and s.first.start_with?('invisible_visit_')
+            paramstr = s.drop(1)
+            visit = true
+            break
+          end
+        }
         equality = []
         define_methods_comparison = ''
         f = dec[1]
@@ -107,7 +130,8 @@ module Hyper_Compiler
           end
         }
         precond_not = dec[3].reject {|pre,*terms|
-          if not predicates[pre] and not state.include?(pre) then true
+          if terms.empty? and pre.start_with?('visited_') then predicates[pre] = nil
+          elsif not predicates[pre] and not state.include?(pre) then true
           elsif (terms & f).empty?
             if pre == '=' then equality << "#{term(terms[0])} == #{term(terms[1])}"
             elsif predicates[pre] or state.include?(pre) then predicate_to_hyper(define_methods_comparison << "\n    return if ", pre, terms, predicates)
@@ -116,6 +140,10 @@ module Hyper_Compiler
         }
         define_methods << "\n    return if #{equality.join(' or ')}" unless equality.empty?
         define_methods << define_methods_comparison
+        if paramstr and (paramstr & f).empty?
+          define_methods << "\n    return if @visit.include?(#{paramstr.map! {|j| term(j)}.size > 1 ? "[#{paramstr.join(', ')}]" : paramstr.first})"
+          paramstr = nil
+        end
         # Ground
         if f.empty? then define_methods << subtasks_to_hyper(dec[4], "\n    ")
         # Lifted
@@ -168,6 +196,10 @@ module Hyper_Compiler
             }
             define_methods << "\n    next if #{equality.join(' or ')}" unless equality.empty?
             define_methods << define_methods_comparison
+            if paramstr and (paramstr & f).empty?
+              define_methods << "\n    next if @visit.include?(#{paramstr.map! {|j| term(j)}.size > 1 ? "[#{paramstr.join(', ')}]" : paramstr.first})"
+              paramstr = nil
+            end
           end
           equality.clear
           define_methods_comparison.clear
@@ -183,6 +215,9 @@ module Hyper_Compiler
       }
       domain_str << (methods.size.pred == mi ? '    ]' : '    ],')
     }
+    if state_visit then (state_visit + 1).times {|i| define_methods << "  @state_visit#{i} = []\n"}
+    elsif visit then define_methods << "  @visit = {}\n"
+    end
     # Definitions
     domain_str << "\n  }\n\n  ##{SPACER}\n  # Operators\n  ##{SPACER}\n#{define_operators}\n  ##{SPACER}\n  # Methods\n  ##{SPACER}\n#{define_methods}end"
     domain_str.gsub!(/\b-\b/,'_')
@@ -221,6 +256,6 @@ module Hyper_Compiler
       " {\n  # Goal\n  " << goal_pos.map {|pre,*terms| "#{domain}.state[#{pre.upcase}].include?(#{terms_to_hyper(terms)})"}.concat(goal_not.map {|pre,*terms| "not #{domain}.state[#{pre.upcase}].include?(#{terms_to_hyper(terms)})"}).join(" and\n  ") << "\n}")
     end
     problem_str.gsub!(/\b-\b/,'_')
-    domain_filename ? "# Generated by Hype\nrequire_relative '#{domain_filename}'\n\n#{problem_str} or abort" : "#{problem_str}\n)"
+    domain_filename ? "# Generated by Hype\nrequire_relative '#{domain_filename}'\n\n#{problem_str} or abort" : problem_str
   end
 end
