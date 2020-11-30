@@ -197,12 +197,12 @@ module HDDL_Parser
       precondition.each {|pre|
         if pre.first == 'forall'
           pre[2].first == AND ? pre[2].shift : pre[2] = [pre[2]]
-          pre[2].each {|g| (g.first != NOT ? g : g[1]).map! {|i| variables.find {|j| j == i} || i}}
+          pre[2].each {|g| (g.first != NOT ? g : g[1]).map! {|i| variables.find {|j| j == i} || free_variables.find {|j| j == i} || i}}
           @foralls << [pos, neg, pre, false]
         else
           pre.first != NOT ? pos << pre : pre.size == 2 ? neg << pre = pre.last : raise("Error with #{name} negative precondition")
           #pre.replace([pre[3], pre[1]]) if pre.first == 'sortof' # (sortof ?variable - type)
-          pre.map! {|i| variables.find {|j| j == i} || i}
+          pre.map! {|i| variables.find {|j| j == i} || free_variables.find {|j| j == i} || i}
           @predicates[pre.first.freeze] ||= false
         end
       }
@@ -215,7 +215,7 @@ module HDDL_Parser
       subtasks.first == AND ? subtasks.shift : subtasks = [subtasks]
       # Ordering
       parse_ordering(name, ordering, subtasks) if ordering
-      method.last << subtasks.map! {|t| (t[1].instance_of?(Array) ? t[1] : t).map! {|i| variables.find {|j| j == i} || i}}
+      method.last << subtasks.map! {|t| (t[1].instance_of?(Array) ? t[1] : t).map! {|i| variables.find {|j| j == i} || free_variables.find {|j| j == i} || i}}
       # Mark recursive tasks with non-empty base case
       if subtasks.size > 1
         index = 0
@@ -242,6 +242,7 @@ module HDDL_Parser
         end
       end
     end
+    free_variables.each {|i| i.sub!('?','?free_') if method[1].include?(i)}
     variables.zip(method[1]) {|i,j| i.replace(j)}
   end
 
@@ -267,7 +268,7 @@ module HDDL_Parser
           group.shift
           name = group.shift
           parameters = group.shift.select! {|i| i.start_with?('?')} if group.shift == ':parameters'
-          @methods << [name, parameters || []] # TODO verify if parameter types can be ignored
+          @methods << [name, parameters || []]
         when 'domain' then @domain_name = group.last
         when ':requirements' then (@requirements = group).shift
         when ':predicates'
