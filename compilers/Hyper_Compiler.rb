@@ -36,7 +36,7 @@ module Hyper_Compiler
   #-----------------------------------------------
 
   def term(t)
-    t.start_with?('?') ? t.delete('?') : ":#{t}"
+    t.start_with?('?') ? t.tr('?','_') : ":#{t}"
   end
 
   #-----------------------------------------------
@@ -50,7 +50,7 @@ module Hyper_Compiler
     state_visit = -1 if operators.any? {|name,param| param.empty? and name.start_with?('invisible_visit_', 'invisible_mark_')}
     operators.each_with_index {|(name,param,precond_pos,precond_not,effect_add,effect_del),i|
       domain_str << "\n    :#{name} => #{!name.start_with?('invisible_')}#{',' unless operators.size.pred == i and methods.empty?}"
-      define_operators << "\n  def #{name}#{"(#{paramstr = param.join(', ').delete!('?')})" unless param.empty?}"
+      define_operators << "\n  def #{name}#{"(#{paramstr = param.join(', ').tr!('?','_')})" unless param.empty?}"
       if state_visit
         if name.start_with?('invisible_visit_', 'invisible_mark_')
           define_operators << "\n    return if @state_visit#{state_visit += 1}.include?(@state)\n    @state_visit#{state_visit} << @state\n    true\n  end\n"
@@ -105,7 +105,7 @@ module Hyper_Compiler
     domain_str << "\n    # Methods"
     methods.each_with_index {|(name,param,*decompositions),mi|
       domain_str << "\n    :#{name} => [\n"
-      variables = "(#{param.join(', ').delete!('?')})" unless param.empty?
+      variables = "(#{param.join(', ').tr!('?','_')})" unless param.empty?
       decompositions.each_with_index {|dec,i|
         domain_str << "      :#{name}_#{dec.first}#{',' if decompositions.size - 1 != i}\n"
         define_methods << "\n  def #{name}_#{dec.first}#{variables}"
@@ -160,7 +160,7 @@ module Hyper_Compiler
                 equality << "_#{j}_ground != :#{j}"
                 "_#{j}_ground"
               elsif ground.include?(j)
-                equality << "#{j}_ground != #{j}".delete!('?')
+                equality << "#{j}_ground != #{j}".tr!('?','_')
                 term("#{j}_ground")
               else
                 new_grounds = true
