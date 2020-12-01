@@ -122,6 +122,7 @@ Problem #{@parser.problem_name}
     raise 'Incompatible extensions between domain and problem' if File.extname(domain) != File.extname(problem)
     @parser = case File.extname(domain)
     when '.jshop' then JSHOP_Parser
+    when '.hddl' then HDDL_Parser
     when '.pddl' then PDDL_Parser
     else raise "Unknown file extension #{File.extname(domain)}"
     end

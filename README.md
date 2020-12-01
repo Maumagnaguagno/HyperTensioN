@@ -506,6 +506,7 @@ Hype is composed of:
 **Parsers**:
 - [PDDL]
 - [JSHOP]
+- [HDDL]
 
 **Extensions**:
 - Patterns (add methods based on operator patterns, map goal state to tasks)
@@ -681,4 +682,5 @@ Since we test for explicit goals only after the plan has been found with a seque
 [Intermediate Representation]: docs/Representation.md
 [PDDL]: https://en.wikipedia.org/wiki/Planning_Domain_Definition_Language "PDDL at Wikipedia"
 [JSHOP]: https://www.cs.umd.edu/projects/shop/description.html "SHOP/JSHOP project page"
+[HDDL]: http://gki.informatik.uni-freiburg.de/papers/hoeller-etal-aaai20.pdf "HDDL paper"
 [Pyhop]: https://bitbucket.org/dananau/pyhop "Pyhop project page"
