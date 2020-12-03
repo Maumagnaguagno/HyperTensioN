@@ -641,10 +641,10 @@ Since we test for explicit goals only after the plan has been found with a seque
 
 ## Changelog
 - Mar 2014
-  - Converted Pyhop to Ruby
+  - First version based on Pyhop/JSHOP
   - Data structures modified
 - Jun 2014
-  - converted ND_Pyhop to Ruby
+  - Add elements from ND_Pyhop
   - Data structures modified
   - Using previous state for state_valuation
   - Added support for minimum probability
@@ -666,9 +666,28 @@ Since we test for explicit goals only after the plan has been found with a seque
 - Sep 2015
   - Apply method extracted from apply_operator
 - Mar 2016
-  - Released version 1.0 as last version supporting Ruby 1.8
+  - Released version 1.0
 - Nov 2017
   - Faster state duplication
+- Jun 2018
+  - Always restore state after backtracking
+- Sep 2019
+  - Ignore irrelevant predicates during compilation
+- Mar 2020
+  - HDDL support
+- May 2020
+  - Add Pullup extension
+  - New state representation
+- Jul 2020
+  - State no longer contains rigid predicates
+  - Add Typredicate extension
+- Aug 2020
+  - Exit code based on problem return value
+  - Add Dejavu extension and cache mechanism
+- Oct 2020
+  - Rescue infinite recursion stack overflow
+- Nov 2020
+  - Released version 2.0
 
 ## ToDo's
 - Unordered subtasks
