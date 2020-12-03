@@ -10,7 +10,7 @@ The [IPC 2020](http://gki.informatik.uni-freiburg.de/competition/) proposed two 
 In the total order track the subtasks must be decomposed following one order, either respecting the order in which tasks were described or sorting them based on their constraints.
 The partial order track contain domains in which there is more than one way to decompose tasks, which also makes possible to interleave subtasks, at the cost of complex bookkeeping.
 Few domains were acyclic (subtasks that may decompose to themselves) and therefore no extra tracks happened.
-You can see the domains [used](../../../../panda-planner-dev/ipc2020-domains) during the IPC, and [others](../../../../panda-planner-dev/domains) also in HDDL.
+You can see the domains [used](../../../../../panda-planner-dev/ipc2020-domains) during the IPC, and [others](../../../../../panda-planner-dev/domains) also in HDDL.
 
 HyperTensioN participated in the total order track.
 Note that the HyperTensioN used in the IPC 2020 is slighly different from the one in this repository.
