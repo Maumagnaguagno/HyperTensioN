@@ -2,17 +2,15 @@
 
 **Hierarchical Task Network planning in Ruby**
 
-HyperTensioN is a [Hierarchical Task Network](https://en.wikipedia.org/wiki/Hierarchical_task_network) planner written in Ruby, in which a method decomposition description of how tasks can be accomplished is used to achieve a plan.
-HTN is used as an acronym for Hypertension in medical context, therefore the name was given.
-In order to support other planning languages a module named [Hype](#hype "Jump to Hype section") will take care of the conversion process.
-With hierarchical planning it is possible to describe a strategy to obtain a sequence of actions that executes a certain task.
-It works based on decomposition, which is very alike to how humans think, taking mental steps further into primitive operators.
+HyperTensioN is a [Hierarchical Task Network](https://en.wikipedia.org/wiki/Hierarchical_task_network) planner written in Ruby.
+With hierarchical planning it is possible to describe recipes about how and when to execute actions to accomplish tasks.
+These recipes describe how tasks can be decomposed into subtasks, refined until only actions remain, the plan.
+This is very alike to how humans think, taking mental steps further into primitive operators.
+HTN is also used as an acronym for Hypertension in medical context, therefore the name was given.
+In order to support multiple [action description languages](https://en.wikipedia.org/wiki/Action_description_language) a module named [Hype](#hype "Jump to Hype section") takes care of the conversion process.
 Expanded features to deal with numeric and external elements are in a separate repository, [HyperTensioN U](../../../HyperTensioN_U).
+[Hypertension won the HTN IPC 2020 Total order track!](http://gki.informatik.uni-freiburg.de/competition/results-fixed.pdf "International Planning Competition 2020 results"), see more about it [here](docs/IPC.md).
 This project was inspired by [Pyhop] and [JSHOP].
-
-[Hypertension won the HTN IPC 2020 Total order track!](http://gki.informatik.uni-freiburg.de/competition/results.pdf)
-Newer commits will contain the optimizations done for the competition, with new documentation and tests.
-Please use the [last stable release](https://github.com/Maumagnaguagno/HyperTensioN/releases/latest) until everything is updated.
 
 [Download and play](../../archive/master.zip) or jump to each section to learn more:
 - [**Algorithm**](#algorithm "Jump to Algorithm section"): planning algorithm explanation
@@ -673,7 +671,6 @@ Since we test for explicit goals only after the plan has been found with a seque
   - Faster state duplication
 
 ## ToDo's
-- Order predicates and test applicability by level (generate)
 - Unordered subtasks
 - Anytime mode
 - Debugger (why is the planner not returning the expected plan?)
