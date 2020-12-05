@@ -274,7 +274,7 @@ module HDDL_Parser
         when ':task'
           group.shift
           name = group.shift
-          parameters = group.shift.select! {|i| i.start_with?('?')} if group.shift == ':parameters'
+          parameters = group.shift.keep_if {|i| i.start_with?('?')} if group.shift == ':parameters'
           @methods << [name, parameters || []]
         when 'domain' then @domain_name = group.last
         when ':requirements' then (@requirements = group).shift
