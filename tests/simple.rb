@@ -21,27 +21,27 @@ class Simple < Test::Unit::TestCase
     [['have', '?a']]
   ]
 
-  def test_basic_pb1_jshop_parsing
+  def basic_pb1_htn_parsing(parser, extension, method1_label, method2_label)
     parser_tests(
       # Files
-      'examples/basic/basic.jshop',
-      'examples/basic/pb1.jshop',
+      "examples/basic/basic.#{extension}",
+      "examples/basic/pb1.#{extension}",
       # Parser and extensions
-      JSHOP_Parser, [],
+      parser, [],
       # Attributes
       :domain_name => 'basic',
       :problem_name => 'pb1',
       :operators => [PICKUP, DROP],
       :methods => [
         ['swap', ['?x', '?y'],
-          ['case_0', [],
+          [method1_label, [],
             # Preconditions
             [['have', '?x']],
             [['have', '?y']],
             # Subtasks
             [['drop', '?x'], ['pickup', '?y']]
           ],
-          ['case_1', [],
+          [method2_label, [],
             # Preconditions
             [['have', '?y']],
             [['have', '?x']],
@@ -56,6 +56,14 @@ class Simple < Test::Unit::TestCase
       :goal_pos => [],
       :goal_not => []
     )
+  end
+
+  def test_basic_pb1_hddl_parsing
+    basic_pb1_htn_parsing(HDDL_Parser, 'hddl', 'have_first', 'have_second')
+  end
+
+  def test_basic_pb1_jshop_parsing
+    basic_pb1_htn_parsing(JSHOP_Parser, 'jshop', 'case_0', 'case_1')
   end
 
   def test_basic_pb1_pddl_parsing
