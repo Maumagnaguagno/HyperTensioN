@@ -1,8 +1,8 @@
-# IPC
+# International Planning Competition 2020
 The International Planning Competition (IPC) happens every ~2 years since 1998.
 Its main goal is to provide a common dataset made of several planning instances written in the same language, [PDDL](https://en.wikipedia.org/wiki/Planning_Domain_Definition_Language), that are close to real world applications.
 Planners compete in several tracks, searching for step-optimal (smaller plans) or satisficing (less planning time) solutions and exploiting common or uncommon description features, such as numerics and optimization.
-There was no common language for hierarchical task networks, althought the second (2000) and third (2002) IPC had tracks on 'Hand Tailored Systems'.
+There was no common language for Hierarchical Task Network (HTN), althought the second (2000) and third (2002) IPC had tracks on 'Hand Tailored Systems'.
 Most systems relied on some input format of their own, making comparisons hard to happen.
 HTN IPC was proposed during [ICAPS 2019](https://www.uni-ulm.de/fileadmin/website_uni_ulm/iui.inst.090/Publikationen/2019/Behnke2019HTNIPC.pdf) to improve this situation, pushing [HDDL](http://gki.informatik.uni-freiburg.de/papers/hoeller-etal-aaai20.pdf) as the default HTN language.
 
@@ -10,10 +10,10 @@ The [IPC 2020](http://gki.informatik.uni-freiburg.de/competition/) proposed two 
 In the total order track the subtasks must be decomposed following one order, either respecting the order in which tasks were described or sorting them based on their constraints.
 The partial order track contain domains in which there is more than one way to decompose tasks, which also makes possible to interleave subtasks, at the cost of complex bookkeeping.
 Few domains were acyclic (subtasks that may decompose to themselves) and therefore no extra tracks happened.
-You can see the domains [used](../../../../../panda-planner-dev/ipc2020-domains) during the IPC, and [others](../../../../../panda-planner-dev/domains) also in HDDL.
+You can see the [IPC domains](../../../../../panda-planner-dev/ipc2020-domains) and [submitted domains](../../../../../panda-planner-dev/domains) online.
 
 HyperTensioN participated in the total order track.
-Note that the HyperTensioN used in the IPC 2020 is slighly different from the one in this repository.
+Note that the HyperTensioN used in the IPC 2020 is slighly different from the original, it is available in its [competition repository](https://gitlab.anu.edu.au/u1092535/ipc2020-competitor-4).
 During the competition only HDDL_Parser, Typredicate, Pullup, Dejavu and Hyper_Compiler modules were loaded by Hype.
 Hype also does not save the output of Hyper_Compiler to disk before loading it, instead it evaluates the domain and problem converted to Ruby directly, this option is still not available in the current repository.
 The debug outputs in the planning method were commented out.
