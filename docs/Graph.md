@@ -67,4 +67,4 @@ The bold rounded rectangle is a method, with name, parameters and two decomposit
 Each decomposition is a case to be evaluated by the HTN planner, a rounded rectangle containing a name (optional in JSHOP, generated when not given), free variables to be unified at run-time, preconditions and a sequence of operators.
 The operators are the rectangles containing a name, parameters, preconditions and effects.
 
-![basic.jshop.dot](https://cloud.githubusercontent.com/assets/11094484/10725259/da41c3f2-7bb1-11e5-8939-59c192a29c0a.png)
+![basic.jshop.dot](basic.jshop.dot.svg)
