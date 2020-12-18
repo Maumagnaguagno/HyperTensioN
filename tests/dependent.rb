@@ -503,11 +503,12 @@ module Dependency
   def unify_a_x_before_dependency_buy_before_give_for_happy_a_x(_b)
     return unless AGENT.include?(_b)
     AGENT.each {|_a|
-    OBJECT.each {|_x|
-      yield [
-        [:dependency_buy_before_give_for_happy, _a, _x, _b]
-      ]
-    }}
+      OBJECT.each {|_x|
+        yield [
+          [:dependency_buy_before_give_for_happy, _a, _x, _b]
+        ]
+      }
+    }
   end
 end"
 
