@@ -146,10 +146,8 @@ module Hyper_Compiler
         end
         close_method_str = "\n  end\n"
         indentation = "\n    "
-        # Ground
-        if f.empty? then define_methods << subtasks_to_hyper(dec[4], indentation)
         # Lifted
-        else
+        unless f.empty?
           ground = param.dup
           until precond_pos.empty?
             pre, *terms = precond_pos.shift
@@ -175,6 +173,7 @@ module Hyper_Compiler
                 define_methods << "#{indentation}return" unless state.include?(pre)
                 define_methods << "#{indentation}#{pre == '=' ? 'EQUAL' : pre.upcase}.each {|#{terms2.join(', ')}|"
               end
+              # close_method_str.prepend('}') and no indentation change for compact output
               close_method_str.prepend("#{indentation}}")
               indentation << '  '
             elsif pre == '=' then equality << "#{terms2[0]} != #{terms2[1]}"
@@ -211,9 +210,9 @@ module Hyper_Compiler
             end
           }
           define_methods << "#{indentation}next if #{equality.join(' or ')}" unless equality.empty?
-          define_methods << define_methods_comparison << subtasks_to_hyper(dec[4], indentation)
+          define_methods << define_methods_comparison
         end
-        define_methods << close_method_str
+        define_methods << subtasks_to_hyper(dec[4], indentation) << close_method_str
       }
       domain_str << (methods.size.pred == mi ? '    ]' : '    ],')
     }
