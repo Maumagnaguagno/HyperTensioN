@@ -71,9 +71,11 @@ module Wise
       }
     }
     # Tasks
-    ordered = tasks.shift
-    verify_tasks('task', tasks, noops, operators, methods, debug)
-    tasks.unshift(ordered) unless tasks.empty?
+    unless tasks.empty?
+      ordered = tasks.shift
+      verify_tasks('task', tasks, noops, operators, methods, debug)
+      tasks.unshift(ordered)
+    end
   end
 
   #-----------------------------------------------

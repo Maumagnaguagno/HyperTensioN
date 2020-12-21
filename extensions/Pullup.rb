@@ -9,7 +9,8 @@ module Pullup
     # Remove impossible operators and methods and unnecessary free variables
     impossible = []
     counter = Hash.new(0)
-    tasks.drop(1).each {|t| counter[t.first] += 1}
+    ordered = tasks.shift
+    tasks.each {|t| counter[t.first] += 1}
     methods.map! {|name,param,*decompositions|
       decompositions.select! {|_,free,precond_pos,precond_not,subtasks|
         substitutions = []
@@ -195,6 +196,7 @@ module Pullup
       op[2].select! {|pre| predicates[pre.first]}
       op[3].select! {|pre| predicates[pre.first]}
     }
+    tasks.unshift(ordered) unless tasks.empty?
   end
 
   #-----------------------------------------------

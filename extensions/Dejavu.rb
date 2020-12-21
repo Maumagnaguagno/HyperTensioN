@@ -6,6 +6,7 @@ module Dejavu
   #-----------------------------------------------
 
   def apply(operators, methods, predicates, state, tasks, goal_pos, goal_not, debug = false)
+    return if tasks.empty?
     knots = []
     ordered = tasks.shift
     tasks.uniq(&:first).each {|t| visit(t.first, methods, knots)}
