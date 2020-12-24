@@ -52,8 +52,7 @@ module Markdown_Compiler
     unless tasks.empty?
       ordered = tasks.shift
       output << "\n\n## Tasks" << (ordered ? "\n**ordered**" : "\n**unordered**")
-      tasks.each {|task| output << "\n- (#{task.join(' ')})"}
-      tasks.unshift(ordered)
+      tasks.each {|task| output << "\n- (#{task.join(' ')})"}.unshift(ordered)
     end
     unless goal_pos.empty? and goal_not.empty?
       output << "\n\n## Goal state"
