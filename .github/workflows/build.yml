@@ -40,6 +40,5 @@ jobs:
     - run: ruby Hype.rb examples/basic/basic.jshop examples/basic/pb1.jshop run
     - run: ruby Hype.rb examples/hanoi/hanoi.jshop examples/hanoi/pb1.jshop run
     - run: ruby examples/goldminer/pb1.rb
-    - run: ruby examples/goldminer/pb1_const_objects.rb
     - run: ruby Hype.rb examples/dependency/dependency.pddl examples/dependency/pb1.pddl patterns debug
     - run: ruby Hype.rb examples/dependency/dependency.pddl examples/dependency/pb2.pddl patterns debug
