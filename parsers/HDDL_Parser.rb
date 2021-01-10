@@ -208,7 +208,6 @@ module HDDL_Parser
           @foralls << [pos, neg, pre, false]
         else
           pre.first != NOT ? pos << pre : pre.size == 2 ? neg << pre = pre.last : raise("Error with #{name} negative precondition")
-          #pre.replace([pre[3], pre[1]]) if pre.first == 'sortof' # (sortof ?variable - type)
           pre.map! {|i| variables.find {|j| j == i} || free_variables.find {|j| j == i} || i}
           @predicates[pre.first.freeze] ||= false
         end
