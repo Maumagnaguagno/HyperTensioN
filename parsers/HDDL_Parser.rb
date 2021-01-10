@@ -44,6 +44,7 @@ module HDDL_Parser
     ordering.shift
     @graph = Hash.new {|h,k| h[k] = []}
     ordering.each {|_,before,after| @graph[after] << before}
+    @graph.default = []
     total = tsort
     tasks.sort_by! {|label,_| total.index(label)}
   end
@@ -53,7 +54,7 @@ module HDDL_Parser
   end
 
   def tsort_each_child(node, &block)
-    @graph.fetch(node, []).each(&block)
+    @graph[node].each(&block)
   end
 
   #-----------------------------------------------
