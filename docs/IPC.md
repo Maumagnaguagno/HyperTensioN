@@ -4,7 +4,7 @@ Its main goal is to provide a common dataset made of several planning instances 
 Planners compete in several tracks, searching for step-optimal (smaller plans) or satisficing (less planning time) solutions and exploiting common or uncommon description features, such as numerics and optimization.
 There was no common language for Hierarchical Task Network (HTN), although the second (2000) and third (2002) IPC had tracks on 'Hand Tailored Systems'.
 Most systems relied on some input format of their own, making comparisons hard to happen.
-HTN IPC was proposed during [ICAPS 2019](https://www.uni-ulm.de/fileadmin/website_uni_ulm/iui.inst.090/Publikationen/2019/Behnke2019HTNIPC.pdf) to improve this situation, pushing [HDDL](http://gki.informatik.uni-freiburg.de/papers/hoeller-etal-aaai20.pdf) as the default HTN language.
+HTN IPC was proposed during [ICAPS 2019](https://www.uni-ulm.de/fileadmin/website_uni_ulm/iui.inst.090/Publikationen/2019/Behnke2019HTNIPC.pdf) to improve this situation, pushing [HDDL](http://gki.informatik.uni-freiburg.de/papers/hoeller-etal-aaai20.pdf) as the standard HTN language.
 
 The [IPC 2020](http://gki.informatik.uni-freiburg.de/competition/) proposed two tracks: total order and partial order.
 In the total order track the subtasks must be decomposed following one order, either respecting the order in which tasks were described or sorting them based on their constraints.

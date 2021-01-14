@@ -8,7 +8,7 @@ This is very alike to how humans think, taking mental steps further into primiti
 HTN is also used as an acronym for Hypertension in medical context, therefore the name was given.
 In order to support multiple [action description languages](https://en.wikipedia.org/wiki/Action_description_language) a module named [Hype](#hype "Jump to Hype section") takes care of the conversion process.
 Expanded features to deal with numeric and external elements are in a separate repository, [HyperTensioN U](../../../HyperTensioN_U).
-[Hypertension won the HTN IPC 2020 Total order track!](http://gki.informatik.uni-freiburg.de/competition/results-fixed.pdf "International Planning Competition 2020 results"), see more about it [here](docs/IPC.md).
+[Hypertension won the HTN IPC 2020 Total order track!](docs/IPC.md).
 This project was inspired by [Pyhop] and [JSHOP].
 
 [Download and play](../../archive/master.zip) or jump to each section to learn more:
