@@ -10,26 +10,26 @@ The [IPC 2020](http://gki.informatik.uni-freiburg.de/competition/) proposed two 
 In the total order track the subtasks must be decomposed following one order, either respecting the order in which tasks were described or sorting them based on their constraints.
 The partial order track contain domains in which there is more than one way to decompose tasks, which also makes possible to interleave subtasks, at the cost of complex bookkeeping.
 Few domains were acyclic (subtasks that may decompose to themselves) and therefore no extra tracks happened.
-You can see the [IPC domains](../../../../../panda-planner-dev/ipc2020-domains) and [submitted domains](../../../../../panda-planner-dev/domains) online.
+The [IPC domains](../../../../../panda-planner-dev/ipc2020-domains) and [submitted domains](../../../../../panda-planner-dev/domains) are available online.
 
 HyperTensioN participated in the total order track.
 Note that the HyperTensioN used in the IPC 2020 is slightly different from the original, it is available in its [competition repository](https://gitlab.anu.edu.au/u1092535/ipc2020-competitor-4).
 During the competition only HDDL_Parser, Typredicate, Pullup, Dejavu and Hyper_Compiler modules were loaded by Hype.
-Hype also does not save the output of Hyper_Compiler to disk before loading it, instead it evaluates the domain and problem converted to Ruby directly, this option is still not available in the current repository.
+Hype also does not save the output of Hyper_Compiler to disk before loading it, instead it evaluates the domain and problem converted to Ruby directly, this option is still not integrated in the current repository.
 The debug outputs in the planning method were commented out.
 A few bugs made the competition release of HyperTensioN not able to solve Entertainment and Monroe (partially and fully observable) domains, these bugs happened during HDDL parsing and are now fixed.
 Currently, 5 of 12 Entertainment instances are solved in less than 1 second, and another within 40s.
 All 20 Monroe fully observable instances are solved in few seconds.
 
 The planner was executed as ``ruby --disable=all Hype.rb $DOMAINFILE $PROBLEMFILE typredicate pullup dejavu run`` to save a few milliseconds from Ruby start up time.
-Due to a [limit](https://bugs.ruby-lang.org/issues/16616) in the amount of stack available to the Ruby interpreter in the Ubuntu 20.04 + Ruby 2.7 we decided to use an older version, Ubuntu 18.04 + Ruby 2.5, to be able to solve more planning instances.
-Some large planning instances require more stack than the default available, requiring ``export RUBY_THREAD_VM_STACK_SIZE=$(($MEMORY * 512 * 1024))``.
+Due to a [limit](https://bugs.ruby-lang.org/issues/16616) in the amount of stack available to the Ruby interpreter in the Ubuntu 20.04 + Ruby 2.7 it was decided to use an older version, Ubuntu 18.04 + Ruby 2.5, to be able to solve more planning instances.
+Some large planning instances require more stack, which is possible with ``export RUBY_THREAD_VM_STACK_SIZE=$(($MEMORY * 512 * 1024))``.
 HyperTensioN did not exploit the seed variable provided during the competition, although it is possible that randomizing parts of the planning instance may improve timing in certain domains.
 
-The [plan format output](http://gki.informatik.uni-freiburg.de/ipc2020/format.pdf) is different from the one used by the current HyperTensioN, the IPC required its own format to analyze plan correctness.
-You can visualize the plans in the IPC format using [this online tool](https://maumagnaguagno.github.io/HTN_Plan_Viewer/).
-Due to a small overhead and difference in the API this format is currently not the default output, but can be turned on by setting the constant ``FAST_OUTPUT = false`` in ``Hypertension.rb``.
-Note that some examples and tests expect the fast output.
+The [plan format output](http://gki.informatik.uni-freiburg.de/ipc2020/format.pdf) required by the IPC to analyze plan correctness was different from the one used by HyperTensioN.
+This output format can be obtained by setting the constant ``FAST_OUTPUT = false`` in ``Hypertension.rb``, note that this adds a small overhead and modifies the API.
+Some examples and tests expect the original fast output.
+Plans in the IPC format can be visualized using the [HTN Plan Viewer](https://maumagnaguagno.github.io/HTN_Plan_Viewer/).
 
 The [presented](http://gki.informatik.uni-freiburg.de/competition/results.pdf) and [fixed](http://gki.informatik.uni-freiburg.de/competition/results-fixed.pdf) results are now available, a presentation is on YouTube:
 
