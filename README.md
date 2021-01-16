@@ -267,16 +267,15 @@ This example is not part of the current implementation of Robby.
 
 ```Ruby
 def swap_at__jump(object, goal)
-    yield [
-      [:jump, object]
-    ]
-  end
+  yield [
+    [:jump, object]
+  ]
 end
 ```
 
 #### Ground preconditions
 Sometimes unique preconditions appear in the last operator of the subtask list.
-One wants to discover if such preconditions are satisfied before the execution of several steps to discover if this decomposition leads to a failure.
+One wants to know if such preconditions are satisfied before the execution of several steps to discover if this decomposition leads to a failure.
 Use preconditions as look-aheads, this may create a redundancy with the operators, but saves quite a lot of time if used wisely.
 
 ```Ruby
