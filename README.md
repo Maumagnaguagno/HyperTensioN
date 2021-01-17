@@ -25,9 +25,9 @@ This project was inspired by [Pyhop] and [JSHOP].
 The basic algorithm for HTN planning is quite simple and flexible, the hard part is in the structure that decomposes a hierarchy and the unification engine.
 The task list (input of planning) is decomposed until nothing remains, the base of recursion, returning an empty plan.
 The tail of recursion are the operator/primitive task and method/compound task cases.
-The operator tests if the current task (the first in the list, since it decomposes in order here) can be applied to the current state (which is a visible structure to the other Ruby methods, but does not appear here).
+Operators test if the current task (the first in the list, since it decomposes in total order) can be applied to the current state (which is a visible structure to the other Ruby methods, but does not appear here).
 If successfully applied, the planning process continues decomposing and inserting the current task at the beginning of the plan, as it builds the plan during recursion from last to first.
-If it is a method it is decomposed into one of several cases with a valid unification for the free variables.
+Methods are decomposed into one of their several cases with a valid unification for their free variables.
 Each case unified is a list of tasks, subtasks, that may require decomposition too, replacing the original method.
 Only methods accept unification of free variables, although it could also unify operators (but they would not be that primitive anymore).
 Methods take care of the heavy part (should the _agent_ **move** from _here_ to _there_ by **foot** ``[walking]`` or call a **cab** ``[call, enter, ride, pay, exit]``) while the operators just execute the effects when applicable.
@@ -178,7 +178,7 @@ end
 The operators are the same as before, but visit and unvisit are not really important outside the planning stage, therefore they are not visible (``false``), while the others are visible (``true``).
 The movement method ``swap_at`` is there, without any code describing its behavior, only the available methods.
 This is equivalent to header files holding function prototypes.
-Each ``swap_at__XYZ`` method describes one possible case of decomposition of ``swap_at``
+Each ``swap_at__XYZ`` method describes one possible case of decomposition of ``swap_at``.
 It is also possible to avoid listing all of them and filter based on their name (after they were declared):
 
 ```Ruby
@@ -248,7 +248,7 @@ def set_debug(term)
 end
 ```
 
-The other operators are no different, time to see how ``swap_at`` method works.
+The other operators are no different, time to see how ``swap_at`` methods work.
 Every case is defined as a different method.
 The order they appear in the domain definition implies the order of evaluation.
 Methods may appear in 3 different scenarios:
