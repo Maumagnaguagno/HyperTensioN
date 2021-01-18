@@ -18,13 +18,13 @@ During the competition only HDDL_Parser, Typredicate, Pullup, Dejavu and Hyper_C
 Hype also does not save the output of Hyper_Compiler to disk before loading it, instead it evaluates the domain and problem converted to Ruby directly, this option is still not integrated in the current repository.
 The debug outputs in the planning method were commented out.
 A few bugs made the competition release of HyperTensioN not able to parse Entertainment and Monroe (partially and fully observable) domains correctly, these are now fixed.
-The new timings were obtained in an Intel E5500@2.8GHz with 3.25GBs of RAM, which match previous timings.
+The new timings were obtained in an Intel E5500 @ 2.8GHz with 3.25GBs of RAM, which match IPC timings.
 Currently, the first 5 of 12 Entertainment instances are solved in less than a second, the sixth in 42s, the seventh in 740s, and the eighth in 235s, while others will take more than 1800s.
 All 20 Monroe-Fully-Observable instances are solvable, most in few seconds and the last two in 32s.
 The Monroe-Partially-Observable instances are still not solvable within a 1800s time limit.
 Other domains are unaffected by this change.
 
-Domain/Planner | Total | HyperTensioN (fixed) | HyperTensioN | Lilotane | PDDL4J-TO | PDDL4J-PO | HPDL | pyHiPOP
+Domain/Planner | Total | HyperTensioN (master) | HyperTensioN (IPC) | Lilotane | PDDL4J-TO | PDDL4J-PO | HPDL | pyHiPOP
 --- | --- | --- | --- | --- | --- | --- | --- | ---
 AssemblyHierarchical | 30 | 3 | 3 | **5** | 2 | 1 | 0 | 0.5
 Barman-BDI | 20 | **20** | **20** | 16 | 11 | 5.5 | 10 | 0
@@ -48,9 +48,9 @@ Rover-GTOHP | 30 | **30** | **30** | 21.3 | 27.5 | 12.8 | 15 | 3
 Satellite-GTOHP | 20 | **20** | **20** | 15 | **20** | 5 | 0 | 3.5
 Snake | 20 | **20** | **20** | 17.1 | **20** | 10 | 3.5 | 1
 Towers | 20 | **17** | **17** | 10 | 16 | 7.5 | 5.5 | 1
-Transport | **40** | **40** | **40** | 35 | 33.2 | 16.5 | 0.5 | 8.6
+Transport | 40 | **40** | **40** | 35 | 33.2 | 16.5 | 0.5 | 8.6
 Woodworking | 30 | 7 | 7 | **30** | 6 | 3 | 1.5 | 2
-**Total** | 892 | 567.7 | 544.1 | 537.9 | 270.2 | 126.9 | 92.8 | 22.5
+**Total** | 892 | **~567.7** | 544.1 | 537.9 | 270.2 | 126.9 | 92.8 | 22.5
 
 The planner was executed as ``ruby --disable=all Hype.rb $DOMAINFILE $PROBLEMFILE typredicate pullup dejavu run`` to save a few milliseconds from Ruby start up time.
 Due to a [limit](https://bugs.ruby-lang.org/issues/16616) in the amount of stack available to the Ruby interpreter in the Ubuntu 20.04 + Ruby 2.7 it was decided to use an older version, Ubuntu 18.04 + Ruby 2.5, to be able to solve more planning instances.
