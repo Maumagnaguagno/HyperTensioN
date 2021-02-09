@@ -40,6 +40,22 @@ module Hyper_Compiler
   end
 
   #-----------------------------------------------
+  # Apply
+  #-----------------------------------------------
+
+  def apply(modifier, effects, define_operators, duplicated)
+    effects.each {|pre,*terms|
+      if duplicated.include?(pre)
+        define_operators << "\n    @state[#{pre.upcase}]"
+      else
+        define_operators << "\n    (@state[#{pre.upcase}] = @state[#{pre.upcase}].dup)"
+        duplicated[pre] = nil
+      end
+      define_operators << ".#{modifier}(#{terms_to_hyper(terms)})"
+    }
+  end
+
+  #-----------------------------------------------
   # Compile domain
   #-----------------------------------------------
 
@@ -79,23 +95,8 @@ module Hyper_Compiler
       define_operators << "\n    return if #{equality.join(' or ')}" unless equality.empty?
       unless effect_add.empty? and effect_del.empty?
         define_operators << "\n    @state = @state.dup"
-        duplicated = {}
-        effect_del.each {|pre,*terms|
-          if duplicated.include?(pre)
-            define_operators << "\n    @state[#{pre.upcase}].delete(#{terms_to_hyper(terms)})"
-          else
-            define_operators << "\n    (@state[#{pre.upcase}] = @state[#{pre.upcase}].dup).delete(#{terms_to_hyper(terms)})"
-            duplicated[pre] = nil
-          end
-        }
-        effect_add.each {|pre,*terms|
-          if duplicated.include?(pre)
-            define_operators << "\n    @state[#{pre.upcase}].unshift(#{terms_to_hyper(terms)})"
-          else
-            define_operators << "\n    (@state[#{pre.upcase}] = @state[#{pre.upcase}].dup).unshift(#{terms_to_hyper(terms)})"
-            duplicated[pre] = nil
-          end
-        }
+        apply('delete', effect_del, define_operators, duplicated = {})
+        apply('unshift', effect_add, define_operators, duplicated)
       end
       define_operators << "\n    true\n  end\n"
     }
