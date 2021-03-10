@@ -142,7 +142,7 @@ module Hyper_Compiler
         define_methods << "\n    return if #{equality.join(' or ')}" unless equality.empty?
         define_methods << define_methods_comparison
         if paramstr and (paramstr & f).empty?
-          define_methods << "\n    return if @visit.include?(#{paramstr.map! {|j| term(j)}.size > 1 ? "[#{paramstr.join(', ')}]" : paramstr.first})"
+          define_methods << "\n    return if @visit.include?(#{terms_to_hyper(paramstr)})"
           paramstr = nil
         end
         close_method_str = "\n  end\n"
@@ -199,7 +199,7 @@ module Hyper_Compiler
             define_methods << "#{indentation}next if #{equality.join(' or ')}" unless equality.empty?
             define_methods << define_methods_comparison
             if paramstr and (paramstr & f).empty?
-              define_methods << "#{indentation}next if @visit.include?(#{paramstr.map! {|j| term(j)}.size > 1 ? "[#{paramstr.join(', ')}]" : paramstr.first})"
+              define_methods << "#{indentation}next if @visit.include?(#{terms_to_hyper(paramstr)})"
               paramstr = nil
             end
           end
@@ -230,7 +230,7 @@ module Hyper_Compiler
   # Compile problem
   #-----------------------------------------------
 
-  def compile_problem(domain_name, problem_name, operators, methods, predicates, state, tasks, goal_pos, goal_not, domain_filename = nil)
+  def compile_problem(domain_name, problem_name, operators, methods, predicates, state, tasks, goal_pos, goal_not, domain_filename)
     # Start
     problem_str = "# Predicates\n"
     start_str = "\n#{domain = domain_name.capitalize}.problem(\n  # Start\n  [\n"
