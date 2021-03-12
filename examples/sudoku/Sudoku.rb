@@ -63,7 +63,7 @@ module Sudoku
   #-----------------------------------------------
 
   def put_symbol(x, y, b, symbol)
-    @state = @state.map {|i| i.dup}
+    @state = @state.map(&:dup)
     @state[x].delete(symbol)
     @state[y].delete(symbol)
     @state[b].delete(symbol)

@@ -47,7 +47,7 @@ module PDDL_Compiler
         terms.shift
       }.flatten) if predicates.include?(pre)
     }
-    tasks.drop(1).each {|pre,*terms| objects.concat(terms)}
+    tasks.drop(1).each {|_,*terms| objects.concat(terms)}
     goal_str = ''
     goal_pos.each {|pre|
       objects.concat(pre.drop(1))

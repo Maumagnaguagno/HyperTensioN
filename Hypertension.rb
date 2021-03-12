@@ -121,7 +121,7 @@ end
 
   def apply(effect_add, effect_del)
     # Create new state with added or deleted predicates
-    @state = @state.map {|v| v.dup}
+    @state = @state.map(&:dup)
     effect_del.each {|pre,*terms| @state[pre].delete(terms)}
     effect_add.each {|pre,*terms| @state[pre] << terms}
     true
