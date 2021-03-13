@@ -384,7 +384,7 @@ module Patterns
             end
           }
         end
-        name = "dependency_#{first.first}_before_#{seconds.map {|i| i.first}.join('_or_')}"
+        name = "dependency_#{first.first}_before_#{seconds.map(&:first).join('_or_')}"
         next if methods.any? {|met| met.first.start_with?(name)}
         precond_pos = []
         precond_not = []
@@ -463,7 +463,7 @@ module Patterns
       ground_var = []
     else ground_sub, ground_var = ground.transpose
     end
-    unless methods.assoc(name = "unify#{free.map! {|i| i.first}.join.tr!('?','_')}_before_#{met.first}")
+    unless methods.assoc(name = "unify#{free.map!(&:first).join.tr!('?','_')}_before_#{met.first}")
       # Find rigid predicates shared across decompositions to act as preconditions
       precond_pos = []
       precond_not = []
