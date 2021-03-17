@@ -4,13 +4,11 @@ module Hyper_Compiler
   SPACER = '-' * 47
 
   #-----------------------------------------------
-  # Predicate to Hyper
+  # Term
   #-----------------------------------------------
 
-  def predicate_to_hyper(output, pre, terms, predicates)
-    if predicates[pre] then output << "@state[#{pre.upcase}].include?(#{terms_to_hyper(terms)})"
-    else output << "#{pre.upcase}.include?(#{terms_to_hyper(terms)})"
-    end
+  def term(t)
+    t.start_with?('?') ? t.tr('?','_') : ":#{t}"
   end
 
   #-----------------------------------------------
@@ -22,21 +20,13 @@ module Hyper_Compiler
   end
 
   #-----------------------------------------------
-  # Subtasks to Hyper
+  # Applicable
   #-----------------------------------------------
 
-  def subtasks_to_hyper(tasks, indentation)
-    if tasks.empty? then "#{indentation}yield []"
-    else "#{indentation}yield [#{indentation}  [" << tasks.map {|g| g.map {|i| term(i)}.join(', ')}.join("],#{indentation}  [") << "]#{indentation}]"
+  def applicable(output, pre, terms, predicates)
+    if predicates[pre] then output << "@state[#{pre.upcase}].include?(#{terms_to_hyper(terms)})"
+    else output << "#{pre.upcase}.include?(#{terms_to_hyper(terms)})"
     end
-  end
-
-  #-----------------------------------------------
-  # Term
-  #-----------------------------------------------
-
-  def term(t)
-    t.start_with?('?') ? t.tr('?','_') : ":#{t}"
   end
 
   #-----------------------------------------------
@@ -53,6 +43,16 @@ module Hyper_Compiler
       end
       define_operators << ".#{modifier}(#{terms_to_hyper(terms)})"
     }
+  end
+
+  #-----------------------------------------------
+  # Subtasks to Hyper
+  #-----------------------------------------------
+
+  def subtasks_to_hyper(tasks, indentation)
+    if tasks.empty? then "#{indentation}yield []"
+    else "#{indentation}yield [#{indentation}  [" << tasks.map {|g| g.map {|i| term(i)}.join(', ')}.join("],#{indentation}  [") << "]#{indentation}]"
+    end
   end
 
   #-----------------------------------------------
@@ -84,12 +84,12 @@ module Hyper_Compiler
       precond_pos.each {|pre,*terms|
         if pre == '=' then equality << "#{term(terms[0])} != #{term(terms[1])}"
         elsif not predicates[pre] and not state.include?(pre) then define_operators << "\n    return"
-        else predicate_to_hyper(define_operators << "\n    return unless ", pre, terms, predicates)
+        else applicable(define_operators << "\n    return unless ", pre, terms, predicates)
         end
       }
       precond_not.each {|pre,*terms|
         if pre == '=' then equality << "#{term(terms[0])} == #{term(terms[1])}"
-        elsif predicates[pre] or state.include?(pre) then predicate_to_hyper(define_operators << "\n    return if ", pre, terms, predicates)
+        elsif predicates[pre] or state.include?(pre) then applicable(define_operators << "\n    return if ", pre, terms, predicates)
         end
       }
       define_operators << "\n    return if #{equality.join(' or ')}" unless equality.empty?
@@ -126,7 +126,7 @@ module Hyper_Compiler
           if (terms & f).empty?
             if pre == '=' then equality << "#{term(terms[0])} != #{term(terms[1])}"
             elsif not predicates[pre] and not state.include?(pre) then define_methods << "\n    return"
-            else predicate_to_hyper(define_methods_comparison << "\n    return unless ", pre, terms, predicates)
+            else applicable(define_methods_comparison << "\n    return unless ", pre, terms, predicates)
             end
           end
         }
@@ -135,7 +135,7 @@ module Hyper_Compiler
           elsif not predicates[pre] and not state.include?(pre) then true
           elsif (terms & f).empty?
             if pre == '=' then equality << "#{term(terms[0])} == #{term(terms[1])}"
-            elsif predicates[pre] or state.include?(pre) then predicate_to_hyper(define_methods_comparison << "\n    return if ", pre, terms, predicates)
+            elsif predicates[pre] or state.include?(pre) then applicable(define_methods_comparison << "\n    return if ", pre, terms, predicates)
             end
           end
         }
@@ -179,20 +179,20 @@ module Hyper_Compiler
               indentation << '  '
             elsif pre == '=' then equality << "#{terms2[0]} != #{terms2[1]}"
             elsif not predicates[pre] and not state.include?(pre) then define_methods << "#{indentation}return"
-            else predicate_to_hyper(define_methods_comparison << "#{indentation}next unless ", pre, terms, predicates)
+            else applicable(define_methods_comparison << "#{indentation}next unless ", pre, terms, predicates)
             end
             precond_pos.reject! {|pre,*terms|
               if (terms & f).empty?
                 if pre == '=' then equality << "#{term(terms[0])} != #{term(terms[1])}"
                 elsif not predicates[pre] and not state.include?(pre) then define_methods << "#{indentation}return"
-                else predicate_to_hyper(define_methods_comparison << "#{indentation}next unless ", pre, terms, predicates)
+                else applicable(define_methods_comparison << "#{indentation}next unless ", pre, terms, predicates)
                 end
               end
             }
             precond_not.reject! {|pre,*terms|
               if (terms & f).empty?
                 if pre == '=' then equality << "#{term(terms[0])} == #{term(terms[1])}"
-                elsif predicates[pre] or state.include?(pre) then predicate_to_hyper(define_methods_comparison << "#{indentation}next if ", pre, terms, predicates)
+                elsif predicates[pre] or state.include?(pre) then applicable(define_methods_comparison << "#{indentation}next if ", pre, terms, predicates)
                 end
               end
             }
@@ -207,7 +207,7 @@ module Hyper_Compiler
           define_methods_comparison.clear
           precond_not.each {|pre,*terms|
             if pre == '=' then equality << "#{term(terms[0])} == #{term(terms[1])}"
-            elsif predicates[pre] or state.include?(pre) then predicate_to_hyper(define_methods_comparison << "#{indentation}next if ", pre, terms, predicates)
+            elsif predicates[pre] or state.include?(pre) then applicable(define_methods_comparison << "#{indentation}next if ", pre, terms, predicates)
             end
           }
           define_methods << "#{indentation}next if #{equality.join(' or ')}" unless equality.empty?
