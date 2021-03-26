@@ -43,6 +43,13 @@ module Function
   def function_effect
     (@state = @state.dup)[:function] = @state[:function].dup
   end
+
+  def step(t, min = 0.0, max = Float::INFINITY, epsilon = 1.0)
+    min.to_f.step(max.to_f, epsilon.to_f) {|i|
+      t.replace(i.to_s)
+      yield
+    }
+  end
 end
 
 module Continuous
