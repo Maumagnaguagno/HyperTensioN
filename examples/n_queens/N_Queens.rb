@@ -48,10 +48,10 @@ module N_Queens
   # Methods
   #-----------------------------------------------
 
-  def try_next(c)
+  def try_next(y)
     # Base of recursion
-    return yield [] if c.zero?
-    y = c.pred # Closed row boost
+    return yield [] if y.zero?
+    y -= 1 # Closed row boost
     queen = @state[:queen]
     # Generate unifications without generate
     @state[:free_collumn].each {|x|
