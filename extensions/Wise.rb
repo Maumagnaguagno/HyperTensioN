@@ -13,8 +13,11 @@ module Wise
       if not predicates.include?(pre)
         puts "Initial state contains unused predicates (#{pre} ...): removed" if debug
         true
-      # Duplicate predicate
-      elsif k.uniq! and debug then puts "Initial state contains duplicate predicates (#{pre} ...): removed"
+      else
+        # Duplicate predicate
+        puts "Initial state contains duplicate predicates (#{pre} ...): removed" if k.uniq! and debug
+        # Arity check
+        puts "Initial state contains (#{pre} ...) with different arity" if k.any? {|i| i.size != k.first.size} and debug
       end
     }
     # Operators
