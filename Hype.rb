@@ -18,6 +18,7 @@ module Hype
   Output:
     print - print parsed data(default)
     rb    - generate Ruby files to HyperTensioN
+    cpp   - generate C++ file to HyperTensioN
     pddl  - generate PDDL files
     jshop - generate JSHOP files
     dot   - generate DOT file
@@ -164,6 +165,7 @@ Problem #{@parser.problem_name}
   def compile(domain, problem, type)
     compiler = case type
     when 'rb' then Hyper_Compiler
+    when 'cpp' then Cyber_Compiler
     when 'jshop' then JSHOP_Compiler
     when 'pddl' then PDDL_Compiler
     when 'dot' then Dot_Compiler
