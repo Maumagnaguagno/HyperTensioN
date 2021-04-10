@@ -450,12 +450,9 @@ static Plan* planning(Task *tasks)
     state = old_state;
   }
   // Method
-  else
+  else if(domain[tasks->value](tasks->parameters, tasks->next))
   {
-    if(domain[tasks->value](tasks->parameters, tasks->next))
-    {
-      return next_plan;
-    }
+    return next_plan;
   }
   // Failure
   return NULL;
@@ -471,7 +468,7 @@ int main(void)
   puts("Planning...");
   Plan *result = planning(<TASK0>);
   // Print plan
-  if(result)
+  if(result != NULL)
   {
     if(result == &empty)
     {
