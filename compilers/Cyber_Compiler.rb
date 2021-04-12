@@ -157,6 +157,7 @@ module Cyber_Compiler
         indentation = "\n  "
         counter = -1
         # Lifted
+        predicate_loops = []
         unless f.empty?
           ground = param.dup
           until precond_pos.empty?
@@ -179,7 +180,11 @@ module Cyber_Compiler
             }
             if new_grounds
               if predicates[pre]
-                define_methods << "#{indentation}const auto #{pre} = state->#{pre};#{indentation}for(VALUE#{terms.size}::iterator it#{counter += 1} = #{pre}->begin(); it#{counter} != #{pre}->end(); ++it#{counter})#{indentation}{"
+                unless predicate_loops.include?(pre)
+                  predicate_loops << pre
+                  define_methods << "#{indentation}const auto #{pre} = state->#{pre};"
+                end
+                define_methods << "#{indentation}for(VALUE#{terms.size}::iterator it#{counter += 1} = #{pre}->begin(); it#{counter} != #{pre}->end(); ++it#{counter})#{indentation}{"
               else
                 define_methods << "#{indentation}return false;" unless state.include?(pre)
                 pre2 = pre == '=' ? 'equal' : pre
