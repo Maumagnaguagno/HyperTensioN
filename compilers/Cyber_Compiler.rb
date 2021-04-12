@@ -292,7 +292,7 @@ module Cyber_Compiler
     (arity = arity.values).uniq!
     arity.sort!
     arity.shift while arity.first < 2
-    template.sub!('<VALUE_TYPE>', tokens.size < 256 ? 'unsigned char' : 'unsigned int')
+    template.sub!('<VALUE_TYPE>', tokens.size <= 256 ? 'unsigned char' : 'unsigned int')
     template.sub!('<VALUES>', arity.map! {|v| "\ntypedef std::set<std::tuple<#{Array.new(v,'VALUE').join(',')}>> VALUE#{v};"}.join)
     # Tasks
     if tasks.empty? then template.sub!('<TASK0>', 'NULL')
