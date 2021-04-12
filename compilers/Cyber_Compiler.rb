@@ -298,8 +298,10 @@ module Cyber_Compiler
     if tasks.empty? then template.sub!('<TASK0>', 'NULL')
     else
       define_tasks = ''
-      tasks.drop(1).each_with_index {|s,i| define_tasks << "\n  Task *subtask#{i} = (Task *) malloc(task_size(#{s.size - 1}));"}
-      tasks_to_hyper(define_tasks, tasks.drop(1), "\n  ", 'NULL')
+      ordered = tasks.shift
+      tasks.each_with_index {|s,i| define_tasks << "\n  Task *subtask#{i} = (Task *) malloc(task_size(#{s.size - 1}));"}
+      tasks_to_hyper(define_tasks, tasks, "\n  ", 'NULL')
+      tasks.unshift(ordered)
       template.sub!('<TASKS>', define_tasks)
       template.sub!('<TASK0>', 'subtask0')
     end
