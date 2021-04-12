@@ -5,39 +5,39 @@ module Cyber_Compiler
   # Term
   #-----------------------------------------------
 
-  def term(term, param = [])
-    term.start_with?('?') ? (param = param.index(term)) ? "parameters[#{param + 1}]" : term.tr('?','_') : term.upcase
+  def term(term)
+    term.start_with?('?') ? term.tr('?','_') : term.upcase
   end
 
   #-----------------------------------------------
   # Terms to Hyper
   #-----------------------------------------------
 
-  def terms_to_hyper(terms, param = nil)
-    terms.size == 1 ? term(terms[0], param) : "std::make_tuple(#{terms.map {|t| term(t, param)}.join(', ')})"
+  def terms_to_hyper(terms)
+    terms.size == 1 ? term(terms[0]) : "std::make_tuple(#{terms.map {|t| term(t)}.join(', ')})"
   end
 
   #-----------------------------------------------
   # Applicable
   #-----------------------------------------------
 
-  def applicable(pre, terms, param, predicates, arity)
+  def applicable(pre, terms, predicates, arity)
     arity[pre] ||= terms.size
-    predicates[pre] ? "applicable(#{pre}, #{terms_to_hyper(terms, param)})" : "applicable_const(#{pre}, #{terms_to_hyper(terms, param)})"
+    predicates[pre] ? "applicable(#{pre}, #{terms_to_hyper(terms)})" : "applicable_const(#{pre}, #{terms_to_hyper(terms)})"
   end
 
   #-----------------------------------------------
   # Apply
   #-----------------------------------------------
 
-  def apply(modifier, effects, param, define_operators, duplicated, arity)
+  def apply(modifier, effects, define_operators, duplicated, arity)
     effects.each {|pre,*terms|
       unless duplicated.include?(pre)
         define_operators << "\n  state->#{pre} = new VALUE#{terms.size}(*(state->#{pre}));"
         arity[pre] ||= terms.size
         duplicated[pre] = nil
       end
-      define_operators << "\n  state->#{pre}->#{modifier}(#{terms_to_hyper(terms, param)});"
+      define_operators << "\n  state->#{pre}->#{modifier}(#{terms_to_hyper(terms)});"
     }
   end
 
@@ -66,6 +66,7 @@ module Cyber_Compiler
     state_visit = -1 if operators.any? {|name,param| param.empty? and name.start_with?('invisible_visit_', 'invisible_mark_')}
     operators.each {|name,param,precond_pos,precond_not,effect_add,effect_del|
       define_operators << "\n\nstatic bool #{name}(const VALUE *parameters, Task *next)\n{"
+      param.each_with_index {|v,i| define_operators << "\n  VALUE #{v.tr('?','_')} = parameters[#{i + 1}];"}
       if state_visit
         if name.start_with?('invisible_visit_', 'invisible_mark_')
           raise 'State comparison not implemented in Cyber' #define_operators << "\n  if(state_visit#{state_visit += 1}.include?(state)) return false;\n  state_visit#{state_visit}.insert(state);\n  return true;\n}\n"
@@ -84,19 +85,19 @@ module Cyber_Compiler
       precond_pos.each {|pre,*terms|
         if pre == '=' then equality << "#{term(terms[0])} != #{term(terms[1])}"
         elsif not predicates[pre] and not state.include?(pre) then define_operators << "\n    return"
-        else define_operators << "\n  if(!#{applicable(pre, terms, param, predicates, arity)}) return false;"
+        else define_operators << "\n  if(!#{applicable(pre, terms, predicates, arity)}) return false;"
         end
       }
       precond_not.each {|pre,*terms|
         if pre == '=' then equality << "#{term(terms[0])} == #{term(terms[1])}"
-        elsif predicates[pre] or state.include?(pre) then define_operators << "\n  if(#{applicable(pre, terms, param, predicates, arity)}) return false;"
+        elsif predicates[pre] or state.include?(pre) then define_operators << "\n  if(#{applicable(pre, terms, predicates, arity)}) return false;"
         end
       }
-      define_operators << "\n    return if #{equality.join(' or ')}" unless equality.empty?
+      define_operators << "\n    return if #{equality.join(' || ')}" unless equality.empty?
       unless effect_add.empty? and effect_del.empty?
         define_operators << "\n  new_state();"
-        apply('erase', effect_del, param, define_operators, duplicated = {}, arity)
-        apply('insert', effect_add, param, define_operators, duplicated, arity)
+        apply('erase', effect_del, define_operators, duplicated = {}, arity)
+        apply('insert', effect_add, define_operators, duplicated, arity)
       end
       define_operators << "\n  return true;\n}"
     }
@@ -125,7 +126,7 @@ module Cyber_Compiler
           if (terms & f).empty?
             if pre == '=' then equality << "#{term(terms[0])} != #{term(terms[1])}"
             elsif not predicates[pre] and not state.include?(pre) then define_methods << "\n  return false;"
-            else define_methods_comparison << "\n  if(!#{applicable(pre, terms, [], predicates, arity)}) return false;"
+            else define_methods_comparison << "\n  if(!#{applicable(pre, terms, predicates, arity)}) return false;"
             end
           end
         }
@@ -134,14 +135,14 @@ module Cyber_Compiler
           elsif not predicates[pre] and not state.include?(pre) then true
           elsif (terms & f).empty?
             if pre == '=' then equality << "#{term(terms[0])} == #{term(terms[1])}"
-            else define_methods_comparison << "\n  if(#{applicable(pre, terms, [], predicates, arity)}) return false;"
+            else define_methods_comparison << "\n  if(#{applicable(pre, terms, predicates, arity)}) return false;"
             end
           end
         }
         define_methods << "\n  if(#{equality.join(' || ')}) return false;" unless equality.empty?
         define_methods << define_methods_comparison
         if paramstr and (paramstr & f).empty?
-          define_methods << "\n  if(applicable_const(visit#{paramstr.size}, #{terms_to_hyper(paramstr, [])})) return false;"
+          define_methods << "\n  if(applicable_const(visit#{paramstr.size}, #{terms_to_hyper(paramstr)})) return false;"
           paramstr = nil
         end
         unless dec[4].empty?
@@ -178,8 +179,7 @@ module Cyber_Compiler
             }
             if new_grounds
               if predicates[pre]
-                define_methods << "#{indentation}const auto #{pre} = state->#{pre};"
-                define_methods << "#{indentation}for(VALUE#{terms.size}::iterator it#{counter += 1} = #{pre}->begin(); it#{counter} != #{pre}->end(); ++it#{counter})#{indentation}{"
+                define_methods << "#{indentation}const auto #{pre} = state->#{pre};#{indentation}for(VALUE#{terms.size}::iterator it#{counter += 1} = #{pre}->begin(); it#{counter} != #{pre}->end(); ++it#{counter})#{indentation}{"
               else
                 define_methods << "#{indentation}return false;" unless state.include?(pre)
                 pre2 = pre == '=' ? 'equal' : pre
@@ -193,27 +193,27 @@ module Cyber_Compiler
               end
             elsif pre == '=' then equality << "#{terms2[0]} != #{terms2[1]}"
             elsif not predicates[pre] and not state.include?(pre) then define_methods << "#{indentation}return"
-            else define_methods_comparison << "#{indentation}if(!#{applicable(pre, terms, [], predicates, arity)}) continue;"
+            else define_methods_comparison << "#{indentation}if(!#{applicable(pre, terms, predicates, arity)}) continue;"
             end
             precond_pos.reject! {|pre,*terms|
               if (terms & f).empty?
                 if pre == '=' then equality << "#{term(terms[0])} != #{term(terms[1])}"
                 elsif not predicates[pre] and not state.include?(pre) then define_methods << "#{indentation}return false;"
-                else define_methods_comparison << "#{indentation}if(!#{applicable(pre, terms, [], predicates, arity)}) continue;"
+                else define_methods_comparison << "#{indentation}if(!#{applicable(pre, terms, predicates, arity)}) continue;"
                 end
               end
             }
             precond_not.reject! {|pre,*terms|
               if (terms & f).empty?
                 if pre == '=' then equality << "#{term(terms[0])} == #{term(terms[1])}"
-                elsif predicates[pre] or state.include?(pre) then define_methods_comparison << "#{indentation}if(#{applicable(pre, terms, [], predicates, arity)}) continue;"
+                elsif predicates[pre] or state.include?(pre) then define_methods_comparison << "#{indentation}if(#{applicable(pre, terms, predicates, arity)}) continue;"
                 end
               end
             }
             define_methods << "#{indentation}if(#{equality.join(' || ')}) continue;" unless equality.empty?
             define_methods << define_methods_comparison
             if paramstr and (paramstr & f).empty?
-              define_methods << "#{indentation}if(applicable_const(visit#{paramstr.size}, #{terms_to_hyper(paramstr, [])})) continue;"
+              define_methods << "#{indentation}if(applicable_const(visit#{paramstr.size}, #{terms_to_hyper(paramstr)})) continue;"
               paramstr = nil
             end
           end
@@ -221,7 +221,7 @@ module Cyber_Compiler
           define_methods_comparison.clear
           precond_not.each {|pre,*terms|
             if pre == '=' then equality << "#{term(terms[0])} == #{term(terms[1])}"
-            elsif predicates[pre] or state.include?(pre) then define_methods_comparison << "#{indentation}if(#{applicable(pre, terms, [], predicates, arity)}) continue;"
+            elsif predicates[pre] or state.include?(pre) then define_methods_comparison << "#{indentation}if(#{applicable(pre, terms, predicates, arity)}) continue;"
             end
           }
           define_methods << "#{indentation}if(#{equality.join(' || ')}) continue;" unless equality.empty?
@@ -264,12 +264,12 @@ module Cyber_Compiler
         define_delete << "\n  if(old_state->#{pre} != state->#{pre}) delete state->#{pre}"
         define_start << "\n  start.#{pre} = new VALUE#{arity[pre]}"
         if k
-          define_start << " {#{k.map {|value| "\n    #{terms_to_hyper(value)}"}.join(',')}\n  }"
+          define_start << "\n  {\n    #{k.map {|value| terms_to_hyper(value)}.join(",\n    ")}\n  }"
           tokens.concat(k.flatten)
         end
         define_start << ';'
       elsif k
-        define_state_const << "\nstatic VALUE#{k.first.size} #{pre == '=' ? 'equal' : pre} {#{k.map {|value| "\n  #{terms_to_hyper(value)}"}.join(',')}\n};"
+        define_state_const << "\nstatic VALUE#{k.first.size} #{pre == '=' ? 'equal' : pre}\n{\n  #{k.map {|value| terms_to_hyper(value)}.join(",\n  ")}\n};"
         tokens.concat(k.flatten)
       end
     }
@@ -376,13 +376,13 @@ struct Node
 
 typedef Node Plan;
 typedef Node Task;
+static Node *next_plan, empty;
 
-struct State {<STATE>
-};<STATE_CONST>
-
+struct State
+{<STATE>
+};
 static State *state;
-static Node *next_plan;
-static Plan empty;
+<STATE_CONST>
 
 static Plan* planning(Task *tasks);
 
