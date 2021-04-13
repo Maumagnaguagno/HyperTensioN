@@ -110,10 +110,10 @@ module Hyper_Compiler
       decompositions.each_with_index {|dec,i|
         domain_str << "      :#{name}_#{dec.first}#{',' if decompositions.size - 1 != i}\n"
         define_methods << "\n  def #{name}_#{dec.first}#{variables}"
-        paramstr = nil
+        visit_param = nil
         dec[4].each {|s|
           if s.size > 1 and s.first.start_with?('invisible_visit_')
-            paramstr = s.drop(1)
+            visit_param = s.drop(1)
             visit = true
             break
           end
@@ -141,9 +141,9 @@ module Hyper_Compiler
         }
         define_methods << "\n    return if #{equality.join(' or ')}" unless equality.empty?
         define_methods << define_methods_comparison
-        if paramstr and (paramstr & f).empty?
-          define_methods << "\n    return if @visit.include?(#{terms_to_hyper(paramstr)})"
-          paramstr = nil
+        if visit_param and (visit_param & f).empty?
+          define_methods << "\n    return if @visit.include?(#{terms_to_hyper(visit_param)})"
+          visit_param = nil
         end
         close_method_str = "\n  end\n"
         indentation = "\n    "
@@ -198,9 +198,9 @@ module Hyper_Compiler
             }
             define_methods << "#{indentation}next if #{equality.join(' or ')}" unless equality.empty?
             define_methods << define_methods_comparison
-            if paramstr and (paramstr & f).empty?
-              define_methods << "#{indentation}next if @visit.include?(#{terms_to_hyper(paramstr)})"
-              paramstr = nil
+            if visit_param and (visit_param & f).empty?
+              define_methods << "#{indentation}next if @visit.include?(#{terms_to_hyper(visit_param)})"
+              visit_param = nil
             end
           end
           equality.clear

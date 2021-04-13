@@ -110,10 +110,10 @@ module Cyber_Compiler
       param.each_with_index {|v,i| param_str << "\n  VALUE #{v.tr('?','_')} = parameters[#{i + 1}];"}
       decompositions.each {|dec|
         define_methods << "\n\nstatic bool #{name}_#{dec[0]}(const VALUE *parameters, Task *next)\n{#{param_str}"
-        paramstr = nil
+        visit_param = nil
         dec[4].each {|s|
           if s.size > 1 and s.first.start_with?('invisible_visit_')
-            paramstr = s.drop(1)
+            visit_param = s.drop(1)
             visit = true
             break
           end
@@ -141,9 +141,9 @@ module Cyber_Compiler
         }
         define_methods << "\n  if(#{equality.join(' || ')}) return false;" unless equality.empty?
         define_methods << define_methods_comparison
-        if paramstr and (paramstr & f).empty?
-          define_methods << "\n  if(applicable_const(visit#{paramstr.size}, #{terms_to_hyper(paramstr)})) return false;"
-          paramstr = nil
+        if visit_param and (visit_param & f).empty?
+          define_methods << "\n  if(applicable_const(visit#{visit_param.size}, #{terms_to_hyper(visit_param)})) return false;"
+          visit_param = nil
         end
         unless dec[4].empty?
           malloc = []
@@ -217,9 +217,9 @@ module Cyber_Compiler
             }
             define_methods << "#{indentation}if(#{equality.join(' || ')}) continue;" unless equality.empty?
             define_methods << define_methods_comparison
-            if paramstr and (paramstr & f).empty?
-              define_methods << "#{indentation}if(applicable_const(visit#{paramstr.size}, #{terms_to_hyper(paramstr)})) continue;"
-              paramstr = nil
+            if visit_param and (visit_param & f).empty?
+              define_methods << "#{indentation}if(applicable_const(visit#{visit_param.size}, #{terms_to_hyper(visit_param)})) continue;"
+              visit_param = nil
             end
           end
           equality.clear
