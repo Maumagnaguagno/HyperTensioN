@@ -69,7 +69,8 @@ module Cyber_Compiler
       param.each_with_index {|v,i| define_operators << "\n  VALUE #{v.tr('?','_')} = parameters[#{i + 1}];"}
       if state_visit
         if name.start_with?('invisible_visit_', 'invisible_mark_')
-          raise 'State comparison not implemented in Cyber' #define_operators << "\n  if(state_visit#{state_visit += 1}.include?(state)) return false;\n  state_visit#{state_visit}.insert(state);\n  return true;\n}\n"
+          # TODO verify pointer comparison
+          define_operators << "\n  return state_visit#{state_visit += 1}.insert(state).second;\n}\n"
           next
         elsif name.start_with?('invisible_unvisit_', 'invisible_unmark_')
           define_operators << "\n  return true;\n}\n"
@@ -243,7 +244,7 @@ module Cyber_Compiler
       }
       define_methods << "\n\nstatic bool #{name}(const VALUE *parameters, Task *next)\n{\n  return #{decomp.join(' || ')};\n}"
     }
-    (state_visit + 1).times {|i| define_methods << "  @state_visit#{i} = []\n"} if state_visit
+    (state_visit + 1).times {|i| define_methods << "  std::set<State> state_visit#{i};\n"} if state_visit
     # Definitions
     template = TEMPLATE.dup
     template.sub!('<OPERATORS>', define_operators)
