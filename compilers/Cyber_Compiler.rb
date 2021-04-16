@@ -69,7 +69,7 @@ module Cyber_Compiler
       param.each_with_index {|v,i| define_operators << "\n  VALUE #{v.tr('?','_')} = parameters[#{i + 1}];"}
       if state_visit
         if name.start_with?('invisible_visit_', 'invisible_mark_')
-          define_operators << "\n  return state_visit#{state_visit += 1}.insert(state).second;\n}\n"
+          define_operators << "\n  return state_visit#{state_visit += 1}.insert(*state).second;\n}\n"
           next
         elsif name.start_with?('invisible_unvisit_', 'invisible_unmark_')
           define_operators << "\n  return true;\n}\n"
