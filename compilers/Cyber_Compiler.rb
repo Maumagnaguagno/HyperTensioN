@@ -69,7 +69,6 @@ module Cyber_Compiler
       param.each_with_index {|v,i| define_operators << "\n  VALUE #{v.tr('?','_')} = parameters[#{i + 1}];"}
       if state_visit
         if name.start_with?('invisible_visit_', 'invisible_mark_')
-          # TODO verify pointer comparison
           define_operators << "\n  return state_visit#{state_visit += 1}.insert(state).second;\n}\n"
           next
         elsif name.start_with?('invisible_unvisit_', 'invisible_unmark_')
@@ -244,7 +243,6 @@ module Cyber_Compiler
       }
       define_methods << "\n\nstatic bool #{name}(const VALUE *parameters, Task *next)\n{\n  return #{decomp.join(' || ')};\n}"
     }
-    (state_visit + 1).times {|i| define_methods << "  std::set<State> state_visit#{i};\n"} if state_visit
     # Definitions
     template = TEMPLATE.dup
     template.sub!('<OPERATORS>', define_operators)
@@ -263,6 +261,7 @@ module Cyber_Compiler
     define_state = ''
     define_state_const = ''
     define_delete = []
+    comparison = []
     predicates.each {|pre,type|
       k = state[pre]
       if type
@@ -273,6 +272,7 @@ module Cyber_Compiler
           define_start << "\n  {\n    #{k.map {|value| terms_to_hyper(value)}.join(",\n    ")}\n  }"
           tokens.concat(k.flatten)
         end
+        comparison << pre
         define_start << ';'
       elsif k
         define_state_const << "\nstatic VALUE#{k.first.size} #{pre == '=' ? 'equal' : pre}\n{\n  #{k.map {|value| terms_to_hyper(value)}.join(",\n  ")}\n};"
@@ -282,6 +282,10 @@ module Cyber_Compiler
     template.sub!('<STATE>', define_state)
     define_visit.uniq!
     define_visit.each {|i| define_state_const << "\nstatic VALUE#{i} visit#{i};"}
+    if state_visit
+      define_state_const << "\n\nstruct state_cmp\n{  inline bool operator ()(const State &a, const State &b)\n  {\n    return (memcmp(&a, &b, sizeof(State)) < 0) || (#{comparison.map {|i| "(&a.#{i} == &b.#{i})"}.join(' && ')});\n  }\n};"
+      (state_visit + 1).times {|i| define_state_const << "\nstd::set<State,state_cmp> state_visit#{i};"}
+    end
     template.sub!('<STATE_CONST>', define_state_const)
     template.sub!('<CLEAR>', define_visit.map! {|i| "\n  visit#{i}.clear()"}.join('; \\'))
     template.sub!('<DELETE>', define_delete.join('; \\'))
