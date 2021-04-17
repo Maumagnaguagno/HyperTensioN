@@ -23,7 +23,9 @@ module Cyber_Compiler
 
   def applicable(pre, terms, predicates, arity)
     arity[pre] ||= terms.size
-    predicates[pre] ? "applicable(#{pre}, #{terms_to_hyper(terms)})" : "applicable_const(#{pre}, #{terms_to_hyper(terms)})"
+    if terms.empty? then "state->#{pre}"
+    else predicates[pre] ? "applicable(#{pre}, #{terms_to_hyper(terms)})" : "applicable_const(#{pre}, #{terms_to_hyper(terms)})"
+    end
   end
 
   #-----------------------------------------------
@@ -32,12 +34,15 @@ module Cyber_Compiler
 
   def apply(modifier, effects, define_operators, duplicated, arity)
     effects.each {|pre,*terms|
-      unless duplicated.include?(pre)
-        define_operators << "\n  state->#{pre} = new VALUE#{terms.size}(*(state->#{pre}));"
-        arity[pre] ||= terms.size
-        duplicated[pre] = nil
+      if terms.empty? then define_operators << "\n  state->#{pre} = #{modifier == 'insert'};"
+      else
+        unless duplicated.include?(pre)
+          define_operators << "\n  state->#{pre} = new VALUE#{terms.size}(*(state->#{pre}));"
+          arity[pre] ||= terms.size
+          duplicated[pre] = nil
+        end
+        define_operators << "\n  state->#{pre}->#{modifier}(#{terms_to_hyper(terms)});"
       end
-      define_operators << "\n  state->#{pre}->#{modifier}(#{terms_to_hyper(terms)});"
     }
   end
 
@@ -69,10 +74,10 @@ module Cyber_Compiler
       param.each_with_index {|v,i| define_operators << "\n  VALUE #{v.tr('?','_')} = parameters[#{i + 1}];"}
       if state_visit
         if name.start_with?('invisible_visit_', 'invisible_mark_')
-          define_operators << "\n  return state_visit#{state_visit += 1}.insert(*state).second;\n}\n"
+          define_operators << "\n  return state_visit#{state_visit += 1}.insert(*state).second;\n}"
           next
         elsif name.start_with?('invisible_unvisit_', 'invisible_unmark_')
-          define_operators << "\n  return true;\n}\n"
+          define_operators << "\n  return true;\n}"
           next
         end
       elsif name.start_with?('invisible_visit_')
@@ -265,17 +270,22 @@ module Cyber_Compiler
     predicates.each {|pre,type|
       k = state[pre]
       if type
-        define_state << "\n  VALUE#{arity[pre]} *#{pre};"
-        define_delete << "\n  if(old_state->#{pre} != state->#{pre}) delete state->#{pre}"
-        define_start << "\n  start.#{pre} = new VALUE#{arity[pre]}"
-        if k
-          define_start << "\n  {\n    #{k.map {|value| terms_to_hyper(value)}.join(",\n    ")}\n  }"
-          tokens.concat(k.flatten)
+        if (a = arity[pre]) == 0
+          define_state << "\n  VALUE0 #{pre};"
+          define_start << "\n  start.#{pre} = #{k ? true : false}"
+        else
+          define_state << "\n  VALUE#{a} *#{pre};"
+          define_delete << "\n  if(old_state->#{pre} != state->#{pre}) delete state->#{pre}"
+          define_start << "\n  start.#{pre} = new VALUE#{a}"
+          if k
+            define_start << "\n  {\n    #{k.map {|value| terms_to_hyper(value)}.join(",\n    ")}\n  }"
+            tokens.concat(k.flatten)
+          end
         end
         comparison << pre
         define_start << ';'
       elsif k
-        define_state_const << "\nstatic VALUE#{k.first.size} #{pre == '=' ? 'equal' : pre}\n{\n  #{k.map {|value| terms_to_hyper(value)}.join(",\n  ")}\n};"
+        define_state_const << "\nstatic VALUE#{arity[pre] ||= k.first.size} #{pre == '=' ? 'equal' : pre}\n{\n  #{k.map {|value| terms_to_hyper(value)}.join(",\n  ")}\n};"
         tokens.concat(k.flatten)
       end
     }
