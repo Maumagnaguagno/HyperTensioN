@@ -410,7 +410,7 @@ static bool (*domain[])(const VALUE *, Task *) = {
   <DOMAIN>
 };
 
-static void print_parameters(const VALUE value, const VALUE *parameters)
+static void print_task(const VALUE value, const VALUE *parameters)
 {
   printf(tokens[value]);
   for(VALUE i = 1; i <= parameters[0]; ++i) printf(" %s", tokens[parameters[i]]);
@@ -435,7 +435,7 @@ static Plan* planning(Task *tasks)
     exit(EXIT_FAILURE);
   }
   printf("planning %u: %u %p\\n", level++, tasks->value, tasks->next);
-  print_parameters(tasks->value, tasks->parameters);
+  print_task(tasks->value, tasks->parameters);
 #endif
   // Operator
   if(tasks->value < METHODS_BASE_INDEX)
@@ -490,7 +490,7 @@ int main(void)
     {
       do
       {
-        print_parameters(result->value, result->parameters);
+        print_task(result->value, result->parameters);
         result = result->next;
       } while(result != &empty);
     }
