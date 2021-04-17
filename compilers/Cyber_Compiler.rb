@@ -371,7 +371,7 @@ module Cyber_Compiler
   }
 
 #ifdef DEBUG
-#define error(m) puts(m); exit(EXIT_FAILURE)
+#define error(m) {puts(m); exit(EXIT_FAILURE);}
 #else
 #define error(m) exit(EXIT_FAILURE)
 #endif
