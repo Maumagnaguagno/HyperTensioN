@@ -167,7 +167,7 @@ module PDDL_Parser
           @state[EQUAL] = @objects.map {|obj| [obj, obj]} if @predicates.include?(EQUAL)
         when ':init'
           group.shift
-          group.each {|pre| (@state[pre.shift] ||= []) << pre}
+          group.each {|pre| (@state[pre.shift.freeze] ||= []) << pre}
         when ':goal'
           if group = group[1]
             # Conjunction or atom
