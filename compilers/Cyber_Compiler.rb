@@ -88,7 +88,7 @@ module Cyber_Compiler
       equality = []
       precond_pos.each {|pre,*terms|
         if pre == '=' then equality << "#{term(terms[0])} != #{term(terms[1])}"
-        elsif not predicates[pre] and not state.include?(pre) then define_operators << "\n    return"
+        elsif not predicates[pre] and not state.include?(pre) then define_operators << "\n  return false;"
         else define_operators << "\n  if(!#{applicable(pre, terms, predicates, arity)}) return false;"
         end
       }
@@ -201,7 +201,7 @@ module Cyber_Compiler
               else terms2.each_with_index {|term,i| define_methods << "#{indentation}VALUE #{term} = std::get<#{i}>(*it#{counter});"}
               end
             elsif pre == '=' then equality << "#{terms2[0]} != #{terms2[1]}"
-            elsif not predicates[pre] and not state.include?(pre) then define_methods << "#{indentation}return"
+            elsif not predicates[pre] and not state.include?(pre) then define_methods << "#{indentation}return false;"
             else define_methods_comparison << "#{indentation}if(!#{applicable(pre, terms, predicates, arity)}) continue;"
             end
             precond_pos.reject! {|pre,*terms|
