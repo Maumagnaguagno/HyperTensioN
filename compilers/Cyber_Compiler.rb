@@ -52,7 +52,7 @@ module Cyber_Compiler
 
   def tasks_to_hyper(output, tasks, indentation, next_task = 'next')
     tasks.each_with_index {|s,i|
-      output << "#{indentation}subtask#{i}->value = #{s.first.upcase};#{indentation}subtask#{i}->parameters[0] = #{s.size - 1};"
+      output << "#{indentation}subtask#{i}->value = #{term(s.first)};#{indentation}subtask#{i}->parameters[0] = #{s.size - 1};"
       1.upto(s.size - 1) {|j| output << "#{indentation}subtask#{i}->parameters[#{j}] = #{term(s[j])};"}
       output << "#{indentation}subtask#{i}->next = #{i != tasks.size - 1 ? "subtask#{i + 1}" : next_task};"
     }
