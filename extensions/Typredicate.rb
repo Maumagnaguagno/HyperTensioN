@@ -6,6 +6,7 @@ module Typredicate
   #-----------------------------------------------
 
   def apply(operators, methods, predicates, state, tasks, goal_pos, goal_not, debug = false)
+    (supertypes = (PDDL_Parser.types || HDDL_Parser.types || return).map(&:last)).uniq!
     new_predicates = {}
     operator_types = {}
     operators.each {|name,_,precond_pos,precond_not,_,_|
@@ -14,7 +15,6 @@ module Typredicate
       precond_pos.each {|terms| types[terms.last] ||= terms.first if terms.size == 2 and not predicates[terms.first]}
       precond_pos.each {|terms| (new_predicates[terms.first] ||= []) << types.values_at(*terms.drop(1))}
     }
-    (supertypes = (PDDL_Parser.types || HDDL_Parser.types).map(&:last)).uniq!
     transformations = {}
     new_predicates.each {|pre,types|
       types.uniq!
