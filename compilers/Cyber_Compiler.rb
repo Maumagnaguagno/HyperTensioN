@@ -88,7 +88,7 @@ module Cyber_Compiler
       equality = []
       precond_pos.each {|pre,*terms|
         if pre == '=' then equality << "#{term(terms[0])} != #{term(terms[1])}"
-        elsif not predicates[pre] and not state.include?(pre) then define_operators << "\n  return false;"
+        elsif not predicates[pre] || state.include?(pre) then define_operators << "\n  return false;"
         else define_operators << "\n  if(!#{applicable(pre, terms, predicates, arity)}) return false;"
         end
       }
@@ -129,14 +129,14 @@ module Cyber_Compiler
         precond_pos.reject! {|pre,*terms|
           if (terms & f).empty?
             if pre == '=' then equality << "#{term(terms[0])} != #{term(terms[1])}"
-            elsif not predicates[pre] and not state.include?(pre) then define_methods << "\n  return false;"
+            elsif not predicates[pre] || state.include?(pre) then define_methods << "\n  return false;"
             else define_methods_comparison << "\n  if(!#{applicable(pre, terms, predicates, arity)}) return false;"
             end
           end
         }
         precond_not = dec[3].reject {|pre,*terms|
           if terms.empty? and pre.start_with?('visited_') then predicates[pre] = nil
-          elsif not predicates[pre] and not state.include?(pre) then true
+          elsif not predicates[pre] || state.include?(pre) then true
           elsif (terms & f).empty?
             if pre == '=' then equality << "#{term(terms[0])} == #{term(terms[1])}"
             else define_methods_comparison << "\n  if(#{applicable(pre, terms, predicates, arity)}) return false;"
@@ -201,13 +201,13 @@ module Cyber_Compiler
               else terms2.each_with_index {|term,i| define_methods << "#{indentation}VALUE #{term} = std::get<#{i}>(*it#{counter});"}
               end
             elsif pre == '=' then equality << "#{terms2[0]} != #{terms2[1]}"
-            elsif not predicates[pre] and not state.include?(pre) then define_methods << "#{indentation}return false;"
+            elsif not predicates[pre] || state.include?(pre) then define_methods << "#{indentation}return false;"
             else define_methods_comparison << "#{indentation}if(!#{applicable(pre, terms, predicates, arity)}) continue;"
             end
             precond_pos.reject! {|pre,*terms|
               if (terms & f).empty?
                 if pre == '=' then equality << "#{term(terms[0])} != #{term(terms[1])}"
-                elsif not predicates[pre] and not state.include?(pre) then define_methods << "#{indentation}return false;"
+                elsif not predicates[pre] || state.include?(pre) then define_methods << "#{indentation}return false;"
                 else define_methods_comparison << "#{indentation}if(!#{applicable(pre, terms, predicates, arity)}) continue;"
                 end
               end
@@ -270,8 +270,9 @@ module Cyber_Compiler
       k = state[pre]
       if type
         if (a = arity[pre]) == 0
+          # TODO pack bit predicates
           define_state << "\n  VALUE0 #{pre};"
-          define_start << "\n  start.#{pre} = #{k ? true : false}"
+          define_start << "\n  start.#{pre} = #{k ? true : false};"
         else
           define_state << "\n  VALUE#{a} *#{pre};"
           define_delete << "\n  if(old_state->#{pre} != state->#{pre}) delete state->#{pre}"
@@ -280,9 +281,9 @@ module Cyber_Compiler
             define_start << "\n  {\n    #{k.map {|value| terms_to_hyper(value)}.join(",\n    ")}\n  }"
             tokens.concat(k.flatten)
           end
+          define_start << ';'
         end
         comparison << pre
-        define_start << ';'
       elsif k
         define_state_const << "\nstatic VALUE#{arity[pre] ||= k.first.size} #{pre == '=' ? 'equal' : pre}\n{\n  #{k.map {|value| terms_to_hyper(value)}.join(",\n  ")}\n};"
         tokens.concat(k.flatten)
