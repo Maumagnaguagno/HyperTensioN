@@ -56,6 +56,7 @@ The planner was executed as ``ruby --disable=all Hype.rb $DOMAINFILE $PROBLEMFIL
 Due to a [limit](https://bugs.ruby-lang.org/issues/16616) in the amount of stack available to the Ruby interpreter in the Ubuntu 20.04 + Ruby 2.7 it was decided to use an older version, Ubuntu 18.04 + Ruby 2.5, to be able to solve more planning instances.
 Some large planning instances require more stack, which is possible with ``export RUBY_THREAD_VM_STACK_SIZE=$(($MEMORY * 512 * 1024))``.
 HyperTensioN did not exploit the seed variable provided during the competition, although it is possible that randomizing parts of the planning instance may improve timing in certain domains.
+A more detailed explanation is provided in the IPC paper [HyperTensioN: A three-stage compiler for planning](http://www.meneguzzi.eu/felipe/pubs/ipc-hypertension-2021.pdf).
 
 The [plan format output](http://gki.informatik.uni-freiburg.de/ipc2020/format.pdf) required by the IPC to analyze plan correctness was different from the one used by HyperTensioN.
 This output format can be obtained by setting the constant ``FAST_OUTPUT = false`` in ``Hypertension.rb``, note that this adds a small overhead and modifies the API.

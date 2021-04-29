@@ -90,7 +90,7 @@ end
 
 Having the state and domain as separate variables also means there is no need to propagate them.
 This also means that at any point one can change more than the state.
-This may be useful to reorder method decompositions in the domain to modify the behavior without touching the methods or set the debug option only after an specific operator is called.
+This may be useful to reorder method decompositions in the domain to modify the behavior without touching the methods or set the debug option only after a specific operator is called.
 The plan is created during backtracking, which means there is no mechanism to reorder actions in the planning process, but it is possible with a variation that creates the plan during decomposition.
 
 The methods are few and simple to use:
@@ -490,7 +490,7 @@ ruby Hype.rb examples/basic/basic.jshop examples/basic/pb1.jshop rb
 ruby examples/basic/pb1.jshop.rb
 ```
 
-One can compile and execute in a single command with ``run``, the system compile as ``rb`` and require the generated files.
+One can compile and execute in a single command with ``run``, the system compile as ``rb`` and load the generated files.
 Activate debug mode with ``debug`` to pass the debug flag to the problem and show explored paths instead of only the planning result.
 
 ```Shell
