@@ -8,11 +8,16 @@ module Wise
   def apply(operators, methods, predicates, state, tasks, goal_pos, goal_not, debug = false)
     puts 'Wise'.center(50,'-') if debug
     # Initial state
-    state.reject! {|pre|
+    state.reject! {|pre,k|
       # Unused predicate
-      unless predicates.include?(pre.first)
-        puts "Initial state contains unused predicate (#{pre.join(' ')}): removed" if debug
+      if not predicates.include?(pre)
+        puts "Initial state contains unused predicates (#{pre} ...): removed" if debug
         true
+      else
+        # Duplicate predicate
+        puts "Initial state contains duplicate predicates (#{pre} ...): removed" if k.uniq! and debug
+        # Arity check
+        puts "Initial state contains (#{pre} ...) with different arity" if k.any? {|i| i.size != k.first.size} and debug
       end
     }
     # Operators
@@ -69,9 +74,11 @@ module Wise
       }
     }
     # Tasks
-    ordered = tasks.shift
-    verify_tasks('task', tasks, noops, operators, methods, debug)
-    tasks.unshift(ordered) unless tasks.empty?
+    unless tasks.empty?
+      ordered = tasks.shift
+      verify_tasks('task', tasks, noops, operators, methods, debug)
+      tasks.unshift(ordered)
+    end
   end
 
   #-----------------------------------------------

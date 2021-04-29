@@ -9,11 +9,15 @@
 module Hypertension
   extend self
 
+  FAST_OUTPUT = true
+
   attr_accessor :domain, :state, :debug
 
   #-----------------------------------------------
   # Planning
   #-----------------------------------------------
+
+if FAST_OUTPUT
 
   def planning(tasks, level = 0)
     return [] if tasks.empty?
@@ -22,10 +26,13 @@ module Hypertension
     when true, false
       puts "#{'  ' * level}#{current_task.first}(#{current_task.drop(1).join(' ')})" if @debug
       old_state = @state
-      # Keep decomposing the hierarchy if operator applied
-      if send(*current_task) and plan = planning(tasks, level)
-        # Add visible operator to plan
-        return decomposition ? plan.unshift(current_task) : plan
+      begin
+        # Keep decomposing the hierarchy if operator applied
+        if send(*current_task) and plan = planning(tasks, level)
+          # Add visible operator to plan
+          return decomposition ? plan.unshift(current_task) : plan
+        end
+      rescue SystemStackError
       end
       @state = old_state
     # Method
@@ -33,17 +40,71 @@ module Hypertension
       # Keep decomposing the hierarchy
       task_name = current_task.shift
       level += 1
-      decomposition.each {|method|
-        puts "#{'  ' * level.pred}#{method}(#{current_task.join(' ')})" if @debug
-        # Every unification is tested
-        send(method, *current_task) {|subtasks| return plan if plan = planning(subtasks.concat(tasks), level)}
-      }
+      begin
+        decomposition.each {|method|
+          puts "#{'  ' * level.pred}#{method}(#{current_task.join(' ')})" if @debug
+          # Every unification is tested
+          send(method, *current_task) {|subtasks| return plan if plan = planning(subtasks.concat(tasks), level)}
+        }
+      rescue SystemStackError
+      end
       current_task.unshift(task_name)
     # Error
     else raise "Domain defines no decomposition for #{current_task.first}"
     end
     nil
   end
+
+else
+
+  def planning(tasks, level = 0)
+    return [] if tasks.empty?
+    index, current_task = tasks.shift
+    case decomposition = @domain[current_task.first]
+    # Operator (true: visible, false: invisible)
+    when true, false
+      puts "#{'  ' * level}#{current_task.first}(#{current_task.drop(1).join(' ')})" if @debug
+      old_state = @state
+      begin
+        # Keep decomposing the hierarchy if operator applied
+        if send(*current_task) and plan = planning(tasks, level)
+          # Add visible operator to plan
+          return decomposition ? plan.unshift([index, current_task]) : plan
+        end
+      rescue SystemStackError
+      end
+      @state = old_state
+    # Method
+    when Array
+      # Keep decomposing the hierarchy
+      task_name = current_task.shift
+      level += 1
+      old_index = @index
+      begin
+        decomposition.each {|method|
+          puts "#{'  ' * level.pred}#{method}(#{current_task.join(' ')})" if @debug
+          # Every unification is tested
+          send(method, *current_task) {|subtasks|
+            subtasks.map! {|t| [(@index += 1 if @domain[t.first]), t]}
+            new_index = @index
+            if plan = planning(subtasks.concat(tasks), level)
+              @decomposition.unshift("#{index} #{task_name} #{current_task.join(' ')} -> #{method[task_name.size+1..-1]} #{(old_index+1..new_index).to_a.join(' ')}")
+              return plan
+            end
+            @index = old_index
+          }
+        }
+      rescue SystemStackError
+        @index = old_index
+      end
+      current_task.unshift(task_name)
+    # Error
+    else raise "Domain defines no decomposition for #{current_task.first}"
+    end
+    nil
+  end
+
+end
 
   #-----------------------------------------------
   # Applicable?
@@ -60,7 +121,7 @@ module Hypertension
 
   def apply(effect_add, effect_del)
     # Create new state with added or deleted predicates
-    @state = @state.each_with_object({}) {|(k,v),state| state[k] = v.dup}
+    @state = @state.map(&:dup)
     effect_del.each {|pre,*terms| @state[pre].delete(terms)}
     effect_add.each {|pre,*terms| @state[pre] << terms}
     true
@@ -154,7 +215,9 @@ module Hypertension
   # Problem
   #-----------------------------------------------
 
-  def problem(state, tasks, debug = false, goal_pos = [], goal_not = [])
+if FAST_OUTPUT
+
+  def problem(state, tasks, debug = false, &goal)
     @debug = debug
     @state = state
     puts 'Tasks'.center(50,'-')
@@ -162,7 +225,7 @@ module Hypertension
     puts 'Planning'.center(50,'-')
     t = Time.now.to_f
     # Ordered or unordered tasks
-    plan = goal_pos.empty? && goal_not.empty? ? planning(tasks) : task_permutations(state, tasks, goal_pos, goal_not)
+    plan = block_given? ? task_permutations(state, tasks, &goal) : planning(tasks)
     puts "Time: #{Time.now.to_f - t}s", 'Plan'.center(50,'-')
     if plan
       if plan.empty? then puts 'Empty plan'
@@ -177,16 +240,45 @@ module Hypertension
     puts $!, $@
   end
 
+else
+
+  def problem(state, tasks, debug = false, &goal)
+    @debug = debug
+    @state = state
+    @index = -1
+    puts 'Tasks'.center(50,'-'), tasks.map! {|t| [@index += 1, t]}.map {|d| d.join(' ')}
+    @decomposition = []
+    @index -= 1 if tasks[-1][1][0] == :invisible_goal
+    root = "root #{(0..@index).to_a.join(' ')}"
+    puts 'Planning'.center(50,'-')
+    t = Time.now.to_f
+    # Ordered or unordered tasks
+    plan = block_given? ? task_permutations(state, tasks, &goal) : planning(tasks)
+    puts "Time: #{Time.now.to_f - t}s", 'Plan'.center(50,'-')
+    if plan
+      puts 'Empty plan' if plan.empty?
+      puts '==>', plan.map {|d| d.join(' ')}, root, @decomposition, '<=='
+    else puts 'Planning failed'
+    end
+    plan
+  rescue Interrupt
+    puts 'Interrupted'
+  rescue
+    puts $!, $@
+  end
+
+end
+
   #-----------------------------------------------
   # Task permutations
   #-----------------------------------------------
 
-  def task_permutations(state, tasks, goal_pos, goal_not)
+  def task_permutations(state, tasks)
     # All permutations are considered
     tasks.permutation {|task_list|
       @state = state
       plan = planning(Marshal.load(Marshal.dump(task_list)))
-      return plan if applicable?(goal_pos, goal_not)
+      return plan if yield
     }
     nil
   end

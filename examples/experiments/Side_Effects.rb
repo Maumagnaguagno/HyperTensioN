@@ -21,30 +21,33 @@ if $0 == __FILE__
   class Side_Effects < Test::Unit::TestCase
     include Hypertension
 
+    AT = 0
+    IN = 1
+
     def move_briefcase(briefcase, from, to)
       if applicable?(
         # Positive preconditions
-        [[:at, briefcase, from]],
+        [[AT, briefcase, from]],
         # Negative preconditions
-        [[:at, briefcase, to]]
+        [[AT, briefcase, to]]
       )
         # Effects
-        effect_add = [[:at, briefcase, to]]
-        effect_del = [[:at, briefcase, from]]
+        effect_add = [[AT, briefcase, to]]
+        effect_del = [[AT, briefcase, from]]
         # Side-effects
         object = ''
         generate(
           # Positive preconditions
           [
-            [:at, object, from],
-            [:in, object, briefcase]
+            [AT, object, from],
+            [IN, object, briefcase]
           ],
           # Negative preconditions
           [], object
         ) {
           obj_dup = object.dup
-          effect_add << [:at, obj_dup, to]
-          effect_del << [:at, obj_dup, from]
+          effect_add << [AT, obj_dup, to]
+          effect_del << [AT, obj_dup, from]
         }
         # Apply effect only once to avoid intermediate state creation
         apply(effect_add, effect_del)
@@ -53,20 +56,20 @@ if $0 == __FILE__
 
     def move_briefcase_with_side_effects(briefcase, from, to)
       object = ''
-      effect_add = [[:at, briefcase, to]]
-      effect_del = [[:at, briefcase, from]]
+      effect_add = [[AT, briefcase, to]]
+      effect_del = [[AT, briefcase, from]]
       apply_operator_with_side_effects(
         # Primary positive preconditions
-        [[:at, briefcase, from]],
+        [[AT, briefcase, from]],
         # Primary negative preconditions
-        [[:at, briefcase, to]],
+        [[AT, briefcase, to]],
         # Primary effects
         effect_add,
         effect_del,
         # Side-effects positive preconditions
         [
-          [:at, object, from],
-          [:in, object, briefcase]
+          [AT, object, from],
+          [IN, object, briefcase]
         ],
         # Side-effects negative preconditions
         [],
@@ -74,26 +77,28 @@ if $0 == __FILE__
         object
       ) {
         obj_dup = object.dup
-        effect_add << [:at, obj_dup, to]
-        effect_del << [:at, obj_dup, from]
+        effect_add << [AT, obj_dup, to]
+        effect_del << [AT, obj_dup, from]
       }
     end
 
     def setup_initial_state
       # Move briefcase and all its contents as a side-effect while rotten cookie is left behind
-      @state = {
-        :at => [
+      @state = [
+        # AT
+        [
           ['red_briefcase', 'a'],
           ['cookie', 'a'],
           ['rotten_cookie', 'a'],
           ['documents', 'a']
         ],
-        :in => [
+        # IN
+        [
           ['cookie', 'red_briefcase'],
           ['rotten_cookie', 'thrash'],
           ['documents', 'red_briefcase']
         ]
-      }
+      ]
     end
 
     def assert_briefcase_content
@@ -102,7 +107,7 @@ if $0 == __FILE__
         ['red_briefcase', 'b'],
         ['cookie', 'b'],
         ['documents', 'b']
-      ], @state[:at])
+      ], @state[AT])
     end
 
     def test_briefcase_side_effects_without_helper

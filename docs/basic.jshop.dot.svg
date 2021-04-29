@@ -1,0 +1,84 @@
+<svg width="324pt" height="354pt" viewBox="0 0 324 354" xmlns="http://www.w3.org/2000/svg" style="background-color:white">
+<style>text{font-size:14px}polyline{stroke:black}path{stroke:black;fill:none}polygon{stroke:black}</style>
+<g transform="translate(4 350)"><title>basic</title>
+
+<g><title>pickup</title>
+<polygon fill="none" points="0,-0.5 0,-46.5 87,-46.5 87,-0.5 0,-0.5"/>
+<text text-anchor="middle" x="28" y="-31.3">pickup</text>
+<polyline points="56,-23.5 56,-46.5"/>
+<text text-anchor="middle" x="71.5" y="-31.3">?a</text>
+<polyline points="0,-23.5 87,-23.5"/>
+<text text-anchor="middle" x="10" y="-8.3"> </text>
+<polyline points="20,-0.5 20,-23.5"/>
+<text text-anchor="start" x="28" y="-8.3" >(have ?a)</text></g>
+
+<g><title>drop</title>
+<polygon fill="none" points="159.5,-0.5 159.5,-46.5 315.5,-46.5 315.5,-0.5 159.5,-0.5"/>
+<text text-anchor="middle" x="202" y="-31.3">drop</text>
+<polyline points="244.5,-23.5 244.5,-46.5"/>
+<text text-anchor="middle" x="280" y="-31.3">?a</text>
+<polyline points="159.5,-23.5 315.5,-23.5"/>
+<text text-anchor="start" x="167.5" y="-8.3">(have ?a)</text>
+<polyline points="226.5,-0.5 226.5,-23.5"/>
+<text text-anchor="start" x="234.5" y="-8.3">not (have ?a)</text></g>
+
+<g><title>swap</title>
+<path stroke-width="2" d="M91.5,-299.5C91.5,-299.5 187.5,-299.5 187.5,-299.5 193.5,-299.5 199.5,-305.5 199.5,-311.5 199.5,-311.5 199.5,-333.5 199.5,-333.5 199.5,-339.5 193.5,-345.5 187.5,-345.5 187.5,-345.5 91.5,-345.5 91.5,-345.5 85.5,-345.5 79.5,-339.5 79.5,-333.5 79.5,-333.5 79.5,-311.5 79.5,-311.5 79.5,-305.5 85.5,-299.5 91.5,-299.5"/>
+<text text-anchor="middle" x="109.5" y="-330.3">swap</text>
+<polyline stroke-width="2" points="139.5,-322.5 139.5,-345.5"/>
+<text text-anchor="middle" x="169.5" y="-330.3">?x ?y</text>
+<polyline stroke-width="2" points="79.5,-322.5 199.5,-322.5"/>
+<text text-anchor="middle" x="109.5" y="-307.3">swap_0</text>
+<polyline stroke-width="2" points="139.5,-299.5 139.5,-322.5"/>
+<text text-anchor="middle" x="169.5" y="-307.3">swap_1</text></g>
+
+<g><title>label_swap_0</title>
+<path d="M27,-119.5C27,-119.5 92,-119.5 92,-119.5 98,-119.5 104,-125.5 104,-131.5 104,-131.5 104,-214.5 104,-214.5 104,-220.5 98,-226.5 92,-226.5 92,-226.5 27,-226.5 27,-226.5 21,-226.5 15,-220.5 15,-214.5 15,-214.5 15,-131.5 15,-131.5 15,-125.5 21,-119.5 27,-119.5"/>
+<text text-anchor="middle" x="47" y="-211.3">swap_0</text>
+<polyline points="79,-203.5 79,-226.5"/>
+<text text-anchor="middle" x="91.5" y="-211.3"> </text>
+<polyline points="15,-203.5 104,-203.5"/>
+<text text-anchor="start" x="23" y="-188.3">(have ?x)</text>
+<text text-anchor="start" x="23" y="-173.3">not (have ?y)</text>
+<polyline points="15,-165.5 104,-165.5"/>
+<text text-anchor="middle" x="59.5" y="-150.3">drop ?x</text>
+<polyline points="15,-142.5 104,-142.5"/>
+<text text-anchor="middle" x="59.5" y="-127.3">pickup ?y</text></g>
+
+<g><title>swap:n0&#45;&gt;label_swap_0</title>
+<path stroke-dasharray="1,5" d="M109.5,-299C109.5,-277.608 103.109,-255.535 94.8972,-236"/>
+<polygon fill="black" points="97.9944,-234.353 90.7396,-226.631 91.5959,-237.191 97.9944,-234.353"/></g>
+
+<g><title>label_swap_1</title>
+<path d="M188,-119.5C188,-119.5 253,-119.5 253,-119.5 259,-119.5 265,-125.5 265,-131.5 265,-131.5 265,-214.5 265,-214.5 265,-220.5 259,-226.5 253,-226.5 253,-226.5 188,-226.5 188,-226.5 182,-226.5 176,-220.5 176,-214.5 176,-214.5 176,-131.5 176,-131.5 176,-125.5 182,-119.5 188,-119.5"/>
+<text text-anchor="middle" x="208" y="-211.3">swap_1</text>
+<polyline points="240,-203.5 240,-226.5"/>
+<text text-anchor="middle" x="252.5" y="-211.3"> </text>
+<polyline points="176,-203.5 265,-203.5"/>
+<text text-anchor="start" x="184" y="-188.3">(have ?y)</text>
+<text text-anchor="start" x="184" y="-173.3">not (have ?x)</text>
+<polyline points="176,-165.5 265,-165.5"/>
+<text text-anchor="middle" x="220.5" y="-150.3">drop ?y</text>
+<polyline points="176,-142.5 265,-142.5"/>
+<text text-anchor="middle" x="220.5" y="-127.3">pickup ?x</text></g>
+
+<g><title>swap:n1&#45;&gt;label_swap_1</title>
+<path stroke-dasharray="1,5" d="M169.5,-299C169.5,-277.549 176.019,-255.459 184.395,-235.928"/>
+<polygon fill="black" points="187.7,-237.114 188.636,-226.56 181.323,-234.227 187.7,-237.114"/></g>
+
+<g><title>label_swap_0:n1&#45;&gt;pickup</title>
+<path d="M59.5,-119C59.5,-98.0378 55.6255,-74.8225 51.6897,-56.6477"/>
+<polygon fill="black" points="55.0916,-55.8233 49.4578,-46.8505 48.2665,-57.3781 55.0916,-55.8233"/></g>
+
+<g><title>label_swap_0:n0&#45;&gt;drop</title>
+<path d="M105.5,-154C127.187,-154 124.137,-134.307 139.5,-119 161.672,-96.9094 187.128,-72.3871 206.538,-53.8595"/>
+<polygon fill="black" points="209.102,-56.2508 213.926,-46.8179 204.273,-51.1836 209.102,-56.2508"/></g>
+
+<g><title>label_swap_1:n1&#45;&gt;pickup</title>
+<path d="M174.5,-131C149.943,-131 101.407,-85.3707 70.8056,-53.846"/>
+<polygon fill="black" points="73.2648,-51.3538 63.813,-46.5669 68.2167,-56.2032 73.2648,-51.3538"/></g>
+
+<g><title>label_swap_1:n0&#45;&gt;drop</title>
+<path d="M266.5,-154C306.706,-154 278.621,-93.8232 256.667,-55.512"/>
+<polygon fill="black" points="259.617,-53.6228 251.543,-46.7618 253.576,-57.1599 259.617,-53.6228"/></g>
+</g></svg>

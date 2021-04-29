@@ -1,7 +1,7 @@
 module PDDL_Parser
   extend self
 
-  attr_reader :domain_name, :problem_name, :operators, :methods, :predicates, :state, :tasks, :goal_pos, :goal_not, :objects, :requirements
+  attr_reader :domain_name, :problem_name, :operators, :methods, :predicates, :state, :tasks, :goal_pos, :goal_not, :objects, :requirements, :types
 
   AND = 'and'
   NOT = 'not'
@@ -108,7 +108,6 @@ module PDDL_Parser
         when ':predicates'
         when ':types'
           # Type hierarchy
-          raise 'Expected :typing' unless @requirements.include?(':typing')
           group.shift
           raise 'Unexpected hyphen in types' if group.first == HYPHEN
           subtypes = []
@@ -134,7 +133,7 @@ module PDDL_Parser
 
   def parse_problem(problem_filename)
     if (tokens = scan_tokens(problem_filename)).instance_of?(Array) and tokens.shift == 'define'
-      @state = []
+      @state = {}
       @objects = []
       @goal_pos = []
       @goal_not = []
@@ -160,15 +159,15 @@ module PDDL_Parser
               end
               while o = @objects[index]
                 index += 1
-                types.each {|t| @state << [t, o]}
+                types.each {|t| (@state[t] ||= []) << [o]}
               end
             end
           end
           raise 'Repeated object definition' if @objects.uniq!
-          @objects.each {|obj| @state << [EQUAL, obj, obj]} if @requirements.include?(':equality')
+          @state[EQUAL] = @objects.map {|obj| [obj, obj]} if @predicates.include?(EQUAL)
         when ':init'
           group.shift
-          @state.concat(group)
+          group.each {|pre| (@state[pre.shift.freeze] ||= []) << pre}
         when ':goal'
           if group = group[1]
             # Conjunction or atom

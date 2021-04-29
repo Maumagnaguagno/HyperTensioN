@@ -7,25 +7,33 @@ module Macro
 
   def apply(operators, methods, predicates, state, tasks, goal_pos, goal_not, debug = false)
     puts 'Macro'.center(50,'-') if debug
+    # Subtask counter
+    counter = Hash.new(0)
+    methods.each {|met| met.drop(2).each {|dec| dec.last.each {|subtask| counter[subtask.first] += 1}}}
     # Macro sequential operators
     macro = []
+    clear_ops = {}
     methods.each {|met|
       met.drop(2).each {|dec|
         new_subtasks = []
-        dec[4].each {|subtask|
+        dec.last.each {|subtask|
           # Add operators to macro and skip methods
-          unless subtask.first.end_with?('_dup')
-            if op = operators.assoc(subtask.first)
-              macro << [op, subtask.drop(1)]
-            else
-              add_macro_to_subtasks(operators, macro, new_subtasks, debug)
-              new_subtasks << subtask
-            end
+          if op = operators.assoc(subtask.first)
+            macro << [op, subtask]
+          else
+            add_macro_to_subtasks(operators, macro, new_subtasks, counter, clear_ops, debug)
+            new_subtasks << subtask
           end
         }
-        add_macro_to_subtasks(operators, macro, new_subtasks, debug)
+        add_macro_to_subtasks(operators, macro, new_subtasks, counter, clear_ops, debug)
         dec[4] = new_subtasks
       }
+    }
+    clear_ops.each_key {|op|
+      op[2] = []
+      op[3] = []
+      op[4] = []
+      op[5] = []
     }
   end
 
@@ -33,20 +41,20 @@ module Macro
   # Add macro to subtasks
   #-----------------------------------------------
 
-  def add_macro_to_subtasks(operators, macro, new_subtasks, debug)
+  def add_macro_to_subtasks(operators, macro, new_subtasks, counter, clear_ops, debug)
     if macro.size > 1
-      name = 'invisible_'
+      name = nil
       parameters = []
       precond_pos = []
       precond_not = []
       effect_add = []
       effect_del = []
       index = new_subtasks.size
-      first_task = true
-      macro.each {|op,param|
+      macro.each {|op,subtask|
+        param = subtask.drop(1)
+        clear_ops[op] = nil
         # Header
-        first_task ? first_task = false : name << '_and_'
-        name << op.first.sub(/^invisible_/,'')
+        (name ? name << '_and_' : name = 'invisible_macro_') << op.first.sub(/^invisible_/,'')
         parameters.concat(param)
         variables = op[1]
         # Preconditions
@@ -69,14 +77,7 @@ module Macro
           effect_add.delete(pre = pre.map {|p| p.start_with?('?') ? param[variables.index(p)] : p})
           effect_del << pre unless effect_del.include?(pre)
         }
-        # Duplicate visible operators without preconditions or effects to keep plan consistent
-        unless op.first.start_with?('invisible_')
-          new_subtasks << param.unshift(name_dup = "#{op.first}_dup")
-          unless operators.assoc(name_dup)
-            operators << [name_dup, variables, [], [], [], []]
-            puts "Duplicate operator #{op.first}" if debug
-          end
-        end
+        new_subtasks << subtask
       }.clear
       parameters.uniq!
       unless operators.assoc(name)
@@ -85,8 +86,16 @@ module Macro
       end
       new_subtasks.insert(index, [name, *parameters])
     elsif macro.size == 1
-      op, param = macro.shift
-      new_subtasks << param.unshift(op.first)
+      op, subtask = macro.shift
+      if counter[op.first] != 1
+        unless operators.assoc(name = "invisible_macro_#{op.first}")
+          clear_ops[op] = nil
+          operators << [name, op[1], op[2], op[3], op[4], op[5]]
+          puts "Macro operator #{name}" if debug
+        end
+        new_subtasks << subtask.drop(1).unshift(name)
+      end
+      new_subtasks << subtask
     end
   end
 end

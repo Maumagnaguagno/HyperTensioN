@@ -1,0 +1,44 @@
+name: build
+on: [push, pull_request]
+jobs:
+  test:
+    strategy:
+      matrix:
+        ruby: [2.1, 2.2, 2.3, 2.4, 2.5, 2.6, 2.7, 3.0, head, jruby-head]
+      fail-fast: false
+    name: Ruby ${{ matrix.ruby }}
+    runs-on: ubuntu-latest
+    if: "!contains(github.event.head_commit.message, '[ci skip]')"
+    steps:
+    - uses: actions/checkout@v2
+    - uses: ruby/setup-ruby@v1
+      with:
+        ruby-version: ${{ matrix.ruby }}
+    # Tests
+    - run: ruby tests/sphygmomanometer.rb
+    - run: ruby tests/frenesi.rb
+    - run: ruby tests/again.rb
+    - run: ruby tests/dependent.rb
+    - run: ruby tests/miner.rb
+    - run: ruby tests/painter.rb
+    - run: ruby tests/paisley.rb
+    - run: ruby tests/rescue.rb
+    - run: ruby tests/simple.rb
+    - run: ruby tests/walker.rb
+    # Examples
+    - run: ruby examples/experiments/Expression.rb
+    - run: ruby examples/experiments/Function.rb
+    - run: ruby examples/experiments/Protection.rb
+    - run: ruby examples/experiments/Side_Effects.rb
+    - run: ruby examples/travel/pb1.rb
+    - run: ruby examples/travel/pb2.rb
+    - run: ruby examples/travel/pb3.rb
+    - run: ruby examples/travel/pb4.rb
+    - run: ruby examples/travel/pb5.rb
+    - run: ruby examples/robby/pb1.rb
+    - run: ruby Hype.rb examples/basic/basic.hddl examples/basic/pb1.hddl run
+    - run: ruby Hype.rb examples/basic/basic.jshop examples/basic/pb1.jshop run
+    - run: ruby Hype.rb examples/hanoi/hanoi.jshop examples/hanoi/pb1.jshop run
+    - run: ruby examples/goldminer/pb1.rb
+    - run: ruby Hype.rb examples/dependency/dependency.pddl examples/dependency/pb1.pddl patterns debug
+    - run: ruby Hype.rb examples/dependency/dependency.pddl examples/dependency/pb2.pddl patterns debug

@@ -10,15 +10,15 @@ module Travel
 
   @domain = {
     # Operators
-    'walk' => true,
-    'call_taxi' => true,
-    'ride_taxi' => true,
-    'pay_driver' => true,
+    :walk => true,
+    :call_taxi => true,
+    :ride_taxi => true,
+    :pay_driver => true,
     # Methods
-    'travel' => [
-      'stay_here',
-      'travel_by_taxi',
-      'travel_by_foot'
+    :travel => [
+      :stay_here,
+      :travel_by_taxi,
+      :travel_by_foot
     ]
   }
 
@@ -30,20 +30,20 @@ module Travel
     apply_operator(
       # Positive preconditions
       [
-        ['connected', source, destination],
-        ['at', agent, source]
+        [CONNECTED, source, destination],
+        [AT, agent, source]
       ],
       # Negative preconditions
       [
-        ['at', agent, destination]
+        [AT, agent, destination]
       ],
       # Add effects
       [
-        ['at', agent, destination]
+        [AT, agent, destination]
       ],
       # Del effects
       [
-        ['at', agent, source]
+        [AT, agent, source]
       ]
     )
   end
@@ -52,17 +52,17 @@ module Travel
     apply_operator(
       # Positive preconditions
       [
-        ['at', 'taxi', taxi_position]
+        [AT, 'taxi', taxi_position]
       ],
       # Negative preconditions
       [],
       # Add effects
       [
-        ['at', 'taxi', here]
+        [AT, 'taxi', here]
       ],
       # Del effects
       [
-        ['at', 'taxi', taxi_position]
+        [AT, 'taxi', taxi_position]
       ]
     )
   end
@@ -71,22 +71,22 @@ module Travel
     apply_operator(
       # Positive preconditions
       [
-        ['connected', source, destination],
-        ['at', 'taxi', source],
-        ['at', agent, source]
+        [CONNECTED, source, destination],
+        [AT, 'taxi', source],
+        [AT, agent, source]
       ],
       # Negative preconditions
       [],
       # Add effects
       [
-        ['at', 'taxi', destination],
-        ['at', agent, destination],
-        ['owe', agent, cost]
+        [AT, 'taxi', destination],
+        [AT, agent, destination],
+        [OWE, agent, cost]
       ],
       # Del effects
       [
-        ['at', 'taxi', source],
-        ['at', agent, destination]
+        [AT, 'taxi', source],
+        [AT, agent, destination]
       ]
     )
   end
@@ -95,19 +95,19 @@ module Travel
     apply_operator(
       # Positive preconditions
       [
-        ['cash', agent, amount_of_money],
-        ['owe', agent, cost]
+        [CASH, agent, amount_of_money],
+        [OWE, agent, cost]
       ],
       # Negative preconditions
       [],
       # Add effects
       [
-        ['cash', agent, (amount_of_money.to_f - cost.to_f).to_s]
+        [CASH, agent, (amount_of_money.to_f - cost.to_f).to_s]
       ],
       # Del effects
       [
-        ['cash', agent, amount_of_money],
-        ['owe', agent, cost]
+        [CASH, agent, amount_of_money],
+        [OWE, agent, cost]
       ]
     )
   end
@@ -120,7 +120,7 @@ module Travel
     if applicable?(
       # Positive preconditions
       [
-        ['at', agent, destination]
+        [AT, agent, destination]
       ],
       # Negative preconditions
       []
@@ -140,15 +140,15 @@ module Travel
     generate(
       # Positive preconditions
       [
-        ['at', agent, source],
-        ['at', 'taxi', taxi_position],
-        ['cash', agent, amount_of_money],
-        ['distance', source, destination, distance],
-        ['stamina', agent, stamina]
+        [AT, agent, source],
+        [AT, 'taxi', taxi_position],
+        [CASH, agent, amount_of_money],
+        [DISTANCE, source, destination, distance],
+        [STAMINA, agent, stamina]
       ],
       # Negative preconditions
       [
-        ['at', agent, destination]
+        [AT, agent, destination]
       ], source, amount_of_money, taxi_position, distance, stamina
     ) {
       distance = distance.to_i
@@ -157,9 +157,9 @@ module Travel
         if amount_of_money.to_f >= cost
           cost = cost.to_s
           yield [
-            ['call_taxi', taxi_position, source],
-            ['ride_taxi', agent, source, destination, cost],
-            ['pay_driver', agent, amount_of_money, cost]
+            [:call_taxi, taxi_position, source],
+            [:ride_taxi, agent, source, destination, cost],
+            [:pay_driver, agent, amount_of_money, cost]
           ]
         end
       end
@@ -173,15 +173,15 @@ module Travel
     generate(
       # Positive preconditions
       [
-        ['at', agent, source]
+        [AT, agent, source]
       ],
       # Negative preconditions
       [
-        ['at', agent, destination]
+        [AT, agent, destination]
       ], source
     ) {
       yield [
-        ['walk', agent, source, destination]
+        [:walk, agent, source, destination]
       ]
     }
   end

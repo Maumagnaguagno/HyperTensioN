@@ -43,6 +43,13 @@ module Function
   def function_effect
     (@state = @state.dup)[:function] = @state[:function].dup
   end
+
+  def step(t, min = 0.0, max = Float::INFINITY, epsilon = 1.0)
+    min.to_f.step(max.to_f, epsilon.to_f) {|i|
+      t.replace(i.to_s)
+      yield
+    }
+  end
 end
 
 module Continuous
@@ -196,9 +203,12 @@ module Continuous
     @state['protect_axiom'].all? {|i| send(*i, time)}
   end
 
-  def event_process_effect
+  def event_effect
     (@state = @state.dup)[:event] = @state[:event].dup
-    @state[:process] = @state[:process].dup
+  end
+
+  def process_effect
+    (@state = @state.dup)[:process] = @state[:process].dup
   end
 end
 

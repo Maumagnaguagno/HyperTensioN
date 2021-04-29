@@ -1,17 +1,24 @@
 require_relative 'Travel'
 
+AT = 0
+CASH = 1
+STAMINA = 2
+OWE = 3
+DISTANCE = 4
+CONNECTED = 5
+
 plan = Travel.problem(
   # Start
-  {
-    'at' => [
+  [
+    [
       ['me', 'home']
     ],
-    'cash' => [
+    [
       ['me', '20']
     ],
-    'stamina' => [],
-    'owe' => [],
-    'distance' => [
+    [],
+    [],
+    [
       ['home', 'park', '8'],
       ['home', 'friend', '10'],
       ['park', 'home', '8'],
@@ -19,7 +26,7 @@ plan = Travel.problem(
       ['friend', 'home', '10'],
       ['friend', 'park', '2']
     ],
-    'connected' => [
+    [
       ['home', 'park'],
       ['park', 'home'],
       ['home', 'friend'],
@@ -27,14 +34,14 @@ plan = Travel.problem(
       ['friend', 'park'],
       ['park', 'friend']
     ]
-  },
+  ],
   # Tasks
   [
-    ['travel', 'me', 'friend']
+    [:travel, 'me', 'friend']
   ],
   # Debug
   ARGV.first == 'debug'
 )
 
 # Test
-abort('Test failed') if plan != [['walk', 'me', 'home', 'friend']]
+abort('Test failed') if plan != [[:walk, 'me', 'home', 'friend']]

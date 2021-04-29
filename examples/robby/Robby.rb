@@ -10,18 +10,18 @@ module Robby
 
   @domain = {
     # Operators
-    'enter' => true,
-    'exit' => true,
-    'move' => true,
-    'report' => true,
-    'visit_at' => false,
-    'unvisit_at' => false,
+    :enter => true,
+    :exit => true,
+    :move => true,
+    :report => true,
+    :visit_at => false,
+    :unvisit_at => false,
     # Methods
-    'swap_at' => [
-      'swap_at__base',
-      'swap_at__recursion_enter',
-      'swap_at__recursion_exit',
-      'swap_at__recursion_move'
+    :swap_at => [
+      :swap_at__base,
+      :swap_at__recursion_enter,
+      :swap_at__recursion_exit,
+      :swap_at__recursion_move
     ]
   }
   # Memory
@@ -35,23 +35,23 @@ module Robby
     apply_operator(
       # Positive preconditions
       [
-        ['robot', bot],
-        ['hallway', source],
-        ['room', destination],
-        ['at', bot, source],
-        ['connected', source, destination]
+        [ROBOT, bot],
+        [HALLWAY, source],
+        [ROOM, destination],
+        [AT, bot, source],
+        [CONNECTED, source, destination]
       ],
       # Negative preconditions
       [
-        ['at', bot, destination]
+        [AT, bot, destination]
       ],
       # Add effects
       [
-        ['at', bot, destination]
+        [AT, bot, destination]
       ],
       # Del effects
       [
-        ['at', bot, source]
+        [AT, bot, source]
       ]
     )
   end
@@ -60,23 +60,23 @@ module Robby
     apply_operator(
       # Positive preconditions
       [
-        ['robot', bot],
-        ['room', source],
-        ['hallway', destination],
-        ['at', bot, source],
-        ['connected', source, destination]
+        [ROBOT, bot],
+        [ROOM, source],
+        [HALLWAY, destination],
+        [AT, bot, source],
+        [CONNECTED, source, destination]
       ],
       # Negative preconditions
       [
-        ['at', bot, destination]
+        [AT, bot, destination]
       ],
       # Add effects
       [
-        ['at', bot, destination]
+        [AT, bot, destination]
       ],
       # Del effects
       [
-        ['at', bot, source]
+        [AT, bot, source]
       ]
     )
   end
@@ -85,23 +85,23 @@ module Robby
     apply_operator(
       # Positive preconditions
       [
-        ['robot', bot],
-        ['hallway', source],
-        ['hallway', destination],
-        ['at', bot, source],
-        ['connected', source, destination]
+        [ROBOT, bot],
+        [HALLWAY, source],
+        [HALLWAY, destination],
+        [AT, bot, source],
+        [CONNECTED, source, destination]
       ],
       # Negative preconditions
       [
-        ['at', bot, destination]
+        [AT, bot, destination]
       ],
       # Add effects
       [
-        ['at', bot, destination]
+        [AT, bot, destination]
       ],
       # Del effects
       [
-        ['at', bot, source]
+        [AT, bot, source]
       ]
     )
   end
@@ -110,19 +110,19 @@ module Robby
     apply_operator(
       # Positive preconditions
       [
-        ['robot', bot],
-        ['location', source],
-        ['beacon', beacon],
-        ['at', bot, source],
-        ['in', beacon, source]
+        [ROBOT, bot],
+        [LOCATION, source],
+        [BEACON, beacon],
+        [AT, bot, source],
+        [IN, beacon, source]
       ],
       # Negative preconditions
       [
-        ['reported', bot, beacon]
+        [REPORTED, bot, beacon]
       ],
       # Add effects
       [
-        ['reported', bot, beacon]
+        [REPORTED, bot, beacon]
       ],
       # Del effects
       []
@@ -147,13 +147,13 @@ module Robby
     if applicable?(
       # Positive preconditions
       [
-        ['at', object, goal]
+        [AT, object, goal]
       ],
       # Negative preconditions
       []
     )
       yield [
-        ['unvisit_at', object]
+        [:unvisit_at, object]
       ]
     end
   end
@@ -166,19 +166,19 @@ module Robby
     generate(
       # Positive preconditions
       [
-        ['at', object, current],
-        ['connected', current, intermediate]
+        [AT, object, current],
+        [CONNECTED, current, intermediate]
       ],
       # Negative preconditions
       [
-        ['at', object, goal]
+        [AT, object, goal]
       ], current, intermediate
     ) {
       unless @visited_at[object].include?(intermediate)
         yield [
-          ['enter', object, current, intermediate],
-          ['visit_at', object, current],
-          ['swap_at', object, goal]
+          [:enter, object, current, intermediate],
+          [:visit_at, object, current],
+          [:swap_at, object, goal]
         ]
       end
     }
@@ -192,19 +192,19 @@ module Robby
     generate(
       # Positive preconditions
       [
-        ['at', object, current],
-        ['connected', current, intermediate]
+        [AT, object, current],
+        [CONNECTED, current, intermediate]
       ],
       # Negative preconditions
       [
-        ['at', object, goal]
+        [AT, object, goal]
       ], current, intermediate
     ) {
       unless @visited_at[object].include?(intermediate)
         yield [
-          ['exit', object, current, intermediate],
-          ['visit_at', object, current],
-          ['swap_at', object, goal]
+          [:exit, object, current, intermediate],
+          [:visit_at, object, current],
+          [:swap_at, object, goal]
         ]
       end
     }
@@ -218,19 +218,19 @@ module Robby
     generate(
       # Positive preconditions
       [
-        ['at', object, current],
-        ['connected', current, intermediate]
+        [AT, object, current],
+        [CONNECTED, current, intermediate]
       ],
       # Negative preconditions
       [
-        ['at', object, goal]
+        [AT, object, goal]
       ], current, intermediate
     ) {
       unless @visited_at[object].include?(intermediate)
         yield [
-          ['move', object, current, intermediate],
-          ['visit_at', object, current],
-          ['swap_at', object, goal]
+          [:move, object, current, intermediate],
+          [:visit_at, object, current],
+          [:swap_at, object, goal]
         ]
       end
     }

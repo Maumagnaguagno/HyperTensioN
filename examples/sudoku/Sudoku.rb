@@ -8,6 +8,9 @@ module Sudoku
   # Domain
   #-----------------------------------------------
 
+  AT = 0
+  EMPTY = 1
+
   @domain = {
     # Operators
     :put_symbol => true,
@@ -17,34 +20,32 @@ module Sudoku
 
   def solve(board_str, width, height, box_width, box_height, debug, verbose)
     # Parser
-    total_width = width * box_width
-    total_height = height * box_height
+    @x = 2
+    @y = @x + total_width = width * box_width
+    @b = @y + total_height = height * box_height
     board_str.delete!(" \n|+-")
     raise "Expected #{total_width * total_height} symbols, received #{board_str.size}" if board_str.size != total_width * total_height
-    cells = box_width * box_height
-    symbols = Array.new(cells) {|i| i.succ}
-    collumns = Array.new(total_width) {symbols.dup}
-    rows = Array.new(total_height) {symbols.dup}
-    boxes = Array.new(width * height) {symbols.dup}
-    board = []
+    symbols = Array.new(box_width * box_height) {|i| i.succ}
+    state = [board = [], empty = []]
+    (total_width + total_height + width * height).times {state << symbols.dup}
     counter = 0
     board_str.each_char.with_index {|symbol,i|
+      symbol = symbol.to_i
       y, x = i.divmod(total_width)
-      board << [x, y, b = x / width + y / height * box_width, symbol = symbol.to_i]
+      b = x / width + y / height * box_width + @b
       if symbol != 0
-        collumns[x].delete(symbol)
-        rows[y].delete(symbol)
-        boxes[b].delete(symbol)
-      else counter += 1
+        board << [y += @y, x += @x, symbol]
+        state[x].delete(symbol)
+        state[y].delete(symbol)
+        state[b].delete(symbol)
+      else
+        empty << [@x + x, @y + y, b]
+        counter += 1
       end
     }
     # Setup
-    state = {:at => board}
-    collumns.each_with_index {|s,i| state["c#{i}"] = s}
-    rows.each_with_index {|s,i| state["r#{i}"] = s}
-    boxes.each_with_index {|s,i| state["b#{i}"] = s}
     tasks = [
-      [:solve, counter, cells]
+      [:solve, counter]
     ]
     if verbose
       problem(state, tasks, debug)
@@ -54,7 +55,7 @@ module Sudoku
       planning(tasks)
     end
     # Display board
-    @state[:at].sort_by {|i| i.first(2).reverse!}.map! {|i| i.last}.each_slice(total_width) {|i| puts i.join}
+    @state[AT].sort_by! {|i| i.first(2)}.map!(&:last).each_slice(total_width) {|i| puts i.join}
   end
 
   #-----------------------------------------------
@@ -62,12 +63,12 @@ module Sudoku
   #-----------------------------------------------
 
   def put_symbol(x, y, b, symbol)
-    @state = @state.each_with_object({}) {|(k,v),state| state[k] = v.dup}
-    @state["c#{x}"].delete(symbol)
-    @state["r#{y}"].delete(symbol)
-    @state["b#{b}"].delete(symbol)
-    @state[:at].delete([x, y, b, 0])
-    @state[:at] << [x, y, b, symbol]
+    @state = @state.map(&:dup)
+    @state[x].delete(symbol)
+    @state[y].delete(symbol)
+    @state[b].delete(symbol)
+    @state[EMPTY].delete([x, y, b])
+    @state[AT] << [y, x, symbol]
     true
   end
 
@@ -75,41 +76,39 @@ module Sudoku
   # Methods
   #-----------------------------------------------
 
-  def try_next(counter, cells)
+  def try_next(counter)
     puts counter if @debug
     return yield [] if counter.zero?
     # Find available symbols for each empty cell
-    available = Array.new(cells - 2) {[]}
+    best = 100
+    available = nil
     singles = []
-    @state[:at].each {|x,y,b,symbol|
-      if symbol == 0
-        col = @state["c#{x}"]
-        row = @state["r#{y}"]
-        box = @state["b#{b}"]
-        symbols = col & row & box
-        if symbols.empty?
-          return
-        elsif symbols.size == 1
-          singles << [:put_symbol, x, y, b, s = symbols.first]
-          col.delete(s)
-          row.delete(s)
-          box.delete(s)
-        else available[symbols.size - 2] << [x, y, b, symbols]
-        end
+    @state[EMPTY].each {|x,y,b|
+      col = @state[x]
+      row = @state[y]
+      box = @state[b]
+      symbols = col & row & box
+      if symbols.empty?
+        return
+      elsif symbols.size == 1
+        singles << [:put_symbol, x, y, b, s = symbols.first]
+        col.delete(s)
+        row.delete(s)
+        box.delete(s)
+      elsif symbols.size < best
+        best = symbols.size
+        available = [x, y, b, symbols]
       end
     }
-    return yield singles << [:solve, counter - singles.size, cells] unless singles.empty?
+    return yield singles << [:solve, counter - singles.size] unless singles.empty?
     counter -= 1
-    # Explore empty cells with fewest available symbols first
-    available.each {|set|
-      set.each {|x,y,b,symbols|
-        symbols.each {|symbol|
-          yield [
-            [:put_symbol, x, y, b, symbol],
-            [:solve, counter, cells]
-          ]
-        }
-      }
+    # Explore empty cell with fewest available symbols
+    x, y, b, symbols = available
+    symbols.each {|symbol|
+      yield [
+        [:put_symbol, x, y, b, symbol],
+        [:solve, counter]
+      ]
     }
   end
 end

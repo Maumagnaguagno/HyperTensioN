@@ -18,6 +18,7 @@ module Hype
   Output:
     print - print parsed data(default)
     rb    - generate Ruby files to HyperTensioN
+    cpp   - generate C++ file to HyperTensioN
     pddl  - generate PDDL files
     jshop - generate JSHOP files
     dot   - generate DOT file
@@ -28,9 +29,11 @@ module Hype
   Extensions:
     patterns    - add methods and tasks based on operator patterns
     dummy       - add brute-force methods to operators
+    dejavu      - add invisible visit operators
     wise        - warn and fix description mistakes
     macro       - optimize operator sequences
     pullup      - optimize preconditions
+    typredicate - optimize typed predicates
     grammar     - print hierarchical structure grammar
     complexity  - print estimated complexity of planning description"
 
@@ -105,7 +108,7 @@ module Hype
   Operators:\n#{operators_to_s}
   Methods:\n#{methods_to_s}
 Problem #{@parser.problem_name}
-  State:#{predicates_to_s(@parser.state, "\n    ")}\n
+  State:#{predicates_to_s(@parser.state.flat_map {|k,v| v.map {|i| [k,*i]}}, "\n    ")}\n
   Goal:
     Tasks:#{subtasks_to_s(@parser.tasks.drop(1), "\n      ", @parser.tasks.first)}
     Positive:#{@parser.goal_pos.empty? ? "\n      empty" : predicates_to_s(@parser.goal_pos, "\n      ")}
@@ -120,6 +123,7 @@ Problem #{@parser.problem_name}
     raise 'Incompatible extensions between domain and problem' if File.extname(domain) != File.extname(problem)
     @parser = case File.extname(domain)
     when '.jshop' then JSHOP_Parser
+    when '.hddl' then HDDL_Parser
     when '.pddl' then PDDL_Parser
     else raise "Unknown file extension #{File.extname(domain)}"
     end
@@ -135,9 +139,11 @@ Problem #{@parser.problem_name}
     case extension
     when 'patterns' then Patterns
     when 'dummy' then Dummy
+    when 'dejavu' then Dejavu
     when 'wise' then Wise
     when 'macro' then Macro
     when 'pullup' then Pullup
+    when 'typredicate' then Typredicate
     when 'grammar' then Grammar
     when 'complexity' then Complexity
     else raise "Unknown extension #{extension}"
@@ -159,6 +165,7 @@ Problem #{@parser.problem_name}
   def compile(domain, problem, type)
     compiler = case type
     when 'rb' then Hyper_Compiler
+    when 'cpp' then Cyber_Compiler
     when 'jshop' then JSHOP_Compiler
     when 'pddl' then PDDL_Compiler
     when 'dot' then Dot_Compiler

@@ -9,7 +9,7 @@ module Stochastic
 
   def generate(precond_pos, precond_not, *free)
     unifications = []
-    super {unifications << free.map {|i| i.dup}}
+    super {unifications << free.map(&:dup)}
     unifications.shuffle!.each {|values|
       free.zip(values) {|f,v| f.replace(v)}
       yield

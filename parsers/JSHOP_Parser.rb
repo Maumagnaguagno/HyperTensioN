@@ -124,7 +124,8 @@ module JSHOP_Parser
     if (tokens = scan_tokens(problem_filename)).instance_of?(Array) and tokens.size == 5 and tokens.shift == 'defproblem'
       @problem_name = tokens.shift
       raise 'Different domain specified in problem file' if @domain_name != tokens.shift
-      @state = tokens.shift
+      @state = {}
+      tokens.shift.each {|pre| (@state[pre.shift.freeze] ||= []) << pre}
       @tasks = tokens.shift
       # Tasks may be ordered or unordered
       @tasks.shift unless ordered = (@tasks.first != ':unordered')

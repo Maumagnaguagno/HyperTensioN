@@ -84,7 +84,12 @@ module JSHOP_Compiler
       problem_str << 'nil'
     else
       problem_str << "(\n"
-      state.each {|pre| problem_str << "    (#{pre.join(' ')})\n"}
+      state.each {|pre,k|
+        k.each {|terms|
+          problem_str << "    (#{terms.unshift(pre).join(' ')})\n"
+          terms.shift
+        } if predicates.include?(pre)
+      }
       problem_str << '  )'
     end
     # Tasks

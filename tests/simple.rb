@@ -21,27 +21,27 @@ class Simple < Test::Unit::TestCase
     [['have', '?a']]
   ]
 
-  def test_basic_pb1_jshop_parsing
+  def basic_pb1_htn_parsing(parser, extension, method1_label, method2_label)
     parser_tests(
       # Files
-      'examples/basic/basic.jshop',
-      'examples/basic/pb1.jshop',
+      "examples/basic/basic.#{extension}",
+      "examples/basic/pb1.#{extension}",
       # Parser and extensions
-      JSHOP_Parser, [],
+      parser, [],
       # Attributes
       :domain_name => 'basic',
       :problem_name => 'pb1',
       :operators => [PICKUP, DROP],
       :methods => [
         ['swap', ['?x', '?y'],
-          ['case_0', [],
+          [method1_label, [],
             # Preconditions
             [['have', '?x']],
             [['have', '?y']],
             # Subtasks
             [['drop', '?x'], ['pickup', '?y']]
           ],
-          ['case_1', [],
+          [method2_label, [],
             # Preconditions
             [['have', '?y']],
             [['have', '?x']],
@@ -51,11 +51,19 @@ class Simple < Test::Unit::TestCase
         ]
       ],
       :predicates => {'have' => true},
-      :state => [['have','kiwi']],
+      :state => {'have' => [['kiwi']]},
       :tasks => [true, ['swap', 'banjo', 'kiwi']],
       :goal_pos => [],
       :goal_not => []
     )
+  end
+
+  def test_basic_pb1_hddl_parsing
+    basic_pb1_htn_parsing(HDDL_Parser, 'hddl', 'have_first', 'have_second')
+  end
+
+  def test_basic_pb1_jshop_parsing
+    basic_pb1_htn_parsing(JSHOP_Parser, 'jshop', 'case_0', 'case_1')
   end
 
   def test_basic_pb1_pddl_parsing
@@ -71,7 +79,7 @@ class Simple < Test::Unit::TestCase
       :operators => [PICKUP, DROP],
       :methods => [],
       :predicates => {'have' => true},
-      :state => [],
+      :state => {},
       :tasks => [],
       :goal_pos => [['have', 'banjo']],
       :goal_not => [],
@@ -145,7 +153,7 @@ class Simple < Test::Unit::TestCase
       :operators => [PICKUP, DROP],
       :methods => [],
       :predicates => {'have' => true},
-      :state => [['have', 'kiwi']],
+      :state => {'have' => [['kiwi']]},
       :tasks => [false, ['pickup', 'banjo'], ['drop', 'kiwi']],
       :goal_pos => [['have', 'banjo']],
       :goal_not => [['have', 'kiwi']],
@@ -154,7 +162,7 @@ class Simple < Test::Unit::TestCase
     )
   end
 
-  def test_basic_pb1_pddl_parsing_with_macro
+  def test_basic_pb1_jshop_parsing_with_macro
     parser_tests(
       # Files
       'examples/basic/basic.jshop',
@@ -165,11 +173,9 @@ class Simple < Test::Unit::TestCase
       :domain_name => 'basic',
       :problem_name => 'pb1',
       :operators => [
-        PICKUP,
-        DROP,
-        ['drop_dup', ['?a'], [], [], [], []],
-        ['pickup_dup', ['?a'], [], [], [], []],
-        ['invisible_drop_and_pickup', ['?x', '?y'],
+        ['pickup', ['?a'], [], [], [], []],
+        ['drop', ['?a'], [], [], [], []],
+        ['invisible_macro_drop_and_pickup', ['?x', '?y'],
           # Preconditions
           [['have', '?x']],
           [['have', '?y']],
@@ -185,19 +191,19 @@ class Simple < Test::Unit::TestCase
             [['have', '?x']],
             [['have', '?y']],
             # Subtasks
-            [['invisible_drop_and_pickup', '?x', '?y'], ['drop_dup', '?x'], ['pickup_dup', '?y']]
+            [['invisible_macro_drop_and_pickup', '?x', '?y'], ['drop', '?x'], ['pickup', '?y']]
           ],
           ['case_1', [],
             # Preconditions
             [['have', '?y']],
             [['have', '?x']],
             # Subtasks
-            [['invisible_drop_and_pickup', '?y', '?x'], ['drop_dup', '?y'], ['pickup_dup', '?x']]
+            [['invisible_macro_drop_and_pickup', '?y', '?x'], ['drop', '?y'], ['pickup', '?x']]
           ]
         ]
       ],
       :predicates => {'have' => true},
-      :state => [['have','kiwi']],
+      :state => {'have' => [['kiwi']]},
       :tasks => [true, ['swap', 'banjo', 'kiwi']],
       :goal_pos => [],
       :goal_not => []

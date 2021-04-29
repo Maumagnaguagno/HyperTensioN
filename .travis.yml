@@ -20,6 +20,7 @@ script:
   # Tests
   - ruby tests/sphygmomanometer.rb
   - ruby tests/frenesi.rb
+  - ruby tests/again.rb
   - ruby tests/dependent.rb
   - ruby tests/miner.rb
   - ruby tests/painter.rb
@@ -38,9 +39,9 @@ script:
   - ruby examples/travel/pb4.rb
   - ruby examples/travel/pb5.rb
   - ruby examples/robby/pb1.rb
+  - ruby Hype.rb examples/basic/basic.hddl examples/basic/pb1.hddl run
   - ruby Hype.rb examples/basic/basic.jshop examples/basic/pb1.jshop run
   - ruby Hype.rb examples/hanoi/hanoi.jshop examples/hanoi/pb1.jshop run
   - ruby examples/goldminer/pb1.rb
-  - ruby examples/goldminer/pb1_const_objects.rb
   - ruby Hype.rb examples/dependency/dependency.pddl examples/dependency/pb1.pddl patterns debug
   - ruby Hype.rb examples/dependency/dependency.pddl examples/dependency/pb2.pddl patterns debug
