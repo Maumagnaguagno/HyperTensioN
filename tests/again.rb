@@ -3,23 +3,23 @@ require './extensions/Dejavu'
 
 class Again < Test::Unit::TestCase
 
-  def visit_operators(name, label)
+  def visit_operators(name, label, parameters = ['?a', '?b'])
     [
-      ["invisible_#{name}_#{label}", ['?a', '?b'],
+      ["invisible_#{name}_#{label}", parameters,
         # Preconditions
         [],
         [],
         # Effects
-        [["visited_#{label}", '?a', '?b']],
+        [["visited_#{label}", *parameters]],
         []
       ],
-      ["invisible_un#{name}_#{label}", ['?a', '?b'],
+      ["invisible_un#{name}_#{label}", parameters,
         # Preconditions
         [],
         [],
         # Effects
         [],
-        [["visited_#{label}", '?a', '?b']]
+        [["visited_#{label}", *parameters]]
       ]
     ]
   end
@@ -196,7 +196,7 @@ class Again < Test::Unit::TestCase
           [],
           # Subtasks
           [
-            ['m2', '?a', '?b', '?c']
+            ['m1', '?a', '?b', '?c']
           ]
         ]
       ],
@@ -220,7 +220,7 @@ class Again < Test::Unit::TestCase
       ]
     ]
     Dejavu.apply(operators = [], methods, predicates = {}, nil, tasks = [true, ['m0','bob','home'], ['m1','bob','home']], nil, nil)
-    assert_equal(visit_operators('mark', 'm0_base_0').concat(visit_operators('visit', 'm0_recursion_0')).concat(visit_operators('visit', 'm2_recursion_0')), operators)
+    assert_equal(visit_operators('mark', 'm0_base_0').concat(visit_operators('visit', 'm0_recursion_0')).concat(visit_operators('visit', 'm2_recursion_0')).concat(visit_operators('visit', 'm1_recursion_0', ['?a', '?b', '?c'])), operators)
     assert_equal([
       ['m0', ['?a', '?b'],
         ['base', [],
@@ -259,10 +259,12 @@ class Again < Test::Unit::TestCase
         ['recursion', ['?c'],
           # Preconditions
           [],
-          [],
+          [['visited_m1_recursion_0', '?a', '?b', '?c']],
           # Subtasks
           [
-            ['m2', '?a', '?b', '?c']
+            ['invisible_visit_m1_recursion_0', '?a', '?b', '?c'],
+            ['m1', '?a', '?b', '?c'],
+            ['invisible_unvisit_m1_recursion_0', '?a', '?b', '?c']
           ]
         ]
       ],
@@ -287,7 +289,7 @@ class Again < Test::Unit::TestCase
         ]
       ]
     ], methods)
-    assert_equal({'visited_m0_base_0' => true, 'visited_m0_recursion_0' => true, 'visited_m2_recursion_0' => true}, predicates)
+    assert_equal({'visited_m0_base_0' => true, 'visited_m0_recursion_0' => true, 'visited_m1_recursion_0' => true, 'visited_m2_recursion_0' => true}, predicates)
     assert_equal([true, ['m0','bob','home'], ['m1','bob','home']], tasks)
   end
 end
