@@ -15,7 +15,7 @@ module Dejavu
     knots.each {|method,decomposition,task,index|
       name = method.first
       terms = decomposition.last.first(index + 1).inject([]) {|s,i| s | i.drop(1)}
-      if name == task.first or decomposition[1].empty? or decomposition.last[index].size == 1 or decomposition.last[index].drop(1).sort! != terms.sort
+      if name == task.first or decomposition[1].empty? or task.size == 1 or task.drop(1).sort! != terms.sort
         name = "#{name}_#{decomposition.first}_#{index}"
         decomposition[3] << [visited = "visited_#{name}".freeze, *terms]
         decomposition.last.insert(index, [visit = "invisible_visit_#{name}", *terms])
