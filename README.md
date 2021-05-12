@@ -13,13 +13,13 @@ This project was inspired by [Pyhop] and [JSHOP].
 
 [Download and play](../../archive/master.zip) or jump to each section to learn more:
 - [**Algorithm**](#algorithm "Jump to Algorithm section"): planning algorithm explanation
-- [**API**](#api "Jump to API section"): Variables and methods defined by HyperTensioN
-- [**Getting started**](#getting-started "Jump to Getting started section"): Features explained while describing a domain with HyperTensioN
-- [**Hype**](#hype "Jump to Hype section"): Follow the Hype and let domain and problem be converted and executed automagically
+- [**API**](#api "Jump to API section"): variables and methods defined by HyperTensioN
+- [**Getting started**](#getting-started "Jump to Getting started section"): features explained while describing a domain with HyperTensioN
+- [**Hype**](#hype "Jump to Hype section"): follow the Hype and let domain and problem be converted and executed automagically
 - [**Hints**](#hints "Jump to Hints section"): a list of hints to keep in mind
-- [**Comparison**](#comparison "Jump to Comparison section"): A brief comparison with JSHOP and Pyhop
-- [**Changelog**](#changelog "Jump to Changelog section"): a small list of things that happened
-- [**ToDo's**](#todos "Jump to ToDo's section"): a small list of things to be done
+- [**Comparison**](#comparison "Jump to Comparison section"): brief comparison with JSHOP and Pyhop
+- [**Changelog**](#changelog "Jump to Changelog section"): small list of things that happened
+- [**ToDo's**](#todos "Jump to ToDo's section"): small list of things to be done
 
 ## Algorithm
 The basic algorithm for HTN planning is quite simple and flexible, the hard part is in the structure that decomposes a hierarchy and the unification engine.
@@ -301,7 +301,7 @@ Free variables are created as empty strings, being used as pointers to their fut
 A ``generate(precond_pos, precond_not, *free)`` method will do the hard work, using positive preconditions to find possible values for the free variables, only yielding values that satisfy the preconditions requested.
 Therefore a positive precondition set that does not mention all free variables will generate zero unifications.
 In classical planning it is possible to try the entire list of objects as values, but in HTN there may be an infinite number of values.
-It is possible to solve this problem adding each object possible to be used to the initial state, ``(object kiwi) (object banjo)``, in the initial state and add them in the preconditions, ``(object ?x)``.
+It is possible to solve this problem adding each object possible to be used to the initial state, ``(object kiwi) (object banjo)``, in the initial state and add them in the preconditions, ``(object var)``.
 Unifications only happen to methods in HyperTensioN, a method must be created to bound values for an operator if a free variable value is not know.
 The following example goes beyond this specification, using an instance variable to avoid cached positions created by other decomposition paths.
 One can always use ``if-else`` constructs to speed-up problem solving.
