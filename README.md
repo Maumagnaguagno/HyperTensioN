@@ -1,4 +1,4 @@
-# HyperTensioN [![Build Status](https://travis-ci.org/Maumagnaguagno/HyperTensioN.svg)](https://travis-ci.org/Maumagnaguagno/HyperTensioN) [![Actions Status](https://github.com/Maumagnaguagno/HyperTensioN/workflows/build/badge.svg)](https://github.com/Maumagnaguagno/HyperTensioN/actions) [![IPC](https://img.shields.io/badge/HTN%20IPC%202020%20Total%20Order%20track-winner-D50.svg)](http://gki.informatik.uni-freiburg.de/competition/results.pdf)
+# HyperTensioN [![Build Status](https://travis-ci.org/Maumagnaguagno/HyperTensioN.svg)](https://travis-ci.org/Maumagnaguagno/HyperTensioN) [![Actions Status](https://github.com/Maumagnaguagno/HyperTensioN/workflows/build/badge.svg)](https://github.com/Maumagnaguagno/HyperTensioN/actions) [![IPC](https://img.shields.io/badge/HTN%20IPC%202020%20Total%20Order%20track-winner-D50.svg)](https://gki.informatik.uni-freiburg.de/competition/results.pdf)
 **Hierarchical Task Network planning in Ruby**
 
 HyperTensioN is a [Hierarchical Task Network](https://en.wikipedia.org/wiki/Hierarchical_task_network) planner written in Ruby.
