@@ -12,9 +12,15 @@ module Dejavu
     tasks.uniq(&:first).each {|t| visit(t.first, methods, knots)}
     tasks.unshift(ordered)
     knots.uniq!
-    knots.each {|method,decomposition,task,index|
+    knots.each {|method,decomposition,task|
       name = method.first
-      terms = decomposition.last.first(index + 1).inject([]) {|s,i| s | i.drop(1)}
+      index = 0
+      terms = []
+      decomposition.last.each {|t|
+        terms |= t.drop(1)
+        break if t.equal?(task)
+        index += 1
+      }
       if name == task.first or decomposition[1].empty? or task.size == 1 or task.drop(1).sort! != terms.sort
         name = "#{name}_#{decomposition.first}_#{index}"
         decomposition[3] << [visited = "visited_#{name}".freeze, *terms]
@@ -39,7 +45,7 @@ module Dejavu
     if visited.include?(method) then true
     elsif method = methods.assoc(method)
       visited[method.first] = nil
-      method.drop(2).each {|decomposition| decomposition.last.each_with_index {|task,index| knots << [method, decomposition, task, index] if visit(task.first, methods, knots, visited.dup)}}
+      method.drop(2).each {|decomposition| decomposition.last.each {|task| knots << [method, decomposition, task] if visit(task.first, methods, knots, visited.dup)}}
       false
     end
   end
