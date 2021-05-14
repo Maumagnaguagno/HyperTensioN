@@ -14,12 +14,10 @@ module Dejavu
     knots.uniq!
     knots.each {|method,decomposition,task|
       name = method.first
-      index = 0
       terms = []
-      decomposition.last.each {|t|
+      index = decomposition.last.find_index {|t|
         terms |= t.drop(1)
-        break if t.equal?(task)
-        index += 1
+        t.equal?(task)
       }
       if name == task.first or decomposition[1].empty? or task.size == 1 or task.drop(1).sort! != terms.sort
         name = "#{name}_#{decomposition.first}_#{index}"
