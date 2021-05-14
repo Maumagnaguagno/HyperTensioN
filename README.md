@@ -520,7 +520,7 @@ Hype is composed of:
 - HyperTensioN (methods and tasks are unavailable for a PDDL input without extensions)
 - [PDDL] (methods are ignored, goal must be manually converted based on tasks)
 - [JSHOP] (methods and tasks are unavailable for a PDDL input without extensions)
-- [Graphviz DOT](http://www.graphviz.org/) (generate a [graph](docs/Graph.md) description to be compiled into an image)
+- [Graphviz DOT](https://www.graphviz.org/) (generate a [graph](docs/Graph.md) description to be compiled into an image)
 - [Markdown](https://daringfireball.net/projects/markdown/)
 
 As any parser, the ones provided by Hype are limited in one way or another.
@@ -624,12 +624,11 @@ Here are some hints to describe a domain:
 - Execute the interpreter with the ``--disable=all`` flag to load it faster.
 
 ## Comparison
-The main advantage of HyperTensioN is to be able to define behavior in the core language, without losing clarity, this alone gives a lot of power.
-JSHOP2 requires the user to dive into a very complex structure to unlock such power, while [Pyhop] is based on this feature, with everything defined in Python, but does not support backtracking and unification.
+The main advantage of HyperTensioN is to be able to define behavior in the core language, without custom classes.
+Once Strings, Symbols, Arrays and Hashes are understood, the entire HyperTensioN module is just a few methods away from complete understanding.
+JSHOP2 requires the user to dive into a very complex structure, while [Pyhop] is much simpler, with everything defined in Python, without backtracking and unification.
 Without unification the user must ground or propagate variables by hand, and without backtracking the domain must never reach a dead-end during decomposition.
 HyperTensioN biggest advantage is not the planner itself, but the parsers, extensions and compilers built around it, so that descriptions can be converted automatically.
-Perhaps the most invisible advantage is the lack of custom classes, every object used during planning is defined as one of the core objects.
-Once Strings, Symbols, Arrays and Hashes are understood, the entire HyperTensioN module is just a few methods away from complete understanding.
 
 Among the lacking features is lazy variable evaluation and interleaved/unordered execution of tasks, a feature that JSHOP2 supports and important to achieve good plans in some cases.
 Unordered tasks are supported only at the problem level and are not interleaved during decomposition.
@@ -683,7 +682,9 @@ Since explicit goals are tested only after the plan has been found with a sequen
 - Oct 2020
   - Rescue infinite recursion stack overflow
 - Nov 2020
-  - Released version 2.0
+  - Released version 2.0 with new state representation
+- Feb 2021
+  - Released version 2.1 with new compiler optimizations
 
 ## ToDo's
 - Unordered subtasks
@@ -694,5 +695,5 @@ Since explicit goals are tested only after the plan has been found with a sequen
 [Intermediate Representation]: docs/Representation.md
 [PDDL]: https://en.wikipedia.org/wiki/Planning_Domain_Definition_Language "PDDL at Wikipedia"
 [JSHOP]: https://www.cs.umd.edu/projects/shop/description.html "SHOP/JSHOP project page"
-[HDDL]: http://gki.informatik.uni-freiburg.de/papers/hoeller-etal-aaai20.pdf "HDDL paper"
+[HDDL]: https://gki.informatik.uni-freiburg.de/papers/hoeller-etal-aaai20.pdf "HDDL paper"
 [Pyhop]: https://bitbucket.org/dananau/pyhop "Pyhop project page"
