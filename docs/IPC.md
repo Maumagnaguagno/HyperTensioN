@@ -24,7 +24,7 @@ All 20 Monroe-Fully-Observable instances are solvable, most in few seconds and t
 The Monroe-Partially-Observable instances are still not solvable within a 1800s time limit.
 Other domains are unaffected by this change.
 
-Domain/Planner | Total | HyperTensioN (master) | HyperTensioN (IPC) | Lilotane | PDDL4J-TO | PDDL4J-PO | HPDL | pyHiPOP
+Domain/Planner | Total | HyperTensioN (2.1) | HyperTensioN (IPC) | Lilotane | PDDL4J-TO | PDDL4J-PO | HPDL | pyHiPOP
 --- | --- | --- | --- | --- | --- | --- | --- | ---
 AssemblyHierarchical | 30 | 3 | 3 | **5** | 2 | 1 | 0 | 0.5
 Barman-BDI | 20 | **20** | **20** | 16 | 11 | 5.5 | 10 | 0
