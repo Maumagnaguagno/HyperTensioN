@@ -43,7 +43,7 @@ module Dejavu
     if visited.include?(method) then true
     elsif method = methods.assoc(method)
       visited[method.first] = nil
-      method.drop(2).each {|decomposition| decomposition.last.each {|task| knots << [method, decomposition, task] if visit(task.first, methods, knots, visited.dup)}}
+      method.drop(2).each {|decomposition| decomposition.last.each_with_index {|task,i| knots << [method, decomposition, task, i] if visit(task.first, methods, knots, visited.dup)}}
       false
     end
   end

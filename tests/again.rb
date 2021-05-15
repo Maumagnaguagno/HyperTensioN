@@ -177,7 +177,7 @@ class Again < Test::Unit::TestCase
           # Subtasks
           [
             ['m0', '?a', '?b'],
-            ['m0', '?b', '?a']
+            ['m0', '?a', '?b']
           ]
         ]
       ]
@@ -210,7 +210,7 @@ class Again < Test::Unit::TestCase
             ['m0', '?a', '?b'],
             ['invisible_unvisit_m0_recursion_0', '?a', '?b'],
             ['invisible_visit_m0_recursion_3', '?a', '?b'],
-            ['m0', '?b', '?a'],
+            ['m0', '?a', '?b'],
             ['invisible_unvisit_m0_recursion_3', '?a', '?b']
           ]
         ]
