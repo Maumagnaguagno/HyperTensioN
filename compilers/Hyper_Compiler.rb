@@ -67,7 +67,7 @@ module Hyper_Compiler
     state_visit = -1 if operators.any? {|name,param| param.empty? and name.start_with?('invisible_visit_', 'invisible_mark_')}
     operators.each_with_index {|(name,param,precond_pos,precond_not,effect_add,effect_del),i|
       domain_str << "\n    :#{name} => #{!name.start_with?('invisible_')}#{',' unless operators.size.pred == i and methods.empty?}"
-      define_operators << "\n  def #{name}#{"(#{paramstr = param.join(', ').tr!('?','_')})" unless param.empty?}"
+      define_operators << "\n  def #{name}#{"(#{(paramstr = param.join(', ')).tr!('?','_'); paramstr})" unless param.empty?}"
       if state_visit
         if name.start_with?('invisible_visit_', 'invisible_mark_')
           define_operators << "\n    return if @state_visit#{state_visit += 1}.include?(@state)\n    @state_visit#{state_visit} << @state\n    true\n  end\n"
