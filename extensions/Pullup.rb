@@ -191,7 +191,7 @@ module Pullup
         m[3] -= neg
       }
     }
-    clear_ops.uniq!
+    clear_ops.uniq!(&:object_id)
     clear_ops.each {|op|
       op[2].select! {|pre| predicates[pre.first]}
       op[3].select! {|pre| predicates[pre.first]}
