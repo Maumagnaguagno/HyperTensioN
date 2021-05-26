@@ -1,0 +1,73 @@
+(defdomain travel
+ (
+  
+  ;(:- (far ?x ?y) (or (longDistance ?x ?y) (longDistance ?y ?x) ) )
+  (:- (longDistance ?x ?z) (and (airport ?z ?y) (longDistance ?x ?y) ) )
+
+  (:operator (!getTicket ?x ?y)
+        ((airport ?x ?xc)
+         (airport ?y ?yc)
+        )
+    
+        ( )
+        ((ticket ?x ?y))
+        1
+      )
+
+	(:operator (!fly ?x ?y)
+	   ((airport ?x ?x1)
+	    (airport ?y ?y1)
+	    (ticket ?x ?y)
+	    (at ?x)
+	   )
+
+	   ((at ?x) (ticket ?x ?y))
+	   ((at ?y))
+	   10
+	 )
+	
+	(:operator (!getTaxi ?x)
+	  ((at ?x)
+	  )
+	
+	  ()
+	  ((hasTaxi ?x))
+	  0
+	)
+	
+	(:operator (!rideTaxi ?x ?y)
+	   ((at ?x)
+	    (not (longDistance ?x ?y))
+	    (hasTaxi ?x)
+	   )
+	   
+	   ((at ?x) (hasTaxi ?x))
+	   ((at ?y))
+	   2
+	)
+
+  ;================================
+  ; Methods to achieve agent goals
+  ;================================
+
+  (:method (travel ?x ?y)
+    no-travel
+    ((at ?x) (at ?y))
+    ()
+
+    taxi-travel
+	((at ?x) (not (longDistance ?x ?y)))
+	((!getTaxi ?x) (!rideTaxi ?x ?y))
+	
+	air-travel
+	((at ?x) 
+     (longDistance ?x ?y)
+     (airport ?ax ?x)
+     (airport ?ay ?y)
+    )
+	((!getTicket ?ax ?ay) (travel ?x ?ax) (!fly ?ax ?ay) (travel ?ay ?y))
+  )
+
+ )
+
+)

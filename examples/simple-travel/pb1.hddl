@@ -1,0 +1,20 @@
+(define (problem pb1) (:domain travel)
+	(:objects portoalegre saopaulo london - city
+		      poa gru lhr - airport
+			  )
+    (:htn
+	   :tasks (and (travel portoalegre saopaulo))
+	   :ordering ()
+	   :constraints ()
+	 )
+	 
+	 (:init 
+ 	    (at portoalegre)
+     	(airport poa portoalegre)
+         (airport gru saopaulo)
+         (airport lhr london)
+         (longDistance portoalegre saopaulo)
+         (longDistance portoalegre london)
+ 		 (longDistance saopaulo london)
+  )
+)

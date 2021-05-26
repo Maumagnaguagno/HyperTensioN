@@ -1,0 +1,94 @@
+(define (domain travel)
+	(:requirements :typing)
+
+    (:types
+        city airport - object
+    )
+
+	(:predicates (airport ?x - city ?xc - airport)
+				(ticket ?x - airport ?y - airport)
+				(at ?x - object)
+				(longDistance ?x ?y - object)
+				(hasTaxi ?x - object)
+	)
+	
+	(:task travel :parameters (?from - object ?to - object))
+	
+	; (:method travel-by-foot
+	;    :parameters (?x ?y - location)
+	;    :task (travel ?x ?y)
+	;    :precondition (and (at ?x) (shortDistance ?x ?y))
+	;    :ordered-subtasks (and (walk ?x ?y)))
+	;
+	; (:method travel-by-taxi
+	;    :parameters (?x ?y - location)
+	;    :task (travel ?x ?y)
+	;    :precondition (and (at ?x) (longDistance ?x ?y) (hasMoney))
+	;    :ordered-subtasks (and (callTaxi ?x) (rideTaxi ?x ?y) (pay)))
+	
+	; (:method travel-by-foot
+	;    :parameters (?x ?y - object)
+	;    :task (travel ?x ?y)
+	;    :precondition (and (at ?x) (shortDistance ?x ?y))
+	;    :ordered-subtasks (and (walk ?x ?y)))
+
+	(:method travel-by-taxi
+	   :parameters (?x ?y - object)
+	   :task (travel ?x ?y)
+	   :precondition (and (at ?x) (not (longDistance ?x ?y)))
+	   :ordered-subtasks (and (getTaxi ?x) (rideTaxi ?x ?y)))
+	
+   (:method travel-by-plane
+      :parameters (?x ?y ?ax ?ay - object)
+      :task (travel ?x ?y)
+      :precondition (and (at ?x) (longDistance ?x ?y) 
+                     (airport ?ax ?x) (airport ?ay ?y) )					 
+      :subtasks (and (task0 (getTicket ?ax ?ay ?x ?y))
+                     (task1 (travel ?x ?ax))
+                     (task2 (fly ?ax ?ay ?x ?y))
+                     (task3 (travel ?ay ?y)))
+      :ordering (and (task0 < task2) (task0 < task2)
+                     (task2 < task3) )
+   )
+   
+   (:action getTicket
+	   :parameters (?x ?y ?xc ?yc - object)
+       :precondition (and (airport ?x ?xc)
+          (airport ?y ?yc)
+         )
+    
+       :effect (and (ticket ?x ?y))
+       ; :cost 1
+   )
+
+ 	(:action fly 
+	   :parameters (?x ?y ?x1 ?y1 - object)
+ 	   :precondition (and (airport ?x ?x1)
+ 	    (airport ?y ?y1)
+ 	    (ticket ?x ?y)
+ 	    (at ?x)
+ 	   )
+
+ 	   :effect (and (not (at ?x)) (not (ticket ?x ?y)) (at ?y))
+ 	   ; :cost 10
+ 	 )
+	
+ 	(:action getTaxi 
+	   :parameters (?x - object)
+ 	   :precondition (and (at ?x) )
+	
+ 	   :effect (and (hasTaxi ?x))
+ 	   ; :cost 0
+ 	)
+	
+ 	(:action rideTaxi 
+	   :parameters (?x ?y - object)
+ 	   :precondition (and (at ?x)
+ 	    			(not (longDistance ?x ?y))
+ 	    			(hasTaxi ?x)
+ 	   )
+	   
+ 	   :effect (and (not (at ?x)) (not (hasTaxi ?x)) (at ?y))
+ 	   ; :cost 2
+ 	)
+)

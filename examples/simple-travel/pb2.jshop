@@ -1,0 +1,15 @@
+(defproblem pb2 travel
+	(
+	    (at portoalegre)
+    	(airport poa portoalegre)
+        (airport gru saopaulo)
+        (airport lhr london)
+        (longDistance portoalegre saopaulo)
+        (longDistance portoalegre london)
+		(longDistance saopaulo london)
+	) ;Preconds
+	
+	(
+	  (travel portoalegre viamao)
+	) ;initial HTN
+)
