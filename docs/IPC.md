@@ -4,9 +4,9 @@ Its main goal is to provide a common dataset made of several planning instances 
 Planners compete in several tracks, searching for step-optimal (smaller plans) or satisficing (less planning time) solutions and exploiting common or uncommon description features, such as numerics and optimization.
 There was no common language for Hierarchical Task Network (HTN), although the second (2000) and third (2002) IPC had tracks on 'Hand Tailored Systems'.
 Most systems relied on some input format of their own, making comparisons hard to happen.
-HTN IPC was proposed during [ICAPS 2019](https://www.uni-ulm.de/fileadmin/website_uni_ulm/iui.inst.090/Publikationen/2019/Behnke2019HTNIPC.pdf) to improve this situation, pushing [HDDL](http://gki.informatik.uni-freiburg.de/papers/hoeller-etal-aaai20.pdf) as the standard HTN language.
+HTN IPC was proposed during [ICAPS 2019](https://www.uni-ulm.de/fileadmin/website_uni_ulm/iui.inst.090/Publikationen/2019/Behnke2019HTNIPC.pdf) to improve this situation, pushing [HDDL](https://gki.informatik.uni-freiburg.de/papers/hoeller-etal-aaai20.pdf) as the standard HTN language.
 
-The [IPC 2020](http://gki.informatik.uni-freiburg.de/competition/) proposed two tracks: total order and partial order.
+The [IPC 2020](https://gki.informatik.uni-freiburg.de/competition/) proposed two tracks: total order and partial order.
 In the total order track the subtasks must be decomposed following one order, either respecting the order in which tasks were described or sorting them based on their constraints.
 The partial order track contain domains in which there is more than one way to decompose tasks, which also makes possible to interleave subtasks, at the cost of complex bookkeeping.
 Few domains were acyclic (subtasks that may decompose to themselves) and therefore no extra tracks happened.
@@ -24,7 +24,7 @@ All 20 Monroe-Fully-Observable instances are solvable, most in few seconds and t
 The Monroe-Partially-Observable instances are still not solvable within a 1800s time limit.
 Other domains are unaffected by this change.
 
-Domain/Planner | Total | HyperTensioN (master) | HyperTensioN (IPC) | Lilotane | PDDL4J-TO | PDDL4J-PO | HPDL | pyHiPOP
+Domain/Planner | Total | HyperTensioN (2.1) | HyperTensioN (IPC) | Lilotane | PDDL4J-TO | PDDL4J-PO | HPDL | pyHiPOP
 --- | --- | --- | --- | --- | --- | --- | --- | ---
 AssemblyHierarchical | 30 | 3 | 3 | **5** | 2 | 1 | 0 | 0.5
 Barman-BDI | 20 | **20** | **20** | 16 | 11 | 5.5 | 10 | 0
@@ -56,13 +56,13 @@ The planner was executed as ``ruby --disable=all Hype.rb $DOMAINFILE $PROBLEMFIL
 Due to a [limit](https://bugs.ruby-lang.org/issues/16616) in the amount of stack available to the Ruby interpreter in the Ubuntu 20.04 + Ruby 2.7 it was decided to use an older version, Ubuntu 18.04 + Ruby 2.5, to be able to solve more planning instances.
 Some large planning instances require more stack, which is possible with ``export RUBY_THREAD_VM_STACK_SIZE=$(($MEMORY * 512 * 1024))``.
 HyperTensioN did not exploit the seed variable provided during the competition, although it is possible that randomizing parts of the planning instance may improve timing in certain domains.
-A more detailed explanation is provided in the IPC paper [HyperTensioN: A three-stage compiler for planning](http://www.meneguzzi.eu/felipe/pubs/ipc-hypertension-2021.pdf).
+A more detailed explanation is provided in the IPC paper [HyperTensioN: A three-stage compiler for planning](https://gki.informatik.uni-freiburg.de/competition/proceedings.pdf#page=14).
 
-The [plan format output](http://gki.informatik.uni-freiburg.de/ipc2020/format.pdf) required by the IPC to analyze plan correctness was different from the one used by HyperTensioN.
+The [plan format output](https://gki.informatik.uni-freiburg.de/ipc2020/format.pdf) required by the IPC to analyze plan correctness was different from the one used by HyperTensioN.
 This output format can be obtained by setting the constant ``FAST_OUTPUT = false`` in ``Hypertension.rb``, note that this adds a small overhead and modifies the API.
 Some examples and tests expect the original fast output.
 Plans in the IPC format can be visualized using the [HTN Plan Viewer](https://maumagnaguagno.github.io/HTN_Plan_Viewer/).
 
-The [presented](http://gki.informatik.uni-freiburg.de/competition/results.pdf) and [fixed](http://gki.informatik.uni-freiburg.de/competition/results-fixed.pdf) results are now available, a presentation is on YouTube:
+The [presented](https://gki.informatik.uni-freiburg.de/competition/results.pdf) and [fixed](https://gki.informatik.uni-freiburg.de/competition/results-fixed.pdf) results are now available, a presentation is on YouTube:
 
 [![IPC 2020](https://img.youtube.com/vi/SSaw5YmxpaA/0.jpg)](https://www.youtube.com/watch?v=SSaw5YmxpaA "International Planning Competition (IPC) 2020 on Hierarchical Task Network (HTN) Planning: Results")

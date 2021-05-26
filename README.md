@@ -1,4 +1,4 @@
-# HyperTensioN [![Build Status](https://travis-ci.org/Maumagnaguagno/HyperTensioN.svg)](https://travis-ci.org/Maumagnaguagno/HyperTensioN) [![Actions Status](https://github.com/Maumagnaguagno/HyperTensioN/workflows/build/badge.svg)](https://github.com/Maumagnaguagno/HyperTensioN/actions) [![IPC](https://img.shields.io/badge/HTN%20IPC%202020%20Total%20Order%20track-winner-D50.svg)](http://gki.informatik.uni-freiburg.de/competition/results.pdf)
+# HyperTensioN [![Build Status](https://travis-ci.org/Maumagnaguagno/HyperTensioN.svg)](https://travis-ci.org/Maumagnaguagno/HyperTensioN) [![Actions Status](https://github.com/Maumagnaguagno/HyperTensioN/workflows/build/badge.svg)](https://github.com/Maumagnaguagno/HyperTensioN/actions) [![IPC](https://img.shields.io/badge/HTN%20IPC%202020%20Total%20Order%20track-winner-D50.svg)](https://gki.informatik.uni-freiburg.de/competition/results.pdf)
 **Hierarchical Task Network planning in Ruby**
 
 HyperTensioN is a [Hierarchical Task Network](https://en.wikipedia.org/wiki/Hierarchical_task_network) planner written in Ruby.
@@ -13,13 +13,13 @@ This project was inspired by [Pyhop] and [JSHOP].
 
 [Download and play](../../archive/master.zip) or jump to each section to learn more:
 - [**Algorithm**](#algorithm "Jump to Algorithm section"): planning algorithm explanation
-- [**API**](#api "Jump to API section"): Variables and methods defined by HyperTensioN
-- [**Getting started**](#getting-started "Jump to Getting started section"): Features explained while describing a domain with HyperTensioN
-- [**Hype**](#hype "Jump to Hype section"): Follow the Hype and let domain and problem be converted and executed automagically
+- [**API**](#api "Jump to API section"): variables and methods defined by HyperTensioN
+- [**Getting started**](#getting-started "Jump to Getting started section"): features explained while describing a domain with HyperTensioN
+- [**Hype**](#hype "Jump to Hype section"): follow the Hype and let domain and problem be converted and executed automagically
 - [**Hints**](#hints "Jump to Hints section"): a list of hints to keep in mind
-- [**Comparison**](#comparison "Jump to Comparison section"): A brief comparison with JSHOP and Pyhop
-- [**Changelog**](#changelog "Jump to Changelog section"): a small list of things that happened
-- [**ToDo's**](#todos "Jump to ToDo's section"): a small list of things to be done
+- [**Comparison**](#comparison "Jump to Comparison section"): brief comparison with JSHOP and Pyhop
+- [**Changelog**](#changelog "Jump to Changelog section"): small list of things that happened
+- [**ToDo's**](#todos "Jump to ToDo's section"): small list of things to be done
 
 ## Algorithm
 The basic algorithm for HTN planning is quite simple and flexible, the hard part is in the structure that decomposes a hierarchy and the unification engine.
@@ -301,7 +301,7 @@ Free variables are created as empty strings, being used as pointers to their fut
 A ``generate(precond_pos, precond_not, *free)`` method will do the hard work, using positive preconditions to find possible values for the free variables, only yielding values that satisfy the preconditions requested.
 Therefore a positive precondition set that does not mention all free variables will generate zero unifications.
 In classical planning it is possible to try the entire list of objects as values, but in HTN there may be an infinite number of values.
-It is possible to solve this problem adding each object possible to be used to the initial state, ``(object kiwi) (object banjo)``, in the initial state and add them in the preconditions, ``(object ?x)``.
+It is possible to solve this problem adding each object possible to be used to the initial state, ``(object kiwi) (object banjo)``, in the initial state and add them in the preconditions, ``(object var)``.
 Unifications only happen to methods in HyperTensioN, a method must be created to bound values for an operator if a free variable value is not know.
 The following example goes beyond this specification, using an instance variable to avoid cached positions created by other decomposition paths.
 One can always use ``if-else`` constructs to speed-up problem solving.
@@ -520,7 +520,7 @@ Hype is composed of:
 - HyperTensioN (methods and tasks are unavailable for a PDDL input without extensions)
 - [PDDL] (methods are ignored, goal must be manually converted based on tasks)
 - [JSHOP] (methods and tasks are unavailable for a PDDL input without extensions)
-- [Graphviz DOT](http://www.graphviz.org/) (generate a [graph](docs/Graph.md) description to be compiled into an image)
+- [Graphviz DOT](https://www.graphviz.org/) (generate a [graph](docs/Graph.md) description to be compiled into an image)
 - [Markdown](https://daringfireball.net/projects/markdown/)
 
 As any parser, the ones provided by Hype are limited in one way or another.
@@ -624,12 +624,11 @@ Here are some hints to describe a domain:
 - Execute the interpreter with the ``--disable=all`` flag to load it faster.
 
 ## Comparison
-The main advantage of HyperTensioN is to be able to define behavior in the core language, without losing clarity, this alone gives a lot of power.
-JSHOP2 requires the user to dive into a very complex structure to unlock such power, while [Pyhop] is based on this feature, with everything defined in Python, but does not support backtracking and unification.
+The main advantage of HyperTensioN is to be able to define behavior in the core language, without custom classes.
+Once Strings, Symbols, Arrays and Hashes are understood, the entire HyperTensioN module is just a few methods away from complete understanding.
+JSHOP2 requires the user to dive into a very complex structure, while [Pyhop] is much simpler, with everything defined in Python, without backtracking and unification.
 Without unification the user must ground or propagate variables by hand, and without backtracking the domain must never reach a dead-end during decomposition.
 HyperTensioN biggest advantage is not the planner itself, but the parsers, extensions and compilers built around it, so that descriptions can be converted automatically.
-Perhaps the most invisible advantage is the lack of custom classes, every object used during planning is defined as one of the core objects.
-Once Strings, Symbols, Arrays and Hashes are understood, the entire HyperTensioN module is just a few methods away from complete understanding.
 
 Among the lacking features is lazy variable evaluation and interleaved/unordered execution of tasks, a feature that JSHOP2 supports and important to achieve good plans in some cases.
 Unordered tasks are supported only at the problem level and are not interleaved during decomposition.
@@ -683,7 +682,9 @@ Since explicit goals are tested only after the plan has been found with a sequen
 - Oct 2020
   - Rescue infinite recursion stack overflow
 - Nov 2020
-  - Released version 2.0
+  - Released version 2.0 with new state representation
+- Feb 2021
+  - Released version 2.1 with new compiler optimizations
 
 ## ToDo's
 - Unordered subtasks
@@ -694,5 +695,5 @@ Since explicit goals are tested only after the plan has been found with a sequen
 [Intermediate Representation]: docs/Representation.md
 [PDDL]: https://en.wikipedia.org/wiki/Planning_Domain_Definition_Language "PDDL at Wikipedia"
 [JSHOP]: https://www.cs.umd.edu/projects/shop/description.html "SHOP/JSHOP project page"
-[HDDL]: http://gki.informatik.uni-freiburg.de/papers/hoeller-etal-aaai20.pdf "HDDL paper"
+[HDDL]: https://gki.informatik.uni-freiburg.de/papers/hoeller-etal-aaai20.pdf "HDDL paper"
 [Pyhop]: https://bitbucket.org/dananau/pyhop "Pyhop project page"

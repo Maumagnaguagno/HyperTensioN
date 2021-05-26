@@ -183,98 +183,95 @@ class Paisley < Test::Unit::TestCase
       # Goal_not
       []
     )
-    assert_equal(
-      [
-        ['dependency_drop_before_pick_for_carry', ['?obj', '?room', '?gripper'],
-          ['goal-satisfied', [],
-            # Preconditions
-            [['carry', '?obj', '?gripper']],
-            [],
-            # Subtasks
-            []
-          ],
-          ['satisfied', [],
-            # Preconditions
-            [
-              ['ball', '?obj'], ['room', '?room'], ['gripper', '?gripper'], ['predicate'],
-              ['at', '?obj', '?room']
-            ],
-            [],
-            # Subtasks
-            [['pick', '?obj', '?room', '?gripper']]
-          ],
-          ['unsatisfied', [],
-            # Preconditions
-            [['ball', '?obj'], ['room', '?room'], ['gripper', '?gripper'], ['predicate']],
-            [['at', '?obj', '?room']],
-            # Subtasks
-            [
-              ['drop', '?obj', '?room', '?gripper'],
-              ['pick', '?obj', '?room', '?gripper']
-            ]
-          ]
+    assert_equal([
+      ['dependency_drop_before_pick_for_carry', ['?obj', '?room', '?gripper'],
+        ['goal-satisfied', [],
+          # Preconditions
+          [['carry', '?obj', '?gripper']],
+          [],
+          # Subtasks
+          []
         ],
-        ['dependency_pick_before_drop_for_at', ['?obj', '?room', '?gripper'],
-          ['goal-satisfied', [],
-            # Preconditions
-            [['at', '?obj', '?room']],
-            [],
-            # Subtasks
-            []
+        ['satisfied', [],
+          # Preconditions
+          [
+            ['ball', '?obj'], ['room', '?room'], ['gripper', '?gripper'], ['predicate'],
+            ['at', '?obj', '?room']
           ],
-          ['satisfied', [],
-            # Preconditions
-            [
-              ['ball', '?obj'], ['room', '?room'], ['gripper', '?gripper'],
-              ['carry', '?obj', '?gripper']
-            ],
-            [],
-            # Subtasks
-            [['drop', '?obj', '?room', '?gripper']]
-          ],
-          ['unsatisfied', [],
-            # Preconditions
-            [['ball', '?obj'], ['room', '?room'], ['gripper', '?gripper'], ['predicate']],
-            [['carry', '?obj', '?gripper']],
-            # Subtasks
-            [
-              ['pick', '?obj', '?room', '?gripper'],
-              ['drop', '?obj', '?room', '?gripper']
-            ]
-          ]
+          [],
+          # Subtasks
+          [['pick', '?obj', '?room', '?gripper']]
         ],
-        ['dependency_pick_before_drop_for_free', ['?obj', '?room', '?gripper'],
-          ['goal-satisfied', [],
-            # Preconditions
-            [['free', '?gripper']],
-            [],
-            # Subtasks
-            []
-          ],
-          ['satisfied', [],
-            # Preconditions
-            [
-              ['ball', '?obj'], ['room', '?room'], ['gripper', '?gripper'],
-              ['carry', '?obj', '?gripper']
-            ],
-            [],
-            # Subtasks
-            [['drop', '?obj', '?room', '?gripper']]
-          ],
-          ['unsatisfied', [],
-            # Preconditions
-            [['ball', '?obj'], ['room', '?room'], ['gripper', '?gripper'], ['predicate']],
-            [['carry', '?obj', '?gripper']],
-            # Subtasks
-            [
-              ['pick', '?obj', '?room', '?gripper'],
-              ['drop', '?obj', '?room', '?gripper']
-            ]
+        ['unsatisfied', [],
+          # Preconditions
+          [['ball', '?obj'], ['room', '?room'], ['gripper', '?gripper'], ['predicate']],
+          [['at', '?obj', '?room']],
+          # Subtasks
+          [
+            ['drop', '?obj', '?room', '?gripper'],
+            ['pick', '?obj', '?room', '?gripper']
           ]
         ]
       ],
-      methods
-    )
+      ['dependency_pick_before_drop_for_at', ['?obj', '?room', '?gripper'],
+        ['goal-satisfied', [],
+          # Preconditions
+          [['at', '?obj', '?room']],
+          [],
+          # Subtasks
+          []
+        ],
+        ['satisfied', [],
+          # Preconditions
+          [
+            ['ball', '?obj'], ['room', '?room'], ['gripper', '?gripper'],
+            ['carry', '?obj', '?gripper']
+          ],
+          [],
+          # Subtasks
+          [['drop', '?obj', '?room', '?gripper']]
+        ],
+        ['unsatisfied', [],
+          # Preconditions
+          [['ball', '?obj'], ['room', '?room'], ['gripper', '?gripper'], ['predicate']],
+          [['carry', '?obj', '?gripper']],
+          # Subtasks
+          [
+            ['pick', '?obj', '?room', '?gripper'],
+            ['drop', '?obj', '?room', '?gripper']
+          ]
+        ]
+      ],
+      ['dependency_pick_before_drop_for_free', ['?obj', '?room', '?gripper'],
+        ['goal-satisfied', [],
+          # Preconditions
+          [['free', '?gripper']],
+          [],
+          # Subtasks
+          []
+        ],
+        ['satisfied', [],
+          # Preconditions
+          [
+            ['ball', '?obj'], ['room', '?room'], ['gripper', '?gripper'],
+            ['carry', '?obj', '?gripper']
+          ],
+          [],
+          # Subtasks
+          [['drop', '?obj', '?room', '?gripper']]
+        ],
+        ['unsatisfied', [],
+          # Preconditions
+          [['ball', '?obj'], ['room', '?room'], ['gripper', '?gripper'], ['predicate']],
+          [['carry', '?obj', '?gripper']],
+          # Subtasks
+          [
+            ['pick', '?obj', '?room', '?gripper'],
+            ['drop', '?obj', '?room', '?gripper']
+          ]
+        ]
+      ]
+    ], methods)
     assert_equal([false], tasks)
   end
 
@@ -291,30 +288,27 @@ class Paisley < Test::Unit::TestCase
       ]
     ]
     Patterns.apply(operators, methods = [], SWAP_PREDICATES, [], [], [], [])
-    assert_equal(
-      [
-        ['dependency_swap_at_until_at_before_observe_for_observed', ['?ag', '?room', '?from'],
-          ['goal-satisfied', [],
-            # Preconditions
-            [['observed', '?ag', '?from']],
-            [],
-            # Subtasks
-            []
-          ],
-          ['unsatisfied', [],
-            # Preconditions
-            [],
-            [['at', '?ag', '?room']],
-            # Subtasks
-            [
-              ['swap_at_until_at', '?ag', '?room'],
-              ['observe', '?ag', '?from']
-            ]
+    assert_equal([
+      ['dependency_swap_at_until_at_before_observe_for_observed', ['?ag', '?room', '?from'],
+        ['goal-satisfied', [],
+          # Preconditions
+          [['observed', '?ag', '?from']],
+          [],
+          # Subtasks
+          []
+        ],
+        ['unsatisfied', [],
+          # Preconditions
+          [],
+          [['at', '?ag', '?room']],
+          # Subtasks
+          [
+            ['swap_at_until_at', '?ag', '?room'],
+            ['observe', '?ag', '?from']
           ]
         ]
-      ],
-      methods.select {|met| met.first.start_with?('dependency_')}
-    )
+      ]
+    ], methods.select {|met| met.first.start_with?('dependency_')})
   end
 
   def test_dependency_of_operator_before_swap
@@ -330,50 +324,47 @@ class Paisley < Test::Unit::TestCase
       ]
     ]
     Patterns.apply(operators, methods = [], SWAP_PREDICATES, [], [], [], [])
-    assert_equal(
-      [
-        ['dependency_abstract_before_swap_empty_until_empty_for_at', ['?from', '?b', '?to'],
-          ['goal-satisfied', [], [['at', '?ag', '?to']], [], []],
-          ['satisfied', [],
-            # Preconditions
-            [['bridge', '?from', '?b', '?to']],
-            [],
-            # Subtasks
-            [['swap_empty_until_empty', '?to']]],
-          ['unsatisfied', [],
-            # Preconditions
-            [],
-            [['bridge', '?from', '?b', '?to']],
-            # Subtasks
-            [
-              ['abstract', '?from', '?b', '?to'],
-              ['swap_empty_until_empty', '?to']
-            ]
-          ]
-        ],
-        ['dependency_abstract_before_swap_empty_until_empty_for_empty', ['?from', '?b', '?to'],
-          ['goal-satisfied', [], [['empty', '?from']], [], []],
-          ['satisfied', [],
-            # Preconditions
-            [['bridge', '?from', '?b', '?to']],
-            [],
-            # Subtasks
-            [['swap_empty_until_empty', '?to']]
-          ],
-          ['unsatisfied', [],
-            # Preconditions
-            [],
-            [['bridge', '?from', '?b', '?to']],
-            # Subtasks
-            [
-              ['abstract', '?from', '?b', '?to'],
-              ['swap_empty_until_empty', '?to']
-            ]
+    assert_equal([
+      ['dependency_abstract_before_swap_empty_until_empty_for_at', ['?from', '?b', '?to'],
+        ['goal-satisfied', [], [['at', '?ag', '?to']], [], []],
+        ['satisfied', [],
+          # Preconditions
+          [['bridge', '?from', '?b', '?to']],
+          [],
+          # Subtasks
+          [['swap_empty_until_empty', '?to']]],
+        ['unsatisfied', [],
+          # Preconditions
+          [],
+          [['bridge', '?from', '?b', '?to']],
+          # Subtasks
+          [
+            ['abstract', '?from', '?b', '?to'],
+            ['swap_empty_until_empty', '?to']
           ]
         ]
       ],
-      methods.select {|met| met.first.start_with?('dependency_')}
-    )
+      ['dependency_abstract_before_swap_empty_until_empty_for_empty', ['?from', '?b', '?to'],
+        ['goal-satisfied', [], [['empty', '?from']], [], []],
+        ['satisfied', [],
+          # Preconditions
+          [['bridge', '?from', '?b', '?to']],
+          [],
+          # Subtasks
+          [['swap_empty_until_empty', '?to']]
+        ],
+        ['unsatisfied', [],
+          # Preconditions
+          [],
+          [['bridge', '?from', '?b', '?to']],
+          # Subtasks
+          [
+            ['abstract', '?from', '?b', '?to'],
+            ['swap_empty_until_empty', '?to']
+          ]
+        ]
+      ]
+    ], methods.select {|met| met.first.start_with?('dependency_')})
   end
 
   def test_task_selection

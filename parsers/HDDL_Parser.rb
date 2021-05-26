@@ -223,31 +223,6 @@ module HDDL_Parser
       # Ordering
       parse_ordering(name, ordering, subtasks) if ordering
       method.last << subtasks.map! {|t| (t[1].instance_of?(Array) ? t[1] : t).map! {|i| variables.find {|j| j == i} || free_variables.find {|j| j == i} || i}}
-      # Mark recursive tasks with non-empty base case
-      if subtasks.size > 1
-        index = 0
-        terms = []
-        previous_decompositions = method[2..-2]
-        while t = subtasks[index]
-          terms |= t.drop(1)
-          if t.first == name and subtasks[index - 1].first != 'visit'
-            #terms = index == 0 ? t.drop(1) : variables + free_variables
-            neg << [visited = "visited_#{name}_#{label}_#{index}".freeze, *terms]
-            subtasks.insert(index, [visit = "invisible_visit_#{name}_#{label}_#{index}", *terms])
-            subtasks.insert(index + 2, [unvisit = "invisible_unvisit_#{name}_#{label}_#{index}", *terms])
-            unless operators.assoc(visit)
-              predicates[visited] = true
-              operators.push(
-                [visit, terms, [], [], [[visited, *terms]], []],
-                [unvisit, terms, [], [], [], [[visited, *terms]]]
-              )
-            end
-            previous_decompositions.each {|dec| dec.last.each {|subtask,*sterms| subtask.sub!('visit','mark') if subtask.start_with?('invisible_visit_','invisible_unvisit_') and sterms == terms}}
-            index += 3
-          else index += 1
-          end
-        end
-      end
     end
     free_variables.each {|i| i.sub!('?','?free_') if method[1].include?(i)}
     variables.zip(method[1]) {|i,j| i.replace(j)}

@@ -32,7 +32,7 @@ if FAST_OUTPUT
           # Add visible operator to plan
           return decomposition ? plan.unshift(current_task) : plan
         end
-      rescue SystemStackError
+      rescue SystemStackError then @nostack = true
       end
       @state = old_state
     # Method
@@ -46,7 +46,7 @@ if FAST_OUTPUT
           # Every unification is tested
           send(method, *current_task) {|subtasks| return plan if plan = planning(subtasks.concat(tasks), level)}
         }
-      rescue SystemStackError
+      rescue SystemStackError then @nostack = true
       end
       current_task.unshift(task_name)
     # Error
@@ -71,7 +71,7 @@ else
           # Add visible operator to plan
           return decomposition ? plan.unshift([index, current_task]) : plan
         end
-      rescue SystemStackError
+      rescue SystemStackError then @nostack = true
       end
       @state = old_state
     # Method
@@ -96,6 +96,7 @@ else
         }
       rescue SystemStackError
         @index = old_index
+        @nostack = true
       end
       current_task.unshift(task_name)
     # Error
@@ -218,6 +219,7 @@ end
 if FAST_OUTPUT
 
   def problem(state, tasks, debug = false, &goal)
+    @nostack = false
     @debug = debug
     @state = state
     puts 'Tasks'.center(50,'-')
@@ -231,6 +233,7 @@ if FAST_OUTPUT
       if plan.empty? then puts 'Empty plan'
       else print_data(plan)
       end
+    elsif @nostack then puts 'Planning failed, try with more stack'
     else puts 'Planning failed'
     end
     plan
@@ -243,6 +246,7 @@ if FAST_OUTPUT
 else
 
   def problem(state, tasks, debug = false, &goal)
+    @nostack = false
     @debug = debug
     @state = state
     @index = -1
@@ -258,6 +262,7 @@ else
     if plan
       puts 'Empty plan' if plan.empty?
       puts '==>', plan.map {|d| d.join(' ')}, root, @decomposition, '<=='
+    elsif @nostack then puts 'Planning failed, try with more stack'
     else puts 'Planning failed'
     end
     plan
