@@ -8,7 +8,7 @@
 #-----------------------------------------------
 
 # Require parsers, compilers and extensions
-Dir.glob(File.expand_path('../{parsers,compilers,extensions}/*.rb', __FILE__)) {|file| require file}
+Dir.glob("#{__dir__}/{parsers,compilers,extensions}/*.rb") {|file| require file}
 
 module Hype
   extend self
@@ -18,7 +18,7 @@ module Hype
   Output:
     print - print parsed data(default)
     rb    - generate Ruby files to HyperTensioN
-    cpp   - generate C++ file to HyperTensioN
+    cpp   - generate C++ file with HyperTensioN
     pddl  - generate PDDL files
     jshop - generate JSHOP files
     dot   - generate DOT file
