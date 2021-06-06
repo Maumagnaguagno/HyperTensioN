@@ -253,10 +253,7 @@ module Cyber_Compiler
     template.sub!('<OPERATORS>', define_operators)
     template.sub!('<METHODS>', define_methods)
     visible = 0
-    tokens = operators.map(&:first).sort_by! {|i|
-      visible += 1 unless i = i.start_with?('invisible_')
-      i ? 1 : 0
-    }.concat(methods.map(&:first))
+    tokens = operators.map(&:first).sort_by! {|i| i.start_with?('invisible_') ? 1 : (visible += 1; 0)}.concat(methods.map(&:first))
     template.sub!('<INVISIBLE_BASE_INDEX>', visible.to_s)
     template.sub!('<METHODS_BASE_INDEX>', operators.size.to_s)
     template.sub!('<DOMAIN>', tokens.join(",\n  "))
