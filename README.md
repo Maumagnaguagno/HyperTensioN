@@ -604,9 +604,9 @@ The first option is for uncommon outputs, they must be handled inside the method
 The second option is to return a string to be written to a common text file.
 If the second option was selected the output filename is the input filename with the new extension appended, therefore ``input.pddl`` to ``jshop`` would be ``input.pddl.jshop``, so no information about the source is lost.
 Any compiler have access to the parser attributes, which means one module can optimize before another compiles.
-In fact this is the core idea behind Hype, be able to parse, modify and compile domains without having to worry about language support.
+In fact this is the core idea behind Hype, be able to parse, extend and compile domains without having to worry about language support.
 Future languages compatible with the [Intermediate Representation] format could be supported by just adding a new parser and compiler.
-The compiler is expected to not modify any parameter, use an extension to achieve such result.
+The compiler is expected to not modify the representation, use an extension to achieve such result.
 
 ## Hints
 Here are some hints to describe a domain:
@@ -626,8 +626,8 @@ Here are some hints to describe a domain:
 ## Comparison
 The main advantage of HyperTensioN is to be able to define behavior in the core language, without custom classes.
 Once Strings, Symbols, Arrays and Hashes are understood, the entire HyperTensioN module is just a few methods away from complete understanding.
-JSHOP2 requires the user to dive into a very complex structure, while [Pyhop] is much simpler, with everything defined in Python, without backtracking and unification.
-Without unification the user must ground or propagate variables by hand, and without backtracking the domain must never reach a dead-end during decomposition.
+JSHOP2 requires the user to dive into a very complex structure, while [Pyhop] is much simpler, with everything defined in Python, without full backtracking and unification.
+Without unification the user must ground or propagate variables by hand, and without full backtracking the methods only have one subtask list to explore during decomposition.
 HyperTensioN biggest advantage is not the planner itself, but the parsers, extensions and compilers built around it, so that descriptions can be converted automatically.
 
 Among the lacking features is lazy variable evaluation and interleaved/unordered execution of tasks, a feature that JSHOP2 supports and important to achieve good plans in some cases.
