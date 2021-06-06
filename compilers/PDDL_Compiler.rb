@@ -45,7 +45,7 @@ module PDDL_Compiler
       objects.concat(k.each {|terms|
         start_str << "    (#{terms.unshift(pre).join(' ')})\n"
         terms.shift
-      }.flatten) if predicates.include?(pre)
+      }.flatten(1)) if predicates.include?(pre)
     }
     tasks.drop(1).each {|_,*terms| objects.concat(terms)}
     goal_str = ''
