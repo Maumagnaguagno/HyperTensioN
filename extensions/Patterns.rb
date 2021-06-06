@@ -183,7 +183,7 @@ module Patterns
         }
         if sub
           puts "  #{dependency} to #{sub.first} in #{met.first}" if debug
-          met.drop(3).each {|dec| dec[4][0] = sub.first(2).flatten! if dec[4][0].first == dependency}
+          met.drop(3).each {|dec| dec[4][0] = [sub[0], *sub[1]] if dec[4][0].first == dependency}
           sub = nil
         end
         # Prefer dependency with same predicate goal
@@ -197,7 +197,7 @@ module Patterns
           puts "  #{dependent} to #{sub.first} in #{met.first}" if debug
           dependent_split = dependent.split('_or_')
           met.drop(3).each {|dec|
-            dec[4].each_with_index {|subtask,i| dec[4][i] = sub.first(2).flatten! if dependent_split.include?(subtask.first)}
+            (dec = dec[4]).each_with_index {|subtask,i| dec[i] = [sub[0], *sub[1]] if dependent_split.include?(subtask.first)}
           }
         end
       end
@@ -315,7 +315,7 @@ module Patterns
               swap_method << ['base', [], [eff], [], []]
             else
               eff = [*constraints, eff]
-              swap_method << ['base', eff.flatten.select! {|i| i.start_with?('?') and not predicate_terms2.include?(i)}.uniq, eff, [], []]
+              swap_method << ['base', eff.flatten(1).select! {|i| i.start_with?('?') and not predicate_terms2.include?(i)}.uniq, eff, [], []]
             end
           end
           # Label and free variables
@@ -484,7 +484,7 @@ module Patterns
           # Negative preconditions
           precond_not,
           # Subtasks
-          [met.first(2).flatten!]
+          [[met[0], *met[1]]]
         ]
       ]
     end
