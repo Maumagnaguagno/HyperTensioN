@@ -20,7 +20,7 @@ module Typredicate
       types.uniq!
       types.reject! {|t| t.include?(nil)}
       next if types.size == 1
-      if (supertypes & types.flatten.uniq).empty?
+      if (supertypes & types.flatten(1).uniq).empty?
         types.each {|t| predicates[transformations[t] = t.unshift(pre).join('_')] = predicates[pre] if t.all? {|p| state.include?(p)}}
       end
     }
