@@ -18,11 +18,13 @@ end
 # Main
 #-----------------------------------------------
 if $0 == __FILE__
-  puts 'Grid [width=3] [height=3] [predicate=connected] [prefix=p] => (connected p0_0 p0_1)'
+  puts 'Grid [width=3] [height=width] [predicate=connected] [prefix=p] => (connected p0_0 p0_1)'
   width, height, predicate, prefix = ARGV
+  width = width ? width.to_i : 3
+  height = height ? height.to_i : width
   predicate ||= 'connected'
-  # Output predicates and objects created
-  puts Grid.generate(width ? width.to_i : 3, height ? height.to_i : 3, prefix || 'p').each {|a,b|
-    puts "(#{predicate} #{a} #{b})"
-  }.flatten!.uniq!.sort!.join(' ')
+  prefix ||= 'p'
+  # Output objects and predicates created
+  height.times {|j| puts Array.new(width) {|i| "#{prefix}#{i}_#{j}" }.join(' ')}
+  Grid.generate(width, height, prefix).each {|a,b| puts "(#{predicate} #{a} #{b})"}
 end
