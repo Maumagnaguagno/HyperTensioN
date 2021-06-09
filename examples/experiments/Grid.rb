@@ -1,13 +1,17 @@
 module Grid
   extend self
 
-  def generate(width, height, prefix = 'p')
+  def objects(width, height, prefix = 'p')
+    Array.new(height) {|j| Array.new(width) {|i| "#{prefix}#{i}_#{j}"}}
+  end
+
+  def generate(width, height, prefix = 'p', objects = objects(width, height, prefix))
     adjacent = []
     height.times {|j|
       width.times {|i|
-        center = "#{prefix}#{i}_#{j}"
-        adjacent.push([center, right = "#{prefix}#{i.succ}_#{j}"], [right, center]) if i != width.pred
-        adjacent.push([center, bottom = "#{prefix}#{i}_#{j.succ}"], [bottom, center]) if j != height.pred
+        center = objects[j][i]
+        adjacent.push([center, right  = objects[j][i+1]], [right, center]) if i+1 != width
+        adjacent.push([center, bottom = objects[j+1][i]], [bottom, center]) if j+1 != height
       }
     }
     adjacent
@@ -25,6 +29,6 @@ if $0 == __FILE__
   predicate ||= 'connected'
   prefix ||= 'p'
   # Output objects and predicates created
-  height.times {|j| puts Array.new(width) {|i| "#{prefix}#{i}_#{j}" }.join(' ')}
-  Grid.generate(width, height, prefix).each {|a,b| puts "(#{predicate} #{a} #{b})"}
+  puts (objects = Grid.objects(width, height, prefix)).map {|i| i.join(' ')}
+  Grid.generate(width, height, prefix, objects).each {|a,b| puts "(#{predicate} #{a} #{b})"}
 end
