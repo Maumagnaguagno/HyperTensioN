@@ -49,9 +49,11 @@ module Typredicate
       }
     }
     new_state = Hash.new {|h,k| h[k] = []}
-    transformations.each {|(tpre,*tterms),v| s = state[tpre] and s.each {|terms| new_state[v] << terms if tterms.zip(terms).all? {|t| state[t.shift].include?(t)}}}
+    transformations.each {|(tpre,*tterms),v|
+      s = state[tpre] and s.each {|terms| new_state[v] << terms if tterms.zip(terms).all? {|t| state[t.shift].include?(t)}}
+      predicates.delete(tpre)
+    }
     state.merge!(new_state)
-    transformations.each_key {|k| predicates.delete(k.first)}
   end
 
   def ground_transform(state, group, transformations)
