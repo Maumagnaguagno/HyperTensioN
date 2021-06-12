@@ -3,22 +3,23 @@ require './tests/hypest'
 class Simple < Test::Unit::TestCase
   include Hypest
 
-  PICKUP = ['pickup', ['?a'],
-    # Preconditions
-    [],
-    [['have', '?a']],
-    # Effects
-    [['have', '?a']],
-    []
-  ]
-
-  DROP = ['drop', ['?a'],
-    # Preconditions
-    [['have', '?a']],
-    [],
-    # Effects
-    [],
-    [['have', '?a']]
+  OPERATORS = [
+    ['pickup', ['?a'],
+      # Preconditions
+      [],
+      [['have', '?a']],
+      # Effects
+      [['have', '?a']],
+      []
+    ],
+    ['drop', ['?a'],
+      # Preconditions
+      [['have', '?a']],
+      [],
+      # Effects
+      [],
+      [['have', '?a']]
+    ]
   ]
 
   def basic_pb1_htn_parsing(parser, extension, method1_label, method2_label)
@@ -31,7 +32,7 @@ class Simple < Test::Unit::TestCase
       # Attributes
       :domain_name => 'basic',
       :problem_name => 'pb1',
-      :operators => [PICKUP, DROP],
+      :operators => OPERATORS,
       :methods => [
         ['swap', ['?x', '?y'],
           [method1_label, [],
@@ -76,7 +77,7 @@ class Simple < Test::Unit::TestCase
       # Attributes
       :domain_name => 'basic',
       :problem_name => 'pb1',
-      :operators => [PICKUP, DROP],
+      :operators => OPERATORS,
       :methods => [],
       :predicates => {'have' => true},
       :state => {},
@@ -150,7 +151,7 @@ class Simple < Test::Unit::TestCase
       # Attributes
       :domain_name => 'basic',
       :problem_name => 'pb3',
-      :operators => [PICKUP, DROP],
+      :operators => OPERATORS,
       :methods => [],
       :predicates => {'have' => true},
       :state => {'have' => [['kiwi']]},
