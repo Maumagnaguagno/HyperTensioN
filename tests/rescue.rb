@@ -3,6 +3,85 @@ require './tests/hypest'
 class Rescue < Test::Unit::TestCase
   include Hypest
 
+  STATE = {
+    'robot' => [['robby']],
+    'hallway' => [['left'], ['middle'], ['right']],
+    'location' => [['left'], ['middle'], ['right'], ['room1']],
+    'room' => [['room1']],
+    'beacon' => [['beacon1']],
+    'at' => [['robby', 'left']],
+    'in' => [['beacon1', 'room1']],
+    'connected' => [
+      ['middle', 'room1'],
+      ['room1', 'middle'],
+      ['left', 'middle'],
+      ['middle', 'left'],
+      ['middle', 'right'],
+      ['right', 'middle']
+    ]
+  }
+
+  def operators(typed = false)
+    [
+      ['enter', ['?bot', '?source', '?destination'],
+        # Preconditions
+        [
+          ['robot', '?bot'],
+          ['hallway', '?source'],
+          ['room', '?destination'],
+          ['at', '?bot', '?source'],
+          [typed ? 'connected_hallway_room' : 'connected', '?source', '?destination']
+        ],
+        [['at', '?bot', '?destination']],
+        # Effects
+        [['at', '?bot', '?destination']],
+        [['at', '?bot', '?source']]
+      ],
+      ['exit', ['?bot', '?source', '?destination'],
+        # Preconditions
+        [
+          ['robot', '?bot'],
+          ['room', '?source'],
+          ['hallway', '?destination'],
+          ['at', '?bot', '?source'],
+          [typed ? 'connected_room_hallway' : 'connected', '?source', '?destination']
+        ],
+        [['at', '?bot', '?destination']],
+        # Effects
+        [['at', '?bot', '?destination']],
+        [['at', '?bot', '?source']]
+      ],
+      ['move', ['?bot', '?source', '?destination'],
+        # Preconditions
+        [
+          ['robot', '?bot'],
+          ['hallway', '?source'],
+          ['hallway', '?destination'],
+          ['at', '?bot', '?source'],
+          [typed ? 'connected_hallway_hallway' : 'connected', '?source', '?destination']
+        ],
+        [['at', '?bot', '?destination']],
+        # Effects
+        [['at', '?bot', '?destination']],
+        [['at', '?bot', '?source']]
+      ],
+      ['report', ['?bot', '?source', '?beacon'],
+        # Preconditions
+        [
+          ['robot', '?bot'],
+          ['location', '?source'],
+          ['beacon', '?beacon'],
+          ['at', '?bot', '?source'],
+          ['in', '?beacon', '?source']
+        ],
+        [['reported', '?bot', '?beacon']],
+        # Effects
+        [['reported', '?bot', '?beacon']],
+        []
+      ]
+    ]
+  end
+
   def test_robby_pb1_pddl_parsing
     parser_tests(
       # Files
@@ -13,64 +92,7 @@ class Rescue < Test::Unit::TestCase
       # Attributes
       :domain_name => 'robby',
       :problem_name => 'pb1',
-      :operators => [
-        ['enter', ['?bot', '?source', '?destination'],
-          # Preconditions
-          [
-            ['robot', '?bot'],
-            ['hallway', '?source'],
-            ['room', '?destination'],
-            ['at', '?bot', '?source'],
-            ['connected', '?source', '?destination']
-          ],
-          [['at', '?bot', '?destination']],
-          # Effects
-          [['at', '?bot', '?destination']],
-          [['at', '?bot', '?source']]
-        ],
-        ['exit', ['?bot', '?source', '?destination'],
-          # Preconditions
-          [
-            ['robot', '?bot'],
-            ['room', '?source'],
-            ['hallway', '?destination'],
-            ['at', '?bot', '?source'],
-            ['connected', '?source', '?destination']
-          ],
-          [['at', '?bot', '?destination']],
-          # Effects
-          [['at', '?bot', '?destination']],
-          [['at', '?bot', '?source']]
-        ],
-        ['move', ['?bot', '?source', '?destination'],
-          # Preconditions
-          [
-            ['robot', '?bot'],
-            ['hallway', '?source'],
-            ['hallway', '?destination'],
-            ['at', '?bot', '?source'],
-            ['connected', '?source', '?destination']
-          ],
-          [['at', '?bot', '?destination']],
-          # Effects
-          [['at', '?bot', '?destination']],
-          [['at', '?bot', '?source']]
-        ],
-        ['report', ['?bot', '?source', '?beacon'],
-          # Preconditions
-          [
-            ['robot', '?bot'],
-            ['location', '?source'],
-            ['beacon', '?beacon'],
-            ['at', '?bot', '?source'],
-            ['in', '?beacon', '?source']
-          ],
-          [['reported', '?bot', '?beacon']],
-          # Effects
-          [['reported', '?bot', '?beacon']],
-          []
-        ]
-      ],
+      :operators => operators,
       :methods => [],
       :predicates => {
         'robot' => false,
@@ -83,23 +105,45 @@ class Rescue < Test::Unit::TestCase
         'connected' => false,
         'reported' => true
       },
-      :state => {
-        'robot' => [['robby']],
-        'hallway' => [['left'], ['middle'], ['right']],
-        'location' => [['left'], ['middle'], ['right'], ['room1']],
-        'room' => [['room1']],
-        'beacon' => [['beacon1']],
-        'at' => [['robby', 'left']],
-        'in' => [['beacon1', 'room1']],
-        'connected' => [
-          ['middle', 'room1'],
-          ['room1', 'middle'],
-          ['left', 'middle'],
-          ['middle', 'left'],
-          ['middle', 'right'],
-          ['right', 'middle']
-        ]
+      :state => STATE,
+      :tasks => [],
+      :goal_pos => [['reported', 'robby', 'beacon1'], ['at', 'robby', 'right']],
+      :goal_not => [],
+      :objects => ['robby', 'left', 'middle', 'right', 'room1', 'beacon1'],
+      :requirements => [':strips', ':typing', ':negative-preconditions']
+    )
+  end
+
+  def test_robby_pb1_pddl_parsing_with_typredicate
+    parser_tests(
+      # Files
+      'examples/robby/robby.pddl',
+      'examples/robby/pb1.pddl',
+      # Parser and extensions
+      PDDL_Parser, ['typredicate'],
+      # Attributes
+      :domain_name => 'robby',
+      :problem_name => 'pb1',
+      :operators => operators(true),
+      :methods => [],
+      :predicates => {
+        'robot' => false,
+        'hallway' => false,
+        'location' => false,
+        'room' => false,
+        'beacon' => false,
+        'at' => true,
+        'in' => false,
+        'connected_hallway_room' => false,
+        'connected_room_hallway' => false,
+        'connected_hallway_hallway' => false,
+        'reported' => true
       },
+      :state => STATE.merge({
+        'connected_hallway_room' => [['middle', 'room1']],
+        'connected_room_hallway' => [['room1', 'middle']],
+        'connected_hallway_hallway' => [['left', 'middle'], ['middle', 'left'], ['middle', 'right'], ['right', 'middle']]
+      }),
       :tasks => [],
       :goal_pos => [['reported', 'robby', 'beacon1'], ['at', 'robby', 'right']],
       :goal_not => [],
