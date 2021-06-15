@@ -6,7 +6,7 @@ With hierarchical planning it is possible to describe recipes about how and when
 These recipes describe how tasks can be decomposed into subtasks, refined until only actions remain, the plan.
 This is very alike to how humans think, taking mental steps further into primitive operators.
 HTN is also used as an acronym for Hypertension in medical context, therefore the name was given.
-In order to support multiple [action description languages](https://en.wikipedia.org/wiki/Action_description_language) a module named [Hype](#hype "Jump to Hype section") takes care of the conversion process.
+In order to support multiple [action languages](https://en.wikipedia.org/wiki/Action_language) a module named [Hype](#hype "Jump to Hype section") takes care of the conversion process.
 Expanded features to deal with numeric and external elements are in a separate repository, [HyperTensioN U](../../../HyperTensioN_U).
 [Hypertension won the HTN IPC 2020 Total order track!](docs/IPC.md)
 This project was inspired by [Pyhop] and [JSHOP].
@@ -517,7 +517,7 @@ Hype is composed of:
 - Complexity (print domain, problem and total complexity based on amount of terms)
 
 **Compilers**:
-- HyperTensioN (methods and tasks are unavailable for a PDDL input without extensions)
+- Hyper (methods and tasks are unavailable for a PDDL input without extensions)
 - [PDDL] (methods are ignored, goal must be manually converted based on tasks)
 - [JSHOP] (methods and tasks are unavailable for a PDDL input without extensions)
 - [Graphviz DOT](https://www.graphviz.org/) (generate a [graph](docs/Graph.md) description to be compiled into an image)
@@ -620,7 +620,7 @@ Here are some hints to describe a domain:
 - Explore further using ``Hash.compare_by_identity`` on domain.
 - Use different state structures to speed-up state operations and implement custom state duplication, applicable and apply operations to better describe the domain.
 - Replace the state copy from ``apply`` with ``@state = Marshal.load(Marshal.dump(@state))`` to deep copy any state structure, otherwise keep the current fast version or use a custom implementation.
-- Increase ``RUBY_THREAD_VM_STACK_SIZE`` to avoid stack overflows in very large planning instances.
+- Increase stack size with ``RUBY_THREAD_VM_STACK_SIZE`` or ``ulimit`` to avoid overflows in large planning instances.
 - Execute the interpreter with the ``--disable=all`` flag to load it faster.
 
 ## Comparison
