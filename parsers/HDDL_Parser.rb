@@ -70,7 +70,7 @@ module HDDL_Parser
       @objects << group.shift
       if group.first == HYPHEN
         group.shift
-        types = [type = group.shift]
+        types = [group.shift]
         # Convert type hierarchy to initial state predicates
         ti = 0
         while type = types[ti]
