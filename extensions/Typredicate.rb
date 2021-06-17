@@ -9,7 +9,7 @@ module Typredicate
     (supertypes = (PDDL_Parser.types || HDDL_Parser.types || return).map(&:last)).uniq!
     new_predicates = {}
     operator_types = {}
-    operators.each {|name,_,precond_pos,precond_not,_,_|
+    operators.each {|name,_,precond_pos,precond_not|
       next if name.start_with?('invisible_')
       operator_types[name] = types = {}
       precond_pos.each {|terms| types[terms.last] ||= terms.first if terms.size == 2 and not predicates[terms.first]}
@@ -40,7 +40,7 @@ module Typredicate
       ground_transform(state, effect_del, transformations)
     end
     methods.each {|decompositions|
-      decompositions.drop(2).each {|_,_,precond_pos,precond_not,_|
+      decompositions.drop(2).each {|_,_,precond_pos,precond_not|
         types = {}
         precond_pos.each {|terms| types[terms.last] ||= terms.first if terms.size == 2 and not predicates[terms.first]}
         next if types.empty?
