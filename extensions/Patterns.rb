@@ -457,7 +457,7 @@ module Patterns
 
   def compose_unification_method(operators, methods, predicates, met, substitutions)
     # Split free variables from ground terms
-    free, ground = substitutions.zip(met[1]).partition {|sub,var| sub.start_with?('?')}
+    free, ground = substitutions.zip(met[1]).partition {|sub,| sub.start_with?('?')}
     if ground.empty?
       ground_sub = []
       ground_var = []
