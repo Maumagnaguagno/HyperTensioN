@@ -10,7 +10,7 @@ module Pullup
     impossible = []
     counter = Hash.new(0)
     ordered = tasks.shift
-    tasks.each {|t| counter[t.first] += 1}
+    tasks.each {|t,| counter[t] += 1}
     methods.map! {|name,param,*decompositions|
       decompositions.select! {|_,free,precond_pos,precond_not,subtasks|
         substitutions = []
@@ -41,7 +41,7 @@ module Pullup
       else decompositions.unshift(name, param)
       end
     }.compact!
-    operators.reject! {|op| impossible << op.first if not counter.include?(op.first) or op[2].any? {|pre| not predicates[pre.first] || state.include?(pre.first)}}
+    operators.reject! {|op| impossible << op.first if not counter.include?(op.first) or op[2].any? {|pre,| not predicates[pre] || state.include?(pre)}}
     # Move current or rigid predicates from leaves to root/entry tasks
     clear_ops = []
     clear_met = []
@@ -57,7 +57,7 @@ module Pullup
           subtasks.each {|s|
             if impossible.include?(s.first)
               repeat = true
-              subtasks.each {|i| operators.delete_if {|op| op.first == i.first} if (counter[i.first] -= 1) == 0}
+              subtasks.each {|i,| operators.delete_if {|op,| op == i} if (counter[i] -= 1) == 0}
               break
             elsif op = operators.assoc(s.first)
               op[2].each {|pre| precond_pos << pre.map {|t| (j = op[1].index(t)) ? s[j + 1] : t} if effects[pre.first].even?}
@@ -193,8 +193,8 @@ module Pullup
     }
     clear_ops.uniq!(&:object_id)
     clear_ops.each {|op|
-      op[2].select! {|pre| predicates[pre.first]}
-      op[3].select! {|pre| predicates[pre.first]}
+      op[2].select! {|pre,| predicates[pre]}
+      op[3].select! {|pre,| predicates[pre]}
     }
     tasks.unshift(ordered) unless tasks.empty?
   end
@@ -209,8 +209,8 @@ module Pullup
         unless visited.include?(s.first)
           visited << s.first
           if op = operators.assoc(s.first)
-            op[4].each {|pre| effects[pre.first] |= 1}
-            op[5].each {|pre| effects[pre.first] |= 2}
+            op[4].each {|pre,| effects[pre] |= 1}
+            op[5].each {|pre,| effects[pre] |= 2}
           elsif met = methods.assoc(s.first)
             mark_effects(operators, methods, met.drop(2), effects, visited)
           end
