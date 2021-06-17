@@ -205,13 +205,13 @@ module Pullup
 
   def mark_effects(operators, methods, decompositions, effects, visited = [])
     decompositions.each {|decomposition|
-      decomposition.last.each {|s|
-        unless visited.include?(s.first)
-          visited << s.first
-          if op = operators.assoc(s.first)
+      decomposition.last.each {|s,|
+        unless visited.include?(s)
+          visited << s
+          if op = operators.assoc(s)
             op[4].each {|pre,| effects[pre] |= 1}
             op[5].each {|pre,| effects[pre] |= 2}
-          elsif met = methods.assoc(s.first)
+          elsif met = methods.assoc(s)
             mark_effects(operators, methods, met.drop(2), effects, visited)
           end
         end
