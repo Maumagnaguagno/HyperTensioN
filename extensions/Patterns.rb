@@ -29,8 +29,8 @@ module Patterns
   def match_patterns(swaps, dependencies, operators, predicates, debug)
     # TODO support negative patterns
     operators.each {|op|
-      precond_pos, constraints = op[2].partition {|pre| predicates[pre.first]}
-      #precond_not = op[3].select {|pre| predicates[pre.first]}
+      precond_pos, constraints = op[2].partition {|pre,| predicates[pre]}
+      #precond_not = op[3].select {|pre,| predicates[pre]}
       effect_add = op[4]
       effect_del = op[5]
       # Swap (+- => -+) or (-+ => +-) or (+? => -+) or (?- => -+)
@@ -45,8 +45,8 @@ module Patterns
       }
     }
     operators.each {|op|
-      precond_pos = op[2].select {|pre| predicates[pre.first]}
-      #precond_not = op[3].select {|pre| predicates[pre.first]}
+      precond_pos = op[2].select {|pre,| predicates[pre]}
+      #precond_not = op[3].select {|pre,| predicates[pre]}
       effect_add = op[4]
       effect_del = op[5]
       # Dependency
@@ -54,9 +54,9 @@ module Patterns
       operators.each {|op2|
         # Avoid same operator, same swap or operator with effect nullified
         next if op.equal?(op2) or
-          (swap_op and swap_op2 = swaps[op2] and swap_op.any? {|i| swap_op2.assoc(i.first)}) or
+          (swap_op and swap_op2 = swaps[op2] and swap_op.any? {|i,| swap_op2.assoc(i)}) or
           ((effect_add - op2[2]).empty? and (effect_del - op2[3]).empty?)
-        pos = precond_pos.select {|pre| op2[4].assoc(pre.first)}
+        pos = precond_pos.select {|pre,| op2[4].assoc(pre)}
         neg = [] #precond_not.select {|pre| op2[5].assoc(pre.first)}
         (dependencies[op] ||= []) << [op2, pos, neg] unless pos.empty? and neg.empty?
       }
@@ -118,16 +118,16 @@ module Patterns
   def find_goal_methods(operators, methods, predicates, goal_pos, goal_not, debug)
     puts 'Goals' if debug
     # Avoid methods for simple goals
-    goal_pos_complex = goal_pos.reject {|goal|
+    goal_pos_complex = goal_pos.reject {|goal,|
       operators.any? {|op|
-        precond_not = op[3].select {|pre| predicates[pre.first]}
-        op[4].assoc(goal.first) and op[2].none? {|pre| predicates[pre.first]} and (precond_not.empty? or (precond_not.size == 1 and precond_not.first.first == goal.first))
+        precond_not = op[3].select {|pre,| predicates[pre]}
+        op[4].assoc(goal) and op[2].none? {|pre,| predicates[pre]} and (precond_not.empty? or (precond_not.size == 1 and precond_not.first.first == goal))
       }
     }
-    goal_not_complex = goal_not.reject {|goal|
+    goal_not_complex = goal_not.reject {|goal,|
       operators.any? {|op|
-        precond_pos = op[2].select {|pre| predicates[pre.first]}
-        op[5].assoc(goal.first) and op[3].none? {|pre| predicates[pre.first]} and (precond_pos.empty? or (precond_pos.size == 1 and precond_pos.first.first == goal.first))
+        precond_pos = op[2].select {|pre,| predicates[pre]}
+        op[5].assoc(goal) and op[3].none? {|pre,| predicates[pre]} and (precond_pos.empty? or (precond_pos.size == 1 and precond_pos.first.first == goal))
       }
     }
     # Find every method that contains a relevant action in the subtasks
@@ -149,7 +149,7 @@ module Patterns
       v.uniq!
       for_goal = "_#{goal.first}"
       # Give priority based on operator relevance to goal
-      v.sort_by! {|mets,_|
+      v.sort_by! {|mets,|
         # Prefer to match goal
         val = mets.first.end_with?(for_goal) ? -1 : 0
         val - mets.drop(2).count {|dec| !dec[4].empty? and op = operators.assoc(dec[4].last.first) and op[type ? 4 : 5].assoc(goal.first)}
@@ -289,7 +289,7 @@ module Patterns
       end
       # Swap for each possible goal
       effects = []
-      swap_ops.each {|op,_| effects.concat(op[4])}
+      swap_ops.each {|op,| effects.concat(op[4])}
       effects.uniq!
       swap_ops.each {|op,constraints|
         original_intermediate = (constraints.first - [original_current]).last
@@ -362,7 +362,7 @@ module Patterns
         # Dependency of dependency
         first_terms = first[1]
         if swaps.include?(first)
-          swaps[first].each {|p,_|
+          swaps[first].each {|p,|
             if m = methods.assoc("swap_#{p.first}_until_#{p.first}")
               first = m
               if p.first == pre.first
@@ -373,7 +373,7 @@ module Patterns
             end
           }
         elsif swaps.include?(op)
-          swaps[op].each {|p,_|
+          swaps[op].each {|p,|
             if m = methods.assoc("swap_#{p.first}_until_#{p.first}")
               seconds = [m]
               if p.first == pre.first
@@ -385,7 +385,7 @@ module Patterns
           }
         end
         name = "dependency_#{first.first}_before_#{seconds.map(&:first).join('_or_')}"
-        next if methods.any? {|met| met.first.start_with?(name)}
+        next if methods.any? {|met,| met.start_with?(name)}
         precond_pos = []
         precond_not = []
         replacements = {}
@@ -514,7 +514,7 @@ module Patterns
             }
           elsif node.first.start_with?(DEPENDENCY_PREFIX, SWAP_PREFIX)
             # TODO fix new multiple unsatisfied dependencies and multiple swap operators over same predicate
-            node.last[4].reverse_each {|i| fringe.unshift(operators.assoc(i.first) || methods.assoc(i.first)) unless visited.include?(i.first)}
+            node.last[4].reverse_each {|i,| fringe.unshift(operators.assoc(i) || methods.assoc(i)) unless visited.include?(i)}
           # TODO else support user provided methods
           end
         end
