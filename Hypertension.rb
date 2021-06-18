@@ -149,7 +149,7 @@ end
     precond_pos.each {|pre,*terms|
       next unless terms.include?('')
       # Swap free variables with matching set or maintain constant term
-      terms.map! {|p| objects.find {|j| j.first.equal?(p)} || p}
+      terms.map! {|p| objects.find {|j,| j.equal?(p)} || p}
       # Compare with current state
       @state[pre].each {|objs|
         next unless terms.each_with_index {|t,i|
