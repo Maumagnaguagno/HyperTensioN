@@ -22,7 +22,7 @@ module Pullup
           end
         }
           if substitutions.empty?
-            subtasks.each {|t| counter[t.first] += 1}
+            subtasks.each {|t,| counter[t] += 1}
           else
             free.reject! {|i| substitutions.assoc(i)}
             precond_pos.each {|pre| pre.map! {|i| (s = substitutions.assoc(i)) ? s.last : i}}
@@ -62,8 +62,8 @@ module Pullup
             elsif op = operators.assoc(s.first)
               op[2].each {|pre| precond_pos << pre.map {|t| (j = op[1].index(t)) ? s[j + 1] : t} if effects[pre.first].even?}
               op[3].each {|pre| precond_not << pre.map {|t| (j = op[1].index(t)) ? s[j + 1] : t} if effects[pre.first] < 2}
-              op[4].each {|pre| effects[pre.first] |= 1}
-              op[5].each {|pre| effects[pre.first] |= 2}
+              op[4].each {|pre,| effects[pre] |= 1}
+              op[5].each {|pre,| effects[pre] |= 2}
               if first_task and counter[s.first] == 1
                 op[2].clear
                 op[3].clear
