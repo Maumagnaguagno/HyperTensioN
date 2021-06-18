@@ -36,7 +36,7 @@ module JSHOP_Parser
 
   def define_effects(name, group)
     raise "Error with #{name} effect" unless group.instance_of?(Array)
-    group.each {|pre| pre.first != NOT ? @predicates[pre.first.freeze] = true : raise("Unexpected not in #{name} effect")}
+    group.each {|pre,| pre != NOT ? @predicates[pre.freeze] = true : raise("Unexpected not in #{name} effect")}
   end
 
   #-----------------------------------------------
@@ -89,7 +89,7 @@ module JSHOP_Parser
       free_variables.uniq!
       # Subtasks
       raise "Error with #{name} subtasks" unless (group = met.shift).instance_of?(Array)
-      method.last << group.each {|pre| pre.first.sub!(/^!!/,'invisible_') or pre.first.delete!('!')}
+      method.last << group.each {|pre,| pre.sub!(/^!!/,'invisible_') or pre.delete!('!')}
     end
   end
 
@@ -129,7 +129,7 @@ module JSHOP_Parser
       @tasks = tokens.shift
       # Tasks may be ordered or unordered
       @tasks.shift unless ordered = (@tasks.first != ':unordered')
-      @tasks.each {|pre| pre.first.sub!(/^!!/,'invisible_') or pre.first.delete!('!')}.unshift(ordered)
+      @tasks.each {|pre,| pre.sub!(/^!!/,'invisible_') or pre.delete!('!')}.unshift(ordered)
       @goal_pos = []
       @goal_not = []
     else raise "File #{problem_filename} does not match problem pattern"
