@@ -308,7 +308,7 @@ class Paisley < Test::Unit::TestCase
           ]
         ]
       ]
-    ], methods.select {|met| met.first.start_with?('dependency_')})
+    ], methods.select {|met,| met.start_with?('dependency_')})
   end
 
   def test_dependency_of_operator_before_swap
@@ -364,7 +364,7 @@ class Paisley < Test::Unit::TestCase
           ]
         ]
       ]
-    ], methods.select {|met| met.first.start_with?('dependency_')})
+    ], methods.select {|met,| met.start_with?('dependency_')})
   end
 
   def test_task_selection
