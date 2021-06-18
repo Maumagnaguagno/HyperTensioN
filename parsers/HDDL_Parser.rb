@@ -46,7 +46,7 @@ module HDDL_Parser
     ordering.each {|_,before,after| @graph[after] << before}
     @graph.default = []
     total = tsort
-    tasks.sort_by! {|label,_| total.index(label)}
+    tasks.sort_by! {|label,| total.index(label)}
   end
 
   def tsort_each_node(&block)
