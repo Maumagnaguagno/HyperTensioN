@@ -19,8 +19,8 @@ module Debug
     if pre.first == 'not'
       pre = pre.last
       raise "Unexpected (#{pre.join(' ')}) in state" if @state[pre.first].include(pre.drop(1))
-    else
-      raise "Expected (#{pre.join(' ')}) in state" unless @state[pre.first].include(pre.drop(1))
+    elsif not @state[pre.first].include(pre.drop(1))
+      raise "Expected (#{pre.join(' ')}) in state"
     end
   end
 end
