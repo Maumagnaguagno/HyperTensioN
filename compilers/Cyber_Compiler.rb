@@ -37,7 +37,7 @@ module Cyber_Compiler
       if terms.empty? then define_operators << "\n  state->#{pre} = #{modifier == 'insert'};"
       else
         unless duplicated.include?(pre)
-          define_operators << "\n  state->#{pre} = new VALUE#{terms.size}(*(state->#{pre}));"
+          define_operators << "\n  state->#{pre} = new VALUE#{terms.size}(*state->#{pre});"
           arity[pre] ||= terms.size
           duplicated[pre] = nil
         end

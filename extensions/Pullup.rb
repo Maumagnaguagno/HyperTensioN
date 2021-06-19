@@ -71,7 +71,7 @@ module Pullup
               end
             else
               all_pos = all_neg = nil
-              (metdecompositions = (met = methods.assoc(s.first)).drop(2)).each {|m|
+              metdecompositions = (met = methods.assoc(s.first)).drop(2).each {|m|
                 pos = []
                 neg = []
                 m[2].each {|pre|
