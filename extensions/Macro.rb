@@ -9,7 +9,7 @@ module Macro
     puts 'Macro'.center(50,'-') if debug
     # Subtask counter
     counter = Hash.new(0)
-    methods.each {|met| met.drop(2).each {|dec| dec.last.each {|subtask| counter[subtask.first] += 1}}}
+    methods.each {|met| met.drop(2).each {|dec| dec.last.each {|subtask,| counter[subtask] += 1}}}
     # Macro sequential operators
     macro = []
     clear_ops = {}
