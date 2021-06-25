@@ -7,7 +7,7 @@ module Debug
 
   def print_state
     puts 'State'.center(20,'-')
-    @state.each {|k,v| v.each {|i| puts "(#{k} #{i.join(' ')})"}}
+    @state.each {|k,v| v.each {|i| puts "(#{i.unshift(k).join(' ')})"; i.shift}}
     true
   end
 
