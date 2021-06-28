@@ -233,8 +233,7 @@ if FAST_OUTPUT
       if plan.empty? then puts 'Empty plan'
       else print_data(plan)
       end
-    elsif @nostack then puts 'Planning failed, try with more stack'
-    else puts 'Planning failed'
+    else abort(@nostack ? 'Planning failed, try with more stack' : 'Planning failed')
     end
     plan
   rescue Interrupt
@@ -262,8 +261,7 @@ else
     if plan
       puts 'Empty plan' if plan.empty?
       puts '==>', plan.map {|d| d.join(' ')}, root, @decomposition, '<=='
-    elsif @nostack then puts 'Planning failed, try with more stack'
-    else puts 'Planning failed'
+    else abort(@nostack ? 'Planning failed, try with more stack' : 'Planning failed')
     end
     plan
   rescue Interrupt

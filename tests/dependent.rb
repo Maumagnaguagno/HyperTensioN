@@ -545,5 +545,5 @@ Dependency.problem(
 ) {
   # Goal
   Dependency.state[HAPPY].include?(:bob)
-} or abort"
+}"
 end
