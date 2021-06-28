@@ -15,7 +15,7 @@ The [IPC domains](../../../../../panda-planner-dev/ipc2020-domains) and [submitt
 HyperTensioN participated in the total order track.
 Note that the HyperTensioN used in the IPC 2020 is slightly different from the original, it is available in its [competition repository](https://gitlab.anu.edu.au/u1092535/ipc2020-competitor-4).
 During the competition only HDDL_Parser, Typredicate, Pullup, Dejavu and Hyper_Compiler modules were loaded by Hype.
-Hype also does not save the output of Hyper_Compiler to disk before loading it, instead it evaluates the domain and problem converted to Ruby directly, this option is still not integrated in the current repository.
+Hype also did not write the output of Hyper_Compiler to disk before loading it, instead it evaluates the domain and problem converted to Ruby directly, this behavior is now integrated in the current repository.
 The debug outputs in the planning method were commented out.
 A few bugs made the competition release of HyperTensioN not able to parse Entertainment and Monroe (partially and fully observable) domains correctly, these are now fixed.
 The new timings were obtained in an Intel E5500 @ 2.8GHz with 3.25GBs of RAM, which match IPC timings.
@@ -63,6 +63,6 @@ This output format can be obtained by setting the constant ``FAST_OUTPUT = false
 Some examples and tests expect the original fast output.
 Plans in the IPC format can be visualized using the [HTN Plan Viewer](https://maumagnaguagno.github.io/HTN_Plan_Viewer/).
 
-The [presented](https://gki.informatik.uni-freiburg.de/competition/results.pdf) and [fixed](https://gki.informatik.uni-freiburg.de/competition/results-fixed.pdf) results are now available, a presentation is on YouTube:
+The [presented](https://gki.informatik.uni-freiburg.de/competition/results.pdf) and [fixed](https://gki.informatik.uni-freiburg.de/competition/results-fixed.pdf) results are now available, and the presentation is on YouTube:
 
 [![IPC 2020](https://img.youtube.com/vi/SSaw5YmxpaA/0.jpg)](https://www.youtube.com/watch?v=SSaw5YmxpaA "International Planning Competition (IPC) 2020 on Hierarchical Task Network (HTN) Planning: Results")

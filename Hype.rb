@@ -188,6 +188,26 @@ Problem #{@parser.problem_name}
     data = compiler.compile_problem(*args << File.basename(domain))
     IO.write("#{problem}.#{type}", data) if data
   end
+
+  #-----------------------------------------------
+  # Execute
+  #-----------------------------------------------
+
+  def execute
+    args = [
+      @parser.domain_name,
+      @parser.problem_name,
+      @parser.operators,
+      @parser.methods,
+      @parser.predicates,
+      @parser.state,
+      @parser.tasks,
+      @parser.goal_pos,
+      @parser.goal_not
+    ]
+    eval(Hyper_Compiler.compile_domain(*args))
+    eval(Hyper_Compiler.compile_problem(*args))
+  end
 end
 
 #-----------------------------------------------
@@ -209,8 +229,7 @@ if $0 == __FILE__
       if not type or type == 'print'
         puts Hype.to_s
       elsif type == 'run' or (ARGV[0] = type) == 'debug'
-        Hype.compile(domain, problem, 'rb')
-        require File.expand_path(problem)
+        Hype.execute
       elsif type != 'nil'
         Hype.compile(domain, problem, type)
       end
