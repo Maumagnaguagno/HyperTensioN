@@ -15,7 +15,6 @@ The [IPC domains](../../../../../panda-planner-dev/ipc2020-domains) and [submitt
 HyperTensioN participated in the total order track.
 Note that the HyperTensioN used in the IPC 2020 is slightly different from the original, it is available in its [competition repository](https://gitlab.anu.edu.au/u1092535/ipc2020-competitor-4).
 During the competition only HDDL_Parser, Typredicate, Pullup, Dejavu and Hyper_Compiler modules were loaded by Hype.
-Hype also did not write the output of Hyper_Compiler to disk before loading it, instead it evaluates the domain and problem converted to Ruby directly, this behavior is now integrated in the current repository.
 The debug outputs in the planning method were commented out.
 A few bugs made the competition release of HyperTensioN not able to parse Entertainment and Monroe (partially and fully observable) domains correctly, these are now fixed.
 The new timings were obtained in an Intel E5500 @ 2.8GHz with 3.25GBs of RAM, which match IPC timings.

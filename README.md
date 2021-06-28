@@ -7,7 +7,7 @@ These recipes describe how tasks can be decomposed into subtasks, refined until 
 This is very alike to how humans think, taking mental steps further into primitive operators.
 HTN is also used as an acronym for Hypertension in medical context, therefore the name was given.
 In order to support multiple [action languages](https://en.wikipedia.org/wiki/Action_language) a module named [Hype](#hype "Jump to Hype section") takes care of the conversion process.
-Expanded features to deal with numeric and external elements are in a separate repository, [HyperTensioN U](../../../HyperTensioN_U).
+Extended features to deal with numeric and external elements are in [HyperTensioN U](../../../HyperTensioN_U).
 This project was inspired by [Pyhop] and [JSHOP].
 
 [Download and play](../../archive/master.zip) or jump to each section to learn more:
