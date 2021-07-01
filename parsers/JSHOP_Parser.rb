@@ -46,7 +46,7 @@ module JSHOP_Parser
   def parse_operator(op)
     op.shift
     raise 'Operator without name definition' unless (name = op.first.shift).instance_of?(String)
-    name.sub!(/^!!/,'invisible_') or name.delete!('!')
+    name.sub!(/^!!/,'invisible_') or name.delete_prefix!('!')
     raise "#{name} have size #{op.size} instead of 4" if op.size != 4
     raise "#{name} redefined" if @operators.assoc(name)
     @operators << operator = [name, op.shift, pos = [], neg = []]
@@ -89,7 +89,7 @@ module JSHOP_Parser
       free_variables.uniq!
       # Subtasks
       raise "Error with #{name} subtasks" unless (group = met.shift).instance_of?(Array)
-      method.last << group.each {|pre,| pre.sub!(/^!!/,'invisible_') or pre.delete!('!')}
+      method.last << group.each {|pre,| pre.sub!(/^!!/,'invisible_') or pre.delete_prefix!('!')}
     end
   end
 
@@ -129,7 +129,7 @@ module JSHOP_Parser
       @tasks = tokens.shift
       # Tasks may be ordered or unordered
       @tasks.shift unless ordered = (@tasks.first != ':unordered')
-      @tasks.each {|pre,| pre.sub!(/^!!/,'invisible_') or pre.delete!('!')}.unshift(ordered)
+      @tasks.each {|pre,| pre.sub!(/^!!/,'invisible_') or pre.delete_prefix!('!')}.unshift(ordered)
       @goal_pos = []
       @goal_not = []
     else raise "File #{problem_filename} does not match problem pattern"
