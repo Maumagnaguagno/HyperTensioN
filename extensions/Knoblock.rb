@@ -1,5 +1,5 @@
 # Based on Automatically Generating Abstractions for Planning
-# https://www.isi.edu/integration/papers/knoblock94-aij.pdf
+# https://usc-isi-i2.github.io/papers/knoblock94-aij.pdf
 require 'tsort'
 
 module Knoblock
@@ -110,7 +110,11 @@ if $0 == __FILE__
   require_relative '../parsers/PDDL_Parser'
   begin
     PDDL_Parser.parse_domain(ARGV.first)
-    Knoblock.create_hierarchy(PDDL_Parser.operators, PDDL_Parser.predicates, nil, true)
+    if ARGV[1]
+      PDDL_Parser.parse_problem(ARGV[1])
+      goals = Knoblock.map(PDDL_Parser.goal_pos, PDDL_Parser.goal_not, PDDL_Parser.predicates)
+    end
+    Knoblock.create_hierarchy(PDDL_Parser.operators, PDDL_Parser.predicates, goals, true)
   rescue
     puts $!, $@
   end
