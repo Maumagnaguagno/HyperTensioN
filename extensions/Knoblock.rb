@@ -36,7 +36,10 @@ module Knoblock
   #-----------------------------------------------
 
   def map(positive, negative, predicates)
-    positive.select {|pre| predicates[pre.first]}.map! {|pre| [true, pre]}.concat(negative.select {|pre| predicates[pre.first]}.map! {|pre| [false, pre]})
+    m = []
+    positive.each {|pre| m << [true, pre] if predicates[pre.first]}
+    negative.each {|pre| m << [false, pre] if predicates[pre.first]}
+    m
   end
 
   #-----------------------------------------------
