@@ -81,8 +81,8 @@ module Knoblock
       if component.size > 1
         g = @graph[component]
         component.each {|c|
-          g.concat(@graph[c] - component).delete(component)
-          @graph.each_value {|v| v.map! {|i| i == c ? component : i}}.delete(c)
+          g.concat(@graph.delete(c) - component).delete(component)
+          @graph.each_value {|v| v.map! {|i| i == c ? component : i}}
         }
       end
     }
