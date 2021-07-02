@@ -1,7 +1,6 @@
 require 'tsort'
 
 module HDDL_Parser
-  include TSort
   extend self
 
   attr_reader :domain_name, :problem_name, :operators, :methods, :predicates, :state, :tasks, :goal_pos, :goal_not, :objects, :requirements, :types
@@ -42,19 +41,11 @@ module HDDL_Parser
   def parse_ordering(name, ordering, tasks)
     raise "Error with #{name} ordering" unless ordering.instance_of?(Array)
     ordering.shift
-    @graph = Hash.new {|h,k| h[k] = []}
-    ordering.each {|_,before,after| @graph[after] << before}
-    @graph.default = []
-    total = tsort
+    graph = Hash.new {|h,k| h[k] = []}
+    ordering.each {|_,before,after| graph[after] << before}
+    graph.default = []
+    total = TSort.tsort(lambda {|&b| graph.each_key(&b)}, lambda {|n,&b| graph[n].each(&b)})
     tasks.sort_by! {|label,| total.index(label)}
-  end
-
-  def tsort_each_node(&block)
-    @graph.each_key(&block)
-  end
-
-  def tsort_each_child(node, &block)
-    @graph[node].each(&block)
   end
 
   #-----------------------------------------------
