@@ -48,7 +48,7 @@ module Knoblock
       preconditions_effects = map(op[2], op[3], predicates).concat(effects = map(op[4], op[5], predicates))
       effects.each {|literal| @graph[literal].concat(preconditions_effects).delete(literal)}
     }
-    @graph.each_value {|v| v.uniq!}
+    @graph.each_value(&:uniq!)
   end
 
   #-----------------------------------------------
@@ -66,7 +66,7 @@ module Knoblock
         }
       end
     }
-    @graph.each_value {|v| v.uniq!}
+    @graph.each_value(&:uniq!)
   end
 
   #-----------------------------------------------
@@ -83,7 +83,7 @@ module Knoblock
         }
       end
     }
-    @graph.each_value {|v| v.uniq!}
+    @graph.each_value(&:uniq!)
   end
 
   #-----------------------------------------------
