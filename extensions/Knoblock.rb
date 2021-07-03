@@ -3,7 +3,6 @@
 require 'tsort'
 
 module Knoblock
-  include TSort
   extend self
 
   #-----------------------------------------------
@@ -11,24 +10,16 @@ module Knoblock
   #-----------------------------------------------
 
   def create_hierarchy(operators, predicates, goals = nil, verbose = false)
-    @graph = Hash.new {|h,k| h[k] = []}
-    if goals then find_problem_dependent_constraints(operators, predicates, goals)
-    else find_problem_independent_constraints(operators, predicates)
+    graph = Hash.new {|h,k| h[k] = []}
+    if goals then find_problem_dependent_constraints(operators, predicates, goals, graph)
+    else find_problem_independent_constraints(operators, predicates, graph)
     end
-    puts 'Dependency graph', dot if verbose
-    reduce_graph
-    puts 'Partial order graph', dot if verbose
-    total_order = tsort
+    puts 'Dependency graph', dot(graph) if verbose
+    reduce_graph(graph, each_node = lambda {|&b| graph.each_key(&b)}, each_child = lambda {|n,&b| graph.fetch(n, []).each(&b)})
+    puts 'Partial order graph', dot(graph) if verbose
+    total_order = TSort.tsort(each_node, each_child)
     puts 'Total order', total_order.map {|i| "  #{i}"} if verbose
     total_order
-  end
-
-  def tsort_each_node(&block)
-    @graph.each_key(&block)
-  end
-
-  def tsort_each_child(node, &block)
-    @graph.fetch(node, []).each(&block)
   end
 
   #-----------------------------------------------
@@ -46,56 +37,56 @@ module Knoblock
   # Find problem independent constraints
   #-----------------------------------------------
 
-  def find_problem_independent_constraints(operators, predicates)
+  def find_problem_independent_constraints(operators, predicates, graph)
     operators.each {|op|
       preconditions_effects = map(op[2], op[3], predicates).concat(effects = map(op[4], op[5], predicates))
-      effects.each {|literal| @graph[literal].concat(preconditions_effects).delete(literal)}
+      effects.each {|literal| graph[literal].concat(preconditions_effects).delete(literal)}
     }
-    @graph.each_value(&:uniq!)
+    graph.each_value(&:uniq!)
   end
 
   #-----------------------------------------------
   # Find problem dependent constraints
   #-----------------------------------------------
 
-  def find_problem_dependent_constraints(operators, predicates, goals)
+  def find_problem_dependent_constraints(operators, predicates, goals, graph)
     goals.each {|literal|
-      unless @graph.include?(literal)
+      unless graph.include?(literal)
         operators.each {|op|
           if (effects = map(op[4], op[5], predicates)).include?(literal)
-            @graph[literal].concat(preconditions = map(op[2], op[3], predicates)).concat(effects).delete(literal)
+            graph[literal].concat(preconditions = map(op[2], op[3], predicates)).concat(effects).delete(literal)
             find_problem_dependent_constraints(operators, predicates, preconditions)
           end
         }
       end
     }
-    @graph.each_value(&:uniq!)
+    graph.each_value(&:uniq!)
   end
 
   #-----------------------------------------------
   # Reduce graph
   #-----------------------------------------------
 
-  def reduce_graph
-    strongly_connected_components.each {|component|
+  def reduce_graph(graph, each_node, each_child)
+    TSort.strongly_connected_components(each_node, each_child).each {|component|
       if component.size > 1
-        g = @graph[component]
+        g = graph[component]
         component.each {|c|
-          g.concat(@graph.delete(c) - component).delete(component)
-          @graph.each_value {|v| v.map! {|i| i == c ? component : i}}
+          g.concat(graph.delete(c) - component).delete(component)
+          graph.each_value {|v| v.map! {|i| i == c ? component : i}}
         }
       end
     }
-    @graph.each_value(&:uniq!)
+    graph.each_value(&:uniq!)
   end
 
   #-----------------------------------------------
   # DOT
   #-----------------------------------------------
 
-  def dot
+  def dot(graph)
     graph_str = "digraph G {\n"
-    @graph.each {|k,v|
+    graph.each {|k,v|
       graph_str << "  \"#{dot_str(k)}\" -> {#{"\"#{v.map {|i| dot_str(i)}.join('" "')}\"" unless v.empty?}}\n"
     }
     graph_str << '}'
@@ -106,6 +97,9 @@ module Knoblock
   end
 end
 
+#-----------------------------------------------
+# Main
+#-----------------------------------------------
 if $0 == __FILE__
   require_relative '../parsers/PDDL_Parser'
   begin
