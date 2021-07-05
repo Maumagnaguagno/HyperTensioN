@@ -9,7 +9,7 @@ module Dejavu
     return if tasks.empty?
     knots = []
     ordered = tasks.shift
-    tasks.uniq(&:first).each {|t| visit(t.first, methods, knots)}
+    tasks.uniq(&:first).each {|t,| visit(t, methods, knots)}
     tasks.unshift(ordered)
     knots.uniq!(&:object_id)
     knots.each {|method,decomposition,task|
@@ -39,10 +39,10 @@ module Dejavu
     }
   end
 
-  def visit(method, methods, knots, visited = {})
-    if visited.include?(method) then true
-    elsif method = methods.assoc(method)
-      visited[method.first] = nil
+  def visit(name, methods, knots, visited = {})
+    if visited.include?(name) then true
+    elsif method = methods.assoc(name)
+      visited[name] = nil
       method.drop(2).each {|decomposition| decomposition.last.each {|task| knots << [method, decomposition, task] if visit(task.first, methods, knots, visited.dup)}}
       false
     end
