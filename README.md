@@ -181,7 +181,7 @@ Each ``swap_at__XYZ`` method describes one possible case of decomposition of ``s
 It is also possible to avoid listing all of them and filter based on their name (after they were declared):
 
 ```Ruby
-@domain[:swap_at] = instance_methods.find_all {|method| method =~ /^swap_at/}
+@domain[:swap_at] = instance_methods.grep(/^swap_at/)
 ```
 
 The enter operator appears to be a good starting point to define preconditions and effects.
