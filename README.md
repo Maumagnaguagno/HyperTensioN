@@ -505,7 +505,7 @@ Hype is composed of:
 - [HDDL]
 
 **Extensions**:
-- Patterns (add methods based on operator patterns, map goal state to tasks)
+- [Patterns](docs/Patterns.md) (add methods based on operator patterns, map goal state to tasks)
 - [Dummy](docs/Dummy.md) (add brute-force methods that try to achieve goal predicates)
 - Dejavu (add invisible visit/unvisit operators to avoid repeated decompositions)
 - Wise (warn and fix description mistakes)

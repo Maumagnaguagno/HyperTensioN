@@ -1,5 +1,5 @@
 # Dummy
-Hype is able to extend classical planning instances and generate methods and tasks to solve them with a HTN planner using Patterns and Dummy.
+Hype is able to extend classical planning instances and generate methods and tasks to solve them with a HTN planner using [Patterns](Patterns.md) and Dummy.
 Dummy is based on the transformation of STRIPS to HTN presented in [Complexity Results for HTN Planning - 3.3 Expressivity: HTNs versus STRIPS representation](https://www.cs.umd.edu/~nau/papers/erol1996complexity.pdf).
 The current [implementation](../extensions/Dummy.rb) of the following algorithm has been expanded to limit the amount of repeated action application.
 This limitation purpose it to avoid infinite loops as some actions may undo previous effects, by marking actions once applied and only applying actions not marked more than a certain amount of times.
