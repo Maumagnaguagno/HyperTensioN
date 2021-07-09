@@ -370,7 +370,7 @@ def swap_at__recursion_enter(object, goal, current = free_variable, intermediate
       [AT, object, goal]
     ], current, intermediate
   ) {
-    block_removed
+    ...
   }
 end
 ```
@@ -448,11 +448,11 @@ A domain and problem already described in [PDDL], [HDDL] or [JSHOP] description 
 
 ## Hype
 [**Hype**](Hype.rb) is the framework for parsers, extensions and compilers of planning descriptions.
-It will save time and avoid errors during conversion of domains and problems for comparison results with other planners.
+It will save time and avoid errors during conversion of domains and problems for comparison with other planners.
 Such conversion step is not new, as JSHOP2 itself compiles the description to Java code to achieve a better performance.
-Hype requires a domain and a problem files with the correct extension type to be parsed correctly, while the output type must be specified to match a compiler.
-If no output type is provided the system uses the default ``print`` to show what was parsed from the files and the time taken.
+Hype requires domain and problem files with the correct extension type to be parsed correctly, while the output type must be specified to match a compiler.
 Multiple extensions can be executed before the output happens, even repeatedly.
+If no extensions and output type are provided the system default is to ``print`` what was parsed from the files and the time taken.
 
 ```
 Usage:
@@ -489,8 +489,8 @@ ruby Hype.rb examples/basic/basic.jshop examples/basic/pb1.jshop rb
 ruby examples/basic/pb1.jshop.rb
 ```
 
-One can compile and execute in a single command with ``run``, the system compile as ``rb`` and load the generated files.
-Activate debug mode with ``debug`` to pass the debug flag to the problem and show explored paths instead of only the planning result.
+One can compile and execute in a single command with ``run``, the system compile as ``rb`` and evaluate the generated source from memory.
+Activate the ``debug`` flag to the problem to see explored branches during planning.
 
 ```Shell
 ruby Hype.rb examples/basic/basic.jshop examples/basic/pb1.jshop run
