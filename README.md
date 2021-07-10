@@ -490,7 +490,7 @@ ruby examples/basic/pb1.jshop.rb
 ```
 
 One can compile and execute in a single command with ``run``, the system compile as ``rb`` and evaluate the generated source from memory.
-Activate the ``debug`` flag to the problem to see explored branches during planning.
+Use the ``debug`` flag to observe how branches are explored during planning.
 
 ```Shell
 ruby Hype.rb examples/basic/basic.jshop examples/basic/pb1.jshop run

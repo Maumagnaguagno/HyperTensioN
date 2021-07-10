@@ -2,14 +2,13 @@
 Hype is able to extend classical planning instances and generate methods and tasks to solve them with a HTN planner using Patterns and [Dummy](Dummy.md).
 Methods are generated using patterns identified in the operators and used to solve common subproblems.
 Such patterns are based on predicate usage among the preconditions and effects of the operators.
-Predicates are classified as fluent, rigid and irrelevant by the [parser](Representation#predicates).
 The patterns are explained in the next sections using PDDL actions and their related pattern-based methods in JSHOP.
 Note that only some of the generated methods are displayed here, as complex actions generate more methods with multiple base/goal cases for swap and dependency patterns.
 More information is presented in the paper [Method Composition through Operator Pattern Identification](https://icaps17.icaps-conference.org/workshops/KEPS/proceedingsKEPS.pdf#page=57).
 
 ## Swap Pattern
 Some planning instances require repeatedly application of the same action(s) with different parameters to swap the value of a certain predicate.
-Very common in discretized scenarios where an ``at`` predicate is modified through the usage of ``move`` actions.
+Very common in discretized scenarios where an ``at`` predicate is modified through the usage of ``move`` actions, constrained by a rigid predicate, such as ``connected``.
 The resulting method is split in N+1 cases for N swap operators, for every effect:
 - Base: nothing to do;
 - using operator: try one swap step using operator, mark this step to avoid loops, recursive decomposition, and unmark.
