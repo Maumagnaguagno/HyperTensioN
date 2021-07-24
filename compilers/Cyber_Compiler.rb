@@ -192,8 +192,8 @@ module Cyber_Compiler
                 define_methods << "#{indentation}for(VALUE#{terms.size}::iterator it#{counter += 1} = #{pre}->begin(); it#{counter} != #{pre}->end(); ++it#{counter})#{indentation}{"
               else
                 define_methods << "#{indentation}return false;" unless state.include?(pre)
-                pre2 = pre == '=' ? 'equal' : pre
-                define_methods << "#{indentation}for(VALUE#{terms.size}::iterator it#{counter += 1} = #{pre2}.begin(); it#{counter} != #{pre2}.end(); ++it#{counter})#{indentation}{"
+                pre = 'equal' if pre == '='
+                define_methods << "#{indentation}for(VALUE#{terms.size}::iterator it#{counter += 1} = #{pre}.begin(); it#{counter} != #{pre}.end(); ++it#{counter})#{indentation}{"
               end
               # close_method_str.prepend('}') and no indentation change for compact output
               close_method_str.prepend("#{indentation}}")
@@ -403,7 +403,6 @@ struct State
 };
 static State *state;
 <STATE_CONST>
-
 static Plan* planning(Task *tasks);
 
 //-----------------------------------------------
