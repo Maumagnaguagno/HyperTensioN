@@ -249,8 +249,7 @@ module Cyber_Compiler
       define_methods << "\n\nstatic bool #{name}(const VALUE *parameters, Task *next)\n{\n  return #{decomp.join(' || ')};\n}"
     }
     # Definitions
-    template = TEMPLATE.dup
-    template.sub!('<OPERATORS>', define_operators)
+    template = TEMPLATE.sub('<OPERATORS>', define_operators)
     template.sub!('<METHODS>', define_methods)
     visible = 0
     tokens = operators.map(&:first).sort_by! {|i| i.start_with?('invisible_') ? 1 : (visible += 1; 0)}.concat(methods.map(&:first))
