@@ -105,9 +105,9 @@ module Pullup
             equalities = Hash.new {|h,k| h[k] = []}
             precond_pos.each {|pre|
               if pre.first == '='
-                if pre[1].start_with?('?') and not pre[2].start_with?('?')
-                  equalities[pre[2]] << pre[1]
-                elsif not pre[1].start_with?('?') and pre[2].start_with?('?')
+                if pre[1].start_with?('?')
+                  equalities[pre[2]] << pre[1] unless pre[2].start_with?('?')
+                elsif pre[2].start_with?('?')
                   equalities[pre[1]] << pre[2]
                 end
               end
