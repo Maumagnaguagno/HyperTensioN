@@ -122,7 +122,7 @@ module Cyber_Compiler
             visit = true
             break
           end
-        }
+        } unless state_visit
         equality = []
         define_methods_comparison = ''
         f = dec[1]
