@@ -11,7 +11,7 @@ module Dejavu
     ordered = tasks.shift
     tasks.uniq(&:first).each {|t,| visit(t, methods, knots)}
     tasks.unshift(ordered)
-    knots.uniq!(&:object_id)
+    knots.uniq! {|i| i.last.object_id}
     knots.each {|method,decomposition,task|
       name = method.first
       terms = []
