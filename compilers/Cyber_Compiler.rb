@@ -107,7 +107,6 @@ module Cyber_Compiler
       define_operators << "\n  return true;\n}"
     }
     # Methods
-    visit = false
     define_methods = ''
     methods.each {|name,param,*decompositions|
       decomp = []
@@ -119,7 +118,6 @@ module Cyber_Compiler
         dec[4].each {|s|
           if s.size > 1 and s.first.start_with?('invisible_visit_')
             visit_param = s.drop(1)
-            visit = true
             break
           end
         } unless state_visit
