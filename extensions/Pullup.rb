@@ -11,7 +11,9 @@ module Pullup
     counter = Hash.new(0)
     ordered = tasks.shift
     tasks.each {|t,| counter[t] += 1}
-    methods.map! {|name,param,*decompositions|
+    methods.select! {|decompositions|
+      name = decompositions.shift
+      param = decompositions.shift
       decompositions.select! {|_,free,precond_pos,precond_not,subtasks|
         substitutions = []
         if precond_pos.each {|pre,*terms|
@@ -40,7 +42,7 @@ module Pullup
         nil
       else decompositions.unshift(name, param)
       end
-    }.compact!
+    }
     operators.reject! {|op| impossible << op.first if not counter.include?(op.first) or op[2].any? {|pre,| not predicates[pre] || state.include?(pre)}}
     # Move current or rigid predicates from leaves to root/entry tasks
     clear_ops = []
