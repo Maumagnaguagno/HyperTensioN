@@ -144,7 +144,9 @@ module Pullup
       first_pass = false
     end
     # Remove dead branches
-    methods.map! {|name,param,*decompositions|
+    methods.each {|decompositions|
+      name = decompositions.shift
+      param = decompositions.shift
       decompositions.select! {|_,free,precond_pos,precond_not,subtasks|
         possible_decomposition = true
         # Remove unnecessary free variables
