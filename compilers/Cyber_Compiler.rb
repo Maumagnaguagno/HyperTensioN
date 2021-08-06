@@ -69,7 +69,7 @@ module Cyber_Compiler
     define_visit = []
     state_visit = -1 if operators.any? {|name,param| param.empty? and name.start_with?('invisible_visit_', 'invisible_mark_')}
     operators.each {|name,param,precond_pos,precond_not,effect_add,effect_del|
-      define_operators << "\n\nstatic bool #{name}(const VALUE *parameters, Task *next)\n{"
+      define_operators << "\n\nstatic bool #{name}(const VALUE *parameters, Task *)\n{"
       param.each_with_index {|v,i| define_operators << "\n  VALUE #{v.tr('?','_')} = parameters[#{i + 1}];"}
       if state_visit
         if name.start_with?('invisible_visit_', 'invisible_mark_')
