@@ -55,7 +55,7 @@ class Miner < Test::Unit::TestCase
           [['on', '?gold', '?drop_position']],
           [['have', '?agent', '?gold']]
         ],
-        ['invisible_visit_at', ['?agent', '?from'],
+        ["invisible_#{Patterns::VISIT}_at", ['?agent', '?from'],
           # Preconditions
           [],
           [],
@@ -63,7 +63,7 @@ class Miner < Test::Unit::TestCase
           [['visited_at', '?agent', '?from']],
           []
         ],
-        ['invisible_unvisit_at', ['?agent', '?from'],
+        ["invisible_un#{Patterns::VISIT}_at", ['?agent', '?from'],
           # Preconditions
           [],
           [],
@@ -94,9 +94,9 @@ class Miner < Test::Unit::TestCase
             # Subtasks
             [
               ['move', '?agent', '?current', '?intermediate'],
-              ['invisible_visit_at', '?agent', '?current'],
+              ["invisible_#{Patterns::VISIT}_at", '?agent', '?current'],
               ['swap_at_until_at', '?agent', '?to'],
-              ['invisible_unvisit_at', '?agent', '?current']
+              ["invisible_un#{Patterns::VISIT}_at", '?agent', '?current']
             ]
           ]
         ],

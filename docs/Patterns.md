@@ -11,7 +11,7 @@ Some planning instances require repeatedly application of the same action(s) wit
 Very common in discretized scenarios where an ``at`` predicate is modified through the usage of ``move`` actions, constrained by a rigid predicate, such as ``connected``.
 The resulting method is split in N+1 cases for N swap operators, for every effect:
 - Base: nothing to do;
-- using operator: try one swap step using operator, mark this step to avoid loops, recursive decomposition, and unmark.
+- using operator: try one swap step using operator, mark step as visited to avoid an infinite loop, decompose recursively, and unmark.
 
 ```Lisp
 (:action move

@@ -1,8 +1,9 @@
 module Patterns
   extend self
 
-  SWAP_PREFIX = 'swap_'
-  DEPENDENCY_PREFIX = 'dependency_'
+  SWAP = 'swap_'
+  DEPENDENCY = 'dependency_'
+  VISIT = 'visitp' # Use 'visit' to enable caching
 
   #-----------------------------------------------
   # Apply
@@ -278,8 +279,8 @@ module Patterns
       original_current = predicate_terms.last
       # Add visit and unvisit operators and predicate
       visited = "visited_#{predicate_name}"
-      visit = "invisible_visit_#{predicate_name}"
-      unvisit = "invisible_unvisit_#{predicate_name}"
+      visit = "invisible_#{VISIT}_#{predicate_name}"
+      unvisit = "invisible_un#{VISIT}_#{predicate_name}"
       unless operators.assoc(visit)
         predicates[visited] = true
         operators.push(
@@ -416,7 +417,7 @@ module Patterns
             type ? precond_not_second : precond_not_second << pre,
             # Subtasks
             [[second.first, *second_terms]]
-          ] unless first.first.start_with?(SWAP_PREFIX)
+          ] unless first.first.start_with?(SWAP)
           # Label and free variables
           unsatisfied << [seconds.size == 1 ? 'unsatisfied' : "unsatisfied_#{second.first}", [],
             # Positive preconditions
@@ -512,7 +513,7 @@ module Patterns
                 new_free.concat(pre.drop(1).reject! {|i| ground_var.include?(i) or free.include?(i)})
               end
             }
-          elsif node.first.start_with?(DEPENDENCY_PREFIX, SWAP_PREFIX)
+          elsif node.first.start_with?(DEPENDENCY, SWAP)
             # TODO fix new multiple unsatisfied dependencies and multiple swap operators over same predicate
             node.last[4].reverse_each {|i,| fringe.unshift(operators.assoc(i) || methods.assoc(i)) unless visited.include?(i)}
           # TODO else support user provided methods

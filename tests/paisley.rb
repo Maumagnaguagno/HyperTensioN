@@ -55,9 +55,9 @@ class Paisley < Test::Unit::TestCase
         # Subtasks
         [
           [name, '?ag', '?b', *parameters],
-          ['invisible_visit_at', '?ag', '?current'],
+          ["invisible_#{Patterns::VISIT}_at", '?ag', '?current'],
           ['swap_at_until_at', '?ag', '?to'],
-          ['invisible_unvisit_at', '?ag', '?current']
+          ["invisible_un#{Patterns::VISIT}_at", '?ag', '?current']
         ]
       ]
       methods[1] << ["using_#{name}", free_variables1,
@@ -67,9 +67,9 @@ class Paisley < Test::Unit::TestCase
         # Subtasks
         [
           [name, '?ag', '?b', *parameters],
-          ['invisible_visit_at', '?ag', '?current'],
+          ["invisible_#{Patterns::VISIT}_at", '?ag', '?current'],
           ['swap_at_until_empty', '?ag', '?to'],
-          ['invisible_unvisit_at', '?ag', '?current']
+          ["invisible_un#{Patterns::VISIT}_at", '?ag', '?current']
         ]
       ]
       methods[2] << ["using_#{name}", free_variables2,
@@ -79,9 +79,9 @@ class Paisley < Test::Unit::TestCase
         # Subtasks
         [
           [name, '?ag', '?b', *parameters.reverse],
-          ['invisible_visit_empty', '?current'],
+          ["invisible_#{Patterns::VISIT}_empty", '?current'],
           ['swap_empty_until_at', '?from'],
-          ['invisible_unvisit_empty', '?current']
+          ["invisible_un#{Patterns::VISIT}_empty", '?current']
         ]
       ]
       methods[3] << ["using_#{name}", free_variables2,
@@ -91,9 +91,9 @@ class Paisley < Test::Unit::TestCase
         # Subtasks
         [
           [name, '?ag', '?b', *parameters.reverse],
-          ['invisible_visit_empty', '?current'],
+          ["invisible_#{Patterns::VISIT}_empty", '?current'],
           ['swap_empty_until_empty', '?from'],
-          ['invisible_unvisit_empty', '?current']
+          ["invisible_un#{Patterns::VISIT}_empty", '?current']
         ]
       ]
     }

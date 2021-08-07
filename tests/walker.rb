@@ -12,7 +12,7 @@ class Walker < Test::Unit::TestCase
     [['at', '?start']]
   ]
 
-  INVISIBLE_VISIT_AT = ['invisible_visit_at', ['?start'],
+  INVISIBLE_VISIT_AT = ["invisible_#{Patterns::VISIT}_at", ['?start'],
     # Preconditions
     [],
     [],
@@ -21,7 +21,7 @@ class Walker < Test::Unit::TestCase
     []
   ]
 
-  INVISIBLE_UNVISIT_AT = ['invisible_unvisit_at', ['?start'],
+  INVISIBLE_UNVISIT_AT = ["invisible_un#{Patterns::VISIT}_at", ['?start'],
     # Preconditions
     [],
     [],
@@ -109,9 +109,9 @@ class Walker < Test::Unit::TestCase
             # Subtasks
             [
               ['move', '?current', '?intermediate'],
-              ['invisible_visit_at', '?current'],
+              ["invisible_#{Patterns::VISIT}_at", '?current'],
               ['swap_at_until_at', '?finish'],
-              ['invisible_unvisit_at', '?current']
+              ["invisible_un#{Patterns::VISIT}_at", '?current']
             ]
           ]
         ],
@@ -130,9 +130,9 @@ class Walker < Test::Unit::TestCase
             # Subtasks
             [
               ['move', '?current', '?intermediate'],
-              ['invisible_visit_at', '?current'],
+              ["invisible_#{Patterns::VISIT}_at", '?current'],
               ['swap_at_until_visited', '?finish'],
-              ['invisible_unvisit_at', '?current']
+              ["invisible_un#{Patterns::VISIT}_at", '?current']
             ]
           ]
         ],
@@ -213,9 +213,9 @@ class Walker < Test::Unit::TestCase
             # Subtasks
             [
               ['move', '?current', '?intermediate'],
-              ['invisible_visit_at', '?current'],
+              ["invisible_#{Patterns::VISIT}_at", '?current'],
               ['swap_at_until_at', '?finish'],
-              ['invisible_unvisit_at', '?current']
+              ["invisible_un#{Patterns::VISIT}_at", '?current']
             ]
           ]
         ],
@@ -234,9 +234,9 @@ class Walker < Test::Unit::TestCase
             # Subtasks
             [
               ['move', '?current', '?intermediate'],
-              ['invisible_visit_at', '?current'],
+              ["invisible_#{Patterns::VISIT}_at", '?current'],
               ['swap_at_until_visited', '?finish'],
-              ['invisible_unvisit_at', '?current']
+              ["invisible_un#{Patterns::VISIT}_at", '?current']
             ]
           ]
         ],
