@@ -1,6 +1,8 @@
 module Dummy
   extend self
 
+  VISIT = 'visitp' # Use 'visit' to enable caching
+
   #-----------------------------------------------
   # Apply
   #-----------------------------------------------
@@ -22,10 +24,11 @@ module Dummy
     }
     # Visible operators are visited to avoid infinite repetition
     visible_operators.each {|op|
+      name = "#{VISIT}_#{op.first}"
       1.upto(repetitions) {|i|
         predicates[visited = "visited_#{op.first}_#{i}".freeze] = true
         operators.push(
-          ["invisible_visit_#{op.first}_#{i}", op[1],
+          ["invisible_#{name}_#{i}", op[1],
             # Positive preconditions
             [],
             # Negative preconditions
@@ -35,7 +38,7 @@ module Dummy
             # Del effect
             []
           ],
-          ["invisible_unvisit_#{op.first}_#{i}", op[1],
+          ["invisible_un#{name}_#{i}", op[1],
             # Positive preconditions
             [],
             # Negative preconditions
@@ -82,6 +85,7 @@ module Dummy
           ]
         ]
       else # Actions are visited and unvisited to avoid infinite repetition
+        name = "#{VISIT}_#{op.first}"
         1.upto(repetitions) {|i|
           perform << ["try_#{op.first}_to_#{task}#{i}", op[1],
             # Positive preconditions
@@ -90,10 +94,10 @@ module Dummy
             i == 1 ? op[3] : [["visited_#{op.first}_#{i.pred}", *op[1]]].concat(op[3]),
             # Subtasks
             [
-              ["invisible_visit_#{op.first}_#{i}", *op[1]],
+              ["invisible_#{name}_#{i}", *op[1]],
               act,
               [task],
-              ["invisible_unvisit_#{op.first}_#{i}", *op[1]]
+              ["invisible_un#{name}_#{i}", *op[1]]
             ]
           ]
         }
