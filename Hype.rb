@@ -85,9 +85,9 @@ module Hype
   def methods_to_s
     output = ''
     indent = "\n          "
-    @parser.methods.each {|name,variables,*decompose|
-      output << "    #{name}(#{variables.join(' ')})\n"
-      decompose.each {|dec|
+    @parser.methods.each {|name,param,*decompositions|
+      output << "    #{name}(#{param.join(' ')})\n"
+      decompositions.each {|dec|
         output << "      Label: #{dec.first}\n"
         output << "        Free variables:\n          #{dec[1].join(indent)}\n" unless dec[1].empty?
         output << "        Precond positive:#{predicates_to_s(dec[2], indent)}\n" unless dec[2].empty?

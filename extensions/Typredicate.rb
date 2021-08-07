@@ -39,8 +39,8 @@ module Typredicate
       ground_transform(state, effect_add, transformations)
       ground_transform(state, effect_del, transformations)
     end
-    methods.each {|decompositions|
-      decompositions.drop(2).each {|_,_,precond_pos,precond_not|
+    methods.each {|met|
+      met.drop(2).each {|_,_,precond_pos,precond_not|
         types = {}
         precond_pos.each {|terms| types[terms.last] ||= terms.first if terms.size == 2 and not predicates[terms.first]}
         next if types.empty?

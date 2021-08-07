@@ -311,7 +311,7 @@ module HDDL_Parser
               @operators << [invisible_goal, [], @goal_pos, @goal_not, [], []]
             end
           end
-          @methods.map! {|mname,param,*decompositions| decompositions.sort_by! {|d| d[4].assoc(mname) ? 0 : 1}.unshift(mname, param)}
+          @methods.map! {|name,param,*decompositions| decompositions.sort_by! {|d| d[4].assoc(name) ? 0 : 1}.unshift(name, param)}
           #@state.each {|pre,k| k.sort_by! {|terms| @goal_pos.include?([pre,*terms]) ? 0 : @goal_not.include?([pre,*terms]) ? 2 : 1}}
         when ':htn'
           group.shift

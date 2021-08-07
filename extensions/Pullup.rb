@@ -189,10 +189,10 @@ module Pullup
       decompositions.unshift(name, param)
     }
     # Remove dead leaves
-    clear_met.each {|metdecompositions,pos,neg|
-      metdecompositions.each {|m|
-        m[2] -= pos
-        m[3] -= neg
+    clear_met.each {|decompositions,pos,neg|
+      decompositions.each {|dec|
+        dec[2] -= pos
+        dec[3] -= neg
       }
     }
     clear_ops.uniq!(&:object_id)
@@ -208,8 +208,8 @@ module Pullup
   #-----------------------------------------------
 
   def mark_effects(operators, methods, decompositions, effects, visited = [])
-    decompositions.each {|decomposition|
-      decomposition.last.each {|s,|
+    decompositions.each {|dec|
+      dec.last.each {|s,|
         unless visited.include?(s)
           visited << s
           if op = operators.assoc(s)
