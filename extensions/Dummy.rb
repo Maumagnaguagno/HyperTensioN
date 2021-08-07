@@ -23,22 +23,22 @@ module Dummy
       generate_methods(visible_operators, methods, name, [], [pre], repetitions)
     }
     # Visible operators are visited to avoid infinite repetition
-    visible_operators.each {|op|
-      name = "#{VISIT}_#{op.first}"
+    visible_operators.each {|name,param|
+      visit = "#{VISIT}_#{name}"
       1.upto(repetitions) {|i|
-        predicates[visited = "visited_#{op.first}_#{i}".freeze] = true
+        predicates[visited = "visited_#{name}_#{i}".freeze] = true
         operators.push(
-          ["invisible_#{name}_#{i}", op[1],
+          ["invisible_#{visit}_#{i}", param,
             # Positive preconditions
             [],
             # Negative preconditions
-            [[visited, *op[1]]],
+            [[visited, *param]],
             # Add effect
-            [[visited, *op[1]]],
+            [[visited, *param]],
             # Del effect
             []
           ],
-          ["invisible_un#{name}_#{i}", op[1],
+          ["invisible_un#{visit}_#{i}", param,
             # Positive preconditions
             [],
             # Negative preconditions
@@ -46,7 +46,7 @@ module Dummy
             # Add effect
             [],
             # Del effect
-            [[visited, *op[1]]]
+            [[visited, *param]]
           ]
         )
       }
@@ -85,7 +85,7 @@ module Dummy
           ]
         ]
       else # Actions are visited and unvisited to avoid infinite repetition
-        name = "#{VISIT}_#{op.first}"
+        visit = "#{VISIT}_#{op.first}"
         1.upto(repetitions) {|i|
           perform << ["try_#{op.first}_to_#{task}#{i}", op[1],
             # Positive preconditions
@@ -94,10 +94,10 @@ module Dummy
             i == 1 ? op[3] : [["visited_#{op.first}_#{i.pred}", *op[1]]].concat(op[3]),
             # Subtasks
             [
-              ["invisible_#{name}_#{i}", *op[1]],
+              ["invisible_#{visit}_#{i}", *op[1]],
               act,
               [task],
-              ["invisible_un#{name}_#{i}", *op[1]]
+              ["invisible_un#{visit}_#{i}", *op[1]]
             ]
           ]
         }
