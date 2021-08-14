@@ -60,22 +60,22 @@ module Macro
         # Preconditions
         op[2].each {|pre|
           pre = pre.map {|p| p.start_with?('?') ? param[variables.index(p)] : p}
-          puts "Precondition (not (#{pre.join(' ')})) will never be satisfied" if debug and (precond_not.include?(pre) or effect_del.include?(pre))
+          puts "Precondition (#{pre.join(' ')}) will never be satisfied" if debug and (precond_not.include?(pre) or effect_del.include?(pre))
           precond_pos << pre unless precond_pos.include?(pre) or effect_add.include?(pre)
         }
         op[3].each {|pre|
           pre = pre.map {|p| p.start_with?('?') ? param[variables.index(p)] : p}
-          puts "Precondition (#{pre.join(' ')}) will never be satisfied" if debug and (precond_pos.include?(pre) or effect_add.include?(pre))
+          puts "Precondition (not (#{pre.join(' ')})) will never be satisfied" if debug and (precond_pos.include?(pre) or effect_add.include?(pre))
           precond_not << pre unless precond_not.include?(pre) or effect_del.include?(pre)
         }
         # Effects
-        op[4].each {|pre|
-          effect_del.delete(pre = pre.map {|p| p.start_with?('?') ? param[variables.index(p)] : p})
-          effect_add << pre unless effect_add.include?(pre)
-        }
         op[5].each {|pre|
           effect_add.delete(pre = pre.map {|p| p.start_with?('?') ? param[variables.index(p)] : p})
           effect_del << pre unless effect_del.include?(pre)
+        }
+        op[4].each {|pre|
+          effect_del.delete(pre = pre.map {|p| p.start_with?('?') ? param[variables.index(p)] : p})
+          effect_add << pre unless effect_add.include?(pre)
         }
         new_subtasks << subtask
       }.clear
