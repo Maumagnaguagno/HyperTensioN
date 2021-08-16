@@ -257,7 +257,9 @@ module Cyber_Compiler
     tokens.concat(predicates.keys)
     # Start
     define_start = ''
+    define_start_bits = ''
     define_state = ''
+    define_state_bits = ''
     define_state_const = ''
     define_delete = []
     comparison = []
@@ -265,9 +267,8 @@ module Cyber_Compiler
       k = state[pre]
       if type
         if (a = arity[pre]) == 0
-          # TODO pack bit predicates
-          define_state << "\n  VALUE0 #{pre};"
-          define_start << "\n  start.#{pre} = #{k ? true : false};"
+          define_state_bits << "\n  VALUE0 #{pre};"
+          define_start_bits << "\n  start.#{pre} = #{k ? true : false};"
         else
           define_state << "\n  VALUE#{a} *#{pre};"
           define_delete << "\n  if(old_state->#{pre} != state->#{pre}) delete state->#{pre}"
@@ -284,7 +285,7 @@ module Cyber_Compiler
         tokens.concat(k.flatten(1))
       end
     }
-    template.sub!('<STATE>', define_state)
+    template.sub!('<STATE>', define_state << define_state_bits)
     define_visit.uniq!
     define_visit.each {|i| define_state_const << "\nstatic VALUE#{i} visit#{i};"}
     if state_visit
@@ -294,7 +295,7 @@ module Cyber_Compiler
     template.sub!('<STATE_CONST>', define_state_const)
     template.sub!('<CLEAR>', define_visit.map! {|i| "\n  visit#{i}.clear()"}.join('; \\'))
     template.sub!('<DELETE>', define_delete.join('; \\'))
-    template.sub!('<START>', define_start)
+    template.sub!('<START>', define_start << define_start_bits)
     tasks.drop(1).each {|_,*terms| tokens.concat(terms)}
     goal_pos.each {|_,*terms| tokens.concat(terms)}
     goal_not.each {|_,*terms| tokens.concat(terms)}
