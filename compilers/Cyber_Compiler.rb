@@ -340,6 +340,7 @@ module Cyber_Compiler
 #include <tuple>
 
 //#define DEBUG
+//#define LIMIT 1000
 
 #define TOKEN_MAX_SIZE <TOKEN_MAX_SIZE>
 #define INVISIBLE_BASE_INDEX <INVISIBLE_BASE_INDEX>
@@ -432,16 +433,20 @@ static Plan* planning(Task *tasks)
 #endif
     return &empty;
   }
-#ifdef DEBUG
   static unsigned int level = 0;
+#ifdef LIMIT
+  if(level > LIMIT) return NULL;
+#endif
+#ifdef DEBUG
   if(tasks->value >= DOMAIN_SIZE)
   {
     printf("Domain defines no decomposition for index %u\\n", tasks->value);
     exit(EXIT_FAILURE);
   }
-  printf("planning %u: %u %p\\n", level++, tasks->value, tasks->next);
+  printf("planning %u: %u %p\\n", level, tasks->value, tasks->next);
   print_task(tasks->value, tasks->parameters);
 #endif
+  ++level;
   // Operator
   if(tasks->value < METHODS_BASE_INDEX)
   {
