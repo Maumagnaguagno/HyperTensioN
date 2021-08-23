@@ -340,7 +340,7 @@ module Cyber_Compiler
 #include <tuple>
 
 //#define DEBUG
-#define STACK 1000
+#define STACK 5000
 
 #define TOKEN_MAX_SIZE <TOKEN_MAX_SIZE>
 #define INVISIBLE_BASE_INDEX <INVISIBLE_BASE_INDEX>
@@ -396,7 +396,7 @@ struct Node
 typedef Node Plan;
 typedef Node Task;
 static Node *next_plan, empty;
-static bool nostack = false;
+static bool nostack;
 
 struct State
 {<STATE>
@@ -434,7 +434,7 @@ static Plan* planning(Task *tasks)
 #endif
     return &empty;
   }
-  static unsigned int level = 0;
+  static unsigned int level;
 #ifdef STACK
   if(level > STACK)
   {
@@ -481,6 +481,7 @@ static Plan* planning(Task *tasks)
   {
     return next_plan;
   }
+  --level;
   // Failure
   return NULL;
 }
