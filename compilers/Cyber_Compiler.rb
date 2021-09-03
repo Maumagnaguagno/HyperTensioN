@@ -364,7 +364,7 @@ module Cyber_Compiler
 
 #define no_subtasks keep_planning(next)
 #define yield(subtasks)            \\
-  Plan *plan = planning(subtasks); \\
+  Task *plan = planning(subtasks); \\
   if(plan != NULL)                 \\
   {                                \\
     next_plan = plan;              \\
@@ -389,24 +389,20 @@ typedef <VALUE_TYPE> VALUE;
 typedef bool VALUE0;
 typedef std::set<VALUE> VALUE1;<VALUES>
 
-struct Node
+static bool nostack;
+static struct Task
 {
-  struct Node *next;
+  struct Task *next;
   VALUE value;
   VALUE parameters[1];
-};
-
-typedef Node Plan;
-typedef Node Task;
-static Node *next_plan, empty;
-static bool nostack;
+} *next_plan, empty;
 
 struct State
 {<STATE>
 };
 static State *state;
 <STATE_CONST>
-static Plan* planning(Task *tasks);
+static Task* planning(Task *tasks);
 
 //-----------------------------------------------
 // Operators
@@ -427,7 +423,7 @@ static void print_task(const VALUE value, const VALUE *parameters)
   puts("");
 }
 
-static Plan* planning(Task *tasks)
+static Task* planning(Task *tasks)
 {
   // Empty tasks
   if(tasks == NULL)
@@ -461,7 +457,7 @@ static Plan* planning(Task *tasks)
     State *old_state = state;
     if(domain[tasks->value](tasks->parameters, NULL))
     {
-      Plan *plan = planning(tasks->next);
+      Task *plan = planning(tasks->next);
       if(plan != NULL)
       {
         if(tasks->value < INVISIBLE_BASE_INDEX)
@@ -496,7 +492,7 @@ int main(void)
   // Tasks<TASKS>
   // Planning
   puts("Planning...");
-  Plan *result = planning(<TASK0>);
+  Task *result = planning(<TASK0>);
   // Print plan
   if(result != NULL)
   {
