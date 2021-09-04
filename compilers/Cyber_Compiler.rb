@@ -397,10 +397,9 @@ static struct Task
   VALUE parameters[1];
 } *next_plan, empty;
 
-struct State
+static struct State
 {<STATE>
-};
-static State *state;
+} *state;
 <STATE_CONST>
 static Task* planning(Task *tasks);
 
