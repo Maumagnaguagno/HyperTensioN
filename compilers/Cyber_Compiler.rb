@@ -80,8 +80,7 @@ module Cyber_Compiler
           next
         end
       elsif name.start_with?('invisible_visit_')
-        i = 0
-        define_operators << "\n  visit#{param.size}.insert(std::make_tuple(#{param.map {"parameters[#{i += 1}]"}.join(', ')}));"
+        define_operators << "\n  visit#{param.size}.insert(std::make_tuple(#{param.join(', ').tr!('?','_')}));"
         define_visit << param.size
       elsif name.start_with?('invisible_unvisit_')
         define_operators << "\n  visit_clear();"
