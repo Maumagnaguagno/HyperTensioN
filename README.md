@@ -461,6 +461,7 @@ Usage:
 Output:
   print - print parsed data(default)
   rb    - generate Ruby files to HyperTensioN
+  cpp   - generate C++ file with HyperTensioN
   pddl  - generate PDDL files
   jshop - generate JSHOP files
   dot   - generate DOT file
@@ -517,6 +518,7 @@ Hype is composed of:
 
 **Compilers**:
 - Hyper (methods and tasks are unavailable for a PDDL input without extensions)
+- Cyber (methods and tasks are unavailable for a PDDL input without extensions)
 - [PDDL] (methods are ignored, goal must be manually converted based on tasks)
 - [JSHOP] (methods and tasks are unavailable for a PDDL input without extensions)
 - [Graphviz DOT](https://www.graphviz.org/) (generate a [graph](docs/Graph.md) description to be compiled into an image)
@@ -684,6 +686,10 @@ Since explicit goals are tested only after the plan has been found with a sequen
   - Released version 2.0 with new state representation
 - Feb 2021
   - Released version 2.1 with new compiler optimizations
+- Apr 2021
+  - Cyber compiler is functional
+- May 2021
+  - Dejavu direct is no longer always active
 
 ## ToDo's
 - Unordered subtasks
