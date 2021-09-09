@@ -344,7 +344,6 @@ module Cyber_Compiler
 //#define DEBUG
 #define STACK 5000
 
-#define TOKEN_MAX_SIZE <TOKEN_MAX_SIZE>
 #define INVISIBLE_BASE_INDEX <INVISIBLE_BASE_INDEX>
 #define METHODS_BASE_INDEX <METHODS_BASE_INDEX>
 #define DOMAIN_SIZE (sizeof(domain) / sizeof(*domain))
@@ -380,7 +379,7 @@ module Cyber_Compiler
 
 // Tokens<TOKENS>
 
-static char tokens[][TOKEN_MAX_SIZE] = {
+static char tokens[][<TOKEN_MAX_SIZE>] = {
   <STRINGS>
 };
 
