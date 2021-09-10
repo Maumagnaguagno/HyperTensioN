@@ -309,7 +309,7 @@ module Cyber_Compiler
     (arity = arity.values).uniq!
     arity.sort!
     arity.shift while arity.first and arity.first < 2
-    template.sub!('<VALUE_TYPE>', tokens.size <= 256 ? 'unsigned char' : 'unsigned int')
+    template.sub!('<VALUE_TYPE>', tokens.size <= 256 ? 'char' : 'int')
     template.sub!('<VALUES>', arity.map! {|v| "\ntypedef std::set<std::tuple<#{Array.new(v,'VALUE').join(',')}>> VALUE#{v};"}.join)
     # Tasks
     if tasks.empty? then template.sub!('<TASK0>', 'NULL')
@@ -383,7 +383,7 @@ static char tokens[][<TOKEN_MAX_SIZE>] = {
   <STRINGS>
 };
 
-typedef <VALUE_TYPE> VALUE;
+typedef unsigned <VALUE_TYPE> VALUE;
 typedef bool VALUE0;
 typedef std::set<VALUE> VALUE1;<VALUES>
 
