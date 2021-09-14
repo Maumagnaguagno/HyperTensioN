@@ -7,8 +7,8 @@ module Hyper_Compiler
   # Term
   #-----------------------------------------------
 
-  def term(t)
-    t.start_with?('?') ? t.tr('?','_') : ":#{t}"
+  def term(term)
+    term.start_with?('?') ? term.tr('?','_') : ":#{term}"
   end
 
   #-----------------------------------------------
@@ -173,12 +173,12 @@ module Hyper_Compiler
                 equality << "_#{j}_ground != :#{j}"
                 "_#{j}_ground"
               elsif ground.include?(j)
-                equality << "#{j}_ground != #{j}".tr!('?','_')
-                term("#{j}_ground")
+                equality << "#{j = j.tr('?','_')}_ground != #{j}"
+                "#{j}_ground"
               else
                 new_grounds = true
                 ground << f.delete(j)
-                term(j)
+                j.tr('?','_')
               end
             }
             if new_grounds
