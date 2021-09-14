@@ -390,7 +390,7 @@ typedef std::set<VALUE> VALUE1;<VALUES>
 static bool nostack;
 static struct Task
 {
-  struct Task *next;
+  Task *next;
   VALUE value;
   VALUE parameters[1];
 } *next_plan, empty;
