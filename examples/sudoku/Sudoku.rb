@@ -20,9 +20,9 @@ module Sudoku
 
   def solve(board_str, width, height, box_width, box_height, debug, verbose)
     # Parser
-    @x = 2
-    @y = @x + total_width = width * box_width
-    @b = @y + total_height = height * box_height
+    x_index = 2
+    y_index = x_index + total_width = width * box_width
+    b_index = y_index + total_height = height * box_height
     board_str.delete!(" \n|+-")
     raise "Expected #{total_width * total_height} symbols, received #{board_str.size}" if board_str.size != total_width * total_height
     symbols = Array.new(box_width * box_height) {|i| i.succ}
@@ -32,14 +32,14 @@ module Sudoku
     board_str.each_char.with_index {|symbol,i|
       symbol = symbol.to_i
       y, x = i.divmod(total_width)
-      b = x / width + y / height * box_width + @b
+      b = x / width + y / height * box_width + b_index
       if symbol != 0
-        board << [y += @y, x += @x, symbol]
+        board << [y += y_index, x += x_index, symbol]
         state[x].delete(symbol)
         state[y].delete(symbol)
         state[b].delete(symbol)
       else
-        empty << [@x + x, @y + y, b]
+        empty << [x_index + x, y_index + y, b]
         counter += 1
       end
     }
