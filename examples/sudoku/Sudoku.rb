@@ -8,7 +8,7 @@ module Sudoku
   # Domain
   #-----------------------------------------------
 
-  AT = 0
+  BOARD = 0
   EMPTY = 1
 
   @domain = {
@@ -55,7 +55,7 @@ module Sudoku
       planning(tasks)
     end
     # Display board
-    @state[AT].sort_by! {|i| i.first(2)}.map!(&:last).each_slice(total_width) {|i| puts i.join}
+    @state[BOARD].sort!.map!(&:last).each_slice(total_width) {|i| puts i.join}
   end
 
   #-----------------------------------------------
@@ -68,7 +68,7 @@ module Sudoku
     @state[y].delete(symbol)
     @state[b].delete(symbol)
     @state[EMPTY].delete([x, y, b])
-    @state[AT] << [y, x, symbol]
+    @state[BOARD] << [y, x, symbol]
     true
   end
 
