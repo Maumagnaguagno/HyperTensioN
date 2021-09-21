@@ -18,7 +18,7 @@ module N_Queens
   def solve(size, debug, verbose)
     state = {
       :queen => [],
-      :free_collumn => Array.new(size) {|i| i}
+      :free_collumn => (0...size).to_a
     }
     tasks = [
       [:solve, size]

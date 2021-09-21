@@ -25,7 +25,7 @@ module Sudoku
     b_index = y_index + total_height = height * box_height
     board_str.delete!(" \n|+-")
     raise "Expected #{total_width * total_height} symbols, received #{board_str.size}" if board_str.size != total_width * total_height
-    symbols = Array.new(box_width * box_height) {|i| i.succ}
+    symbols = (1..box_width * box_height).to_a
     state = [board = [], empty = []]
     (total_width + total_height + width * height).times {state << symbols.dup}
     counter = 0
