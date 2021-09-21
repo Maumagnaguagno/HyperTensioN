@@ -360,7 +360,6 @@ module Cyber_Compiler
 
 #define delete_state() \\<DELETE>
 
-#define no_subtasks keep_planning(next)
 #define yield(subtasks)            \\
   Task *plan = planning(subtasks); \\
   if(plan != NULL)                 \\
