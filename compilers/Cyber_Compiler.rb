@@ -150,7 +150,7 @@ module Cyber_Compiler
         unless dec[4].empty?
           malloc = []
           dec[4].each_with_index {|s,i|
-            define_methods << "\n  Task *subtask#{i} = (Task *) malloc(task_size(#{s.size - 1}));"
+            define_methods << "\n  Task *subtask#{i} = new_task(#{s.size - 1});"
             malloc << "subtask#{i}"
           }
           define_methods << "\n  malloc_test(#{malloc.join(' && ')});"
@@ -316,7 +316,7 @@ module Cyber_Compiler
     else
       define_tasks = ''
       ordered = tasks.shift
-      tasks.each_with_index {|s,i| define_tasks << "\n  Task *subtask#{i} = (Task *) malloc(task_size(#{s.size - 1}));"}
+      tasks.each_with_index {|s,i| define_tasks << "\n  Task *subtask#{i} = new_task(#{s.size - 1});"}
       tasks_to_hyper(define_tasks, tasks, "\n  ", 'NULL')
       tasks.unshift(ordered)
       template.sub!('<TASKS>', define_tasks)
@@ -347,9 +347,9 @@ module Cyber_Compiler
 #define INVISIBLE_BASE_INDEX <INVISIBLE_BASE_INDEX>
 #define METHODS_BASE_INDEX <METHODS_BASE_INDEX>
 #define DOMAIN_SIZE (sizeof(domain) / sizeof(*domain))
-#define task_size(parameters) (sizeof(Task) + sizeof(VALUE) * (parameters))
 #define applicable(predicate, value) (state->predicate->find(value) != state->predicate->end())
 #define applicable_const(predicate, value) (predicate.find(value) != predicate.end())
+#define new_task(parameters) (Task *) malloc(sizeof(Task) + sizeof(VALUE) * (parameters))
 #define new_state()                                   \\
   State *new_state = (State *) malloc(sizeof(State)); \\
   malloc_test(new_state);                             \\
