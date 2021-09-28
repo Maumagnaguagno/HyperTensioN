@@ -10,11 +10,11 @@ module Hypest
   end
 
   def compiler_tests(domain, problem, parser, extensions, type, domain_expected, problem_expected)
-    parser_tests(domain, problem, parser, extensions, {})
     domain_type = "#{domain}.#{type}"
     problem_type = "#{problem}.#{type}"
     File.delete(domain_type) if File.exist?(domain_type)
     File.delete(problem_type) if File.exist?(problem_type)
+    parser_tests(domain, problem, parser, extensions, {})
     Hype.compile(domain, problem, type)
     if domain_expected
       assert_equal(true, File.exist?(domain_type))
