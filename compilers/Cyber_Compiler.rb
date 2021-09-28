@@ -378,7 +378,7 @@ module Cyber_Compiler
 
 // Tokens<TOKENS>
 
-static char tokens[][<TOKEN_MAX_SIZE>] = {
+static const char tokens[][<TOKEN_MAX_SIZE>] = {
   <STRINGS>
 };
 
@@ -443,7 +443,7 @@ static Task* planning(Task *tasks)
     printf("Domain defines no decomposition for index %u\\n", tasks->value);
     exit(EXIT_FAILURE);
   }
-  printf("planning %u: %u %p\\n", level, tasks->value, tasks->next);
+  printf("%u: %u %p\\n", level, tasks->value, tasks->next);
   print_task(tasks->value, tasks->parameters);
 #endif
   ++level;
@@ -487,7 +487,7 @@ int main(void)
   state = &start;
   // Tasks<TASKS>
   // Planning
-  puts("Planning...");
+  puts("Planning");
   Task *result = planning(<TASK0>);
   // Print plan
   if(result != NULL)
