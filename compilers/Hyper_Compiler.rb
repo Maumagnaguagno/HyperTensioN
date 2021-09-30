@@ -46,16 +46,6 @@ module Hyper_Compiler
   end
 
   #-----------------------------------------------
-  # Subtasks to Hyper
-  #-----------------------------------------------
-
-  def subtasks_to_hyper(tasks, indentation)
-    if tasks.empty? then "#{indentation}yield []"
-    else "#{indentation}yield [#{indentation}  [" << tasks.map {|g| g.map {|i| term(i)}.join(', ')}.join("],#{indentation}  [") << "]#{indentation}]"
-    end
-  end
-
-  #-----------------------------------------------
   # Compile domain
   #-----------------------------------------------
 
@@ -241,7 +231,7 @@ module Hyper_Compiler
           define_methods << "#{indentation}next if #{equality.join(' or ')}" unless equality.empty?
           define_methods << define_methods_comparison
         end
-        define_methods << subtasks_to_hyper(dec[4], indentation) << close_method_str
+        define_methods << indentation << (dec[4].empty? ? 'yield []' : "yield [#{indentation}  [" << dec[4].map {|g| g.map {|i| term(i)}.join(', ')}.join("],#{indentation}  [") << "]#{indentation}]") << close_method_str
       }
       domain_str << (methods.size.pred == mi ? '    ]' : '    ],')
     }
