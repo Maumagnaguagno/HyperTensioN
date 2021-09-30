@@ -627,9 +627,9 @@ Here are some hints to describe a domain:
 ## Comparison
 The main advantage of HyperTensioN is to be able to define behavior in the core language, without custom classes.
 Once Strings, Symbols, Arrays and Hashes are understood, the entire HyperTensioN module is just a few methods away from complete understanding.
-JSHOP2 requires the user to dive into a very complex structure, while [Pyhop] is much simpler, with everything defined in Python, without full backtracking and unification.
-Without unification the user must ground or propagate variables by hand, and without full backtracking the methods only have one subtask list to explore during decomposition.
-HyperTensioN biggest advantage is not the planner itself, but the parsers, extensions and compilers built around it, so that descriptions can be converted automatically.
+JSHOP2 requires the user to dive into a more complex structure, while [Pyhop] is much simpler, without parsing, full backtracking and unification.
+Without unification the user must ground or propagate variables by hand, and without full backtracking the methods only have one subtask sequence to explore during decomposition.
+HyperTensioN is more than a planner, with parsers, extensions and compilers built around it, so that descriptions can be converted and optimized automatically.
 
 Among the lacking features is lazy variable evaluation and interleaved/unordered execution of tasks, a feature that JSHOP2 supports and important to achieve good plans in some cases.
 Unordered tasks are supported only at the problem level and are not interleaved during decomposition.
