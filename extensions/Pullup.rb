@@ -166,7 +166,7 @@ module Pullup
         end
         precond_pos.reject! {|pre|
           if not predicates[pre.first] and pre.none? {|i| i.start_with?('?')}
-            unless s = state[pre.first] and s.include?(pre.drop(1))
+            unless state[pre.first]&.include?(pre.drop(1))
               possible_decomposition = false
               break
             end
@@ -176,7 +176,7 @@ module Pullup
         if possible_decomposition
           precond_not.reject! {|pre|
             if not predicates[pre.first] and pre.none? {|i| i.start_with?('?')}
-              if s = state[pre.first] and s.include?(pre.drop(1))
+              if state[pre.first]&.include?(pre.drop(1))
                 possible_decomposition = false
                 break
               end
