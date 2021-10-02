@@ -50,7 +50,7 @@ module Typredicate
     }
     new_state = Hash.new {|h,k| h[k] = []}
     transformations.each {|(tpre,*tterms),v|
-      s = state[tpre] and s.each {|terms| new_state[v] << terms if tterms.zip(terms).all? {|t| state[t.shift].include?(t)}}
+      state[tpre]&.each {|terms| new_state[v] << terms if tterms.zip(terms).all? {|t| state[t.shift].include?(t)}}
       predicates.delete(tpre)
     }
     state.merge!(new_state)
