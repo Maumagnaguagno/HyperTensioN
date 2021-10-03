@@ -285,7 +285,7 @@ module HDDL_Parser
           parse_objects(group)
           # Expand foralls
           @foralls.each {|pos,neg,(_,(fv,_,fvtype),g),mutable|
-            s = @state[fvtype] and s.each {|obj,|
+            @state[fvtype]&.each {|obj,|
               g.each {|pre|
                 pre.first != NOT ? pos << pre.map {|j| j == fv ? obj : j} : pre.size == 2 ? neg << pre = pre.last.map {|j| j == fv ? obj : j} : raise('Unexpected not in forall')
                 @predicates[pre.first.freeze] ||= mutable
