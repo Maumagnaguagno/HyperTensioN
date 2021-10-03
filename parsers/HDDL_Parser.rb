@@ -88,8 +88,8 @@ module HDDL_Parser
     while group = op.shift
       case group
       when ':parameters'
-        raise "Error with #{name} parameters" unless op.first.instance_of?(Array)
-        raise "Unexpected hyphen in #{name} parameters" if (group = op.shift).first == HYPHEN
+        raise "Error with #{name} parameters" unless (group = op.shift).instance_of?(Array)
+        raise "Unexpected hyphen in #{name} parameters" if group.first == HYPHEN
         # "?ob1 ?ob2 - type" to [type, ?ob1] [type, ?ob2]
         index = 0
         while p = group.shift
