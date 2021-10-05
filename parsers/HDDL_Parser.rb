@@ -180,15 +180,10 @@ module HDDL_Parser
     free_variables.delete_if {|v| variables.include?(v)}
     raise "#{name} with repeated parameters" if free_variables.uniq!
     # Preconditions
-    if variables != variables.uniq
+    if variables.size != (vu = variables.uniq).size
       precondition << AND if precondition.empty?
-      variables.each_with_index {|v,i|
-        variables.each_with_index {|v2,j|
-          if i < j and v == v2 and not precondition.include?(eq = [EQUAL, method[1][i], method[1][j]])
-            precondition << eq
-          end
-        }
-      }
+      ui = 0
+      variables.each_with_index {|v,i| v != vu[ui] ? precondition << [EQUAL, method[1][variables.find_index(v)], method[1][i]] : ui += 1}
     end
     unless precondition.empty?
       # Conjunction or atom
