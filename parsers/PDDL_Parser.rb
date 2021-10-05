@@ -180,8 +180,8 @@ module PDDL_Parser
         else raise "#{group.first} is not recognized in problem"
         end
       end
+      @problem_name ||= 'unknown'
     else raise "File #{problem_filename} does not match problem pattern"
     end
-    @problem_name ||= 'unknown'
   end
 end
