@@ -232,11 +232,7 @@ module HDDL_Parser
         case group.first
         when ':action' then parse_action(group)
         when ':method' then parse_method(group)
-        when ':task'
-          group.shift
-          name = group.shift
-          parameters = group.shift.keep_if {|i| i.start_with?('?')} if group.shift == ':parameters'
-          @methods << [name, parameters || []]
+        when ':task' then @methods << [group[1], group[2] == ':parameters' ? group[3].keep_if {|i| i.start_with?('?')} : []]
         when 'domain' then @domain_name = group.last
         when ':requirements' then (@requirements = group).shift
         when ':predicates'
