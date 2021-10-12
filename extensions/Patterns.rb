@@ -362,29 +362,25 @@ module Patterns
         pre = pos.first
         # Dependency of dependency
         first_terms = first[1]
-        if swaps.include?(first)
-          swaps[first].each {|p,|
-            if m = methods.assoc("swap_#{p.first}_until_#{p.first}")
-              first = m
-              if p.first == pre.first
-                first_terms = pre.drop(1)
-                break
-              else first_terms = p.drop(1)
-              end
+        swaps[first]&.each {|p,|
+          if m = methods.assoc("swap_#{p.first}_until_#{p.first}")
+            first = m
+            if p.first == pre.first
+              first_terms = pre.drop(1)
+              break
+            else first_terms = p.drop(1)
             end
-          }
-        elsif swaps.include?(op)
-          swaps[op].each {|p,|
-            if m = methods.assoc("swap_#{p.first}_until_#{p.first}")
-              seconds = [m]
-              if p.first == pre.first
-                second_terms = pre.drop(1)
-                break
-              else second_terms = p.drop(1)
-              end
+          end
+        } or swaps[op]&.each {|p,|
+          if m = methods.assoc("swap_#{p.first}_until_#{p.first}")
+            seconds = [m]
+            if p.first == pre.first
+              second_terms = pre.drop(1)
+              break
+            else second_terms = p.drop(1)
             end
-          }
-        end
+          end
+        }
         name = "dependency_#{first.first}_before_#{seconds.map(&:first).join('_or_')}"
         next if methods.any? {|met,| met.start_with?(name)}
         precond_pos = []
