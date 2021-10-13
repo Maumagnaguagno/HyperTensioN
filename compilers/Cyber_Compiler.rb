@@ -284,17 +284,18 @@ module Cyber_Compiler
       end
     }
     template.sub!('<STATE>', define_state << define_state_bits)
-    define_visit.uniq!
-    define_visit.each {|i| define_state_const << "\nstatic VALUE#{i} visit#{i};"}
     if state_visit
       comparison.map! {|i| arity[i] == 0 ? "\n    if(a->#{i} != b->#{i}) return a->#{i} < b->#{i};" : "\n    if(a->#{i} != b->#{i} && *a->#{i} != *b->#{i}) return *a->#{i} < *b->#{i};"}
       define_state_const << "\n\nstruct state_cmp\n{\n  inline bool operator ()(const State *a, const State *b)\n  {#{comparison.join}\n    return false;\n  }\n};"
       (state_visit + 1).times {|i| define_state_const << "\nstd::set<State*,state_cmp> state_visit#{i};"}
+      template.slice!('<CLEAR>')
       template.slice!('<DELETE>')
-    else template.sub!('<DELETE>', define_delete.join('; \\') << "; \\\n  free(state)")
+    else
+      define_visit.uniq!
+      template.sub!('<CLEAR>', define_visit.map! {|i| define_state_const << "\nstatic VALUE#{i} visit#{i};"; "\n  visit#{i}.clear()"}.join('; \\'))
+      template.sub!('<DELETE>', define_delete.join('; \\') << "; \\\n  free(state)")
     end
     template.sub!('<STATE_CONST>', define_state_const)
-    template.sub!('<CLEAR>', define_visit.map! {|i| "\n  visit#{i}.clear()"}.join('; \\'))
     template.sub!('<START>', define_start << define_start_bits)
     tasks.drop(1).each {|_,*terms| tokens.concat(terms)}
     goal_pos.each {|_,*terms| tokens.concat(terms)}
