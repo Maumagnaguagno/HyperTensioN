@@ -9,15 +9,15 @@ module Wise
     puts 'Wise'.center(50,'-') if debug
     # Initial state
     state.reject! {|pre,k|
-      # Unused predicate
-      if not predicates.include?(pre)
-        puts "Initial state contains unused predicates (#{pre} ...): removed" if debug
-        true
-      else
+      if predicates.include?(pre)
         # Duplicate predicate
         puts "Initial state contains duplicate predicates (#{pre} ...): removed" if k.uniq! and debug
         # Arity check
         puts "Initial state contains (#{pre} ...) with different arity" if k.any? {|i| i.size != k.first.size} and debug
+      else
+        # Unused predicate
+        puts "Initial state contains unused predicates (#{pre} ...): removed" if debug
+        true
       end
     }
     # Operators
