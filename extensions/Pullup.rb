@@ -15,22 +15,22 @@ module Pullup
       name = decompositions.shift
       param = decompositions.shift
       decompositions.select! {|_,free,precond_pos,precond_not,subtasks|
-        substitutions = []
+        substitutions = {}
         if precond_pos.each {|pre,*terms|
           unless predicates[pre]
             if not s = state[pre] or (s = s.select {|i| i.zip(terms).all? {|a,b| a == b or b.start_with?('?')}}).empty? then break
-            elsif s.size == 1 and not (terms & free).empty? then terms.zip(s.first) {|t| substitutions << t if t.first != t.last}
+            elsif s.size == 1 and not (terms & free).empty? then terms.zip(s.first) {|a,b| substitutions[a] = b if a != b}
             end
           end
         }
           if substitutions.empty?
             subtasks.each {|t,| counter[t] += 1}
           else
-            free.reject! {|i| substitutions.assoc(i)}
-            precond_pos.each {|pre| pre.map! {|i| (s = substitutions.assoc(i)) ? s.last : i}}
-            precond_not.each {|pre| pre.map! {|i| (s = substitutions.assoc(i)) ? s.last : i}}
+            free.reject! {|i| substitutions.include?(i)}
+            precond_pos.each {|pre| pre.map! {|i| substitutions[i] || i}}
+            precond_not.each {|pre| pre.map! {|i| substitutions[i] || i}}
             subtasks.each {|t|
-              t.map! {|i| (s = substitutions.assoc(i)) ? s.last : i}
+              t.map! {|i| substitutions[i] || i}
               counter[t.first] += 1
             }
           end
@@ -152,17 +152,17 @@ module Pullup
       decompositions.select! {|_,free,precond_pos,precond_not,subtasks|
         possible_decomposition = true
         # Remove unnecessary free variables
-        substitutions = []
+        substitutions = {}
         precond_pos.each {|pre,*terms|
           if not predicates[pre] and not (terms & free).empty? and s = state[pre] and (s = s.select {|i| i.zip(terms).all? {|a,b| a == b or b.start_with?('?')}}).size == 1
-            terms.zip(s.first) {|t| substitutions << t if t.first != t.last}
+            terms.zip(s.first) {|a,b| substitutions[a] = b if a != b}
           end
         }
         unless substitutions.empty?
-          free.reject! {|i| substitutions.assoc(i)}
-          precond_pos.each {|pre| pre.map! {|i| (s = substitutions.assoc(i)) ? s.last : i}}
-          precond_not.each {|pre| pre.map! {|i| (s = substitutions.assoc(i)) ? s.last : i}}
-          subtasks.each {|t| t.map! {|i| (s = substitutions.assoc(i)) ? s.last : i}}
+          free.reject! {|i| substitutions.include?(i)}
+          precond_pos.each {|pre| pre.map! {|i| substitutions[i] || i}}
+          precond_not.each {|pre| pre.map! {|i| substitutions[i] || i}}
+          subtasks.each {|t| t.map! {|i| substitutions[i] || i}}
         end
         precond_pos.reject! {|pre|
           if not predicates[pre.first] and pre.none? {|i| i.start_with?('?')}
@@ -207,11 +207,11 @@ module Pullup
   # Mark effects
   #-----------------------------------------------
 
-  def mark_effects(operators, methods, decompositions, effects, visited = [])
+  def mark_effects(operators, methods, decompositions, effects, visited = {})
     decompositions.each {|dec|
       dec.last.each {|s,|
         unless visited.include?(s)
-          visited << s
+          visited[s] = nil
           if op = operators.assoc(s)
             op[4].each {|pre,| effects[pre] |= 1}
             op[5].each {|pre,| effects[pre] |= 2}
