@@ -79,7 +79,7 @@ module Cyber_Compiler
           next
         end
       elsif name.start_with?('invisible_visit_')
-        define_operators << "\n  visit#{param.size}.insert(std::make_tuple(#{param.join(', ').tr!('?','_')}));"
+        define_operators << "\n  visit#{param.size}.insert(#{terms_to_hyper(param)});"
         define_visit << param.size
       elsif name.start_with?('invisible_unvisit_')
         define_operators << "\n  visit_clear();"
