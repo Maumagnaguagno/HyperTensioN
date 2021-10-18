@@ -268,15 +268,16 @@ module Hyper_Compiler
     predicates.each {|pre,type|
       if k = state[pre]
         unary = k[0].size == 1
+        k = k.map {|obj| ':' << obj.join(', :')} unless k[0].empty?
       end
       if type
         problem_str << "#{pre.upcase} = #{counter += 1}\n"
         start_str << '    ['
-        start_str << "\n      #{'[' unless unary}" << k.map! {|obj| ':' << obj.join(', :') unless obj.empty?}.join(unary ? ",\n      " : "],\n      [") << "#{']' unless unary}\n    " if k
+        start_str << "\n      #{'[' unless unary}" << k.join(unary ? ",\n      " : "],\n      [") << "#{']' unless unary}\n    " if k
         start_str << "],\n"
       elsif k
         problem_str << "#{pre == '=' ? 'EQUAL' : pre.upcase} = ["
-        problem_str << "\n  #{'[' unless unary}" << k.map! {|obj| ':' << obj.join(', :') unless obj.empty?}.join(unary ? ",\n  " : "],\n  [") << (unary ? "\n]\n" : "]\n]\n")
+        problem_str << "\n  #{'[' unless unary}" << k.join(unary ? ",\n  " : "],\n  [") << (unary ? "\n]\n" : "]\n]\n")
       end
     }
     # Tasks
