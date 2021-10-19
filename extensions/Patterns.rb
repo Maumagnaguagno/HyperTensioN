@@ -454,13 +454,18 @@ module Patterns
 
   def compose_unification_method(operators, methods, predicates, met, substitutions)
     # Split free variables from ground terms
-    free, ground = substitutions.zip(met[1]).partition {|sub,| sub.start_with?('?')}
-    if ground.empty?
-      ground_sub = []
-      ground_var = []
-    else ground_sub, ground_var = ground.transpose
-    end
-    unless methods.assoc(name = "unify#{free.map!(&:first).join.tr!('?','_')}_before_#{met.first}")
+    free = []
+    ground_sub = []
+    ground_var = []
+    substitutions.each_with_index {|sub,i|
+      if sub.start_with?('?')
+        free << sub
+      else
+        ground_sub << sub
+        ground_var << met[1][i]
+      end
+    }
+    unless methods.assoc(name = "unify#{free.join.tr!('?','_')}_before_#{met.first}")
       # Find rigid predicates shared across decompositions to act as preconditions
       precond_pos = []
       precond_not = []
