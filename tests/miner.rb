@@ -250,7 +250,7 @@ class Miner < Test::Unit::TestCase
         ['on', 'g3', 'p8_6']
       ],
       :goal_not => [],
-      :objects => ['ag1', 'g1', 'g2', 'g3'].concat(Grid.objects(10,10).flatten!(1)),
+      :objects => ['ag1', 'g1', 'g2', 'g3'].concat(*Grid.objects(10,10)),
       :requirements => [':strips', ':negative-preconditions']
     )
   end

@@ -42,10 +42,10 @@ module PDDL_Compiler
     objects = []
     start_str = ''
     state.each {|pre,k|
-      objects.concat(k.each {|terms|
+      objects.concat(*k.each {|terms|
         start_str << "    (#{terms.unshift(pre).join(' ')})\n"
         terms.shift
-      }.flatten(1)) if pre != '=' and predicates.include?(pre)
+      }) if pre != '=' and predicates.include?(pre)
     }
     tasks.drop(1).each {|_,*terms| objects.concat(terms)}
     goal_str = ''

@@ -273,14 +273,14 @@ module Cyber_Compiler
           define_start << "\n  start.#{pre} = new VALUE#{a}"
           if k
             define_start << "\n  {\n    #{k.map {|value| terms_to_hyper(value)}.join(",\n    ")}\n  }"
-            tokens.concat(k.flatten(1))
+            tokens.concat(*k)
           end
           define_start << ';'
         end
         comparison << pre
       elsif k
         define_state_const << "\nstatic VALUE#{arity[pre] ||= k.first.size} #{pre == '=' ? 'equal' : pre}\n{\n  #{k.map {|value| terms_to_hyper(value)}.join(",\n  ")}\n};"
-        tokens.concat(k.flatten(1))
+        tokens.concat(*k)
       end
     }
     template.sub!('<STATE>', define_state << define_state_bits)
