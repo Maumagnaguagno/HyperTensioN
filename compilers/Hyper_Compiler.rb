@@ -107,14 +107,6 @@ module Hyper_Compiler
       decompositions.each_with_index {|dec,i|
         domain_str << "      :#{name}_#{dec.first}#{',' if decompositions.size - 1 != i}\n"
         define_methods << "\n  def #{name}_#{dec.first}#{variables}"
-        visit_param = nil
-        dec[4].each {|s|
-          if s.size > 1 and s.first.start_with?('invisible_visit_')
-            visit_param = s.drop(1)
-            visit = true
-            break
-          end
-        } unless state_visit
         equality = []
         define_methods_comparison = ''
         f = dec[1]
@@ -144,10 +136,17 @@ module Hyper_Compiler
         }
         define_methods << "\n    return if #{equality.join(' or ')}" unless equality.empty?
         define_methods << define_methods_comparison
-        if visit_param and (visit_param & f).empty?
-          define_methods << "\n    return if @visit.include?(#{terms_to_hyper(visit_param)})"
-          visit_param = nil
-        end
+        visit_param = nil
+        dec[4].each {|s|
+          if s.size > 1 and s.first.start_with?('invisible_visit_')
+            if ((visit_param = s.drop(1)) & f).empty?
+              define_methods << "\n    return if @visit.include?(#{terms_to_hyper(visit_param)})"
+              visit_param = nil
+            end
+            visit = true
+            break
+          end
+        } unless state_visit
         close_method_str = "\n  end\n"
         indentation = "\n    "
         # Lifted
