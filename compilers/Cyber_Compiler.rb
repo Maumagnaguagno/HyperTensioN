@@ -112,13 +112,6 @@ module Cyber_Compiler
       param.each_with_index {|v,i| param_str << "\n  VALUE #{v.tr('?','_')} = parameters[#{i + 1}];"}
       decompositions.each {|dec|
         define_methods << "\n\nstatic bool #{name}_#{dec[0]}(const VALUE *parameters, Task *next)\n{#{param_str}"
-        visit_param = nil
-        dec[4].each {|s|
-          if s.size > 1 and s.first.start_with?('invisible_visit_')
-            visit_param = s.drop(1)
-            break
-          end
-        } unless state_visit
         equality = []
         define_methods_comparison = ''
         f = dec[1]
@@ -142,10 +135,16 @@ module Cyber_Compiler
         }
         define_methods << "\n  if(#{equality.join(' || ')}) return false;" unless equality.empty?
         define_methods << define_methods_comparison
-        if visit_param and (visit_param & f).empty?
-          define_methods << "\n  if(applicable_const(visit#{visit_param.size}, #{terms_to_hyper(visit_param)})) return false;"
-          visit_param = nil
-        end
+        visit_param = nil
+        dec[4].each {|s|
+          if s.size > 1 and s.first.start_with?('invisible_visit_')
+            if ((visit_param = s.drop(1)) & f).empty?
+              define_methods << "\n  if(applicable_const(visit#{visit_param.size}, #{terms_to_hyper(visit_param)})) return false;"
+              visit_param = nil
+            end
+            break
+          end
+        } unless state_visit
         unless dec[4].empty?
           malloc = []
           dec[4].each_with_index {|s,i|
