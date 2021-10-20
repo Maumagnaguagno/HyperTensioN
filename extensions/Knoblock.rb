@@ -54,7 +54,7 @@ module Knoblock
       unless graph.include?(literal)
         operators.each {|op|
           if (effects = map(op[4], op[5], predicates)).include?(literal)
-            graph[literal].concat(preconditions = map(op[2], op[3], predicates)).concat(effects).delete(literal)
+            graph[literal].concat(preconditions = map(op[2], op[3], predicates), effects).delete(literal)
             find_problem_dependent_constraints(operators, predicates, preconditions)
           end
         }

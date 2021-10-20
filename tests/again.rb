@@ -183,7 +183,7 @@ class Again < Test::Unit::TestCase
       ]
     ]
     Dejavu.apply(operators = [], methods, predicates = {}, nil, tasks = [true, ['m0','bob','home']], nil, nil)
-    assert_equal(visit_operators('mark', 'm0_base_0').concat(visit_operators('visit', 'm0_recursion_0')).concat(visit_operators('visit', 'm0_recursion_3')), operators)
+    assert_equal(visit_operators('mark', 'm0_base_0').concat(visit_operators('visit', 'm0_recursion_0'), visit_operators('visit', 'm0_recursion_3')), operators)
     assert_equal([
       ['m0', ['?a', '?b'],
         ['base', [],
