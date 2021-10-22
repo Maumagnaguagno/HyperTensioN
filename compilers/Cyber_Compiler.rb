@@ -35,10 +35,10 @@ module Cyber_Compiler
 
   def apply(modifier, effects, define_operators, duplicated, arity)
     effects.each {|pre,*terms|
-      if terms.empty? then define_operators << "\n  state->#{pre} = #{modifier == 'insert'};"
+      if (a = arity[pre] ||= terms.size) == 0 then define_operators << "\n  state->#{pre} = #{modifier == 'insert'};"
       else
         unless duplicated.include?(pre)
-          define_operators << "\n  state->#{pre} = new VALUE#{arity[pre] ||= terms.size}(*state->#{pre});"
+          define_operators << "\n  state->#{pre} = new VALUE#{a}(*state->#{pre});"
           duplicated[pre] = nil
         end
         define_operators << "\n  state->#{pre}->#{modifier}(#{terms_to_hyper(terms)});"
