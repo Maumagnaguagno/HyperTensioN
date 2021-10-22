@@ -12,7 +12,7 @@ module Dummy
     # Tasks are unordered
     tasks << false if tasks.empty?
     # Invisible operators are rejected from search
-    visible_operators = operators.reject {|op| op.first.start_with?('invisible_')}
+    visible_operators = operators.reject {|op,| op.start_with?('invisible_')}
     # Each goal generates a task and a set of methods
     goal_pos.each {|pre|
       tasks << [name = "perform_goal_#{pre.join('_')}"]
@@ -91,7 +91,7 @@ module Dummy
             # Positive preconditions
             op[2],
             # Negative preconditions
-            i == 1 ? op[3] : [["visited_#{op.first}_#{i.pred}", *op[1]]].concat(op[3]),
+            i == 1 ? op[3] : [["visited_#{op.first}_#{i.pred}", *op[1]], *op[3]],
             # Subtasks
             [
               ["invisible_#{visit}_#{i}", *op[1]],
