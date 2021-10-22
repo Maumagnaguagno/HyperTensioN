@@ -22,9 +22,10 @@ module Cyber_Compiler
   #-----------------------------------------------
 
   def applicable(pre, terms, predicates, arity)
-    arity[pre] ||= terms.size
-    if terms.empty? then "state->#{pre}"
-    else predicates[pre] ? "applicable(#{pre}, #{terms_to_hyper(terms)})" : "applicable_const(#{pre}, #{terms_to_hyper(terms)})"
+    if terms.empty? then predicates[pre] ? "state->#{pre}" : pre
+    else
+      arity[pre] ||= terms.size
+      predicates[pre] ? "applicable(#{pre}, #{terms_to_hyper(terms)})" : "applicable_const(#{pre}, #{terms_to_hyper(terms)})"
     end
   end
 
@@ -278,7 +279,9 @@ module Cyber_Compiler
         end
         comparison << pre
       elsif k
-        define_state_const << "\nstatic VALUE#{arity[pre] ||= k.first.size} #{pre == '=' ? 'equal' : pre}\n{\n  #{k.map {|value| terms_to_hyper(value)}.join(",\n  ")}\n};"
+        if k.first.empty? then define_state_const << "\nstatic VALUE0 #{pre} = #{k ? true : false};"
+        else define_state_const << "\nstatic VALUE#{arity[pre] ||= k.first.size} #{pre == '=' ? 'equal' : pre}\n{\n  #{k.map {|value| terms_to_hyper(value)}.join(",\n  ")}\n};"
+        end
         tokens.concat(*k)
       end
     }
