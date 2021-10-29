@@ -108,7 +108,7 @@ module Hype
   Operators:\n#{operators_to_s}
   Methods:\n#{methods_to_s}
 Problem #{@parser.problem_name}
-  State:#{predicates_to_s(@parser.state.flat_map {|k,v| v.map {|i| [k,*i]}}, "\n    ")}\n
+  State:#{predicates_to_s(@parser.state.flat_map {|k,v| [k].product(v)}, "\n    ")}\n
   Goal:
     Tasks:#{subtasks_to_s(@parser.tasks.drop(1), "\n      ", @parser.tasks.first)}
     Positive:#{@parser.goal_pos.empty? ? "\n      empty" : predicates_to_s(@parser.goal_pos, "\n      ")}
