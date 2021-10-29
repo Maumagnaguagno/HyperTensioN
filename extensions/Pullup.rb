@@ -128,8 +128,7 @@ module Pullup
                   }
                   new_precond_pos.concat([pre.first].product(*npre)) if modified
                 end
-              }
-              precond_pos.concat(new_precond_pos).uniq!
+              }.concat(new_precond_pos).uniq!
             end
             repeat = true if old_precond_pos_size != precond_pos.size or old_precond_not_size != precond_not.size
             first_task = false
