@@ -43,7 +43,7 @@ module Pullup
       else decompositions.unshift(name, param)
       end
     }
-    operators.reject! {|op| impossible << op.first if not counter.include?(op.first) or op[2].any? {|pre,| not predicates[pre] || state.include?(pre)}}
+    operators.reject! {|op| impossible << op.first unless counter.include?(op.first) and op[2].all? {|pre,| predicates[pre] || state.include?(pre)}}
     # Move current or rigid predicates from leaves to root/entry tasks
     clear_ops = []
     clear_met = []
