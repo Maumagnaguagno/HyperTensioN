@@ -153,7 +153,7 @@ module Patterns
       v.sort_by! {|mets,|
         # Prefer to match goal
         val = mets.first.end_with?(for_goal) ? -1 : 0
-        val - mets.drop(2).count {|dec| !dec[4].empty? and op = operators.assoc(dec[4].last.first) and op[type ? 4 : 5].assoc(goal.first)}
+        val - mets.drop(2).count {|dec| dec[4][0] and op = operators.assoc(dec[4].last.first) and op[type ? 4 : 5].assoc(goal.first)}
       }
       if debug
         puts "  #{'not ' unless type}(#{goal.join(' ')})"
