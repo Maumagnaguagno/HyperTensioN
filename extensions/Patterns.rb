@@ -211,7 +211,7 @@ module Patterns
 
   def add_tasks(goal_methods, operators, methods, predicates, tasks, goal_pos, goal_not, debug)
     # Add tasks as unordered
-    tasks[0] = false if tasks.empty? or tasks.first
+    tasks[0] = false
     # Select task
     puts 'Goal to Task' if debug
     tasks_goals = []
