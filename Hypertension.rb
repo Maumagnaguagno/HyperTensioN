@@ -20,7 +20,7 @@ module Hypertension
 if FAST_OUTPUT
 
   def planning(tasks, level = 0)
-    return [] if tasks.empty?
+    return tasks if tasks.empty?
     case decomposition = @domain[(current_task = tasks.shift).first]
     # Operator (true: visible, false: invisible)
     when true, false
@@ -58,7 +58,7 @@ if FAST_OUTPUT
 else
 
   def planning(tasks, level = 0)
-    return [] if tasks.empty?
+    return tasks if tasks.empty?
     index, current_task = tasks.shift
     case decomposition = @domain[current_task.first]
     # Operator (true: visible, false: invisible)
