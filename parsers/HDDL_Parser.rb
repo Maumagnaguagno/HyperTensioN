@@ -177,8 +177,7 @@ module HDDL_Parser
         end
       end
     end
-    free_variables.delete_if {|v| variables.include?(v)}
-    raise "#{name} with repeated parameters" if free_variables.uniq!
+    raise "#{name} with repeated parameters" if free_variables.delete_if {|v| variables.include?(v)}.uniq!
     # Preconditions
     if variables.size != (vu = variables.uniq).size
       precondition << AND if precondition.empty?
