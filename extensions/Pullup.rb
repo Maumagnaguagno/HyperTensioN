@@ -18,7 +18,7 @@ module Pullup
         substitutions = {}
         if precond_pos.each {|pre,*terms|
           unless predicates[pre]
-            if not s = state[pre] or (s = s.select {|i| i.zip(terms).all? {|a,b| a == b or b.start_with?('?')}}).empty? then break
+            if not s = state[pre] or (s = s.select {|i| not i.zip(terms) {|a,b| break true unless a == b or b.start_with?('?')}}).empty? then break
             elsif s.size == 1 and not (terms & free).empty? then terms.zip(s.first) {|a,b| substitutions[a] = b if a != b}
             end
           end
@@ -153,7 +153,7 @@ module Pullup
         # Remove unnecessary free variables
         substitutions = {}
         precond_pos.each {|pre,*terms|
-          if not predicates[pre] and not (terms & free).empty? and s = state[pre] and (s = s.select {|i| i.zip(terms).all? {|a,b| a == b or b.start_with?('?')}}).size == 1
+          if not predicates[pre] and not (terms & free).empty? and s = state[pre] and (s = s.select {|i| not i.zip(terms) {|a,b| break true if a == b or b.start_with?('?')}}).size == 1
             terms.zip(s.first) {|a,b| substitutions[a] = b if a != b}
           end
         }
