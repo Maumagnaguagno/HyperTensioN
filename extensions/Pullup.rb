@@ -134,10 +134,9 @@ module Pullup
           }
         }
         if decompositions.empty?
-          raise "Domain defines no decomposition for #{name}" if tasks.assoc(name)
-          impossible << name
           repeat = true
-          nil
+          impossible << name
+          raise "Domain defines no decomposition for #{name}" if tasks.assoc(name)
         else decompositions.unshift(name, param)
         end
       }.compact!
