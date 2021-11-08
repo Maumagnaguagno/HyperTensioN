@@ -151,8 +151,9 @@ module Pullup
         # Remove unnecessary free variables
         substitutions = {}
         precond_pos.each {|pre,*terms|
-          if not predicates[pre] and not (terms & free).empty? and s = state[pre] and (s = s.select {|i| not i.zip(terms) {|a,b| break true unless a == b or b.start_with?('?')}}).size == 1
-            terms.zip(s.first) {|a,b| substitutions[a] = b if a != b}
+          if not predicates[pre] and not (terms & free).empty? and s = state[pre]
+            sub = nil
+            terms.zip(sub) {|a,b| substitutions[a] = b if a != b} if s.each {|i| sub ? break : sub = i unless i.zip(terms) {|a,b| break true unless a == b or b.start_with?('?')}}
           end
         }
         unless substitutions.empty?
