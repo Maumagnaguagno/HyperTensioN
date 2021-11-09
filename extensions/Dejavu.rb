@@ -7,9 +7,11 @@ module Dejavu
 
   def apply(operators, methods, predicates, state, tasks, goal_pos, goal_not, debug = false)
     return if tasks.empty?
+    methods_h = {}
+    methods.each {|m| methods_h[m.first] = m}
     knots = []
     ordered = tasks.shift
-    tasks.uniq(&:first).each {|t,| visit(t, methods, knots)}
+    tasks.uniq(&:first).each {|t,| visit(t, methods_h, knots)}
     tasks.unshift(ordered)
     knots.uniq! {|t,| t.object_id}
     knots.each {|task,method,decomposition|
@@ -40,11 +42,9 @@ module Dejavu
   end
 
   def visit(name, methods, knots, visited = {})
-    if visited.include?(name) then true
-    elsif method = methods.assoc(name)
+    if method = methods[name]
       (visited = visited.dup)[name] = nil
-      method.drop(2).each {|decomposition| decomposition.last.each {|task| knots << [task, method, decomposition] if visit(task.first, methods, knots, visited)}}
-      false
+      method.drop(2).each {|decomposition| decomposition.last.each {|task| visited.include?(name = task.first) ? knots << [task, method, decomposition] : visit(name, methods, knots, visited)}}
     end
   end
 end
