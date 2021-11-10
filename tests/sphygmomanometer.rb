@@ -47,7 +47,7 @@ class Sphygmomanometer < Test::Unit::TestCase
     ]
     assert_equal(expected_plan, N_Queens.solve(8, false, false))
     # Expected state
-    assert_equal({:queen => expected_plan.each {|i| i.shift}, :free_collumn => []}, N_Queens.state)
+    assert_equal({:queen => expected_plan.each(&:shift), :free_collumn => []}, N_Queens.state)
   end
 
   def test_planning_failure
