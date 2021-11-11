@@ -161,23 +161,25 @@ module HDDL_Parser
       end
     end
     raise "Missing task #{name}" unless method = @methods.assoc(name)
-    method << [label, free_variables = [], pos = [], neg = []]
-    raise "Error with #{name} parameters" unless parameters.instance_of?(Array)
-    raise "Unexpected hyphen in #{name} parameters" if parameters.first == HYPHEN
-    # "?ob1 ?ob2 - type" to [type, ?ob1] [type, ?ob2]
-    index = 0
-    while p = parameters.shift
-      free_variables << p
-      if parameters.first == HYPHEN
-        parameters.shift
-        @predicates[(type = parameters.shift).freeze] ||= false
-        while fv = free_variables[index]
-          pos << [type, variables.find {|j| j == fv} || fv]
-          index += 1
+    method << [label, free_variables = [], pos = [], neg = [], subtasks ||= []]
+    if parameters
+      raise "Error with #{name} parameters" unless parameters.instance_of?(Array)
+      raise "Unexpected hyphen in #{name} parameters" if parameters.first == HYPHEN
+      # "?ob1 ?ob2 - type" to [type, ?ob1] [type, ?ob2]
+      index = 0
+      while p = parameters.shift
+        free_variables << p
+        if parameters.first == HYPHEN
+          parameters.shift
+          @predicates[(type = parameters.shift).freeze] ||= false
+          while fv = free_variables[index]
+            pos << [type, variables.find {|j| j == fv} || fv]
+            index += 1
+          end
         end
       end
+      raise "#{name} with repeated parameters" if free_variables.delete_if {|v| variables.include?(v)}.uniq!
     end
-    raise "#{name} with repeated parameters" if free_variables.delete_if {|v| variables.include?(v)}.uniq!
     # Preconditions
     if variables.size != (vu = variables.uniq).size
       precondition << AND if precondition.empty?
@@ -201,13 +203,12 @@ module HDDL_Parser
     end
     # Subtasks
     raise "Error with #{name} subtasks" unless subtasks.instance_of?(Array)
-    if subtasks.empty? then method.last << subtasks
-    else
+    unless subtasks.empty?
       # Conjunction or atom
       subtasks.first == AND ? subtasks.shift : subtasks = [subtasks]
       # Ordering
       parse_ordering(name, ordering, subtasks) if ordering
-      method.last << subtasks.map! {|t| (t[1].instance_of?(Array) ? t[1] : t).map! {|i| variables.find {|j| j == i} || free_variables.find {|j| j == i} || i}}
+      subtasks.map! {|t| (t[1].instance_of?(Array) ? t[1] : t).map! {|i| variables.find {|j| j == i} || free_variables.find {|j| j == i} || i}}
     end
     free_variables.each {|i| i.sub!('?','?free_') if method[1].include?(i)}
     variables.zip(method[1]) {|i,j| i.replace(j)}
@@ -302,7 +303,6 @@ module HDDL_Parser
             end
           end
           @methods.map! {|name,param,*decompositions| decompositions.sort_by! {|d| d[4].assoc(name) ? 0 : 1}.unshift(name, param)}
-          #@state.each {|pre,k| k.sort_by! {|terms| @goal_pos.include?([pre,*terms]) ? 0 : @goal_not.include?([pre,*terms]) ? 2 : 1}}
         when ':htn'
           group.shift
           # TODO loop group elements to improve support
