@@ -299,7 +299,7 @@ module Patterns
         free_variables = Hash.new {|h,k| h[k] = k}
         free_variables[original_current] = current
         free_variables[original_intermediate] = intermediate
-        precond_pos = constraints.map {|c| c.drop(1).map! {|i| i.start_with?('?') ? free_variables[i] : i}.unshift(c.first)}.unshift(agent ? [predicate_name, agent, current] : [predicate_name, current])
+        precond_pos = constraints.map {|c| c.map {|i| i.start_with?('?') ? free_variables[i] : i}}.unshift(agent ? [predicate_name, agent, current] : [predicate_name, current])
         precond_not = [
           [predicate_name, *predicate_terms2],
           agent ? [visited, agent, intermediate] : [visited, intermediate]
