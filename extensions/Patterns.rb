@@ -198,7 +198,7 @@ module Patterns
           puts "  #{dependent} to #{sub.first} in #{met.first}" if debug
           dependent_split = dependent.split('_or_')
           met.drop(3).each {|dec|
-            (dec = dec[4]).each_with_index {|subtask,i| dec[i] = [sub[0], *sub[1]] if dependent_split.include?(subtask.first)}
+            dec[4].map! {|subtask| dependent_split.include?(subtask.first) ? [sub[0], *sub[1]] : subtask}
           }
         end
       end
