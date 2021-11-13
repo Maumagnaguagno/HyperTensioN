@@ -161,7 +161,7 @@ module HDDL_Parser
       end
     end
     raise "Missing task #{name}" unless method = @methods.assoc(name)
-    method << [label, free_variables = [], pos = [], neg = [], subtasks ||= []]
+    method << [label, free_variables = [], pos = [], neg = []]
     if parameters
       raise "Error with #{name} parameters" unless parameters.instance_of?(Array)
       raise "Unexpected hyphen in #{name} parameters" if parameters.first == HYPHEN
@@ -202,13 +202,14 @@ module HDDL_Parser
       }
     end
     # Subtasks
-    raise "Error with #{name} subtasks" unless subtasks.instance_of?(Array)
-    unless subtasks.empty?
+    raise "Error with #{name} subtasks" unless (subtasks ||= []).instance_of?(Array)
+    if subtasks.empty? then method.last << subtasks
+    else
       # Conjunction or atom
       subtasks.first == AND ? subtasks.shift : subtasks = [subtasks]
       # Ordering
       parse_ordering(name, ordering, subtasks) if ordering
-      subtasks.map! {|t| (t[1].instance_of?(Array) ? t[1] : t).map! {|i| variables.find {|j| j == i} || free_variables.find {|j| j == i} || i}}
+      method.last << subtasks.map! {|t| (t[1].instance_of?(Array) ? t[1] : t).map! {|i| variables.find {|j| j == i} || free_variables.find {|j| j == i} || i}}
     end
     free_variables.each {|i| i.sub!('?','?free_') if method[1].include?(i)}
     variables.zip(method[1]) {|i,j| i.replace(j)}
