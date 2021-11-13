@@ -279,7 +279,7 @@ module Cyber_Compiler
         end
         comparison << pre
       elsif k
-        if k.first.empty? then define_state_const << "\nstatic VALUE0 #{pre} = #{k ? true : false};"
+        if k.first.empty? then define_state_const << "\nstatic VALUE0 #{pre} = true;"
         else
           define_state_const << "\nstatic VALUE#{arity[pre] ||= k.first.size} #{pre == '=' ? 'equal' : pre}\n{\n  #{k.map {|terms| terms_to_hyper(terms)}.join(",\n  ")}\n};"
           tokens.concat(k.flatten(1))
