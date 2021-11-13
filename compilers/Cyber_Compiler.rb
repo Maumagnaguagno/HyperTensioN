@@ -272,17 +272,18 @@ module Cyber_Compiler
           define_delete << "\n  if(old_state->#{pre} != state->#{pre}) delete state->#{pre}"
           define_start << "\n  start.#{pre} = new VALUE#{a}"
           if k
-            define_start << "\n  {\n    #{k.map {|value| terms_to_hyper(value)}.join(",\n    ")}\n  }"
-            tokens.concat(*k)
+            define_start << "\n  {\n    #{k.map {|terms| terms_to_hyper(terms)}.join(",\n    ")}\n  }"
+            tokens.concat(k.flatten(1))
           end
           define_start << ';'
         end
         comparison << pre
       elsif k
         if k.first.empty? then define_state_const << "\nstatic VALUE0 #{pre} = #{k ? true : false};"
-        else define_state_const << "\nstatic VALUE#{arity[pre] ||= k.first.size} #{pre == '=' ? 'equal' : pre}\n{\n  #{k.map {|value| terms_to_hyper(value)}.join(",\n  ")}\n};"
+        else
+          define_state_const << "\nstatic VALUE#{arity[pre] ||= k.first.size} #{pre == '=' ? 'equal' : pre}\n{\n  #{k.map {|terms| terms_to_hyper(terms)}.join(",\n  ")}\n};"
+          tokens.concat(k.flatten(1))
         end
-        tokens.concat(*k)
       end
     }
     template.sub!('<STATE>', define_state << define_state_bits)
