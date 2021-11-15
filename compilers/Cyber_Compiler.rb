@@ -365,7 +365,7 @@ module Cyber_Compiler
 
 #define yield(subtasks)            \\
   Task *plan = planning(subtasks); \\
-  if(plan != NULL)                 \\
+  if(plan)                         \\
   {                                \\
     next_plan = plan;              \\
     return true;                   \\
@@ -425,7 +425,7 @@ static void print_task(const VALUE value, const VALUE *parameters)
 static Task* planning(Task *tasks)
 {
   // Empty tasks
-  if(tasks == NULL)
+  if(!tasks)
   {
 #ifdef DEBUG
     puts("Empty tasks");
@@ -457,7 +457,7 @@ static Task* planning(Task *tasks)
     if(domain[tasks->value](tasks->parameters, NULL))
     {
       Task *plan = planning(tasks->next);
-      if(plan != NULL)
+      if(plan)
       {
         if(tasks->value < INVISIBLE_BASE_INDEX)
         {
@@ -493,7 +493,7 @@ int main(void)
   puts("Planning");
   Task *result = planning(<TASK0>);
   // Print plan
-  if(result != NULL)
+  if(result)
   {
     if(result == &empty)
     {
