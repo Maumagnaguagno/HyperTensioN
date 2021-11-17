@@ -6,7 +6,7 @@ module Cyber_Compiler
   #-----------------------------------------------
 
   def term(term)
-    term.start_with?('?') ? term.tr('?','_') : term.upcase
+    term.start_with?('?') ? term.tr('?','_') : "t_#{term}"
   end
 
   #-----------------------------------------------
@@ -303,12 +303,10 @@ module Cyber_Compiler
     tasks.drop(1).each {|_,*terms| tokens.concat(terms)}
     goal_pos.each {|_,*terms| tokens.concat(terms)}
     goal_not.each {|_,*terms| tokens.concat(terms)}
-    tokens_str = ''
     tokens.uniq!
-    tokens.each_with_index {|t,i| tokens_str << "\n#define #{t == '=' ? 'EQUAL' : t.upcase} #{i}"}
+    template.sub!('<TOKENS>', tokens.map {|t| t == '=' ? 'equal' : t}.join(",\n  t_"))
     template.sub!('<TOKEN_MAX_SIZE>', (tokens.max_by(&:size).size + 1).to_s)
-    template.sub!('<TOKENS>', tokens_str)
-    template.sub!('<STRINGS>', tokens.map! {|i| "\"#{i}\""}.join(",\n  "))
+    template.sub!('<STRINGS>', tokens.join("\",\n  \""))
     (arity = arity.values).uniq!
     arity.sort!
     arity.shift while arity[0]&.< 2
@@ -379,10 +377,13 @@ module Cyber_Compiler
 
 #define malloc_test(condition) if(!(condition)) error("Malloc error")
 
-// Tokens<TOKENS>
+// Tokens
+enum {
+  t_<TOKENS>
+};
 
 static const char tokens[][<TOKEN_MAX_SIZE>] = {
-  <STRINGS>
+  "<STRINGS>"
 };
 
 typedef unsigned <VALUE_TYPE> VALUE;
