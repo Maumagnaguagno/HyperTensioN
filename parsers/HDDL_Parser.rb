@@ -285,7 +285,7 @@ module HDDL_Parser
             }
           }
           raise 'Repeated object definition' if @objects.uniq!
-          @state[EQUAL] = @objects.map {|obj| [obj, obj]} if @predicates.include?(EQUAL)
+          @state[EQUAL] = @objects.zip(@objects) if @predicates.include?(EQUAL)
         when ':init'
           group.shift
           group.each {|pre| (@state[pre.shift.freeze] ||= []) << pre}
