@@ -13,12 +13,14 @@ module Typredicate
       next if name.start_with?('invisible_')
       operator_types[name] = types = {}
       precond_pos.each {|terms| types[terms.last] ||= terms.first if terms.size == 2 and not predicates[terms.first]}
-      precond_pos.each {|terms| (new_predicates[terms.first] ||= []) << types.values_at(*terms.drop(1))}
+      precond_pos.each {|terms|
+        values = types.values_at(*terms.drop(1))
+        (new_predicates[terms.first] ||= []) << values unless values.include?(nil)
+      }
     }
     transformations = {}
     new_predicates.each {|pre,types|
       types.uniq!
-      types.reject! {|t| t.include?(nil)}
       next if types.size == 1
       if (supertypes & types.flatten(1).uniq).empty?
         types.each {|t| predicates[transformations[t] = t.unshift(pre).join('_')] = predicates[pre] if t.all? {|p| state.include?(p)}}
