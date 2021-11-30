@@ -196,7 +196,7 @@ module Continuous
 
   def insert_ordered(array, n)
     value = n[3]
-    array.insert((0...array.size).bsearch {|i| value < array[i][3]} || array.size, n)
+    array.insert(array.bsearch_index {|i| value < i[3]} || array.size, n)
   end
 
   def axioms_protected_at_time?(time)
