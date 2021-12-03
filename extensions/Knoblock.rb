@@ -86,9 +86,7 @@ module Knoblock
 
   def dot(graph)
     graph_str = "digraph G {\n"
-    graph.each {|k,v|
-      graph_str << "  \"#{dot_str(k)}\" -> {#{"\"#{v.map {|i| dot_str(i)}.join('" "')}\"" unless v.empty?}}\n"
-    }
+    graph.each {|k,v| graph_str << "  \"#{dot_str(k)}\" -> {\"#{v.map {|i| dot_str(i)}.join('" "')}\"}\n" unless v.empty?}
     graph_str << '}'
   end
 
