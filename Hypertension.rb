@@ -143,7 +143,7 @@ end
 
   def generate(precond_pos, precond_not, *free)
     # Free variable to set of values
-    objects = free.map {|i| [i]}
+    objects = free.product
     # Unification by positive preconditions
     match_objects = []
     precond_pos.each {|pre,*terms|
