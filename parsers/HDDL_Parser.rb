@@ -65,7 +65,7 @@ module HDDL_Parser
         # Convert type hierarchy to initial state predicates
         ti = 0
         while type = types[ti]
-          @types.each {|t| types << t.last if t.first == type and not types.include?(t.last)}
+          @types.each {|sub,t| types << t if sub == type and not types.include?(t)}
           ti += 1
         end
         while o = @objects[index]
