@@ -211,7 +211,7 @@ module HDDL_Parser
       parse_ordering(name, ordering, subtasks) if ordering
       method.last << subtasks.map! {|t| (t[1].instance_of?(Array) ? t[1] : t).map! {|i| variables.find {|j| j == i} || free_variables.find {|j| j == i} || i}}
     end
-    free_variables.each {|i| i.sub!('?','?free_') if method[1].include?(i)}
+    free_variables.each {|i| i.insert(1,'free_') if method[1].include?(i)}
     variables.zip(method[1]) {|i,j| i.replace(j)}
   end
 
