@@ -19,7 +19,7 @@ This project was inspired by [Pyhop] and [JSHOP].
 - [**ToDo's**](#todos "Jump to ToDo's section"): small list of things to be done
 
 More details can be found in the [docs](docs) folder:
-- [**Custom Domain**](docs/Custom.md): features explained while describing a domain with HyperTensioN in Ruby
+- [**Custom Domain**](docs/Custom.md): features explained while describing a domain in Ruby
 - [**Intermediate Representation**](docs/Representation.md): internal structures used by Hype
 - [**International Planning Competition 2020**](docs/IPC.md): how the planner was executed and results
 
@@ -203,10 +203,14 @@ Both cases are supported, but HyperTensioN evaluates the preconditions of each s
 In order to copy this behavior one would need to declare the methods in the same Ruby method (losing label definition), which could decrease readability.
 [JSHOP] axioms and external calls are not supported, such features are part of [HyperTensioN U](../../../HyperTensioN_U).
 
-One can always not believe the Hype and convert descriptions manually, following a style that achieves a better or faster solution.
-Counters in methods can be used to return after generate unified a certain amount of times a specific value.
+One can always not believe the Hype and [convert descriptions manually](docs/Custom.md), following a style that achieves a better or faster solution.
+Counters in methods can be used to return after a certain amount of unifications is decomposed without success.
 It is possible to support [JSHOP] behavior putting several generators in one method and returning if the previous one ever unified.
 Hype can do most of the boring optimizations so one can focus on the details.
+
+Hints:
+- Increase stack size with ``RUBY_THREAD_VM_STACK_SIZE`` or ``ulimit`` to avoid overflows in large planning instances.
+- Execute the interpreter with the ``--disable=all`` flag to load it faster.
 
 ### Parsers
 Parsers are modules that read planning descriptions and convert the information to an [Intermediate Representation].

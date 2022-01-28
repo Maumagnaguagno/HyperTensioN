@@ -361,5 +361,3 @@ Here are some hints to describe a domain:
 - Empty predicate arrays must be declared in the initial state at the problem file. This avoids predicate typos, as all predicates must be previously defined.
 - Explore further using ``Hash.compare_by_identity`` on domain.
 - Use different state structures to speed-up state operations and implement custom state duplication, ``applicable`` and ``apply`` operations to better describe the domain.
-- Increase stack size with ``RUBY_THREAD_VM_STACK_SIZE`` or ``ulimit`` to avoid overflows in large planning instances.
-- Execute the interpreter with the ``--disable=all`` flag to load it faster.
