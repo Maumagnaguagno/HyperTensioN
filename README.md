@@ -170,6 +170,10 @@ ruby Hype.rb examples/basic/basic.jshop examples/basic/pb1.jshop run
 ruby Hype.rb examples/basic/basic.jshop examples/basic/pb1.jshop debug
 ```
 
+If the execution displays the message ``Planning failed, try with more stack``, check for mistakes in your description.
+If the message persists, increase stack size with ``RUBY_THREAD_VM_STACK_SIZE`` or ``ulimit`` to avoid overflows in large planning instances.
+The interpreter loads slightly faster with the ``--disable=all`` flag.
+
 Hype is composed of:
 
 **Parsers**:
@@ -207,10 +211,6 @@ One can always not believe the Hype and [convert descriptions manually](docs/Cus
 Counters in methods can be used to return after a certain amount of unifications is decomposed without success.
 It is possible to support [JSHOP] behavior putting several generators in one method and returning if the previous one ever unified.
 Hype can do most of the boring optimizations so one can focus on the details.
-
-Hints:
-- Increase stack size with ``RUBY_THREAD_VM_STACK_SIZE`` or ``ulimit`` to avoid overflows in large planning instances.
-- Execute the interpreter with the ``--disable=all`` flag to load it faster.
 
 ### Parsers
 Parsers are modules that read planning descriptions and convert the information to an [Intermediate Representation].
