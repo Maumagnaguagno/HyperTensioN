@@ -14,7 +14,6 @@ This project was inspired by [Pyhop] and [JSHOP].
 - [**Algorithm**](#algorithm "Jump to Algorithm section"): planning algorithm explanation
 - [**API**](#api "Jump to API section"): variables and methods defined by HyperTensioN
 - [**Hype**](#hype "Jump to Hype section"): follow the Hype and let domain and problem be converted and executed automagically
-- [**Hints**](#hints "Jump to Hints section"): a list of hints to keep in mind
 - [**Comparison**](#comparison "Jump to Comparison section"): brief comparison with JSHOP and Pyhop
 - [**Changelog**](#changelog "Jump to Changelog section"): small list of things that happened
 - [**ToDo's**](#todos "Jump to ToDo's section"): small list of things to be done
@@ -205,7 +204,7 @@ In order to copy this behavior one would need to declare the methods in the same
 [JSHOP] axioms and external calls are not supported, such features are part of [HyperTensioN U](../../../HyperTensioN_U).
 
 One can always not believe the Hype and convert descriptions manually, following a style that achieves a better or faster solution.
-Counters in methods can be used to return after generate unified a certain amoung of times a specific value.
+Counters in methods can be used to return after generate unified a certain amount of times a specific value.
 It is possible to support [JSHOP] behavior putting several generators in one method and returning if the previous one ever unified.
 Hype can do most of the boring optimizations so one can focus on the details.
 
@@ -281,21 +280,6 @@ Any compiler have access to the parser attributes, which means one module can op
 In fact this is the core idea behind Hype, be able to parse, extend and compile domains without having to worry about language support.
 Future languages compatible with the [Intermediate Representation] format could be supported by just adding a new parser and compiler.
 The compiler is expected to not modify the representation, use an extension to achieve such result.
-
-## Hints
-Here are some hints to describe a domain:
-- Reuse objects in variables to compare faster (pointer comparison), only works for constant objects.
-- Use Symbols or constant frozen Strings, avoid repeated Strings in memory.
-- Check the method decomposition order, otherwise time will be lost before decomposing to the correct path.
-- Use preconditions wisely, no need to test twice using a smart method decomposition, check out [And-or Trees](https://en.wikipedia.org/wiki/And%E2%80%93or_tree).
-- Unifications are costly, avoid generate, match values once and propagate or use a custom unification process.
-- Declare even empty preconditions and effects, use ``[]``.
-- Empty predicate arrays must be declared in the initial state at the problem file. This avoids predicate typos, as all predicates must be previously defined.
-- Explore further using ``Hash.compare_by_identity`` on domain.
-- Use different state structures to speed-up state operations and implement custom state duplication, applicable and apply operations to better describe the domain.
-- Replace the state copy from ``apply`` with ``@state = Marshal.load(Marshal.dump(@state))`` to deep copy any state structure, otherwise keep the current fast version or use a custom implementation.
-- Increase stack size with ``RUBY_THREAD_VM_STACK_SIZE`` or ``ulimit`` to avoid overflows in large planning instances.
-- Execute the interpreter with the ``--disable=all`` flag to load it faster.
 
 ## Comparison
 The main advantage of HyperTensioN is to be able to define behavior in the core language, without custom classes.

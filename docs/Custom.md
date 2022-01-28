@@ -8,7 +8,7 @@ Problems may be in a separate file or generated during run-time.
 Since HyperTensioN uses **metaprogramming**, there is a need to specify which Ruby methods may be used by the [planner](../README.md#algorithm "Jump to Algorithm").
 This specification declares operator visibility and the subtasks of each method in the domain structure.
 
-### Example
+## Example
 Here the [Rescue Robot Robby domain](../examples/robby "Robby folder") is used as a domain example.
 In this domain a rescue robot is called to action.
 The robot is inside an office building trying to check the status of certain locations.
@@ -33,7 +33,7 @@ Robby needs to remember which locations were visited using a recursive descripti
 The base of the recursion happens when the object (Robby) is already at the destination, otherwise use move, enter or exit, mark the position and call the recursion again.
 Locations must be unvisited once the destination is reached to be able to reuse such locations.
 
-### Domain
+## Domain
 The first step is to define all the nodes in the hierarchy.
 Nodes include the basic operators, visit, unvisit and one method to swap positions defined by the **at** predicate:
 
@@ -148,7 +148,7 @@ Instead of returning, the methods yield a subtask list.
 This approach solves the problem of returning several unifications per method call, yielding them as required.
 Be aware that all methods must have the same parameter list, other variables must be bound during run-time (**Lifted preconditions**).
 
-#### No preconditions
+### No preconditions
 This is the simplest case, the method **yields** a subtask list without any test.
 The subtask list may be empty, ``yield []``.
 This example is not part of the current implementation of Robby.
@@ -161,7 +161,7 @@ def swap_at__jump(object, goal)
 end
 ```
 
-#### Ground preconditions
+### Ground preconditions
 Sometimes unique preconditions appear in the last operator of the subtask list.
 One wants to know if such preconditions are satisfied before the execution of several steps to discover if this decomposition leads to a failure.
 Use preconditions as look-aheads, this may create a redundancy with the operators, but saves quite a lot of time if used wisely.
@@ -183,7 +183,7 @@ def swap_at__base(object, goal)
 end
 ```
 
-#### Lifted preconditions
+### Lifted preconditions
 It is impossible to propagate variables all the time, some variables must be bound during run-time.
 Free variables are created as empty strings, being used as pointers to their future values.
 A ``generate(precond_pos, precond_not, *free)`` method will do the hard work, using positive preconditions to find possible values for the free variables, only yielding values that satisfy the preconditions requested.
@@ -225,7 +225,7 @@ def swap_at__recursion_enter(object, goal)
 end
 ```
 
-#### Free Variables?
+### Free Variables?
 Free variables are not natively supported by Ruby.
 A free variable works like a placeholder, once bound it will have a value like any common variable.
 The binding process requires the context to dictate possible values to the variable.
@@ -281,7 +281,7 @@ def swap_at__recursion_enter(_object, _goal)
 end
 ```
 
-### Problem
+## Problem
 With the domain ready it is time the problem, with an initial state and task list.
 The initial state is defined as an Array in which each index represent one predicate while the value is an array of possible terms.
 The task list follows the same principle, an array of each task to be solved.
@@ -349,3 +349,17 @@ To execute the problem 1 of Robby:
 cd HyperTensioN
 ruby examples/robby/pb1.rb
 ```
+
+## Hints
+Here are some hints to describe a domain:
+- Reuse objects in variables to compare faster (pointer comparison), only works for constant objects.
+- Use Symbols or constant frozen Strings, avoid repeated Strings in memory.
+- Check the method decomposition order, otherwise time will be lost while backtracking.
+- Use preconditions wisely, no need to test twice using a smart method decomposition, check out [And-or Trees](https://en.wikipedia.org/wiki/And%E2%80%93or_tree).
+- Unifications are costly, avoid ``generate``, match values once and propagate them or use a custom unification process.
+- Declare even empty preconditions and effects, use ``[]``.
+- Empty predicate arrays must be declared in the initial state at the problem file. This avoids predicate typos, as all predicates must be previously defined.
+- Explore further using ``Hash.compare_by_identity`` on domain.
+- Use different state structures to speed-up state operations and implement custom state duplication, ``applicable`` and ``apply`` operations to better describe the domain.
+- Increase stack size with ``RUBY_THREAD_VM_STACK_SIZE`` or ``ulimit`` to avoid overflows in large planning instances.
+- Execute the interpreter with the ``--disable=all`` flag to load it faster.
