@@ -10,21 +10,21 @@
   )
 
   (:operator (!!visit ?agent ?pos)
-    nil
-    nil
+    ()
+    ()
     ((visited ?agent ?pos))
   )
 
   (:operator (!!unvisit ?agent ?pos)
-    nil
+    ()
     ((visited ?agent ?pos))
-    nil
+    ()
   )
 
   (:method (forward ?agent ?goal)
     base
     ((at ?agent ?goal))
-    nil
+    ()
 
     recursion
     (
@@ -43,7 +43,7 @@
   (:method (backward ?agent ?goal)
     base
     ((at ?agent ?goal))
-    nil
+    ()
 
     recursion
     (
@@ -61,7 +61,7 @@
   (:method (bidirectional_forward ?agent ?goal)
     base
     ((at ?agent ?goal))
-    nil
+    ()
 
     recursion
     (
@@ -80,7 +80,7 @@
   (:method (bidirectional_backward ?agent ?goal)
     base
     ((at ?agent ?goal))
-    nil
+    ()
 
     recursion
     (
@@ -99,10 +99,10 @@
   (:method (meta ?search ?predicate ?agent ?goal)
     base
     ((?predicate ?agent ?goal))
-    nil
+    ()
 
     recursion
-    nil
+    ()
     (
       (?search ?agent ?goal)
     )

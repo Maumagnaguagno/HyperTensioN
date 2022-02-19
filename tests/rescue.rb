@@ -227,26 +227,26 @@ class Rescue < Test::Unit::TestCase
       (in ?beacon ?source)
       (not (reported ?bot ?beacon))
     )
-    nil
+    ()
     (
       (reported ?bot ?beacon)
     )
   )
 
   (:operator (!!#{Patterns::VISIT}_at ?bot ?source)
-    nil
-    nil
+    ()
+    ()
     (
       (visited_at ?bot ?source)
     )
   )
 
   (:operator (!!un#{Patterns::VISIT}_at ?bot ?source)
-    nil
+    ()
     (
       (visited_at ?bot ?source)
     )
-    nil
+    ()
   )
 
   ;------------------------------
@@ -258,7 +258,7 @@ class Rescue < Test::Unit::TestCase
     (
       (at ?bot ?destination)
     )
-    nil
+    ()
   )
 
   (:method (swap_at_until_at ?bot ?destination)
@@ -314,7 +314,7 @@ class Rescue < Test::Unit::TestCase
     (
       (reported ?bot ?beacon)
     )
-    nil
+    ()
   )
 
   (:method (dependency_swap_at_until_at_before_report_for_reported ?bot ?source ?beacon)

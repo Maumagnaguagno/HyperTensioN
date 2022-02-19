@@ -264,35 +264,35 @@ class Painter < Test::Unit::TestCase
   )
 
   (:operator (!!#{Patterns::VISIT}_robot-at ?r ?x)
-    nil
-    nil
+    ()
+    ()
     (
       (visited_robot-at ?r ?x)
     )
   )
 
   (:operator (!!un#{Patterns::VISIT}_robot-at ?r ?x)
-    nil
+    ()
     (
       (visited_robot-at ?r ?x)
     )
-    nil
+    ()
   )
 
   (:operator (!!#{Patterns::VISIT}_clear ?y)
-    nil
-    nil
+    ()
+    ()
     (
       (visited_clear ?y)
     )
   )
 
   (:operator (!!un#{Patterns::VISIT}_clear ?y)
-    nil
+    ()
     (
       (visited_clear ?y)
     )
-    nil
+    ()
   )
 
   ;------------------------------
@@ -304,7 +304,7 @@ class Painter < Test::Unit::TestCase
     (
       (robot-at ?r ?y)
     )
-    nil
+    ()
   )
 
   (:method (swap_robot-at_until_robot-at ?r ?y)
@@ -377,7 +377,7 @@ class Painter < Test::Unit::TestCase
       (up ?y ?x)
       (clear ?x)
     )
-    nil
+    ()
   )
 
   (:method (swap_robot-at_until_clear ?r ?y)
@@ -450,7 +450,7 @@ class Painter < Test::Unit::TestCase
       (up ?y ?x)
       (robot-at ?r ?y)
     )
-    nil
+    ()
   )
 
   (:method (swap_clear_until_robot-at ?x)
@@ -522,7 +522,7 @@ class Painter < Test::Unit::TestCase
     (
       (clear ?x)
     )
-    nil
+    ()
   )
 
   (:method (swap_clear_until_clear ?x)
@@ -594,7 +594,7 @@ class Painter < Test::Unit::TestCase
     (
       (painted ?y ?c)
     )
-    nil
+    ()
   )
 
   (:method (dependency_change-color_before_paint-up_or_paint-down_for_painted ?r ?c ?c2 ?y ?x)
@@ -668,7 +668,7 @@ class Painter < Test::Unit::TestCase
     (
       (painted ?y ?c)
     )
-    nil
+    ()
   )
 
   (:method (dependency_swap_robot-at_until_robot-at_before_paint-up_or_paint-down_for_painted ?r ?x ?y ?c)

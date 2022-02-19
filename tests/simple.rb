@@ -230,7 +230,7 @@ class Simple < Test::Unit::TestCase
     (
       (not (have ?a))
     )
-    nil
+    ()
     (
       (have ?a)
     )
@@ -243,43 +243,43 @@ class Simple < Test::Unit::TestCase
     (
       (have ?a)
     )
-    nil
+    ()
   )
 
   (:operator (!!#{Dummy::VISIT}_pickup_1 ?a)
     (
       (not (visited_pickup_1 ?a))
     )
-    nil
+    ()
     (
       (visited_pickup_1 ?a)
     )
   )
 
   (:operator (!!un#{Dummy::VISIT}_pickup_1 ?a)
-    nil
+    ()
     (
       (visited_pickup_1 ?a)
     )
-    nil
+    ()
   )
 
   (:operator (!!#{Dummy::VISIT}_drop_1 ?a)
     (
       (not (visited_drop_1 ?a))
     )
-    nil
+    ()
     (
       (visited_drop_1 ?a)
     )
   )
 
   (:operator (!!un#{Dummy::VISIT}_drop_1 ?a)
-    nil
+    ()
     (
       (visited_drop_1 ?a)
     )
-    nil
+    ()
   )
 
   ;------------------------------
@@ -291,7 +291,7 @@ class Simple < Test::Unit::TestCase
     (
       (have banjo)
     )
-    nil
+    ()
   )
 
   (:method (perform_goal_have_banjo )
@@ -328,7 +328,7 @@ class Simple < Test::Unit::TestCase
   ; Start
   ;------------------------------
 
-  nil
+  ()
 
   ;------------------------------
   ; Tasks

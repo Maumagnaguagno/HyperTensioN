@@ -21,7 +21,6 @@ module JSHOP_Parser
         list = []
       when ')'
         stack.empty? ? raise('Missing open parentheses') : list = stack.pop << list
-      when 'nil' then list << []
       else list << t
       end
     }

@@ -205,7 +205,7 @@ class Dependent < Test::Unit::TestCase
     (
       (have ?a ?x)
     )
-    nil
+    ()
   )
 
   (:method (dependency_work_before_buy_for_have ?a ?x)
@@ -238,7 +238,7 @@ class Dependent < Test::Unit::TestCase
     (
       (have ?b ?x)
     )
-    nil
+    ()
   )
 
   (:method (dependency_buy_before_give_for_have ?a ?x ?b)
@@ -273,7 +273,7 @@ class Dependent < Test::Unit::TestCase
     (
       (happy ?b)
     )
-    nil
+    ()
   )
 
   (:method (dependency_buy_before_give_for_happy ?a ?x ?b)
