@@ -206,6 +206,7 @@ Methods may be broken into several independent blocks or in the same block witho
 Both cases are supported, but HyperTensioN evaluates the preconditions of each set independently while [JSHOP] only evaluates the last if the previous ones evaluated to false in the same block.
 In order to copy this behavior one would need to declare the methods in the same Ruby method (losing label definition), which could decrease readability.
 [JSHOP] axioms and external calls are not supported, such features are part of [HyperTensioN U](../../../HyperTensioN_U).
+All [symbolic expression](https://en.wikipedia.org/wiki/S-expression) parsers can be faster with [Ichor](../../../Ichor), using ``ruby -r path/ichor Hype.rb ...`` and uncommenting their Ichor related lines.
 
 One can always not believe the Hype and [convert descriptions manually](docs/Custom.md), following a style that achieves a better or faster solution.
 Counters in methods can be used to return after a certain amount of unifications is decomposed without success.
@@ -234,8 +235,8 @@ module Foo_Parser
 end
 ```
 
-With the parser completed, it needs to be connected with Hype based on the file extensions of the files provided.
-It is expected that domain and problem files have the same extension to avoid incomplete data from mixed inputs.
+With the parser completed, it needs to be connected with Hype to be selected based on the domain and problem file extensions.
+Domain and problem files are expected to have the same extension to avoid incomplete data from mixed inputs.
 The parser is responsible for file reading to allow uncommon, but possible, binary files.
 Since parsers create structures no value is expected to be returned by ``parse_domain`` and ``parse_problem``.
 
