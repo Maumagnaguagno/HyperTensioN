@@ -9,14 +9,14 @@ module Typredicate
     (supertypes = (PDDL_Parser.types || HDDL_Parser.types || return).map(&:last)).uniq!
     new_predicates = {}
     operator_types = {}
-    operators.each {|name,_,precond_pos,precond_not|
+    operators.each {|name,_,precond_pos,precond_not,effect_add,effect_del|
       next if name.start_with?('invisible_')
       operator_types[name] = types = {}
       precond_pos.each {|terms| types[terms.last] ||= terms.first if terms.size == 2 and not predicates[terms.first]}
-      precond_pos.each {|terms|
-        values = types.values_at(*terms.drop(1))
-        (new_predicates[terms.first] ||= []) << values unless values.include?(nil)
-      }
+      find_types(precond_pos, types, new_predicates)
+      find_types(precond_not, types, new_predicates)
+      find_types(effect_add, types, new_predicates)
+      find_types(effect_del, types, new_predicates)
     }
     transformations = {}
     new_predicates.each {|pre,types|
@@ -57,6 +57,21 @@ module Typredicate
     }
     state.merge!(new_state)
   end
+
+  #-----------------------------------------------
+  # Find types
+  #-----------------------------------------------
+
+  def find_types(group, types, new_predicates)
+    group.each {|terms|
+      values = types.values_at(*terms.drop(1))
+      (new_predicates[terms.first] ||= []) << values unless values.include?(nil)
+    }
+  end
+
+  #-----------------------------------------------
+  # Ground transform
+  #-----------------------------------------------
 
   def ground_transform(state, group, transformations)
     group.each {|terms|
