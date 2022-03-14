@@ -63,9 +63,9 @@ module Typredicate
   #-----------------------------------------------
 
   def find_types(group, types, new_predicates)
-    group.each {|terms|
-      values = types.values_at(*terms.drop(1))
-      (new_predicates[terms.first] ||= []) << values unless values.include?(nil)
+    group.each {|pre,*terms|
+      values = types.values_at(*terms)
+      (new_predicates[pre] ||= []) << values unless values.include?(nil)
     }
   end
 
