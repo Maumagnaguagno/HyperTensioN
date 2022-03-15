@@ -121,14 +121,12 @@ module Patterns
     # Avoid methods for simple goals
     goal_pos_complex = goal_pos.reject {|goal,|
       operators.any? {|op|
-        precond_not = op[3].select {|pre,| predicates[pre]}
-        op[4].assoc(goal) and op[2].none? {|pre,| predicates[pre]} and (precond_not.empty? or (precond_not.size == 1 and precond_not.first.first == goal))
+        op[4].assoc(goal) and op[2].none? {|pre,| predicates[pre]} and ((precond_not = op[3].select {|pre,| predicates[pre]}).empty? or (precond_not.size == 1 and precond_not.first.first == goal))
       }
     }
     goal_not_complex = goal_not.reject {|goal,|
       operators.any? {|op|
-        precond_pos = op[2].select {|pre,| predicates[pre]}
-        op[5].assoc(goal) and op[3].none? {|pre,| predicates[pre]} and (precond_pos.empty? or (precond_pos.size == 1 and precond_pos.first.first == goal))
+        op[5].assoc(goal) and op[3].none? {|pre,| predicates[pre]} and ((precond_pos = op[2].select {|pre,| predicates[pre]}).empty? or (precond_pos.size == 1 and precond_pos.first.first == goal))
       }
     }
     # Find every method that contains a relevant action in the subtasks
