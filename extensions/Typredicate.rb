@@ -50,12 +50,12 @@ module Typredicate
         precond_not.each {|terms| pre = terms.shift; terms.unshift(transformations[types.values_at(*terms).unshift(pre)] || pre)}
       }
     }
-    new_state = Hash.new {|h,k| h[k] = []}
     transformations.each {|(tpre,*tterms),v|
-      state[tpre]&.each {|terms| new_state[v] << terms unless tterms.zip(terms) {|t| break true unless state[t.shift].include?(t)}}
+      n = []
+      state[tpre]&.each {|terms| n << terms unless tterms.zip(terms) {|t| break true unless state[t.shift].include?(t)}}
+      state[v] = n unless n.empty?
       predicates.delete(tpre)
     }
-    state.merge!(new_state)
   end
 
   #-----------------------------------------------
