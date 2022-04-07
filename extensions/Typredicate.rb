@@ -51,9 +51,8 @@ module Typredicate
       }
     }
     transformations.each {|(tpre,*tterms),v|
-      n = []
-      state[tpre]&.each {|terms| n << terms unless tterms.zip(terms) {|t| break true unless state[t.shift].include?(t)}}
-      state[v] = n unless n.empty?
+      n = state[tpre]&.reject {|terms| tterms.zip(terms) {|t| break true unless state[t.shift].include?(t)}}
+      state[v] = n if n and not n.empty?
       predicates.delete(tpre)
     }
   end
