@@ -148,8 +148,9 @@ Extensions:
   dejavu      - add invisible visit operators
   wise        - warn and fix description mistakes
   macro       - optimize operator sequences
-  pullup      - optimize preconditions
+  warp        - optimize unification
   typredicate - optimize typed predicates
+  pullup      - optimize structure based on preconditions
   grammar     - print hierarchical structure grammar
   complexity  - print estimated complexity of planning description
 ```
