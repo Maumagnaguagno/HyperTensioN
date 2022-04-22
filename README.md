@@ -188,8 +188,9 @@ Hype is composed of:
 - Dejavu (add invisible visit/unvisit operators to avoid repeated decompositions)
 - Wise (warn and fix description mistakes)
 - Macro (optimize operator sequences to speed up decomposition)
-- Pullup (optimize preconditions to avoid backtracking)
+- Warp (optimize unification with parameter splitting)
 - Typredicate (optimize typed predicates)
+- Pullup (optimize structure based on preconditions to avoid backtracking)
 - Grammar (print domain methods as [production rules](https://en.wikipedia.org/wiki/Production_(computer_science)))
 - Complexity (print domain, problem and total complexity based on amount of terms)
 

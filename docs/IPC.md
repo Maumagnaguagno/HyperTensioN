@@ -22,6 +22,7 @@ Currently, the first 5 of 12 Entertainment instances are solved in less than a s
 All 20 Monroe-Fully-Observable instances are solvable, most in few seconds and the last two in 32s.
 The Monroe-Partially-Observable instances are still not solvable within a 1800s time limit.
 Other domains are unaffected by this change.
+The following table does not represent the current state of HyperTensioN, due to new extensions and compilers, only the difference between the IPC results and the bug fixes that happened soon after the competition.
 
 Domain/Planner | Total | HyperTensioN (2.1) | HyperTensioN (IPC) | Lilotane | PDDL4J-TO | PDDL4J-PO | HPDL | pyHiPOP
 --- | --- | --- | --- | --- | --- | --- | --- | ---
