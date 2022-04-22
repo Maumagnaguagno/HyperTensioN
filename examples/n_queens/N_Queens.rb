@@ -73,7 +73,7 @@ if $0 == __FILE__
   size = ARGV.first ? ARGV.first.to_i : 8
   N_Queens.solve(size, ARGV.last == 'debug', true)
   # Draw from row size - 1 to 0
-  N_Queens.state[:queen].reverse_each {|i,j|
+  N_Queens.state[:queen].reverse_each {|i,|
     row = '[ ]' * size
     row[i * 3 + 1] = 'Q'
     puts row
