@@ -27,12 +27,12 @@ module Warp
           precond_p.each {|pre| pre.each {|t| f << t if t.start_with?('?') and not param.include?(t)}}
           precond_n.each {|pre| pre.each {|t| f << t if t.start_with?('?') and not param.include?(t)}}
           f.uniq!
+          free.replace(free - f)
           # Find preconditions with related variables
           precond_pos.reject! {|pre| precond_p << pre if pre.any? {|t| f.include?(t)}}
           precond_not.reject! {|pre| precond_n << pre if pre.any? {|t| f.include?(t)}}
           # It is just a jump to the left, and a step to the right
           if i != 0
-            free.replace(free - f)
             unless f.empty?
               new_tasks << [new_name = "warp_#{name}_#{label}_#{i}", *param]
               new_methods << [new_name, param, ['warp', f - param, precond_p, precond_n, new_tasks = []]]
@@ -45,9 +45,9 @@ module Warp
           param += f
           new_tasks << sub
         }.replace(top)
-        free.replace(top_variables)
-        precond_pos.replace(top_precond_p)
-        precond_not.replace(top_precond_n)
+        free.concat(top_variables)
+        precond_pos.concat(top_precond_p)
+        precond_not.concat(top_precond_n)
         param = old_param
       }
     }.concat(new_methods)
