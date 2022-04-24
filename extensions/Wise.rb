@@ -5,12 +5,12 @@ module Wise
   # Apply
   #-----------------------------------------------
 
-  def apply(operators, methods, predicates, state, tasks, goal_pos, goal_not, debug = false)
+  def apply(operators, methods, predicates, state, tasks, goal_pos, goal_not, debug = true)
     puts 'Wise'.center(50,'-') if debug
     # Initial state
     state.reject! {|pre,k|
       if predicates.include?(pre)
-        # Duplicate predicate
+        # Duplicates
         puts "Initial state contains duplicate predicates (#{pre} ...): removed" if k.uniq! and debug
         # Arity check
         puts "Initial state contains (#{pre} ...) with different arity" if k.any? {|i| i.size != k.first.size} and debug
@@ -23,8 +23,14 @@ module Wise
     # Operators
     noops = []
     operators.reject! {|name,param,precond_pos,precond_not,effect_add,effect_del|
-      prefix_variables(opname = "operator #{name}", param, debug)
+      prefix_variables(opname = "Operator #{name}", param, debug)
       define_variables(opname, param, [precond_pos, precond_not, effect_add, effect_del], debug)
+      # Duplicates
+      puts "#{opname} contains duplicate parameter: removed" if param.uniq! and debug
+      puts "#{opname} contains duplicate positive precondition: removed" if precond_pos.uniq! and debug
+      puts "#{opname} contains duplicate negative precondition: removed" if precond_not.uniq! and debug
+      puts "#{opname} contains duplicate add effect: removed" if effect_add.uniq! and debug
+      puts "#{opname} contains duplicate del effect: removed" if effect_del.uniq! and debug
       # Precondition contradiction
       (precond_pos & precond_not).each {|pre| puts "#{opname} precondition contains contradicting (#{pre.join(' ')})"} if debug
       # Remove null del effect
@@ -45,8 +51,8 @@ module Wise
           true
         end
       }
-      # Unknown previous state of effect
-      if debug
+      # Unknown previous state of effect, useful for classical instances
+      if debug and methods.empty?
         precond_all = precond_pos | precond_not
         (effect_add - precond_all).each {|pre| puts "#{opname} contains side effect (#{pre.join(' ')})"}
         (effect_del - precond_all).each {|pre| puts "#{opname} contains side effect (not (#{pre.join(' ')}))"}
@@ -59,10 +65,16 @@ module Wise
     }
     # Methods
     methods.each {|name,param,*decompositions|
-      prefix_variables(name = "method #{name}", param, debug)
+      prefix_variables(name = "Method #{name}", param, debug)
+      # Duplicates
+      puts "#{name} contains duplicate parameter: removed" if param.uniq! and debug
       decompositions.each {|label,free,precond_pos,precond_not,subtasks|
         prefix_variables(label = "#{name} #{label}", free, debug)
         define_variables(label, param + free, [precond_pos, precond_not, subtasks], debug)
+        # Duplicates
+        puts "#{label} contains duplicate free variable: removed" if free.uniq! and debug
+        puts "#{label} contains duplicate positive precondition: removed" if precond_pos.uniq! and debug
+        puts "#{label} contains duplicate negative precondition: removed" if precond_not.uniq! and debug
         free.reject! {|v|
           if param.include?(v)
             puts "#{label} free variable shadowing parameter #{p}: removed" if debug
