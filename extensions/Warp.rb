@@ -12,7 +12,7 @@ module Warp
     methods.each {|name,param,*decompositions|
       old_param = param
       decompositions.each {|label,free,precond_pos,precond_not,subtasks|
-        next if subtasks.size < 2
+        next if subtasks.size < 2 or free.empty?
         top = new_tasks = []
         top_variables = top_precond_p = top_precond_n = nil
         subtasks.each_with_index {|sub,i|
@@ -32,15 +32,13 @@ module Warp
           precond_pos.reject! {|pre| precond_p << pre if pre.any? {|t| f.include?(t)}}
           precond_not.reject! {|pre| precond_n << pre if pre.any? {|t| f.include?(t)}}
           # It is just a jump to the left, and a step to the right
-          if i != 0
-            unless f.empty?
-              new_tasks << [new_name = "warp_#{name}_#{label}_#{i}", *param]
-              new_methods << [new_name, param, ['warp', f - param, precond_p, precond_n, new_tasks = []]]
-            end
-          else
+          if i == 0
             top_variables = f
             top_precond_p = precond_p
             top_precond_n = precond_n
+          elsif not f.empty?
+            new_tasks << [new_name = "warp_#{name}_#{label}_#{i}", *param]
+            new_methods << [new_name, param, ['warp', f - param, precond_p, precond_n, new_tasks = []]]
           end
           param += f
           new_tasks << sub
