@@ -88,7 +88,7 @@ class Sphygmomanometer < Test::Unit::TestCase
     ) {
       assert_equal(expected.shift, [x,y,w,z])
     }
-    assert_equal(true, expected.empty?)
+    assert_true(expected.empty?)
   end
 
   def test_generate_exist
@@ -115,7 +115,7 @@ class Sphygmomanometer < Test::Unit::TestCase
       break if (exist_y ||= y.dup) != y
       assert_equal(expected.shift, [x,y,w,z])
     }
-    assert_equal(true, expected.empty?)
+    assert_true(expected.empty?)
   end
 
   #-----------------------------------------------
@@ -124,21 +124,21 @@ class Sphygmomanometer < Test::Unit::TestCase
 
   def test_applicable_empty
     Hypertension.state = original_state = simple_state
-    assert_equal(true, Hypertension.applicable?([],[]))
+    assert_true(Hypertension.applicable?([],[]))
     # No state was created
     assert_same(original_state, Hypertension.state)
   end
 
   def test_applicable_success
     Hypertension.state = original_state = simple_state
-    assert_equal(true, Hypertension.applicable?([[A,'1']],[[A,'x']]))
+    assert_true(Hypertension.applicable?([[A,'1']],[[A,'x']]))
     # No state was created
     assert_same(original_state, Hypertension.state)
   end
 
   def test_applicable_failure
     Hypertension.state = original_state = simple_state
-    assert_equal(false, Hypertension.applicable?([[A,'1']],[[A,'2']]))
+    assert_false(Hypertension.applicable?([[A,'1']],[[A,'2']]))
     # No state was created
     assert_same(original_state, Hypertension.state)
   end
@@ -150,7 +150,7 @@ class Sphygmomanometer < Test::Unit::TestCase
   def test_apply_empty_effects
     Hypertension.state = original_state = simple_state
     # Successfully applied
-    assert_equal(true, Hypertension.apply([],[]))
+    assert_true(Hypertension.apply([],[]))
     # New state was created
     assert_not_same(original_state, Hypertension.state)
     # Same content
@@ -160,7 +160,7 @@ class Sphygmomanometer < Test::Unit::TestCase
   def test_apply_success
     Hypertension.state = original_state = simple_state
     # Successfully applied
-    assert_equal(true, Hypertension.apply([[A,'y']],[[A,'y']]))
+    assert_true(Hypertension.apply([[A,'y']],[[A,'y']]))
     # New state was created
     assert_not_same(original_state, Hypertension.state)
     # Delete effects must happen before addition, otherwise the effect nullifies itself
@@ -176,7 +176,7 @@ class Sphygmomanometer < Test::Unit::TestCase
   def test_apply_operator_empty_effects
     Hypertension.state = original_state = simple_state
     # Successfully applied
-    assert_equal(true, Hypertension.apply_operator([[A,'1']],[[A,'x']],[],[]))
+    assert_true(Hypertension.apply_operator([[A,'1']],[[A,'x']],[],[]))
     # New state was created
     assert_not_same(original_state, Hypertension.state)
     # Same content
@@ -186,7 +186,7 @@ class Sphygmomanometer < Test::Unit::TestCase
   def test_apply_operator_success
     Hypertension.state = original_state = simple_state
     # Successfully applied
-    assert_equal(true, Hypertension.apply_operator([[A,'1']],[[A,'x']],[[A,'y']],[[A,'y']]))
+    assert_true(Hypertension.apply_operator([[A,'1']],[[A,'x']],[[A,'y']],[[A,'y']]))
     # New state was created
     assert_not_same(original_state, Hypertension.state)
     # Delete effects must happen before addition, otherwise the effect nullifies itself

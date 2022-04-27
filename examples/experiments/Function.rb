@@ -247,43 +247,43 @@ if $0 == __FILE__
     def test_instantaneous
       setup_initial_state
       assert_equal('0.0', function(:x))
-      assert_equal(true, increase(:x, 5))
+      assert_true(increase(:x, 5))
       assert_equal('5.0', function(:x))
-      assert_equal(true, decrease(:x, 3))
+      assert_true(decrease(:x, 3))
       assert_equal('2.0', function(:x))
-      assert_equal(true, scale_up(:x, 2))
+      assert_true(scale_up(:x, 2))
       assert_equal('4.0', function(:x))
-      assert_equal(true, scale_down(:x, 4))
+      assert_true(scale_down(:x, 4))
       assert_equal('1.0', function(:x))
-      assert_equal(true, assign(:x, 10))
+      assert_true(assign(:x, 10))
       assert_equal('10.0', function(:x))
       @state['protect_axiom'] << ['x_less_than', 11]
-      assert_equal(true, axioms_protected?)
+      assert_true(axioms_protected?)
       @state['protect_axiom'] << ['x_less_than', 10]
-      assert_equal(false, axioms_protected?)
+      assert_false(axioms_protected?)
     end
 
     def test_event
       setup_initial_state
-      assert_equal(true, event('scale_up', :x, 2, 10))
-      assert_equal(true, event('increase', :x, 1, 1))
-      assert_equal(true, event('assign', :x, 100, 15))
+      assert_true(event('scale_up', :x, 2, 10))
+      assert_true(event('increase', :x, 1, 1))
+      assert_true(event('assign', :x, 100, 15))
       assert_equal('0.0', function(:x))
       assert_equal('0.0', function(:x, 0.5))
       assert_equal('1.0', function(:x, 1))
       assert_equal('1.0', function(:x, 1.5))
       assert_equal('5.0', function_interval(:x, 0, 6))
       @state['protect_axiom'].push(['x_less_than', 11], ['x_less_than', 11, 1.5])
-      assert_equal(true, axioms_protected?)
+      assert_true(axioms_protected?)
       @state['protect_axiom'] << ['x_less_than', 1, 1.5]
-      assert_equal(false, axioms_protected?)
+      assert_false(axioms_protected?)
       assert_equal('2.0', function(:x, 11))
       assert_equal('100.0', function(:x, 15))
     end
 
     def test_process
       setup_initial_state
-      assert_equal(true, process('increase', :x, :identity, 1, 5))
+      assert_true(process('increase', :x, :identity, 1, 5))
       assert_equal('0.0', function(:x))
       assert_equal('0.0', function(:x, 0.5))
       assert_equal('0.0', function(:x, 1))
@@ -292,64 +292,64 @@ if $0 == __FILE__
       assert_equal('4.0', function(:x, 6))
       assert_equal('14.0', function_interval(:x, 0, 6))
       @state['protect_axiom'].push(['x_less_than', 11], ['x_less_than', 11, 4.5])
-      assert_equal(true, axioms_protected?)
+      assert_true(axioms_protected?)
       @state['protect_axiom'] << ['x_less_than', 4, 6]
-      assert_equal(false, axioms_protected?)
+      assert_false(axioms_protected?)
     end
 
     def test_simultaneous_processes
       setup_initial_state
-      assert_equal(true, process('increase', :x, :identity, 5, 15))
-      assert_equal(true, process('increase', :x, :identity, 10, 20))
+      assert_true(process('increase', :x, :identity, 5, 15))
+      assert_true(process('increase', :x, :identity, 10, 20))
       0.step(25, 0.5) {|i| assert_equal(i < 5 ? 0 : i < 10 ? i - 5 : i < 15 ? i * 2 - 15 : i < 20 ? i : 20, function(:x, i, false))}
     end
 
     def test_at_time
       setup_initial_state
       pre = ['happy', 'you']
-      assert_equal(true, modify(pre, 'false', 1))
-      assert_equal(true, modify(pre, 'true', 5))
-      assert_equal(true, at_time(pre))
-      assert_equal(true, at_time(pre, 0.5))
-      assert_equal(false, at_time(pre, 1))
-      assert_equal(false, at_time(pre, 1.5))
-      assert_equal(true, at_time(pre, 5))
-      assert_equal(true, at_time(pre, 6))
+      assert_true(modify(pre, 'false', 1))
+      assert_true(modify(pre, 'true', 5))
+      assert_true(at_time(pre))
+      assert_true(at_time(pre, 0.5))
+      assert_false(at_time(pre, 1))
+      assert_false(at_time(pre, 1.5))
+      assert_true(at_time(pre, 5))
+      assert_true(at_time(pre, 6))
       @state['protect_axiom'].push(['happy'], ['happy', 6])
-      assert_equal(true, axioms_protected?)
+      assert_true(axioms_protected?)
       @state['protect_axiom'] << ['happy', 2]
-      assert_equal(false, axioms_protected?)
+      assert_false(axioms_protected?)
     end
 
     def test_modify_consistency
       setup_initial_state
       pre = ['happy', 'you']
-      assert_equal(true, modify(pre, 'true', 1))
-      assert_equal(true, modify(pre, 'true', 1))
-      assert_equal(false, modify(pre, 'false', 1))
-      assert_equal(true, modify(pre, 'false', 2))
-      assert_equal(true, modify(pre, 'false', 2))
-      assert_equal(false, modify(pre, 'true', 2))
+      assert_true(modify(pre, 'true', 1))
+      assert_true(modify(pre, 'true', 1))
+      assert_false(modify(pre, 'false', 1))
+      assert_true(modify(pre, 'false', 2))
+      assert_true(modify(pre, 'false', 2))
+      assert_false(modify(pre, 'true', 2))
     end
 
     def test_over_all_predicate
       setup_initial_state
       pre = ['happy', 'you']
-      assert_equal(true, over_all_predicate(pre, 'true', 0, 1))
-      assert_equal(false, over_all_predicate(pre, 'false', 0, 1))
-      assert_equal(false, over_all_predicate(['happy', 'x'], 'true', 0, 1))
-      assert_equal(true, over_all_predicate(['happy', 'x'], 'false', 0, 1))
-      assert_equal(true, modify(pre, 'false', 0.5))
-      assert_equal(false, over_all_predicate(pre, 'true', 0, 1))
-      assert_equal(false, over_all_predicate(pre, 'false', 0, 1))
-      assert_equal(false, over_all_predicate(pre, 'true', 0, 0.5))
-      assert_equal(false, over_all_predicate(pre, 'false', 0, 0.5))
-      assert_equal(false, over_all_predicate(pre, 'true', 0.5, 1))
-      assert_equal(false, over_all_predicate(pre, 'false', 0.5, 1))
-      assert_equal(true, over_all_predicate(pre, 'true', 0, 0.45))
-      assert_equal(false, over_all_predicate(pre, 'false', 0, 0.45))
-      assert_equal(false, over_all_predicate(pre, 'true', 0.55, 1))
-      assert_equal(true, over_all_predicate(pre, 'false', 0.55, 1))
+      assert_true(over_all_predicate(pre, 'true', 0, 1))
+      assert_false(over_all_predicate(pre, 'false', 0, 1))
+      assert_false(over_all_predicate(['happy', 'x'], 'true', 0, 1))
+      assert_true(over_all_predicate(['happy', 'x'], 'false', 0, 1))
+      assert_true(modify(pre, 'false', 0.5))
+      assert_false(over_all_predicate(pre, 'true', 0, 1))
+      assert_false(over_all_predicate(pre, 'false', 0, 1))
+      assert_false(over_all_predicate(pre, 'true', 0, 0.5))
+      assert_false(over_all_predicate(pre, 'false', 0, 0.5))
+      assert_false(over_all_predicate(pre, 'true', 0.5, 1))
+      assert_false(over_all_predicate(pre, 'false', 0.5, 1))
+      assert_true(over_all_predicate(pre, 'true', 0, 0.45))
+      assert_false(over_all_predicate(pre, 'false', 0, 0.45))
+      assert_false(over_all_predicate(pre, 'true', 0.55, 1))
+      assert_true(over_all_predicate(pre, 'false', 0.55, 1))
     end
   end
 end

@@ -89,40 +89,40 @@ if $0 == __FILE__
       assert_equal(24, call(['*', 1, 2, 3, 4]))
       assert_equal(24, evaluate([:call, '*', 1, 2, 3, 4]))
       # (= 5 (+ 2 3))
-      assert_equal(true, call(['==', 5, [:call, '+', 2, 3]]))
-      assert_equal(true, evaluate([:call, '==', 5, [:call, '+', 2, 3]]))
+      assert_true(call(['==', 5, [:call, '+', 2, 3]]))
+      assert_true(evaluate([:call, '==', 5, [:call, '+', 2, 3]]))
       # (= (+ 1 2 3) 6)
-      assert_equal(true, call(['==', [:call, '+', 1, 2, 3], 6]))
-      assert_equal(true, evaluate([:call, '==', [:call, '+', 1, 2, 3], 6]))
+      assert_true(call(['==', [:call, '+', 1, 2, 3], 6]))
+      assert_true(evaluate([:call, '==', [:call, '+', 1, 2, 3], 6]))
       # (= (+ a b c) abc)
-      assert_equal(true, call(['==', [:call, '+', 'a', 'b', 'c'], 'abc']))
-      assert_equal(true, evaluate([:call, '==', [:call, '+', 'a', 'b', 'c'], 'abc']))
+      assert_true(call(['==', [:call, '+', 'a', 'b', 'c'], 'abc']))
+      assert_true(evaluate([:call, '==', [:call, '+', 'a', 'b', 'c'], 'abc']))
     end
 
     def test_quantification_forall?
       # Variable x may assume any value from [1, 2, 3]
       @state = {:number => [['1'],['2'],['3']]}
       # For all numbers x, x != 0
-      assert_equal(true, forall?([[:number, x = '']], [], x) {x.to_i != 0})
+      assert_true(forall?([[:number, x = '']], [], x) {x.to_i != 0})
       # For all numbers x, x != 1
-      assert_equal(false, forall?([[:number, x]], [], x.clear) {x.to_i != 1})
+      assert_false(forall?([[:number, x]], [], x.clear) {x.to_i != 1})
       # For all numbers x, x == 4
-      assert_equal(false, forall?([[:number, x]], [], x.clear) {x.to_i == 4})
+      assert_false(forall?([[:number, x]], [], x.clear) {x.to_i == 4})
       # For all numbers x, x is odd or even
-      assert_equal(true, forall?([[:number, x]], [], x.clear) {x.to_i.odd? or x.to_i.even?})
+      assert_true(forall?([[:number, x]], [], x.clear) {x.to_i.odd? or x.to_i.even?})
     end
 
     def test_quantification_exists?
       # Variable x may assume any value from [1, 2, 3]
       @state = {:number => [['1'],['2'],['3']]}
       # There exists a number x, x != 0
-      assert_equal(true, exists?([[:number, x = '']], [], x) {x.to_i != 0})
+      assert_true(exists?([[:number, x = '']], [], x) {x.to_i != 0})
       # There exists a number x, x != 1
-      assert_equal(true, exists?([[:number, x]], [], x.clear) {x.to_i != 1})
+      assert_true(exists?([[:number, x]], [], x.clear) {x.to_i != 1})
       # There exists a number x, x == 4
-      assert_equal(false, exists?([[:number, x]], [], x.clear) {x.to_i == 4})
+      assert_false(exists?([[:number, x]], [], x.clear) {x.to_i == 4})
       # There exists a number x, x is odd and even
-      assert_equal(false, exists?([[:number, x]], [], x.clear) {x.to_i.odd? and x.to_i.even?})
+      assert_false(exists?([[:number, x]], [], x.clear) {x.to_i.odd? and x.to_i.even?})
     end
   end
 end
