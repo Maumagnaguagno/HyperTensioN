@@ -414,6 +414,11 @@ module Dependency
     true
   end
 
+  def invisible_goal
+    return unless @state[HAPPY].include?(:bob)
+    true
+  end
+
   #-----------------------------------------------
   # Methods
   #-----------------------------------------------
@@ -536,8 +541,5 @@ Dependency.problem(
   ],
   # Debug
   ARGV.first == 'debug'
-) {
-  # Goal
-  Dependency.state[HAPPY].include?(:bob)
-}"
+)"
 end

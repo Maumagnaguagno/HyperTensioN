@@ -298,13 +298,8 @@ module HDDL_Parser
               pre.first != NOT ? @goal_pos << pre : pre.size == 2 ? @goal_not << pre = pre.last : raise('Unexpected not in goal')
               @predicates[pre.first.freeze] ||= false
             }
-            # Ordered tasks with goal require an invisible task
-            if @tasks.first
-              @tasks << [invisible_goal = 'invisible_goal']
-              @operators << [invisible_goal, [], @goal_pos, @goal_not, [], []]
-            end
+            @methods.map! {|name,param,*decompositions| decompositions.sort_by! {|d| d[4].assoc(name) ? 0 : 1}.unshift(name, param)}
           end
-          @methods.map! {|name,param,*decompositions| decompositions.sort_by! {|d| d[4].assoc(name) ? 0 : 1}.unshift(name, param)}
         when ':htn'
           group.shift
           # TODO loop group elements to improve support

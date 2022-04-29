@@ -218,7 +218,7 @@ end
 
 if FAST_OUTPUT
 
-  def problem(state, tasks, debug = false, &goal)
+  def problem(state, tasks, debug = false, ordered = true)
     @nostack = false
     @debug = debug
     @state = state
@@ -226,8 +226,7 @@ if FAST_OUTPUT
     print_data(tasks)
     puts 'Planning'.center(50,'-')
     t = Time.now.to_f
-    # Ordered or unordered tasks
-    plan = block_given? ? task_permutations(state, tasks, &goal) : planning(tasks)
+    plan = ordered ? planning(tasks) : task_permutations(state, tasks)
     puts "Time: #{Time.now.to_f - t}s", 'Plan'.center(50,'-')
     if plan
       if plan.empty? then puts 'Empty plan'
@@ -244,7 +243,7 @@ if FAST_OUTPUT
 
 else
 
-  def problem(state, tasks, debug = false, &goal)
+  def problem(state, tasks, debug = false, ordered = true)
     @nostack = false
     @debug = debug
     @state = state
@@ -255,8 +254,7 @@ else
     root = "root #{(0..@index).to_a.join(' ')}"
     puts 'Planning'.center(50,'-')
     t = Time.now.to_f
-    # Ordered or unordered tasks
-    plan = block_given? ? task_permutations(state, tasks, &goal) : planning(tasks)
+    plan = ordered ? planning(tasks) : task_permutations(state, tasks)
     puts "Time: #{Time.now.to_f - t}s", 'Plan'.center(50,'-')
     if plan
       puts 'Empty plan' if plan.empty?
@@ -277,10 +275,11 @@ end
   #-----------------------------------------------
 
   def task_permutations(state, tasks)
+    goal = tasks.pop if tasks[-1][1][0] == :invisible_goal
     # All permutations are considered
     tasks.permutation {|task_list|
       @state = state
-      plan = planning(Marshal.load(Marshal.dump(task_list)))
+      plan = planning(Marshal.load(Marshal.dump(task_list)) << goal)
       return plan if yield
     }
     nil

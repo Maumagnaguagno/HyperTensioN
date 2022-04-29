@@ -68,6 +68,12 @@ module Cyber_Compiler
     define_operators = ''
     define_visit = []
     state_visit = -1 if operators.any? {|name,param| param.empty? and name.start_with?('invisible_visit_', 'invisible_mark_')}
+    # Goal becomes an invisible task
+    unless goal_pos.empty? and goal_not.empty?
+      tasks << true if tasks.empty?
+      tasks << [invisible_goal = 'invisible_goal']
+      operators << [invisible_goal, [], goal_pos, goal_not, [], []]
+    end
     operators.each {|name,param,precond_pos,precond_not,effect_add,effect_del|
       define_operators << "\n\nstatic bool #{name}(const VALUE *parameters, Task *)\n{"
       param.each_with_index {|v,i| define_operators << "\n  VALUE #{v.tr('?','_')} = parameters[#{i + 1}];"}
@@ -253,6 +259,7 @@ module Cyber_Compiler
     template.sub!('<METHODS_BASE_INDEX>', operators.size.to_s)
     template.sub!('<DOMAIN>', tokens.join(",\n  "))
     tokens.concat(predicates.keys)
+    operators.pop if invisible_goal
     # Start
     define_start = ''
     define_start_bits = ''
@@ -320,6 +327,7 @@ module Cyber_Compiler
       tasks.each_with_index {|s,i| define_tasks << "\n  Task *subtask#{i} = new_task(#{s.size - 1});"}
       tasks_to_hyper(define_tasks, tasks, "\n  ", 'NULL')
       tasks.unshift(ordered)
+      tasks.pop if invisible_goal
       template.sub!('<TASKS>', define_tasks)
       template.sub!('<TASK0>', 'subtask0')
     end
