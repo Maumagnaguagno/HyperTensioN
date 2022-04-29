@@ -288,7 +288,7 @@ module Hyper_Compiler
     }
     # Tasks
     ordered = tasks.shift
-    problem_str << start_str << "  ],\n  # Tasks\n  [" << tasks.map {|g| "\n    [:#{g.join(', :')}]"}.join(',') << "\n  ],\n  # Debug\n  ARGV.first == 'debug'#{', false' if ordered == false}\n)"
+    problem_str << start_str << "  ],\n  # Tasks\n  [" << tasks.map {|g| "\n    [:#{g.join(', :')}]"}.join(',') << "\n  ],\n  # Debug\n  ARGV.first == 'debug'#{",\n  # Ordered\n  false" if ordered == false}\n)"
     unless tasks.empty?
       tasks.unshift(ordered)
       tasks.pop if tasks[-1][0] == 'invisible_goal'
