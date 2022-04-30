@@ -282,6 +282,14 @@ class Simple < Test::Unit::TestCase
     ()
   )
 
+  (:operator (!!goal)
+    (
+      (have banjo)
+    )
+    ()
+    ()
+  )
+
   ;------------------------------
   ; Methods
   ;------------------------------
@@ -336,6 +344,7 @@ class Simple < Test::Unit::TestCase
 
   (:unordered
     (perform_goal_have_banjo)
+    (!!goal)
   )
 )'
     )

@@ -55,6 +55,12 @@ module JSHOP_Compiler
       predicates_to_jshop(domain_str, op[4])
       domain_str << '  )'
     }
+    # Goal operator
+    unless goal_pos.empty? and goal_not.empty?
+      domain_str << "\n\n  (:operator (!!goal)\n"
+      predicates_to_jshop(domain_str, goal_pos, goal_not)
+      domain_str << "    ()\n    ()\n  )"
+    end
     # Methods
     domain_str << "\n\n  ;#{SPACER}\n  ; Methods\n  ;#{SPACER}"
     methods.each {|met|
@@ -93,7 +99,7 @@ module JSHOP_Compiler
     end
     # Tasks
     problem_str << "\n\n  ;#{SPACER}\n  ; Tasks\n  ;#{SPACER}\n\n"
-    subtasks_to_jshop(problem_str, tasks.drop(1), operators, '  ', tasks.first)
+    subtasks_to_jshop(problem_str, goal_pos.empty? && goal_not.empty? ? tasks.drop(1) : tasks.drop(1) << ['!!goal'], operators, '  ', tasks.first)
     problem_str << ')'
   end
 end

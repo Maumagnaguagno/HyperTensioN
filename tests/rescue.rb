@@ -249,6 +249,15 @@ class Rescue < Test::Unit::TestCase
     ()
   )
 
+  (:operator (!!goal)
+    (
+      (reported robby beacon1)
+      (at robby right)
+    )
+    ()
+    ()
+  )
+
   ;------------------------------
   ; Methods
   ;------------------------------
@@ -381,6 +390,7 @@ class Rescue < Test::Unit::TestCase
   (:unordered
     (unify_source_before_dependency_swap_at_until_at_before_report_for_reported robby beacon1)
     (swap_at_until_at robby right)
+    (!!goal)
   )
 )'
     )

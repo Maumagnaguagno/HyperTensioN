@@ -295,6 +295,15 @@ class Painter < Test::Unit::TestCase
     ()
   )
 
+  (:operator (!!goal)
+    (
+      (painted top_right black)
+      (painted bottom_left white)
+    )
+    ()
+    ()
+  )
+
   ;------------------------------
   ; Methods
   ;------------------------------
@@ -758,6 +767,7 @@ class Painter < Test::Unit::TestCase
   (:unordered
     (unify_r_c2_x_before_dependency_change-color_before_paint-up_or_paint-down_for_painted black top_right)
     (unify_r_c2_x_before_dependency_change-color_before_paint-up_or_paint-down_for_painted white bottom_left)
+    (!!goal)
   )
 )'
     )

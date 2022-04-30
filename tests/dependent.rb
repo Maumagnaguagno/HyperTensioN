@@ -68,9 +68,9 @@ class Dependent < Test::Unit::TestCase
       # Parser, extensions and output
       PDDL_Parser, ['patterns'], 'jshop',
       # Domain
-      DEPENDENCY_DOMAIN_JSHOP + UNIFY_BUY_GIVE,
+      DEPENDENCY_DOMAIN_JSHOP.sub('<goal>', '(happy bob)') << UNIFY_BUY_GIVE,
       # Problem
-      DEPENDENCY_PROBLEM_JSHOP.sub('<pb>','1').sub!('<start>', "\n    (have ana gift)").sub!('<tasks>', '(unify_a_x_before_dependency_buy_before_give_for_happy bob)')
+      DEPENDENCY_PROBLEM_JSHOP.sub('<pb>','1').sub!('<start>', "\n    (have ana gift)").sub!('<tasks>', "(unify_a_x_before_dependency_buy_before_give_for_happy bob)\n    (!!goal)")
     )
   end
 
@@ -82,9 +82,9 @@ class Dependent < Test::Unit::TestCase
       # Parser, extensions and output
       PDDL_Parser, ['patterns'], 'jshop',
       # Domain
-      DEPENDENCY_DOMAIN_JSHOP + UNIFY_BUY_GIVE,
+      DEPENDENCY_DOMAIN_JSHOP.sub('<goal>', '(happy bob)') << UNIFY_BUY_GIVE,
       # Problem
-      DEPENDENCY_PROBLEM_JSHOP.sub('<pb>','2').sub!('<start>', '').sub!('<tasks>', '(unify_a_x_before_dependency_buy_before_give_for_happy bob)')
+      DEPENDENCY_PROBLEM_JSHOP.sub('<pb>','2').sub!('<start>', '').sub('<tasks>', "(unify_a_x_before_dependency_buy_before_give_for_happy bob)\n    (!!goal)")
     )
   end
 
@@ -96,9 +96,9 @@ class Dependent < Test::Unit::TestCase
       # Parser, extensions and output
       PDDL_Parser, ['patterns'], 'jshop',
       # Domain
-      DEPENDENCY_DOMAIN_JSHOP + '))',
+      DEPENDENCY_DOMAIN_JSHOP.sub('<goal>', '(got_money bob)') << '))',
       # Problem
-      DEPENDENCY_PROBLEM_JSHOP.sub('<pb>','3').sub!('<start>', '').sub!('<tasks>', '(!work bob)')
+      DEPENDENCY_PROBLEM_JSHOP.sub('<pb>','3').sub!('<start>', '').sub!('<tasks>', "(!work bob)\n    (!!goal)")
     )
   end
 
@@ -110,9 +110,9 @@ class Dependent < Test::Unit::TestCase
       # Parser, extensions and output
       PDDL_Parser, ['patterns'], 'jshop',
       # Domain
-      DEPENDENCY_DOMAIN_JSHOP + '))',
+      DEPENDENCY_DOMAIN_JSHOP.sub('<goal>', '(have bob gift)') << '))',
       # Problem
-      DEPENDENCY_PROBLEM_JSHOP.sub('<pb>','4').sub!('<start>', '').sub!('<tasks>', '(dependency_work_before_buy_for_have bob gift)')
+      DEPENDENCY_PROBLEM_JSHOP.sub('<pb>','4').sub!('<start>', '').sub!('<tasks>', "(dependency_work_before_buy_for_have bob gift)\n    (!!goal)")
     )
   end
 
@@ -124,9 +124,9 @@ class Dependent < Test::Unit::TestCase
       # Parser, extensions and output
       PDDL_Parser, ['patterns'], 'jshop',
       # Domain
-      DEPENDENCY_DOMAIN_JSHOP + UNIFY_BUY_GIVE,
+      DEPENDENCY_DOMAIN_JSHOP.sub('<goal>', '(happy bob)') << UNIFY_BUY_GIVE,
       # Problem
-      DEPENDENCY_PROBLEM_JSHOP.sub('<pb>','5').sub!('<start>', "\n    (happy bob)").sub!('<tasks>', '(unify_a_x_before_dependency_buy_before_give_for_happy bob)')
+      DEPENDENCY_PROBLEM_JSHOP.sub('<pb>','5').sub!('<start>', "\n    (happy bob)").sub!('<tasks>', "(unify_a_x_before_dependency_buy_before_give_for_happy bob)\n    (!!goal)")
     )
   end
 
@@ -194,6 +194,14 @@ class Dependent < Test::Unit::TestCase
       (have ?b ?x)
       (happy ?b)
     )
+  )
+
+  (:operator (!!goal)
+    (
+      <goal>
+    )
+    ()
+    ()
   )
 
   ;------------------------------
@@ -356,6 +364,7 @@ module Dependency
     :work => true,
     :buy => true,
     :give => true,
+    :invisible_goal => false,
     # Methods
     :dependency_work_before_buy_for_have => [
       :dependency_work_before_buy_for_have_goal_satisfied,
@@ -537,9 +546,12 @@ Dependency.problem(
   ],
   # Tasks
   [
-    [:unify_a_x_before_dependency_buy_before_give_for_happy, :bob]
+    [:unify_a_x_before_dependency_buy_before_give_for_happy, :bob],
+    [:invisible_goal]
   ],
   # Debug
-  ARGV.first == 'debug'
+  ARGV.first == 'debug',
+  # Ordered
+  false
 )"
 end
