@@ -34,13 +34,6 @@ module Typredicate
       effect_add.each {|terms| pre = terms.shift; terms.unshift(transformations[types.values_at(*terms).unshift(pre)] || pre)}
       effect_del.each {|terms| pre = terms.shift; terms.unshift(transformations[types.values_at(*terms).unshift(pre)] || pre)}
     }
-    if operators.last.first == 'invisible_goal'
-      _, _, precond_pos, precond_not, effect_add, effect_del = operators.last
-      ground_transform(state, precond_pos, transformations)
-      ground_transform(state, precond_not, transformations)
-      ground_transform(state, effect_add, transformations)
-      ground_transform(state, effect_del, transformations)
-    end
     methods.each {|met|
       met.drop(2).each {|_,_,precond_pos,precond_not|
         types = {}
@@ -50,6 +43,8 @@ module Typredicate
         precond_not.each {|terms| pre = terms.shift; terms.unshift(transformations[types.values_at(*terms).unshift(pre)] || pre)}
       }
     }
+    ground_transform(state, goal_pos, transformations)
+    ground_transform(state, goal_not, transformations)
     transformations.each {|(tpre,*tterms),v|
       n = state[tpre]&.reject {|terms| tterms.zip(terms) {|t| break true unless state[t.shift].include?(t)}}
       state[v] = n if n and not n.empty?
