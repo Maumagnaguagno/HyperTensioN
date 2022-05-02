@@ -1,9 +1,9 @@
 # Custom Domain
 Domains with unique details/optimizations that cannot be represented by any of the input formalisms accepted by [Hype](../README.md#hype "Jump to Hype") require custom descriptions only possible in the core language, Ruby.
-Note that custom domains cannot be further optimized/verified by static analysis extensions for each instance and may be harder to maintain and port.
+Note that custom domains cannot be optimized/verified by static analysis extensions for each instance and may be harder to maintain and port.
 Two examples are available: [N-Queens](../examples/n_queens/N_Queens.rb) and [Sudoku](../examples/sudoku/Sudoku.rb).
 
-A module represents the domain according to the [API](../README.md#api "Jump to API"), define the methods and primitive operators, and reused for different problems.
+A module represents the domain with methods and primitive operators, according to the [API](../README.md#api "Jump to API"), and reused for different problems.
 Problems may be in a separate file or generated during run-time.
 Since HyperTensioN uses **metaprogramming**, there is a need to specify which Ruby methods may be used by the [planner](../README.md#algorithm "Jump to Algorithm").
 This specification declares operator visibility and the subtasks of each method in the domain structure.
@@ -30,8 +30,8 @@ The recipe is quite similar to the following regular expression:
 
 Easier to start with the movement operators, the tricky part is to avoid repetitions or the robot may be stuck in a loop of A to B and B to A during [search](../examples/search/search.jshop).
 Robby needs to remember which locations were visited using a recursive description.
-The base of the recursion happens when the object (Robby) is already at the destination, otherwise use move, enter or exit, mark the position and call the recursion again.
-Locations must be unvisited once the destination is reached to be able to reuse such locations.
+The base of the recursion happens when Robby is already at the destination, otherwise use move, enter or exit, mark the position and call the recursion again.
+Locations must be unvisited once the destination is reached to be revisited by new tasks.
 
 ## Domain
 The first step is to define all the nodes in the hierarchy.
@@ -282,12 +282,14 @@ end
 ```
 
 ## Problem
-With the domain ready it is time the problem, with an initial state and task list.
+With the domain ready it is time for the problem, with an initial state and task list.
 The initial state is defined as an Array in which each index represent one predicate while the value is an array of possible terms.
 The task list follows the same principle, an array of each task to be solved.
 Note that the names must match the ones defined in the domain and tasks are be decomposed in the same order they are described (in ordered mode).
 Even predicates that do not appear in the initial state must be declared, in this example nothing is reported so ``state[REPORTED]`` is declared as ``[]``.
 If the problem does not generate objects during run-time a speed improvement can be obtained moving them to constants, therefore the comparisons will be pointer-based.
+Goal states can be defined as an ``invisible_goal`` operator, that have the goal state as precondition and no effect, being the last task to be decomposed.
+The ``invisible_goal`` operator can be defined in the problem file to support unique goal states for each problem.
 It is possible to activate debug mode with a command line argument, in this case ``ruby pb1.rb debug``.
 
 ```Ruby
