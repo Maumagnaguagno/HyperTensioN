@@ -3,10 +3,10 @@ Domains with unique details/optimizations that cannot be represented by any of t
 Note that custom domains cannot be optimized/verified by static analysis extensions for each instance and may be harder to maintain and port.
 Two examples are available: [N-Queens](../examples/n_queens/N_Queens.rb) and [Sudoku](../examples/sudoku/Sudoku.rb).
 
-A module represents the domain with methods and primitive operators, according to the [API](../README.md#api "Jump to API"), and reused for different problems.
+A module represents the domain with methods and operators, according to the [API](../README.md#api "Jump to API"), and reused for different problems.
 Problems may be in a separate file or generated during run-time.
 Since HyperTensioN uses **metaprogramming**, there is a need to specify which Ruby methods may be used by the [planner](../README.md#algorithm "Jump to Algorithm").
-This specification declares operator visibility and the subtasks of each method in the domain structure.
+This specification declares operator visibility and how each task can be decomposed in the domain structure.
 
 ## Example
 Here the [Rescue Robot Robby domain](../examples/robby "Robby folder") is used as a domain example.
@@ -19,7 +19,7 @@ Robby has a small set of actions available to do so:
 - **Move** from hallway to hallway
 - **Report** status of beacon in the current room or hallway
 
-This is the set of primitive operators, enough for classical planning, but not for HTN planning.
+This is the set of operators, enough for classical planning, but not for HTN planning.
 Recipes are needed to connect such operators, and for HTN planning the recipes will be defined in a hierarchical structure.
 Robby must move, enter and exit zero or more times to reach each beacon to report, and repeat the process for every other beacon.
 The recipe is quite similar to the following regular expression:
