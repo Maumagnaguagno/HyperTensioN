@@ -174,7 +174,7 @@ module Cyber_Compiler
             new_grounds = false
             terms2 = terms.map {|j|
               if not j.start_with?('?')
-                equality << "_#{j}_ground != #{j.upcase}"
+                equality << "_#{j}_ground != t_#{j}"
                 "_#{j}_ground"
               elsif ground.include?(j)
                 equality << "#{j = j.tr('?','_')}_ground != #{j}"
@@ -239,8 +239,7 @@ module Cyber_Compiler
           define_methods << "#{indentation}if(#{equality.join(' || ')}) continue;" unless equality.empty?
           define_methods << define_methods_comparison
         end
-        if dec[4].empty? then
-          define_methods << "#{indentation}yield(next);#{close_method_str}\n  return false;\n}"
+        if dec[4].empty? then define_methods << "#{indentation}yield(next);#{close_method_str}\n  return false;\n}"
         else
           tasks_to_hyper(define_methods, dec[4], indentation)
           define_methods << "#{indentation}yield(subtask0);#{close_method_str}"
