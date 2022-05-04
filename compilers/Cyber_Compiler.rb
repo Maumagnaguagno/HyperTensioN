@@ -75,7 +75,7 @@ module Cyber_Compiler
       operators << [invisible_goal, [], goal_pos, goal_not, [], []]
     end
     operators.each {|name,param,precond_pos,precond_not,effect_add,effect_del|
-      define_operators << "\n\nstatic bool #{name}(const VALUE *parameters, Task *)\n{"
+      define_operators << "\n\nstatic bool #{name}_(const VALUE *parameters, Task *)\n{"
       param.each_with_index {|v,i| define_operators << "\n  VALUE #{v.tr('?','_')} = parameters[#{i + 1}];"}
       if state_visit
         if name.start_with?('invisible_visit_', 'invisible_mark_')
@@ -114,11 +114,10 @@ module Cyber_Compiler
     # Methods
     define_methods = ''
     methods.each {|name,param,*decompositions|
-      decomp = []
       param_str = ''
       param.each_with_index {|v,i| param_str << "\n  VALUE #{v.tr('?','_')} = parameters[#{i + 1}];"}
-      decompositions.each {|dec|
-        define_methods << "\n\nstatic bool #{name}_#{dec[0]}(const VALUE *parameters, Task *next)\n{#{param_str}"
+      decomp = decompositions.map {|dec|
+        define_methods << "\n\nstatic bool #{name}_#{dec[0]}_(const VALUE *parameters, Task *next)\n{#{param_str}"
         equality = []
         define_methods_comparison = ''
         f = dec[1]
@@ -246,9 +245,9 @@ module Cyber_Compiler
           malloc.each {|s| define_methods << "\n  free(#{s});"}
           define_methods << "\n  return false;\n}"
         end
-        decomp << "#{name}_#{dec[0]}(parameters, next)"
+        "#{name}_#{dec[0]}_(parameters, next)"
       }
-      define_methods << "\n\nstatic bool #{name}(const VALUE *parameters, Task *next)\n{\n  return #{decomp.join(' || ')};\n}"
+      define_methods << "\n\nstatic bool #{name}_(const VALUE *parameters, Task *next)\n{\n  return #{decomp.join(' || ')};\n}"
     }
     # Definitions
     template = TEMPLATE.sub('<OPERATORS>', define_operators)
@@ -257,7 +256,7 @@ module Cyber_Compiler
     tokens = operators.map(&:first).sort_by! {|i| i.start_with?('invisible_') ? 1 : (visible += 1; 0)}.concat(methods.map(&:first))
     template.sub!('<INVISIBLE_BASE_INDEX>', visible.to_s)
     template.sub!('<METHODS_BASE_INDEX>', operators.size.to_s)
-    template.sub!('<DOMAIN>', tokens.join(",\n  "))
+    template.sub!('<DOMAIN>', tokens.join("_,\n  "))
     tokens.concat(predicates.keys)
     operators.pop if invisible_goal
     # Start
@@ -421,7 +420,7 @@ static Task* planning(Task *tasks);
 //-----------------------------------------------<METHODS>
 
 static bool (*domain[])(const VALUE *, Task *) = {
-  <DOMAIN>
+  <DOMAIN>_
 };
 
 static void print_task(const VALUE value, const VALUE *parameters)
