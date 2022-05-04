@@ -239,7 +239,8 @@ module Cyber_Compiler
           define_methods << "#{indentation}if(#{equality.join(' || ')}) continue;" unless equality.empty?
           define_methods << define_methods_comparison
         end
-        if dec[4].empty? then define_methods << "#{indentation}yield(next);\n  return false;\n}"
+        if dec[4].empty? then
+          define_methods << "#{indentation}yield(next);#{close_method_str}\n  return false;\n}"
         else
           tasks_to_hyper(define_methods, dec[4], indentation)
           define_methods << "#{indentation}yield(subtask0);#{close_method_str}"
