@@ -311,7 +311,7 @@ module Cyber_Compiler
     tasks.drop(1).each {|_,*terms| tokens.concat(terms)}
     goal_pos.each {|_,*terms| tokens.concat(terms)}
     goal_not.each {|_,*terms| tokens.concat(terms)}
-    tokens.uniq!
+    tokens.uniq! {|t| t.tr('-','_')}
     template.sub!('<TOKENS>', tokens.map {|t| t == '=' ? 'equal' : t}.join(",\n  t_"))
     template.sub!('<TOKEN_MAX_SIZE>', (tokens.max_by(&:size).size + 1).to_s)
     template.sub!('<STRINGS>', tokens.join("\",\n  \""))
