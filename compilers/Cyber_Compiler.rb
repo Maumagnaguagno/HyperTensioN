@@ -22,10 +22,10 @@ module Cyber_Compiler
   #-----------------------------------------------
 
   def applicable(pre, terms, predicates, arity)
-    if terms.empty? then predicates[pre] ? "state->#{pre}" : pre
+    if terms.empty? then predicates[pre] ? "state->#{pre}_" : pre
     else
       arity[pre] ||= terms.size
-      predicates[pre] ? "applicable(#{pre}, #{terms_to_hyper(terms)})" : "applicable_const(#{pre}, #{terms_to_hyper(terms)})"
+      predicates[pre] ? "applicable(#{pre}_, #{terms_to_hyper(terms)})" : "applicable_const(#{pre}_, #{terms_to_hyper(terms)})"
     end
   end
 
@@ -35,13 +35,13 @@ module Cyber_Compiler
 
   def apply(modifier, effects, define_operators, duplicated, arity)
     effects.each {|pre,*terms|
-      if (a = arity[pre] ||= terms.size) == 0 then define_operators << "\n  state->#{pre} = #{modifier == 'insert'};"
+      if (a = arity[pre] ||= terms.size) == 0 then define_operators << "\n  state->#{pre}_ = #{modifier == 'insert'};"
       else
         unless duplicated.include?(pre)
-          define_operators << "\n  state->#{pre} = new VALUE#{a}(*state->#{pre});"
+          define_operators << "\n  state->#{pre}_ = new VALUE#{a}(*state->#{pre}_);"
           duplicated[pre] = nil
         end
-        define_operators << "\n  state->#{pre}->#{modifier}(#{terms_to_hyper(terms)});"
+        define_operators << "\n  state->#{pre}_->#{modifier}(#{terms_to_hyper(terms)});"
       end
     }
   end
@@ -188,13 +188,13 @@ module Cyber_Compiler
               if predicates[pre]
                 unless predicate_loops.include?(pre)
                   predicate_loops << pre
-                  define_methods << "#{indentation}const auto #{pre} = state->#{pre};"
+                  define_methods << "#{indentation}const auto #{pre}_ = state->#{pre}_;"
                 end
-                define_methods << "#{indentation}for(VALUE#{terms.size}::iterator it#{counter += 1} = #{pre}->begin(); it#{counter} != #{pre}->end(); ++it#{counter})#{indentation}{"
+                define_methods << "#{indentation}for(VALUE#{terms.size}::iterator it#{counter += 1} = #{pre}_->begin(); it#{counter} != #{pre}_->end(); ++it#{counter})#{indentation}{"
               else
                 define_methods << "#{indentation}return false;" unless state.include?(pre)
                 pre = 'equal' if pre == '='
-                define_methods << "#{indentation}for(VALUE#{terms.size}::iterator it#{counter += 1} = #{pre}.begin(); it#{counter} != #{pre}.end(); ++it#{counter})#{indentation}{"
+                define_methods << "#{indentation}for(VALUE#{terms.size}::iterator it#{counter += 1} = #{pre}_.begin(); it#{counter} != #{pre}_.end(); ++it#{counter})#{indentation}{"
               end
               # close_method_str.prepend('}') and no indentation change for compact output
               close_method_str.prepend("#{indentation}}")
@@ -271,12 +271,12 @@ module Cyber_Compiler
       k = state[pre]
       if type
         if (a = arity[pre]) == 0
-          define_state_bits << "\n  VALUE0 #{pre};"
-          define_start_bits << "\n  start.#{pre} = #{k ? true : false};"
+          define_state_bits << "\n  VALUE0 #{pre}_;"
+          define_start_bits << "\n  start.#{pre}_ = #{k ? true : false};"
         else
-          define_state << "\n  VALUE#{a} *#{pre};"
-          define_delete << "\n  if(old_state->#{pre} != state->#{pre}) delete state->#{pre}"
-          define_start << "\n  start.#{pre} = new VALUE#{a}"
+          define_state << "\n  VALUE#{a} *#{pre}_;"
+          define_delete << "\n  if(old_state->#{pre}_ != state->#{pre}_) delete state->#{pre}_"
+          define_start << "\n  start.#{pre}_ = new VALUE#{a}"
           if k
             define_start << "\n  {\n    #{k.map {|terms| terms_to_hyper(terms)}.join(",\n    ")}\n  }"
             tokens.concat(k.flatten(1))
@@ -285,16 +285,16 @@ module Cyber_Compiler
         end
         comparison << pre
       elsif k
-        if k.first.empty? then define_state_const << "\nstatic VALUE0 #{pre} = true;"
+        if k.first.empty? then define_state_const << "\nstatic VALUE0 #{pre}_ = true;"
         else
-          define_state_const << "\nstatic VALUE#{arity[pre] ||= k.first.size} #{pre == '=' ? 'equal' : pre}\n{\n  #{k.map {|terms| terms_to_hyper(terms)}.join(",\n  ")}\n};"
+          define_state_const << "\nstatic VALUE#{arity[pre] ||= k.first.size} #{pre == '=' ? 'equal' : pre}_\n{\n  #{k.map {|terms| terms_to_hyper(terms)}.join(",\n  ")}\n};"
           tokens.concat(k.flatten(1))
         end
       end
     }
     template.sub!('<STATE>', define_state << define_state_bits)
     if state_visit
-      comparison.map! {|i| arity[i] == 0 ? "\n    if(a->#{i} != b->#{i}) return a->#{i} < b->#{i};" : "\n    if(a->#{i} != b->#{i} && *a->#{i} != *b->#{i}) return *a->#{i} < *b->#{i};"}
+      comparison.map! {|i| arity[i] == 0 ? "\n    if(a->#{i}_ != b->#{i}_) return a->#{i}_ < b->#{i}_;" : "\n    if(a->#{i}_ != b->#{i}_ && *a->#{i}_ != *b->#{i}_) return *a->#{i}_ < *b->#{i}_;"}
       define_state_const << "\n\nstruct state_cmp\n{\n  inline bool operator ()(const State *a, const State *b)\n  {#{comparison.join}\n    return false;\n  }\n};"
       (state_visit + 1).times {|i| define_state_const << "\nstd::set<State*,state_cmp> state_visit#{i};"}
       template.slice!('<CLEAR>')
