@@ -295,7 +295,7 @@ module Cyber_Compiler
     template.sub!('<STATE>', define_state << define_state_bits)
     if state_visit
       comparison.map! {|i| arity[i] == 0 ? "\n    if(a->#{i}_ != b->#{i}_) return a->#{i}_ < b->#{i}_;" : "\n    if(a->#{i}_ != b->#{i}_ && *a->#{i}_ != *b->#{i}_) return *a->#{i}_ < *b->#{i}_;"}
-      define_state_const << "\n\nstruct state_cmp\n{\n  inline bool operator ()(const State *a, const State *b)\n  {#{comparison.join}\n    return false;\n  }\n};"
+      define_state_const << "\n\nstruct state_cmp\n{\n  inline bool operator ()(const State *a, const State *b) const\n  {#{comparison.join}\n    return false;\n  }\n};"
       (state_visit + 1).times {|i| define_state_const << "\nstd::set<State*,state_cmp> state_visit#{i};"}
       template.slice!('<CLEAR>')
       template.slice!('<DELETE>')
