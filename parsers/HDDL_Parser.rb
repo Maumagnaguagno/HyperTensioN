@@ -185,7 +185,7 @@ module HDDL_Parser
     if variables.size != (vu = variables.uniq).size
       precondition << AND if precondition.empty?
       ui = 0
-      variables.each_with_index {|v,i| v != vu[ui] ? precondition << [EQUAL, method[1][variables.find_index(v)], method[1][i]] : ui += 1}
+      variables.each_with_index {|v,i| v != vu[ui] ? precondition << [EQUAL, method[1][variables.index(v)], method[1][i]] : ui += 1}
     end
     unless precondition.empty?
       # Conjunction or atom

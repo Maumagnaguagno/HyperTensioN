@@ -17,7 +17,7 @@ module Dejavu
     knots.each {|task,method,decomposition|
       name = method.first
       terms = []
-      index = decomposition.last.find_index {|t|
+      index = decomposition.last.index {|t|
         terms |= t.drop(1)
         t.equal?(task)
       }
