@@ -29,10 +29,7 @@ module Pullup
             free.reject! {|i| substitutions.include?(i)}
             precond_pos.each {|pre| pre.map! {|i| substitutions[i] || i}}
             precond_not.each {|pre| pre.map! {|i| substitutions[i] || i}}
-            subtasks.each {|t|
-              t.map! {|i| substitutions[i] || i}
-              counter[t.first] += 1
-            }
+            subtasks.each {|t| counter[t.map! {|i| substitutions[i] || i}.first] += 1}
           end
         end
       }
