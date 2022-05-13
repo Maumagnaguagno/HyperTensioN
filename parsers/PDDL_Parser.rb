@@ -53,7 +53,7 @@ module PDDL_Parser
           free_variables << group.shift
           if group.first == HYPHEN
             group.shift
-            @predicates[(type = group.shift).freeze] ||= false
+            @predicates[type = group.shift.freeze] ||= false
             while fv = free_variables[index]
               pos << [type, fv]
               index += 1

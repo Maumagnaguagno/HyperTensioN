@@ -97,7 +97,7 @@ module HDDL_Parser
           free_variables << p
           if group.first == HYPHEN
             group.shift
-            @predicates[(type = group.shift).freeze] ||= false
+            @predicates[type = group.shift.freeze] ||= false
             while fv = free_variables[index]
               pos << [type, fv]
               index += 1
@@ -172,7 +172,7 @@ module HDDL_Parser
         free_variables << p
         if parameters.first == HYPHEN
           parameters.shift
-          @predicates[(type = parameters.shift).freeze] ||= false
+          @predicates[type = parameters.shift.freeze] ||= false
           while fv = free_variables[index]
             pos << [type, variables.find {|j| j == fv} || fv]
             index += 1
@@ -322,7 +322,7 @@ module HDDL_Parser
                 free_variables << p
                 if parameters.first == HYPHEN
                   parameters.shift
-                  @predicates[(type = parameters.shift).freeze] ||= false
+                  @predicates[type = parameters.shift.freeze] ||= false
                   while fv = free_variables[index]
                     pos << [type, fv]
                     index += 1
