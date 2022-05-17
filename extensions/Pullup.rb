@@ -131,7 +131,6 @@ module Pullup
           }
         }
         if decompositions.empty?
-          repeat = true
           impossible << name
           raise "Domain defines no decomposition for #{name}" if tasks.assoc(name)
         else decompositions.unshift(name, param)
