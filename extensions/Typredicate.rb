@@ -10,7 +10,6 @@ module Typredicate
     new_predicates = {}
     operator_types = {}
     operators.each {|name,_,precond_pos,precond_not,effect_add,effect_del|
-      next if name.start_with?('invisible_')
       operator_types[name] = types = {}
       precond_pos.each {|terms| types[terms.last] ||= terms.first if terms.size == 2 and not predicates[terms.first]}
       find_types(precond_pos, types, new_predicates)
@@ -21,14 +20,12 @@ module Typredicate
     transformations = {}
     new_predicates.each {|pre,types|
       types.uniq!
-      next if types.size == 1
-      if (supertypes & types.flatten(1).uniq).empty?
-        types.each {|t| predicates[transformations[t] = t.unshift(pre).join('_')] = predicates[pre] if t.all? {|p| state.include?(p)}}
-      end
+      next if types.size == 1 or not (supertypes & types.flatten(1).uniq).empty?
+      types.each {|t| predicates[transformations[t] = t.unshift(pre).join('_')] = predicates[pre] if t.all? {|p| state.include?(p)}}
     }
     return if transformations.empty?
     operators.each {|name,_,precond_pos,precond_not,effect_add,effect_del|
-      next if name.start_with?('invisible_') or (types = operator_types[name]).empty?
+      next if (types = operator_types[name]).empty?
       precond_pos.each {|terms| pre = terms.shift; terms.unshift(transformations[types.values_at(*terms).unshift(pre)] || pre)}
       precond_not.each {|terms| pre = terms.shift; terms.unshift(transformations[types.values_at(*terms).unshift(pre)] || pre)}
       effect_add.each {|terms| pre = terms.shift; terms.unshift(transformations[types.values_at(*terms).unshift(pre)] || pre)}
