@@ -31,8 +31,12 @@ module Wise
       puts "#{opname} contains duplicate negative precondition: removed" if precond_not.uniq! and debug
       puts "#{opname} contains duplicate add effect: removed" if effect_add.uniq! and debug
       puts "#{opname} contains duplicate del effect: removed" if effect_del.uniq! and debug
+      # Equality
+      precond_pos.each {|pre| raise "#{opname} precondition contains unnecessary (#{pre.join(' ')}), use same variable instead" if pre.first == '='}
+      precond_not.each {|pre| raise "#{opname} precondition contains contradiction (not (#{pre.join(' ')}))" if pre.first == '=' and pre[1] == pre[2]}
+      raise "#{opname} effect contains equality" if effect_add.assoc('=') or effect_del.assoc('=')
       # Precondition contradiction
-      (precond_pos & precond_not).each {|pre| puts "#{opname} precondition contains contradicting (#{pre.join(' ')})"} if debug
+      (precond_pos & precond_not).each {|pre| raise "#{opname} precondition contains contradiction (#{pre.join(' ')}) and (not (#{pre.join(' ')}))"}
       # Remove null del effect
       (effect_add & effect_del).each {|pre|
         puts "#{opname} contains null del effect (#{pre.join(' ')}): removed" if debug
@@ -81,7 +85,11 @@ module Wise
             true
           end
         }
-        (precond_pos & precond_not).each {|pre| puts "#{label} precondition contains contradicting (#{pre.join(' ')})"} if debug
+        # Equality
+        precond_pos.each {|pre| raise "#{label} precondition contains unnecessary (#{pre.join(' ')}), use same variable instead" if pre.first == '='}
+        precond_not.each {|pre| raise "#{label} precondition contains contradiction (not (#{pre.join(' ')}))" if pre.first == '=' and pre[1] == pre[2]}
+        # Precondition contradiction
+        (precond_pos & precond_not).each {|pre| raise "#{label} precondition contains contradiction (#{pre.join(' ')}) and (not (#{pre.join(' ')}))"}
         verify_tasks("#{label} subtask", subtasks, noops, operators, methods, debug)
       }
     }
@@ -91,6 +99,10 @@ module Wise
       verify_tasks('task', tasks, noops, operators, methods, debug)
       tasks.unshift(ordered)
     end
+    # Goal
+    puts "Goal contains duplicate positive condition: removed" if goal_pos.uniq! and debug
+    puts "Goal contains duplicate negative condition: removed" if goal_not.uniq! and debug
+    (goal_pos & goal_not).each {|pre| raise "Goal contains contradiction (#{pre.join(' ')}) and (not (#{pre.join(' ')}))"}
   end
 
   #-----------------------------------------------
