@@ -85,7 +85,7 @@ module PDDL_Parser
             @predicates[pre.first.freeze] = true
           }
         end
-      else raise "#{group.first} is not recognized in action"
+      else raise "#{group} is not recognized in action"
       end
     end
   end
