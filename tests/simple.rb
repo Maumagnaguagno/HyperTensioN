@@ -440,4 +440,34 @@ digraph "basic" {
       nil
     )
   end
+
+  def test_ruby
+    interpreted_execution_tests(
+      'examples/basic/basic.hddl',
+      'examples/basic/pb1.hddl',
+      "0: drop(kiwi)\n1: pickup(banjo)\n"
+    )
+  end
+
+  def test_gcc
+    ['jshop', 'hddl'].each {|type|
+      native_execution_tests(
+        "examples/basic/basic.#{type}",
+        "examples/basic/pb1.#{type}",
+        'g++ -O3 -march=native -flto',
+        "Planning\ndrop kiwi\npickup banjo\n"
+      )
+    }
+  end if system('g++ -v')
+
+  def test_clang
+    ['jshop', 'hddl'].each {|type|
+      native_execution_tests(
+        "examples/basic/basic.#{type}",
+        "examples/basic/pb1.#{type}",
+        'clang++ -O3 -march=native -flto',
+        "Planning\ndrop kiwi\npickup banjo\n"
+      )
+    }
+  end if system('clang++ -v')
 end
