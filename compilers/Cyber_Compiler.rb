@@ -425,9 +425,13 @@ static bool (*domain[])(const VALUE *, Task *) = {
 
 static void print_task(const VALUE value, const VALUE *parameters)
 {
-  printf(tokens[value]);
-  for(VALUE i = 1; i <= parameters[0]; ++i) printf(" %s", tokens[parameters[i]]);
-  puts("");
+  fputs(tokens[value], stdout);
+  for(VALUE i = 1; i <= parameters[0]; ++i)
+  {
+    putchar(\' \');
+    fputs(tokens[parameters[i]], stdout);
+  }
+  putchar(\'\n\');
 }
 
 static Task* planning(Task *tasks)
@@ -451,10 +455,10 @@ static Task* planning(Task *tasks)
 #ifdef DEBUG
   if(tasks->value >= DOMAIN_SIZE)
   {
-    printf("Domain defines no decomposition for index %u\\n", tasks->value);
+    printf("Domain defines no decomposition for index %u\n", tasks->value);
     exit(EXIT_FAILURE);
   }
-  printf("%u: %u %p\\n", level, tasks->value, tasks->next);
+  printf("%u: %u %p\n", level, tasks->value, tasks->next);
   print_task(tasks->value, tasks->parameters);
 #endif
   ++level;
