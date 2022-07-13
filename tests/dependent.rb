@@ -65,8 +65,8 @@ class Dependent < Test::Unit::TestCase
       # Files
       'examples/dependency/dependency.pddl',
       'examples/dependency/pb1.pddl',
-      # Parser, extensions and output
-      PDDL_Parser, ['patterns'], 'jshop',
+      # Extensions and output
+      ['patterns'], 'jshop',
       # Domain
       DEPENDENCY_DOMAIN_JSHOP.sub('<goal>', '(happy bob)') << UNIFY_BUY_GIVE,
       # Problem
@@ -79,8 +79,8 @@ class Dependent < Test::Unit::TestCase
       # Files
       'examples/dependency/dependency.pddl',
       'examples/dependency/pb2.pddl',
-      # Parser, extensions and output
-      PDDL_Parser, ['patterns'], 'jshop',
+      # Extensions and output
+      ['patterns'], 'jshop',
       # Domain
       DEPENDENCY_DOMAIN_JSHOP.sub('<goal>', '(happy bob)') << UNIFY_BUY_GIVE,
       # Problem
@@ -93,8 +93,8 @@ class Dependent < Test::Unit::TestCase
       # Files
       'examples/dependency/dependency.pddl',
       'examples/dependency/pb3.pddl',
-      # Parser, extensions and output
-      PDDL_Parser, ['patterns'], 'jshop',
+      # Extensions and output
+      ['patterns'], 'jshop',
       # Domain
       DEPENDENCY_DOMAIN_JSHOP.sub('<goal>', '(got_money bob)') << '))',
       # Problem
@@ -107,8 +107,8 @@ class Dependent < Test::Unit::TestCase
       # Files
       'examples/dependency/dependency.pddl',
       'examples/dependency/pb4.pddl',
-      # Parser, extensions and output
-      PDDL_Parser, ['patterns'], 'jshop',
+      # Extensions and output
+      ['patterns'], 'jshop',
       # Domain
       DEPENDENCY_DOMAIN_JSHOP.sub('<goal>', '(have bob gift)') << '))',
       # Problem
@@ -121,8 +121,8 @@ class Dependent < Test::Unit::TestCase
       # Files
       'examples/dependency/dependency.pddl',
       'examples/dependency/pb5.pddl',
-      # Parser, extensions and output
-      PDDL_Parser, ['patterns'], 'jshop',
+      # Extensions and output
+      ['patterns'], 'jshop',
       # Domain
       DEPENDENCY_DOMAIN_JSHOP.sub('<goal>', '(happy bob)') << UNIFY_BUY_GIVE,
       # Problem
@@ -135,8 +135,8 @@ class Dependent < Test::Unit::TestCase
       # Files
       'examples/dependency/dependency.pddl',
       'examples/dependency/pb1.pddl',
-      # Parser, extensions and output
-      PDDL_Parser, ['patterns'], 'rb',
+      # Extensions and output
+      ['patterns'], 'rb',
       # Domain
       DEPENDENCY_DOMAIN_RB,
       # Problem
