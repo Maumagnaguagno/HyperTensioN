@@ -22,7 +22,7 @@ module Cyber_Compiler
   #-----------------------------------------------
 
   def applicable(pre, terms, predicates, arity)
-    if terms.empty? then predicates[pre] ? "state->#{pre}_" : pre
+    if terms.empty? then predicates[pre] ? "state->#{pre}_" : "#{pre}_"
     else
       arity[pre] ||= terms.size
       predicates[pre] ? "applicable(#{pre}_, #{terms_to_hyper(terms)})" : "applicable_const(#{pre}_, #{terms_to_hyper(terms)})"
