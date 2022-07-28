@@ -116,7 +116,7 @@ module Cyber_Compiler
     methods.each {|name,param,*decompositions|
       param_str = ''
       param.each_with_index {|v,i| param_str << "\n  VALUE #{v.tr('?','_')} = parameters[#{i + 1}];"}
-      decomp = decompositions.map {|dec|
+      decompositions.map! {|dec|
         define_methods << "\n\nstatic bool #{name}_#{dec[0]}_(const VALUE *parameters, Task *next)\n{#{param_str}"
         equality = []
         define_methods_comparison = ''
@@ -247,7 +247,7 @@ module Cyber_Compiler
         end
         "#{name}_#{dec[0]}_(parameters, next)"
       }
-      define_methods << "\n\nstatic bool #{name}_(const VALUE *parameters, Task *next)\n{\n  return #{decomp.join(' || ')};\n}"
+      define_methods << "\n\nstatic bool #{name}_(const VALUE *parameters, Task *next)\n{\n  return #{decompositions.join(' || ')};\n}"
     }
     # Definitions
     template = TEMPLATE.sub('<OPERATORS>', define_operators)
