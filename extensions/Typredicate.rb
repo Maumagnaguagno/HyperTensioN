@@ -44,7 +44,7 @@ module Typredicate
     ground_transform(state, goal_not, transformations)
     transformations.each {|(tpre,*tterms),v|
       n = state[tpre]&.reject {|terms| tterms.zip(terms) {|t| break true unless state[t.shift].include?(t)}}
-      state[v] = n if n and not n.empty?
+      state[v] = n if n&.[](0)
       predicates.delete(tpre)
     }
   end
