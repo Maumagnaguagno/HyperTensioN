@@ -270,8 +270,7 @@ module Patterns
     intermediate = '?intermediate'
     swap_predicates = Hash.new {|h,k| h[k] = []}
     swaps.each {|op,pre_constraints| pre_constraints.each {|pre,constraints| swap_predicates[pre] << [op, constraints]}}
-    swap_predicates.each {|predicate,swap_ops|
-      predicate_name, *predicate_terms = predicate
+    swap_predicates.each {|(predicate_name,*predicate_terms),swap_ops|
       # Explicit or implicit agent
       agent = predicate_terms.first if predicate_terms.size != 1
       original_current = predicate_terms.last
