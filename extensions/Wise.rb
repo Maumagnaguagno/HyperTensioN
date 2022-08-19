@@ -81,7 +81,7 @@ module Wise
         puts "#{label} contains duplicate negative precondition: removed" if precond_not.uniq! and debug
         free.reject! {|v|
           if param.include?(v)
-            puts "#{label} free variable shadowing parameter #{p}: removed" if debug
+            puts "#{label} free variable shadowing parameter #{v}: removed" if debug
             true
           end
         }
