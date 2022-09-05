@@ -27,11 +27,11 @@ module Markdown_Compiler
           output << "\n#{label} ||"
           index = 0
           precond_pos.each {|pre|
-            output << "\n|| (#{pre.join(' ')}) | #{subtasks[index].join(' ') if subtasks[index]}"
+            output << "\n|| (#{pre.join(' ')}) | #{subtasks[index]&.join(' ')}"
             index += 1
           }
           precond_not.each {|pre|
-            output << "\n|| **not** (#{pre.join(' ')}) | #{subtasks[index].join(' ') if subtasks[index]}"
+            output << "\n|| **not** (#{pre.join(' ')}) | #{subtasks[index]&.join(' ')}"
             index += 1
           }
           subtasks.drop(index).each {|task| output << "\n||| #{task.join(' ')}"}
