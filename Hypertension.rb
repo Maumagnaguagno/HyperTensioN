@@ -152,25 +152,25 @@ end
       terms.map! {|p| objects.find {|j,| j.equal?(p)} || p}
       # Compare with current state
       @state[pre].each {|objs|
-        next unless terms.each_with_index {|t,i|
+        next if terms.zip(objs) {|t,o|
           # Free variable
           if t.instance_of?(Array)
             # Not unified
             if t.first.empty?
-              match_objects.push(t, i)
+              match_objects.push(t, o)
             # No match with previous unification
-            elsif not t.include?(objs[i])
+            elsif not t.include?(o)
               match_objects.clear
-              break
+              break true
             end
           # No match with value
-          elsif t != objs[i]
+          elsif t != o
             match_objects.clear
-            break
+            break true
           end
         }
         # Add values to sets
-        match_objects.shift << objs[match_objects.shift] until match_objects.empty?
+        match_objects.shift << match_objects.shift until match_objects.empty?
       }
       # Unification closed
       terms.each {|i| i.first.replace('X') if i.instance_of?(Array) and i.first.empty?}
