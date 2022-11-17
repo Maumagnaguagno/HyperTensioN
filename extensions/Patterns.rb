@@ -454,12 +454,12 @@ module Patterns
     free = []
     ground_sub = []
     ground_var = []
-    substitutions.each_with_index {|sub,i|
+    substitutions.zip(met[1]) {|sub,m|
       if sub.start_with?('?')
         free << sub
       else
         ground_sub << sub
-        ground_var << met[1][i]
+        ground_var << m
       end
     }
     unless methods.assoc(name = "unify#{free.join.tr!('?','_')}_before_#{met.first}")
