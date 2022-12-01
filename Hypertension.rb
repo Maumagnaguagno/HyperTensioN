@@ -209,7 +209,7 @@ end
   #-----------------------------------------------
 
   def print_data(data)
-    data.each_with_index {|d,i| puts "#{i}: #{d.first}(#{d.drop(1).join(' ')})"}
+    data.each_with_index {|(name,*param),i| puts "#{i}: #{name}(#{param.join(' ')})"}
   end
 
   #-----------------------------------------------
