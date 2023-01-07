@@ -423,13 +423,13 @@ static bool (*domain[])(const VALUE *, Task *) = {
   <DOMAIN>_
 };
 
-static void print_task(const VALUE value, const VALUE *parameters)
+static void print_task(const Task *task)
 {
-  fputs(tokens[value], stdout);
-  for(VALUE i = 1; i <= parameters[0]; ++i)
+  fputs(tokens[task->value], stdout);
+  for(VALUE i = 1; i <= task->parameters[0]; ++i)
   {
     putchar(\' \');
-    fputs(tokens[parameters[i]], stdout);
+    fputs(tokens[task->parameters[i]], stdout);
   }
   putchar(\'\n\');
 }
@@ -459,7 +459,7 @@ static Task* planning(Task *tasks)
     exit(EXIT_FAILURE);
   }
   printf("%u: %u %p\n", level, tasks->value, tasks->next);
-  print_task(tasks->value, tasks->parameters);
+  print_task(tasks);
 #endif
   ++level;
   // Operator
@@ -515,7 +515,7 @@ int main(void)
     {
       do
       {
-        print_task(result->value, result->parameters);
+        print_task(result);
         result = result->next;
       } while(result != &empty);
     }
