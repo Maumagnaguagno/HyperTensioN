@@ -50,9 +50,11 @@ module Cyber_Compiler
   # Tasks to Hyper
   #-----------------------------------------------
 
-  def tasks_to_hyper(output, tasks, indentation, next_task = 'next')
+  def tasks_to_hyper(output, tasks, indentation, next_task = 'task->next')
     tasks.each_with_index {|s,i|
-      output << "#{indentation}subtask#{i}->value = #{term(s.first)};#{indentation}subtask#{i}->parameters[0] = #{s.size - 1};"
+      output << "#{indentation}subtask#{i}->value = #{term(s.first)};"
+      output << "#{indentation}tindex(subtask#{i});" unless s.first.start_with?('invisible_')
+      output << "#{indentation}subtask#{i}->parameters[0] = #{s.size - 1};"
       1.upto(s.size - 1) {|j| output << "#{indentation}subtask#{i}->parameters[#{j}] = #{term(s[j])};"}
       output << "#{indentation}subtask#{i}->next = #{i != tasks.size - 1 ? "subtask#{i + 1}" : next_task};"
     }
@@ -75,7 +77,7 @@ module Cyber_Compiler
       operators << [invisible_goal, [], goal_pos, goal_not, [], []]
     end
     operators.each {|name,param,precond_pos,precond_not,effect_add,effect_del|
-      define_operators << "\n\nstatic bool #{name}_(const VALUE *parameters, Task *)\n{"
+      define_operators << "\n\nstatic bool #{name}_(const Task *task)\n{\n  const VALUE *parameters = task->parameters;"
       param.each_with_index {|v,i| define_operators << "\n  VALUE #{v.tr('?','_')} = parameters[#{i + 1}];"}
       if state_visit
         if name.start_with?('invisible_visit_', 'invisible_mark_')
@@ -113,11 +115,12 @@ module Cyber_Compiler
     }
     # Methods
     define_methods = ''
+    labels = []
     methods.each {|name,param,*decompositions|
       param_str = ''
       param.each_with_index {|v,i| param_str << "\n  VALUE #{v.tr('?','_')} = parameters[#{i + 1}];"}
       decompositions.map! {|dec|
-        define_methods << "\n\nstatic bool #{name}_#{dec[0]}_(const VALUE *parameters, Task *next)\n{#{param_str}"
+        define_methods << "\n\nstatic bool #{name}_#{dec[0]}_(const Task *task)\n{\n  const VALUE *parameters = task->parameters;#{param_str}"
         equality = []
         define_methods_comparison = ''
         f = dec[1]
@@ -238,16 +241,17 @@ module Cyber_Compiler
           define_methods << "#{indentation}if(#{equality.join(' || ')}) continue;" unless equality.empty?
           define_methods << define_methods_comparison
         end
-        if dec[4].empty? then define_methods << "#{indentation}yield(next);#{close_method_str}\n  return false;\n}"
+        if dec[4].empty? then define_methods << "#{indentation}yield(task->next, #{labels.size}, 0);#{close_method_str}\n  return false;\n}"
         else
           tasks_to_hyper(define_methods, dec[4], indentation)
-          define_methods << "#{indentation}yield(subtask0);#{close_method_str}"
+          define_methods << "#{indentation}yield(subtask0, #{labels.size}, #{dec[4].count {|s,| !s.start_with?('invisible_')}});#{close_method_str}"
           malloc.each {|s| define_methods << "\n  free(#{s});"}
           define_methods << "\n  return false;\n}"
         end
-        "#{name}_#{dec[0]}_(parameters, next)"
+        labels << dec[0]
+        "#{name}_#{dec[0]}_(task)"
       }
-      define_methods << "\n\nstatic bool #{name}_(const VALUE *parameters, Task *next)\n{\n  return #{decompositions.join(' || ')};\n}"
+      define_methods << "\n\nstatic bool #{name}_(const Task *task)\n{\n  return #{decompositions.join(' || ')};\n}"
     }
     # Definitions
     template = TEMPLATE.sub('<OPERATORS>', define_operators)
@@ -311,8 +315,10 @@ module Cyber_Compiler
     goal_not.each {|_,*terms| tokens.concat(terms)}
     tokens.uniq! {|t| t.tr('-','_')}
     template.sub!('<TOKENS>', tokens.map {|t| t == '=' ? 'equal' : t}.join(",\n  t_"))
-    template.sub!('<TOKEN_MAX_SIZE>', (tokens.max_by(&:size).size + 1).to_s)
+    template.sub!('<TOKEN_SIZE>', (tokens.max_by(&:size).size + 1).to_s)
     template.sub!('<STRINGS>', tokens.join("\",\n  \""))
+    template.sub!('<LABEL_SIZE>', (labels.max_by(&:size).size + 1).to_s)
+    template.sub!('<LABELS>', labels.join("\",\n  \""))
     (arity = arity.values).uniq!
     arity.sort!
     arity.shift while arity[0]&.< 2
@@ -330,6 +336,7 @@ module Cyber_Compiler
       template.sub!('<TASKS>', define_tasks)
       template.sub!('<TASK0>', 'subtask0')
     end
+    template.sub!('<NTASKS>',(tasks.size - 1).to_s)
     template.gsub!(/\b-\b/,'_')
     template
   end
@@ -349,7 +356,6 @@ module Cyber_Compiler
 #include <set>
 #include <tuple>
 
-//#define DEBUG
 #define STACK 5000
 
 #define INVISIBLE_BASE_INDEX <INVISIBLE_BASE_INDEX>
@@ -358,23 +364,40 @@ module Cyber_Compiler
 #define applicable(predicate, value) (state->predicate->find(value) != state->predicate->end())
 #define applicable_const(predicate, value) (predicate.find(value) != predicate.end())
 #define new_task(parameters) (Task *) malloc(sizeof(Task) + sizeof(VALUE) * (parameters))
-#define new_state()                                   \\
-  State *new_state = (State *) malloc(sizeof(State)); \\
-  malloc_test(new_state);                             \\
-  memcpy(new_state, state, sizeof(State));            \\
+#define new_state()                                   \
+  State *new_state = (State *) malloc(sizeof(State)); \
+  malloc_test(new_state);                             \
+  memcpy(new_state, state, sizeof(State));            \
   state = new_state
 
-#define visit_clear() \\<CLEAR>
+#define visit_clear() \<CLEAR>
 
-#define delete_state() \\<DELETE>
+#define delete_state() \<DELETE>
 
-#define yield(subtasks)            \\
-  Task *plan = planning(subtasks); \\
-  if(plan)                         \\
-  {                                \\
-    next_plan = plan;              \\
-    return true;                   \\
+#ifndef IPC
+
+#define yield(subtasks, label, ntasks) \
+  Task *plan = planning(subtasks);     \
+  if(plan)                             \
+  {                                    \
+    next_plan = plan;                  \
+    return true;                       \
   }
+
+#else
+
+#define yield(subtasks, label, ntasks) \
+  unsigned int new_index = tindex, old_index = tindex - ntasks; \
+  Task *plan = planning(subtasks);     \
+  if(plan)                             \
+  {                                    \
+    decomposition.push_back({task, label, old_index, new_index}); \
+    next_plan = plan;                  \
+    return true;                       \
+  }                                    \
+  tindex = old_index;
+
+#endif
 
 #ifdef DEBUG
 #define error(m) {puts(m); exit(EXIT_FAILURE);}
@@ -389,8 +412,12 @@ enum {
   t_<TOKENS>
 };
 
-static const char tokens[][<TOKEN_MAX_SIZE>] = {
+static const char tokens[][<TOKEN_SIZE>] = {
   "<STRINGS>"
+};
+
+static const char labels[][<LABEL_SIZE>] = {
+  "<LABELS>"
 };
 
 typedef unsigned <VALUE_TYPE> VALUE;
@@ -401,6 +428,9 @@ static bool nostack;
 static struct Task
 {
   Task *next;
+#ifdef IPC
+  unsigned int index;
+#endif
   VALUE value;
   VALUE parameters[1];
 } *next_plan, empty;
@@ -411,6 +441,18 @@ static struct State
 <STATE_CONST>
 static Task* planning(Task *tasks);
 
+#ifdef IPC
+
+#include <vector>
+struct Taskout {const Task *task; unsigned int label, min, max;};
+static std::vector<Taskout> decomposition;
+static unsigned int tindex;
+#define tindex(task) task->index = tindex++
+
+#else
+#define tindex(task)
+#endif
+
 //-----------------------------------------------
 // Operators
 //-----------------------------------------------<OPERATORS>
@@ -419,7 +461,7 @@ static Task* planning(Task *tasks);
 // Methods
 //-----------------------------------------------<METHODS>
 
-static bool (*domain[])(const VALUE *, Task *) = {
+static bool (*domain[])(const Task *) = {
   <DOMAIN>_
 };
 
@@ -431,6 +473,15 @@ static void print_task(const Task *task)
     putchar(\' \');
     fputs(tokens[task->parameters[i]], stdout);
   }
+  putchar(\'\n\');
+}
+
+static void print_sequence(unsigned int min, unsigned int max)
+{
+  do
+  {
+    printf(" %u", min);
+  } while(++min < max);
   putchar(\'\n\');
 }
 
@@ -466,7 +517,7 @@ static Task* planning(Task *tasks)
   if(tasks->value < METHODS_BASE_INDEX)
   {
     State *old_state = state;
-    if(domain[tasks->value](tasks->parameters, NULL))
+    if(domain[tasks->value](tasks))
     {
       Task *plan = planning(tasks->next);
       if(plan)
@@ -486,7 +537,7 @@ static Task* planning(Task *tasks)
     state = old_state;
   }
   // Method
-  else if(domain[tasks->value](tasks->parameters, tasks->next))
+  else if(domain[tasks->value](tasks))
   {
     return next_plan;
   }
@@ -511,6 +562,7 @@ int main(void)
     {
       puts("Empty plan");
     }
+#ifndef IPC
     else
     {
       do
@@ -519,6 +571,33 @@ int main(void)
         result = result->next;
       } while(result != &empty);
     }
+#else
+    puts("==>");
+    do
+    {
+      printf("%u ", result->index);
+      print_task(result);
+      result = result->next;
+    } while(result != &empty);
+    fputs("root", stdout);
+    print_sequence(0, <NTASKS>);
+    unsigned int size = decomposition.size();
+    while(size--)
+    {
+      const Task *task = decomposition[size].task;
+      printf("%u ", task->index);
+      fputs(tokens[task->value], stdout);
+      for(VALUE i = 1; i <= task->parameters[0]; ++i)
+      {
+        putchar(\' \');
+        fputs(tokens[task->parameters[i]], stdout);
+      }
+      fputs(" -> ", stdout);
+      fputs(labels[decomposition[size].label], stdout);
+      print_sequence(decomposition[size].min, decomposition[size].max);
+    }
+    puts("<==");
+#endif
     return EXIT_SUCCESS;
   }
   puts(nostack ? "Planning failed, try with more STACK" : "Planning failed");
