@@ -208,8 +208,6 @@ module Patterns
   #-----------------------------------------------
 
   def add_tasks(goal_methods, operators, methods, predicates, tasks, goal_pos, goal_not, debug)
-    # Add tasks as unordered
-    tasks[0] = false
     # Select task
     puts 'Goal to Task' if debug
     tasks_goals = []
@@ -257,6 +255,8 @@ module Patterns
       tasks_goals.reject! {|met,type,goal| ordered_tasks.unshift(met) if order.include?([type, goal.first])}
       break if tasks_goals.empty?
     }
+    # Add tasks as unordered
+    tasks[0] = false if tasks.empty? and not ordered_tasks.empty? or tasks.first
     tasks.concat(ordered_tasks)
   end
 

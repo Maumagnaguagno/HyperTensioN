@@ -104,16 +104,16 @@ class Paisley < Test::Unit::TestCase
     # Based on planks domain
     Patterns.apply([swap_operator('cross', ['?from', '?to'])], methods = [], SWAP_PREDICATES, [], tasks = [], [], [])
     assert_equal(swap_methods(['cross'], ['?current', '?intermediate'], [['adjacent', '?current', '?intermediate']]), methods)
-    assert_equal([false], tasks)
+    assert_equal([], tasks)
     Patterns.apply([swap_operator('cross', ['?from', '?to'], ['?to', '?from'])], methods.clear, SWAP_PREDICATES, [], tasks.clear, [], [])
     assert_equal(swap_methods(['cross'], ['?current', '?intermediate'], [['adjacent', '?intermediate', '?current']]), methods)
-    assert_equal([false], tasks)
+    assert_equal([], tasks)
     Patterns.apply([swap_operator('cross', ['?to', '?from'], ['?from', '?to'])], methods.clear, SWAP_PREDICATES, [], tasks.clear, [], [])
     assert_equal(swap_methods(['cross'], ['?intermediate', '?current'], [['adjacent', '?current', '?intermediate']]), methods)
-    assert_equal([false], tasks)
+    assert_equal([], tasks)
     Patterns.apply([swap_operator('cross', ['?to', '?from'])], methods.clear, SWAP_PREDICATES, [], tasks.clear, [], [])
     assert_equal(swap_methods(['cross'], ['?intermediate', '?current'], [['adjacent', '?intermediate', '?current']]), methods)
-    assert_equal([false], tasks)
+    assert_equal([], tasks)
   end
 
   def test_swap_effect_clustering
@@ -272,7 +272,7 @@ class Paisley < Test::Unit::TestCase
         ]
       ]
     ], methods)
-    assert_equal([false], tasks)
+    assert_equal([], tasks)
   end
 
   def test_dependency_of_swap_before_operator
@@ -371,7 +371,7 @@ class Paisley < Test::Unit::TestCase
     operators = [swap_operator('cross', ['?from', '?to'])]
     state = [['agent', 'bob'], ['p'], ['p2', 'bridge'], ['adjacent' , 'a', 'b'], ['bridge', 'a', 'bridge', 'b'], ['at', 'bob', 'a'], ['empty', 'b']]
     Patterns.apply(operators, [], SWAP_PREDICATES, state, tasks = [], [], [])
-    assert_equal([false], tasks)
+    assert_equal([], tasks)
     Patterns.apply(operators, [], SWAP_PREDICATES, state, tasks = [], [['at', 'bob', 'a']], [])
     assert_equal([false, ['swap_at_until_at', 'bob', 'a']], tasks)
     Patterns.apply(operators, [], SWAP_PREDICATES, state, tasks = [], [['at', 'bob', 'b']], [])
