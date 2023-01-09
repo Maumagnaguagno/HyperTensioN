@@ -315,9 +315,9 @@ module Cyber_Compiler
     goal_not.each {|_,*terms| tokens.concat(terms)}
     tokens.uniq! {|t| t.tr('-','_')}
     template.sub!('<TOKENS>', tokens.map {|t| t == '=' ? 'equal' : t}.join(",\n  t_"))
-    template.sub!('<TOKEN_SIZE>', (tokens.max_by(&:size).size + 1).to_s)
+    template.sub!('<TOKEN_SIZE>', tokens.empty? ? '1' : (tokens.max_by(&:size).size + 1).to_s)
     template.sub!('<STRINGS>', tokens.join("\",\n  \""))
-    template.sub!('<LABEL_SIZE>', (labels.max_by(&:size).size + 1).to_s)
+    template.sub!('<LABEL_SIZE>', labels.empty? ? '1' : (labels.max_by(&:size).size + 1).to_s)
     template.sub!('<LABELS>', labels.join("\",\n  \""))
     (arity = arity.values).uniq!
     arity.sort!
