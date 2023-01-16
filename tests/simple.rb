@@ -442,11 +442,13 @@ digraph "basic" {
   end
 
   def test_ruby
-    interpreted_execution_tests(
-      'examples/basic/basic.hddl',
-      'examples/basic/pb1.hddl',
-      "0: drop(kiwi)\n1: pickup(banjo)\n"
-    )
+    ['jshop', 'hddl'].each {|type|
+      interpreted_execution_tests(
+        "examples/basic/basic.#{type}",
+        "examples/basic/pb1.#{type}",
+        "0: drop(kiwi)\n1: pickup(banjo)\n"
+      )
+    }
   end
 
   def test_gcc
