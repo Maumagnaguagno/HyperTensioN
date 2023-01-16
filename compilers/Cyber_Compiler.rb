@@ -166,9 +166,9 @@ module Cyber_Compiler
         indentation = "\n  "
         counter = -1
         # Lifted
-        predicate_loops = []
         unless f.empty?
           ground = param.dup
+          predicate_loops = []
           until precond_pos.empty?
             pre, *terms = precond_pos.shift
             equality.clear
