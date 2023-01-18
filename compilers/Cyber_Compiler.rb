@@ -328,7 +328,7 @@ module Cyber_Compiler
     if tasks.empty? then template.sub!('<TASK0>', 'NULL')
     else
       define_tasks = ''
-      ordered = tasks.shift
+      raise 'Unordered tasks not supported' unless ordered = tasks.shift
       tasks.each_with_index {|s,i| define_tasks << "\n  Task *subtask#{i} = new_task(#{s.size - 1});"}
       tasks_to_hyper(define_tasks, tasks, "\n  ", 'NULL')
       tasks.unshift(ordered)
