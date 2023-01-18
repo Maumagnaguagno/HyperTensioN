@@ -331,7 +331,7 @@ module HDDL_Parser
               end
               @methods << [top_level = '__top', [], ['__top_method', free_variables, pos, [], @tasks]]
               @tasks = [true, [top_level]]
-            else @tasks.unshift(true)
+            elsif not @tasks.empty? then @tasks.unshift(true)
             end
           end
         else raise "#{group.first} is not recognized in problem"
