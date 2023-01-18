@@ -131,7 +131,7 @@ module JSHOP_Parser
       @tasks = tokens.shift
       # Tasks may be ordered or unordered
       @tasks.shift unless ordered = (@tasks.first != ':unordered')
-      @tasks.each {|pre,| pre.sub!(/^!!/,'invisible_') or pre.delete_prefix!('!')}.unshift(ordered)
+      @tasks.each {|pre,| pre.sub!(/^!!/,'invisible_') or pre.delete_prefix!('!')}.unshift(ordered) unless @tasks.empty?
       @goal_pos = []
       @goal_not = []
     else raise "File #{problem_filename} does not match problem pattern"
