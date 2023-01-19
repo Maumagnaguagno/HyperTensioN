@@ -297,7 +297,6 @@ HyperTensioN is more than a planner, with parsers, extensions and compilers buil
 
 Among the lacking features is lazy variable evaluation and interleaved/unordered execution of tasks, a feature that JSHOP2 supports and important to achieve good plans in some cases.
 Unordered tasks are supported only at the problem level and are not interleaved during decomposition.
-Since explicit goals are tested only after the plan has been found with a sequence of tasks, a failure is considered enough proof to try other orderings, not other unifications with the same sequence of tasks.
 
 ## Changelog
 - Mar 2014
