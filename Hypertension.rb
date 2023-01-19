@@ -226,7 +226,7 @@ if FAST_OUTPUT
     print_data(tasks)
     puts 'Planning'.center(50,'-')
     t = Time.now.to_f
-    plan = ordered ? planning(tasks) : task_permutations(state, tasks, (tasks.pop if tasks[-1][0] == :invisible_goal))
+    plan = ordered ? planning(tasks) : task_permutations(state, tasks, (tasks.pop if tasks[-1]&.first == :invisible_goal))
     puts "Time: #{Time.now.to_f - t}s", 'Plan'.center(50,'-')
     if plan
       if plan.empty? then puts 'Empty plan'
@@ -250,11 +250,11 @@ else
     @index = -1
     puts 'Tasks'.center(50,'-'), tasks.map! {|t| [@index += 1, t]}.map {|d| d.join(' ')}
     @decomposition = []
-    @index -= 1 if tasks[-1][1][0] == :invisible_goal
+    @index -= 1 if tasks.dig(-1,1,0) == :invisible_goal
     root = "root #{(0..@index).to_a.join(' ')}"
     puts 'Planning'.center(50,'-')
     t = Time.now.to_f
-    plan = ordered ? planning(tasks) : task_permutations(state, tasks, (tasks.pop if tasks[-1][1][0] == :invisible_goal))
+    plan = ordered ? planning(tasks) : task_permutations(state, tasks, (tasks.pop if tasks.dig(-1,1,0) == :invisible_goal))
     puts "Time: #{Time.now.to_f - t}s", 'Plan'.center(50,'-')
     if plan
       puts 'Empty plan' if plan.empty?
