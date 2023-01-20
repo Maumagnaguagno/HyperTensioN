@@ -329,8 +329,12 @@ module Cyber_Compiler
     else
       define_tasks = ''
       raise 'Unordered tasks not supported' unless ordered = tasks.shift
-      tasks.each_with_index {|s,i| define_tasks << "\n  Task *subtask#{i} = new_task(#{s.size - 1});"}
-      tasks_to_hyper(define_tasks, tasks, "\n  ", 'NULL')
+      malloc = []
+      tasks.each_with_index {|s,i|
+        define_tasks << "\n  Task *subtask#{i} = new_task(#{s.size - 1});"
+        malloc << "subtask#{i}"
+      }
+      tasks_to_hyper(define_tasks << "\n  malloc_test(#{malloc.join(' && ')});", tasks, "\n  ", 'NULL')
       tasks.unshift(ordered)
       tasks.pop if invisible_goal
       template.sub!('<TASKS>', define_tasks)
