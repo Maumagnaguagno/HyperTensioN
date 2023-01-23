@@ -193,11 +193,11 @@ module Cyber_Compiler
                   predicate_loops << pre
                   define_methods << "#{indentation}const auto #{pre}_ = state->#{pre}_;"
                 end
-                define_methods << "#{indentation}for(VALUE#{terms.size}::iterator it#{counter += 1} = #{pre}_->begin(); it#{counter} != #{pre}_->end(); ++it#{counter})#{indentation}{"
+                define_methods << "#{indentation}for(auto it#{counter += 1} = #{pre}_->begin(); it#{counter} != #{pre}_->end(); ++it#{counter})#{indentation}{"
               else
                 define_methods << "#{indentation}return false;" unless state.include?(pre)
                 pre = 'equal' if pre == '='
-                define_methods << "#{indentation}for(VALUE#{terms.size}::iterator it#{counter += 1} = #{pre}_.begin(); it#{counter} != #{pre}_.end(); ++it#{counter})#{indentation}{"
+                define_methods << "#{indentation}for(auto it#{counter += 1} = #{pre}_.begin(); it#{counter} != #{pre}_.end(); ++it#{counter})#{indentation}{"
               end
               # close_method_str.prepend('}') and no indentation change for compact output
               close_method_str.prepend("#{indentation}}")
@@ -327,8 +327,8 @@ module Cyber_Compiler
     # Tasks
     if tasks.empty? then template.sub!('<TASK0>', 'NULL')
     else
-      define_tasks = ''
       raise 'Unordered tasks not supported' unless ordered = tasks.shift
+      define_tasks = ''
       malloc = []
       tasks.each_with_index {|s,i|
         define_tasks << "\n  Task *subtask#{i} = new_task(#{s.size - 1});"
@@ -340,7 +340,7 @@ module Cyber_Compiler
       template.sub!('<TASKS>', define_tasks)
       template.sub!('<TASK0>', 'subtask0')
     end
-    template.sub!('<NTASKS>',(tasks.size - 1).to_s)
+    template.sub!('<NTASKS>', (tasks.size - 1).to_s)
     template.gsub!(/\b-\b/,'_')
     template
   end
