@@ -45,13 +45,13 @@ module Wise
       # Effect contained in precondition
       effect_add.reject! {|pre|
         if precond_pos.include?(pre)
-          puts "#{opname} effect (#{pre.join(' ')}) present in precondition: removed" if debug
+          puts "#{opname} add effect (#{pre.join(' ')}) present in precondition: removed" if debug
           true
         end
       }
       effect_del.reject! {|pre|
         if precond_not.include?(pre)
-          puts "#{opname} del effect (#{pre.join(' ')}) present in add effect: removed" if debug
+          puts "#{opname} del effect (#{pre.join(' ')}) present in precondition: removed" if debug
           true
         end
       }
