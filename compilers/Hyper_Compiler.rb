@@ -109,10 +109,8 @@ module Hyper_Compiler
     define_methods = ''
     domain_str << "\n    # Methods"
     methods.each_with_index {|(name,param,*decompositions),mi|
-      domain_str << "\n    :#{name} => [\n"
       variables = "(#{param.join(', ').tr!('?','_')})" unless param.empty?
-      decompositions.each_with_index {|dec,i|
-        domain_str << "      :#{name}_#{dec.first}#{',' if decompositions.size - 1 != i}\n"
+      decompositions.map! {|dec|
         define_methods << "\n  def #{name}_#{dec.first}#{variables}"
         equality = []
         define_methods_comparison = ''
@@ -238,8 +236,9 @@ module Hyper_Compiler
           define_methods << define_methods_comparison
         end
         define_methods << indentation << (dec[4].empty? ? 'yield []' : "yield [#{indentation}  [" << dec[4].map {|g| g.map {|i| term(i)}.join(', ')}.join("],#{indentation}  [") << "]#{indentation}]") << close_method_str
+        "\n      :#{name}_#{dec.first}"
       }
-      domain_str << (methods.size.pred == mi ? '    ]' : '    ],')
+      domain_str << "\n    :#{name} => [" << decompositions.join(',') << (methods.size.pred == mi ? "\n    ]" : "\n    ],")
     }
     if meta
       define_methods << "\n  def predicate(pre)\n    case pre"
