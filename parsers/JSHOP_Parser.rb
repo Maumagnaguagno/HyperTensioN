@@ -68,11 +68,10 @@ module JSHOP_Parser
   def parse_method(met)
     met.shift
     # Method may already have decompositions associated
-    name = (group = met.first).shift
-    if not method = @methods.assoc(name) then @methods << method = [name, group]
-    elsif method[1] != group then raise "Expected same parameters for method #{name}"
+    if method = @methods.assoc(name = (group = met.shift).shift)
+      raise "Expected same parameters for method #{name}" if method[1] != group
+    else @methods << method = [name, group]
     end
-    met.shift
     until met.empty?
       # Optional label, add index for the unlabeled decompositions
       if met.first.instance_of?(String)
