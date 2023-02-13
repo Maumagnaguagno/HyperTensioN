@@ -27,7 +27,7 @@ More details can be found in the [docs](docs) folder:
 The basic algorithm for HTN planning is quite simple and flexible, the hard part is in the structure that decomposes a hierarchy and the unification engine.
 The task list (input of planning) is decomposed until nothing remains, the base of recursion, returning an empty plan.
 The tail of recursion are the operator/primitive task and method/compound task cases.
-Operators test if the current task (the first in the list, since it decomposes in total order) can be applied to the current state (which is a visible structure to the other Ruby methods, but does not appear here).
+Operators test if the current task (the first in the list, since it decomposes in total order) can be applied to the current state (a visible structure to all functions).
 If successfully applied, the planning process continues decomposing and inserting the current task at the beginning of the plan, as it builds the plan during recursion from last to first.
 Methods are decomposed into one of their several cases with a valid unification for their free variables.
 Each case unified is a list of tasks, subtasks, that may require decomposition too, replacing the original method.
@@ -116,7 +116,7 @@ Domain operators can be defined without ``apply_operator`` and will have the ret
 
 Domain methods must yield a task list or are nullified, having no decomposition.
 
-A domain and problem already described in [PDDL], [HDDL] or [JSHOP] descriptions must first be converted to Ruby, which is a task for Hype.
+A domain and problem already described in [PDDL], [HDDL] or [JSHOP] descriptions must first be converted, which is a task for Hype.
 
 ## Hype
 [**Hype**](Hype.rb) is the framework for parsers, extensions and compilers of planning descriptions.
@@ -172,7 +172,7 @@ ruby Hype.rb examples/basic/basic.jshop examples/basic/pb1.jshop debug
 ```
 
 If the execution displays the message ``Planning failed, try with more stack``, check for mistakes in your description.
-If the message persists, increase stack size with ``RUBY_THREAD_VM_STACK_SIZE`` or ``ulimit`` to avoid overflows in large planning instances.
+If the message persists, increase stack size with ``RUBY_THREAD_VM_STACK_SIZE`` (Ruby), ``STACK`` (C++) or ``ulimit`` (system) to avoid overflows in large planning instances.
 The interpreter loads slightly faster with the ``--disable=all`` flag.
 
 Hype is composed of:
@@ -203,7 +203,7 @@ Hype is composed of:
 - [Markdown](https://daringfireball.net/projects/markdown/)
 
 As any parser, the ones provided by Hype are limited in one way or another.
-[PDDL] has far more features than supported by most planners and [JSHOP] have 2 different ways to define methods.
+[PDDL] has far more features than supported by most planners and [JSHOP] has 2 different ways to define methods.
 Methods may be broken into several independent blocks or in the same block without the need to check the same preconditions again.
 Both cases are supported, but HyperTensioN evaluates the preconditions of each set independently while [JSHOP] only evaluates the last if the previous ones evaluated to false in the same block.
 In order to copy this behavior one would need to declare the methods in the same Ruby method (losing label definition), which could decrease readability.
