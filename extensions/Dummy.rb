@@ -70,14 +70,14 @@ module Dummy
       ]
     ]
     # Tail is composed of operators
-    operators.each {|op|
-      act = [op[0], *op[1]]
+    operators.each {|name,param,precond_pos,precond_not|
+      act = [name, *param]
       if repetitions.zero? # Actions can be reused
-        perform << ["try_#{op.first}_to_#{task}", op[1],
+        perform << ["try_#{name}_to_#{task}", param,
           # Positive preconditions
-          op[2],
+          precond_pos,
           # Negative preconditions
-          op[3],
+          precond_not,
           # Subtasks
           [
             act,
@@ -85,19 +85,19 @@ module Dummy
           ]
         ]
       else # Actions are visited and unvisited to avoid infinite repetition
-        visit = "#{VISIT}_#{op.first}"
+        visit = "#{VISIT}_#{name}"
         1.upto(repetitions) {|i|
-          perform << ["try_#{op.first}_to_#{task}#{i}", op[1],
+          perform << ["try_#{name}_to_#{task}#{i}", param,
             # Positive preconditions
-            op[2],
+            precond_pos,
             # Negative preconditions
-            i == 1 ? op[3] : [["visited_#{op.first}_#{i.pred}", *op[1]], *op[3]],
+            i == 1 ? precond_not : [["visited_#{name}_#{i.pred}", *param], *precond_not],
             # Subtasks
             [
-              ["invisible_#{visit}_#{i}", *op[1]],
+              ["invisible_#{visit}_#{i}", *param],
               act,
               [task],
-              ["invisible_un#{visit}_#{i}", *op[1]]
+              ["invisible_un#{visit}_#{i}", *param]
             ]
           ]
         }
