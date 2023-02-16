@@ -9,8 +9,9 @@ module Dummy
 
   def apply(operators, methods, predicates, state, tasks, goal_pos, goal_not, debug = false, repetitions = 1)
     puts 'Dummy'.center(50,'-'), "Repetitions: #{repetitions}" if debug
+    return if goal_pos.empty? and goal_not.empty?
     # Tasks are unordered
-    tasks << false if tasks.empty?
+    tasks[0] = false
     # Invisible operators are rejected from search
     visible_operators = operators.reject {|op,| op.start_with?('invisible_')}
     # Each goal generates a task and a set of methods
