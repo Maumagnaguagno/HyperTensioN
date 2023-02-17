@@ -256,7 +256,7 @@ module Patterns
       break if tasks_goals.empty?
     }
     # Add tasks as unordered
-    tasks[0] = false if tasks.empty? and not ordered_tasks.empty? or tasks.first
+    tasks[0] = false unless ordered_tasks.empty?
     tasks.concat(ordered_tasks)
   end
 
