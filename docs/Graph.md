@@ -6,7 +6,7 @@ Here the [basic JSHOP domain description](../examples/basic/basic.jshop) is used
 
 ```Lisp
 (defdomain basic (
-  (:operator (!pickup ?a) () () ((have ?a)))
+  (:operator (!pickup ?a) ((not (have ?a))) () ((have ?a)))
   (:operator (!drop ?a) ((have ?a)) ((have ?a)) ())
 
   (:method (swap ?x ?y)
@@ -20,7 +20,7 @@ Which is converted to a DOT description using the following command.
 
 ```Shell
 cd HyperTensioN
-ruby Hype examples/basic/basic.jshop examples/basic/pb1.jshop dot
+ruby Hype.rb examples/basic/basic.jshop examples/basic/pb1.jshop dot
 ```
 
 Complex DOT descriptions are not intended to be generated and read by humans, as one can see:
@@ -33,7 +33,7 @@ digraph "basic" {
   // Operators
   "pickup" [
     shape=record
-    label="{{pickup|?a}|{|(have ?a)\l}}"
+    label="{{pickup|?a}|{not (have ?a)\l|(have ?a)\l}}"
   ]
   "drop" [
     shape=record
@@ -43,22 +43,22 @@ digraph "basic" {
   "swap" [
     shape=Mrecord
     style=bold
-    label="{{swap|?x ?y}|{<n0>swap_0|<n1>swap_1}}"
+    label="{{swap|?x ?y}|{<n0>swap_case_0|<n1>swap_case_1}}"
   ]
-  "label_swap_0" [
+  "label_swap_case_0" [
     shape=Mrecord
-    label="{{swap_0|}|(have ?x)\lnot (have ?y)\l|<n0>drop ?x|<n1>pickup ?y}"
+    label="{{swap_case_0|}|(have ?x)\lnot (have ?y)\l|<n0>drop ?x|<n1>pickup ?y}"
   ]
-  "swap":n0 -> "label_swap_0" [style=dotted]
-  "label_swap_0":n0 -> "drop"
-  "label_swap_0":n1 -> "pickup"
-  "label_swap_1" [
+  "swap":n0 -> "label_swap_case_0" [style=dotted]
+  "label_swap_case_0":n0 -> "drop"
+  "label_swap_case_0":n1 -> "pickup"
+  "label_swap_case_1" [
     shape=Mrecord
-    label="{{swap_1|}|(have ?y)\lnot (have ?x)\l|<n0>drop ?y|<n1>pickup ?x}"
+    label="{{swap_case_1|}|(have ?y)\lnot (have ?x)\l|<n0>drop ?y|<n1>pickup ?x}"
   ]
-  "swap":n1 -> "label_swap_1" [style=dotted]
-  "label_swap_1":n0 -> "drop"
-  "label_swap_1":n1 -> "pickup"
+  "swap":n1 -> "label_swap_case_1" [style=dotted]
+  "label_swap_case_1":n0 -> "drop"
+  "label_swap_case_1":n1 -> "pickup"
 }
 ```
 
