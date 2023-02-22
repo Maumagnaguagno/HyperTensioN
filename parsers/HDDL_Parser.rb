@@ -315,7 +315,7 @@ module HDDL_Parser
             @tasks.map! {|t| t[1].instance_of?(Array) ? t[1] : t}
             # Add artificial task to support parameters
             if parameters
-              @methods << [top_level = '__top', [], ['__top_method', free_variables = [], pos = [], [], @tasks]]
+              @methods << [top_level = '__top', parameters, ['__top_method', free_variables = [], pos = [], [], @tasks]]
               @tasks = [true, [top_level]]
               index = 0
               while p = parameters.shift
