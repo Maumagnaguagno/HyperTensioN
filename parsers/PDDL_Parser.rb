@@ -111,14 +111,11 @@ module PDDL_Parser
           # Type hierarchy
           group.shift
           raise 'Unexpected hyphen in types' if group.first == HYPHEN
-          subtypes = []
-          until group.empty?
-            subtypes << group.shift
-            if group.first == HYPHEN
-              group.shift
-              type = group.shift
-              @types << [subtypes.shift, type] until subtypes.empty?
-            end
+          while i = group.find_index(HYPHEN)
+            type = group[i+1]
+            j = -1
+            @types << [group[j], type] while (j += 1) != i
+            group.shift(i+2)
           end
         else raise "#{group.first} is not recognized in domain"
         end
