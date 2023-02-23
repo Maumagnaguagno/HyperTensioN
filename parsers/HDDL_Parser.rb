@@ -240,7 +240,6 @@ module HDDL_Parser
         when ':predicates'
         when ':types'
           # Type hierarchy
-          raise 'Expected :typing' unless @requirements.include?(':typing')
           group.shift
           raise 'Unexpected hyphen in types' if group.first == HYPHEN
           while i = group.find_index(HYPHEN)
