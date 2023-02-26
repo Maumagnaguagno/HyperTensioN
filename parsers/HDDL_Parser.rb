@@ -90,21 +90,17 @@ module HDDL_Parser
       case group
       when ':parameters'
         raise "Error with #{name} parameters" unless (group = op.shift).instance_of?(Array)
-        raise "Unexpected hyphen in #{name} parameters" if group.first == HYPHEN
         # "?ob1 ?ob2 - type" to [type, ?ob1] [type, ?ob2]
-        index = 0
-        while p = group.shift
-          free_variables << p
-          if group.first == HYPHEN
-            group.shift
-            @predicates[type = group.shift.freeze] ||= false
-            while fv = free_variables[index]
-              pos << [type, fv]
-              index += 1
-            end
+        while i = group.index(HYPHEN)
+          @predicates[type = group[i+1].freeze] ||= false
+          j = -1
+          while (j += 1) != i
+            free_variables << group[j]
+            pos << [type, group[j]]
           end
+          group.shift(i+2)
         end
-        raise "#{name} with repeated parameters" if free_variables.uniq!
+        raise "#{name} with repeated parameters" if free_variables.concat(group).uniq!
       when ':precondition'
         raise "Error with #{name} precondition" unless (group = op.shift).instance_of?(Array)
         unless group.empty?
@@ -165,21 +161,17 @@ module HDDL_Parser
     method << [label, free_variables = [], pos = [], neg = []]
     if parameters
       raise "Error with #{name} parameters" unless parameters.instance_of?(Array)
-      raise "Unexpected hyphen in #{name} parameters" if parameters.first == HYPHEN
       # "?ob1 ?ob2 - type" to [type, ?ob1] [type, ?ob2]
-      index = 0
-      while p = parameters.shift
-        free_variables << p
-        if parameters.first == HYPHEN
-          parameters.shift
-          @predicates[type = parameters.shift.freeze] ||= false
-          while fv = free_variables[index]
-            pos << [type, variables.find {|j| j == fv} || fv]
-            index += 1
-          end
+      while i = parameters.index(HYPHEN)
+        @predicates[type = parameters[i+1].freeze] ||= false
+        j = -1
+        while (j += 1) != i
+          free_variables << fv = parameters[j]
+          pos << [type, variables.find {|j| j == fv} || fv]
         end
+        parameters.shift(i+2)
       end
-      raise "#{name} with repeated parameters" if free_variables.delete_if {|v| variables.include?(v)}.uniq!
+      raise "#{name} with repeated parameters" if free_variables.concat(parameters).delete_if {|v| variables.include?(v)}.uniq!
     end
     # Preconditions
     if variables.size != (vu = variables.uniq).size
@@ -241,8 +233,7 @@ module HDDL_Parser
         when ':types'
           # Type hierarchy
           group.shift
-          raise 'Unexpected hyphen in types' if group.first == HYPHEN
-          while i = group.find_index(HYPHEN)
+          while i = group.index(HYPHEN)
             type = group[i+1]
             j = -1
             @types << [group[j], type] while (j += 1) != i
@@ -313,18 +304,17 @@ module HDDL_Parser
             if parameters
               @methods << [top_level = '__top', parameters, ['__top_method', free_variables = [], pos = [], [], @tasks]]
               @tasks = [true, [top_level]]
-              index = 0
-              while p = parameters.shift
-                free_variables << p
-                if parameters.first == HYPHEN
-                  parameters.shift
-                  @predicates[type = parameters.shift.freeze] ||= false
-                  while fv = free_variables[index]
-                    pos << [type, fv]
-                    index += 1
-                  end
+              # "?ob1 ?ob2 - type" to [type, ?ob1] [type, ?ob2]
+              while i = parameters.index(HYPHEN)
+                @predicates[type = parameters[i+1].freeze] ||= false
+                j = -1
+                while (j += 1) != i
+                  free_variables << parameters[j]
+                  pos << [type, parameters[j]]
                 end
+                parameters.shift(i+2)
               end
+              raise "#{name} with repeated parameters" if free_variables.concat(parameters).uniq!
             elsif not @tasks.empty? then @tasks.unshift(true)
             end
           end

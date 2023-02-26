@@ -45,22 +45,18 @@ module PDDL_Parser
     while group = op.shift
       case group
       when ':parameters'
-        raise "Error with #{name} parameters" unless op.first.instance_of?(Array)
-        raise "Unexpected hyphen in #{name} parameters" if (group = op.shift).first == HYPHEN
+        raise "Error with #{name} parameters" unless (group = op.shift).instance_of?(Array)
         # "?ob1 ?ob2 - type" to [type, ?ob1] [type, ?ob2]
-        index = 0
-        until group.empty?
-          free_variables << group.shift
-          if group.first == HYPHEN
-            group.shift
-            @predicates[type = group.shift.freeze] ||= false
-            while fv = free_variables[index]
-              pos << [type, fv]
-              index += 1
-            end
+        while i = group.index(HYPHEN)
+          @predicates[type = group[i+1].freeze] ||= false
+          j = -1
+          while (j += 1) != i
+            free_variables << group[j]
+            pos << [type, group[j]]
           end
+          group.shift(i+2)
         end
-        raise "#{name} with repeated parameters" if free_variables.uniq!
+        raise "#{name} with repeated parameters" if free_variables.concat(group).uniq!
       when ':precondition'
         raise "Error with #{name} precondition" unless (group = op.shift).instance_of?(Array)
         unless group.empty?
@@ -110,8 +106,7 @@ module PDDL_Parser
         when ':types'
           # Type hierarchy
           group.shift
-          raise 'Unexpected hyphen in types' if group.first == HYPHEN
-          while i = group.find_index(HYPHEN)
+          while i = group.index(HYPHEN)
             type = group[i+1]
             j = -1
             @types << [group[j], type] while (j += 1) != i
