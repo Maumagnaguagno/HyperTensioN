@@ -138,25 +138,17 @@ module PDDL_Parser
         when ':objects'
           # Move types to initial state
           group.shift
-          raise 'Unexpected hyphen in objects' if group.first == HYPHEN
-          index = 0
-          until group.empty?
-            @objects << group.shift
-            if group.first == HYPHEN
-              group.shift
-              types = [type = group.shift]
-              # Convert type hierarchy to initial state predicates
-              while type = @types.assoc(type)
-                raise 'Circular typing' if types.include?(type = type.last)
-                types << type
-              end
-              while o = @objects[index]
-                index += 1
-                types.each {|t| (@state[t] ||= []) << [o]}
-              end
+          while i = group.index(HYPHEN)
+            @objects.concat(o = group.shift(i))
+            group.shift
+            types = [type = group.shift]
+            while type = @types.assoc(type)
+              raise 'Circular typing' if types.include?(type = type.last)
+              types << type
             end
+            types.each {|t| (@state[t] ||= []).concat(o.zip)}
           end
-          raise 'Repeated object definition' if @objects.uniq!
+          raise 'Repeated object definition' if @objects.concat(group).uniq!
           @state[EQUAL] = @objects.zip(@objects) if @predicates.include?(EQUAL)
         when ':init'
           group.shift

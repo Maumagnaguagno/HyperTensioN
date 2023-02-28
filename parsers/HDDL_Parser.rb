@@ -56,25 +56,18 @@ module HDDL_Parser
   def parse_objects(group)
     # Move types to initial state
     group.shift
-    raise 'Unexpected hyphen in objects' if group.first == HYPHEN
-    index = @objects.size
-    until group.empty?
-      @objects << group.shift
-      if group.first == HYPHEN
-        group.shift
-        types = [group.shift]
-        # Convert type hierarchy to initial state predicates
-        ti = 0
-        while type = types[ti]
-          @types.each {|sub,t| types << t if sub == type and not types.include?(t)}
-          ti += 1
-        end
-        while o = @objects[index]
-          index += 1
-          types.each {|t| (@state[t] ||= []) << [o]}
-        end
+    while i = group.index(HYPHEN)
+      @objects.concat(o = group.shift(i))
+      group.shift
+      types = [group.shift]
+      ti = 0
+      while type = types[ti]
+        @types.each {|sub,t| types << t if sub == type and not types.include?(t)}
+        ti += 1
       end
+      types.each {|t| (@state[t] ||= []).concat(o.zip)}
     end
+    @objects.concat(group)
   end
 
   #-----------------------------------------------
