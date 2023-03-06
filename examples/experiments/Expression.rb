@@ -26,9 +26,9 @@ def call(expression)
     value = call(value)
   end
   if expression.empty?
-    send(f, value)
+    __send__(f, value)
   else
-    expression.each {|i| value = value.send(f, i.instance_of?(Array) && i.first == :call ? (i.shift; call(i)) : i)}
+    expression.each {|i| value = value.__send__(f, i.instance_of?(Array) && i.first == :call ? (i.shift; call(i)) : i)}
     value
   end
 end

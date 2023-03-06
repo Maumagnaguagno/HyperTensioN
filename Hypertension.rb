@@ -28,7 +28,7 @@ if FAST_OUTPUT
       old_state = @state
       begin
         # Keep decomposing the hierarchy if operator applied
-        if send(*current_task) and plan = planning(tasks, level)
+        if __send__(*current_task) and plan = planning(tasks, level)
           # Add visible operator to plan
           return decomposition ? plan.unshift(current_task) : plan
         end
@@ -44,7 +44,7 @@ if FAST_OUTPUT
         decomposition.each {|method|
           puts "#{'  ' * level.pred}#{method}(#{current_task.join(' ')})" if @debug
           # Every unification is tested
-          send(method, *current_task) {|subtasks| return plan if plan = planning(subtasks.concat(tasks), level)}
+          __send__(method, *current_task) {|subtasks| return plan if plan = planning(subtasks.concat(tasks), level)}
         }
       rescue SystemStackError then @nostack = true
       end
@@ -67,7 +67,7 @@ else
       old_state = @state
       begin
         # Keep decomposing the hierarchy if operator applied
-        if send(*current_task) and plan = planning(tasks, level)
+        if __send__(*current_task) and plan = planning(tasks, level)
           # Add visible operator to plan
           return decomposition ? plan.unshift([index, current_task]) : plan
         end
@@ -84,7 +84,7 @@ else
         decomposition.each {|method|
           puts "#{'  ' * level.pred}#{method}(#{current_task.join(' ')})" if @debug
           # Every unification is tested
-          send(method, *current_task) {|subtasks|
+          __send__(method, *current_task) {|subtasks|
             subtasks.map! {|t| [(@index += 1 if @domain[t.first]), t]}
             new_index = @index
             if plan = planning(subtasks.concat(tasks), level)

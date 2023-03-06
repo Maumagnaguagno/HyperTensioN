@@ -37,7 +37,7 @@ module Function
   end
 
   def axioms_protected?
-    @state['protect_axiom'].all? {|i| send(*i)}
+    @state['protect_axiom'].all? {|i| __send__(*i)}
   end
 
   def function_effect
@@ -86,7 +86,7 @@ module Continuous
         type, g, expression, start, finish = pr[pr_index]
         break if start > time
         if f == g
-          value = send(*expression, (time > finish ? finish : time) - start)
+          value = __send__(*expression, (time > finish ? finish : time) - start)
           case type
           when 'increase' then v += value
           when 'decrease' then v -= value
@@ -127,7 +127,7 @@ module Continuous
         break if start > finish_time
         if f == g
           (start > time ? start : time).step(finish_time, step) {|t|
-            value = send(*expression, (t > finish ? finish : t) - start)
+            value = __send__(*expression, (t > finish ? finish : t) - start)
             case type
             when 'increase' then v += value
             when 'decrease' then v -= value
@@ -200,7 +200,7 @@ module Continuous
   end
 
   def axioms_protected_at_time?(time)
-    @state['protect_axiom'].all? {|i| send(*i, time)}
+    @state['protect_axiom'].all? {|i| __send__(*i, time)}
   end
 
   def event_effect
