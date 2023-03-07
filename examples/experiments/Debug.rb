@@ -18,8 +18,8 @@ module Debug
   def assert(pre)
     if pre.first == 'not'
       pre = pre.last
-      raise "Unexpected (#{pre.join(' ')}) in state" if @state[pre.first].include(pre.drop(1))
-    elsif not @state[pre.first].include(pre.drop(1))
+      raise "Unexpected (#{pre.join(' ')}) in state" if @state[pre.first].include?(pre.drop(1))
+    elsif not @state[pre.first].include?(pre.drop(1))
       raise "Expected (#{pre.join(' ')}) in state"
     end
   end
