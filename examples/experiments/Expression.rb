@@ -21,16 +21,7 @@ end
 
 def call(expression)
   f = expression.shift
-  if (value = expression.shift).instance_of?(Array) and value.first == :call
-    value.shift
-    value = call(value)
-  end
-  if expression.empty?
-    __send__(f, value)
-  else
-    expression.each {|i| value = value.__send__(f, i.instance_of?(Array) && i.first == :call ? (i.shift; call(i)) : i)}
-    value
-  end
+  expression.map! {|i| i.instance_of?(Array) && i.first == :call ? (i.shift; call(i)) : i}.inject(f)
 end
 
 #-----------------------------------------------
@@ -91,17 +82,17 @@ if $0 == __FILE__
 
     def test_call
       # (* 1 2 3 4)
-      assert_equal(24, call(['*', 1, 2, 3, 4]))
-      assert_equal(24, evaluate([:call, '*', 1, 2, 3, 4]))
+      assert_equal(24, call([:*, 1, 2, 3, 4]))
+      assert_equal(24, evaluate([:call, :*, 1, 2, 3, 4]))
       # (= 5 (+ 2 3))
-      assert_true(call(['==', 5, [:call, '+', 2, 3]]))
-      assert_true(evaluate([:call, '==', 5, [:call, '+', 2, 3]]))
+      assert_true(call([:==, 5, [:call, :+, 2, 3]]))
+      assert_true(evaluate([:call, :==, 5, [:call, :+, 2, 3]]))
       # (= (+ 1 2 3) 6)
-      assert_true(call(['==', [:call, '+', 1, 2, 3], 6]))
-      assert_true(evaluate([:call, '==', [:call, '+', 1, 2, 3], 6]))
+      assert_true(call([:==, [:call, :+, 1, 2, 3], 6]))
+      assert_true(evaluate([:call, :==, [:call, :+, 1, 2, 3], 6]))
       # (= (+ a b c) abc)
-      assert_true(call(['==', [:call, '+', 'a', 'b', 'c'], 'abc']))
-      assert_true(evaluate([:call, '==', [:call, '+', 'a', 'b', 'c'], 'abc']))
+      assert_true(call([:==, [:call, :+, 'a', 'b', 'c'], 'abc']))
+      assert_true(evaluate([:call, :==, [:call, :+, 'a', 'b', 'c'], 'abc']))
     end
 
     def test_quantification_forall?
