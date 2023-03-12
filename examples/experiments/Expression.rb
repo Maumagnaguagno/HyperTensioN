@@ -2,15 +2,15 @@
 # Evaluate
 #-----------------------------------------------
 
-def evaluate(expression)
+def evaluate(expression, &block)
   case first = expression.shift
   when :and then expression.all? {|e| evaluate(e)}
   when :or then expression.any? {|e| evaluate(e)}
   when :xor then expression.one? {|e| evaluate(e)}
   when :not then expression.none? {|e| evaluate(e)}
   when :call then call(expression)
-  when :forall then forall?(*expression)
-  when :exists then exists?(*expression)
+  when :forall then forall?(*expression, &block)
+  when :exists then exists?(*expression, &block)
   else @state[first].include?(expression)
   end
 end
@@ -82,6 +82,11 @@ if $0 == __FILE__
           assert_equal((pa and (pb or (pc and not pd))), evaluate(expression))
         }
       }
+      @state = {:number => [['1'],['2'],['3']]}
+      assert_true(evaluate([:xor, [:number, '1'], [:number, 'a']]))
+      assert_false(evaluate([:xor, [:number, '1'], [:number, '2']]))
+      assert_true(evaluate([:forall, [[:number, x = '']], [], x]) {x.to_i != 0})
+      assert_true(evaluate([:exists, [[:number, x = '']], [], x]) {x.to_i != 0})
     end
 
     def test_call
