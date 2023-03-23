@@ -226,12 +226,10 @@ module Foo_Parser
   attr_reader :domain_name, :problem_name, :operators, :methods, :predicates, :state, :tasks, :goal_pos, :goal_not
 
   def parse_domain(domain_filename)
-    description = IO.read(domain_filename)
     # TODO fill attributes
   end
 
   def parse_problem(problem_filename)
-    description = IO.read(problem_filename)
     # TODO fill attributes
   end
 end

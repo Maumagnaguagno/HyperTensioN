@@ -19,12 +19,12 @@ module Hypest
     Hype.compile(domain, problem, type)
     if domain_expected
       assert_true(File.exist?(domain_type))
-      assert_equal(domain_expected, IO.read(domain_type))
+      assert_equal(domain_expected, File.read(domain_type))
     else assert_false(File.exist?(domain_type))
     end
     if problem_expected
       assert_true(File.exist?(problem_type))
-      assert_equal(problem_expected, IO.read(problem_type))
+      assert_equal(problem_expected, File.read(problem_type))
     else assert_false(File.exist?(problem_type))
     end
   ensure
