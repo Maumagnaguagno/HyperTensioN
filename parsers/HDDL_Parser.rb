@@ -307,7 +307,7 @@ module HDDL_Parser
                 end
                 parameters.shift(i+2)
               end
-              raise "#{name} with repeated parameters" if free_variables.concat(parameters).uniq!
+              raise 'Problem with repeated parameters' if free_variables.concat(parameters).uniq!
             elsif not @tasks.empty? then @tasks.unshift(true)
             end
           end
