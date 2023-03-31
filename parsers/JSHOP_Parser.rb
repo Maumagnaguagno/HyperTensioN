@@ -100,7 +100,6 @@ module JSHOP_Parser
 
   def parse_domain(domain_filename)
     if (tokens = scan_tokens(domain_filename)).instance_of?(Array) and tokens.size == 3 and tokens.shift == 'defdomain'
-      raise 'Found list instead of domain name' if tokens.first.instance_of?(Array)
       @domain_name = tokens.shift
       @operators = []
       @methods = []
