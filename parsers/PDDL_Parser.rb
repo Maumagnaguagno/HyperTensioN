@@ -92,6 +92,7 @@ module PDDL_Parser
 
   def parse_domain(domain_filename)
     if (tokens = scan_tokens(domain_filename)).instance_of?(Array) and tokens.shift == 'define'
+      @domain_name = nil
       @operators = []
       @methods = []
       @predicates = {}
@@ -115,7 +116,6 @@ module PDDL_Parser
         else raise "#{group.first} is not recognized in domain"
         end
       end
-      @domain_name ||= 'unknown'
     else raise "File #{domain_filename} does not match domain pattern"
     end
   end
@@ -126,6 +126,7 @@ module PDDL_Parser
 
   def parse_problem(problem_filename)
     if (tokens = scan_tokens(problem_filename)).instance_of?(Array) and tokens.shift == 'define'
+      @problem_name = nil
       @state = {}
       @objects = []
       @goal_pos = []
@@ -165,7 +166,6 @@ module PDDL_Parser
         else raise "#{group.first} is not recognized in problem"
         end
       end
-      @problem_name ||= 'unknown'
     else raise "File #{problem_filename} does not match problem pattern"
     end
   end
