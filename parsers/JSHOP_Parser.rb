@@ -44,21 +44,20 @@ module JSHOP_Parser
   #-----------------------------------------------
 
   def parse_operator(op)
-    op.shift
-    raise 'Operator without name definition' unless (name = op.first.shift).instance_of?(String)
+    raise 'Operator without name definition' unless (name = op[1].shift).instance_of?(String)
     name.sub!(/^!!/,'invisible_') or name.delete_prefix!('!')
-    raise "#{name} have size #{op.size} instead of 4" if op.size != 4
+    raise "#{name} have size #{op.size} instead of 4" if op.size != 5
     raise "#{name} redefined" if @operators.assoc(name)
-    @operators << operator = [name, op.shift, pos = [], neg = []]
+    @operators << operator = [name, op[1], pos = [], neg = []]
     # Preconditions
-    raise "Error with #{name} precondition" unless (group = op.shift).instance_of?(Array)
+    raise "Error with #{name} precondition" unless (group = op[2]).instance_of?(Array)
     group.each {|pre|
       pre.first != NOT ? pos << pre : pre.size == 2 ? neg << pre = pre.last : raise("Error with #{name} negative precondition")
       @predicates[pre.first.freeze] ||= false
     }
     # Effects
-    define_effects(name, operator[5] = op.shift)
-    define_effects(name, operator[4] = op.shift)
+    define_effects(name, operator[5] = op[3])
+    define_effects(name, operator[4] = op[4])
   end
 
   #-----------------------------------------------
@@ -99,12 +98,12 @@ module JSHOP_Parser
   #-----------------------------------------------
 
   def parse_domain(domain_filename)
-    if (tokens = scan_tokens(domain_filename)).instance_of?(Array) and tokens.size == 3 and tokens.shift == 'defdomain'
-      @domain_name = tokens.shift
+    if (tokens = scan_tokens(domain_filename)).instance_of?(Array) and tokens.size == 3 and tokens[0] == 'defdomain'
+      @domain_name = tokens[1]
       @operators = []
       @methods = []
       @predicates = {}
-      tokens = tokens.shift
+      tokens = tokens[2]
       while group = tokens.shift
         case group.first
         when ':operator' then parse_operator(group)
@@ -121,12 +120,12 @@ module JSHOP_Parser
   #-----------------------------------------------
 
   def parse_problem(problem_filename)
-    if (tokens = scan_tokens(problem_filename)).instance_of?(Array) and tokens.size == 5 and tokens.shift == 'defproblem'
-      @problem_name = tokens.shift
-      raise 'Different domain specified in problem file' if @domain_name != tokens.shift
+    if (tokens = scan_tokens(problem_filename)).instance_of?(Array) and tokens.size == 5 and tokens[0] == 'defproblem'
+      @problem_name = tokens[1]
+      raise 'Different domain specified in problem file' if @domain_name != tokens[2]
       @state = {}
-      tokens.shift.each {|pre| (@state[pre.shift.freeze] ||= []) << pre}
-      @tasks = tokens.shift
+      tokens[3].each {|pre| (@state[pre.shift.freeze] ||= []) << pre}
+      @tasks = tokens[4]
       # Tasks may be ordered or unordered
       @tasks.shift unless ordered = (@tasks.first != ':unordered')
       @tasks.each {|pre,| pre.sub!(/^!!/,'invisible_') or pre.delete_prefix!('!')}.unshift(ordered) unless @tasks.empty?
