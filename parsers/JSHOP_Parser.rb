@@ -48,7 +48,7 @@ module JSHOP_Parser
     name.sub!(/^!!/,'invisible_') or name.delete_prefix!('!')
     raise "#{name} have size #{op.size} instead of 4" if op.size != 5
     raise "#{name} redefined" if @operators.assoc(name)
-    @operators << operator = [name, op[1], pos = [], neg = [], op[4], op[3]]
+    @operators << [name, op[1], pos = [], neg = [], op[4], op[3]]
     # Preconditions
     raise "Error with #{name} precondition" unless (group = op[2]).instance_of?(Array)
     group.each {|pre|
