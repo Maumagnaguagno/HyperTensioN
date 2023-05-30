@@ -15,7 +15,7 @@ module HDDL_Parser
   #-----------------------------------------------
 
   def scan_tokens(filename)
-    (str = IO.read(filename)).gsub!(/;.*$/,'')
+    (str = IO.read(filename)).gsub!(/;.*/,'')
     str.downcase!
     # return str.to_sexpr # require Ichor
     stack = []
