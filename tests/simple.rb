@@ -446,7 +446,14 @@ digraph "basic" {
       interpreted_execution_tests(
         "examples/basic/basic.#{type}",
         "examples/basic/pb1.#{type}",
+        'Hype.rb',
         "0: drop(kiwi)\n1: pickup(banjo)\n"
+      )
+      interpreted_execution_tests(
+        "examples/basic/basic.#{type}",
+        "examples/basic/pb1.#{type}",
+        '-s Hype.rb -IPC',
+        "\n==>\n1 drop kiwi\n2 pickup banjo\nroot 0\n0 swap banjo kiwi -> #{type == 'jshop' ? 'case_1' : 'have_second'} 1 2\n<==\n"
       )
     }
   end

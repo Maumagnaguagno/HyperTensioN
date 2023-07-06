@@ -9,15 +9,13 @@
 module Hypertension
   extend self
 
-  FAST_OUTPUT = true
-
   attr_accessor :domain, :state, :debug
 
   #-----------------------------------------------
   # Planning
   #-----------------------------------------------
 
-if FAST_OUTPUT
+if not $IPC
 
   def planning(tasks, level = 0)
     return tasks if tasks.empty?
@@ -216,7 +214,7 @@ end
   # Problem
   #-----------------------------------------------
 
-if FAST_OUTPUT
+if not $IPC
 
   def problem(state, tasks, debug = false, ordered = true)
     @nostack = false

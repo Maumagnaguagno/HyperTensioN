@@ -32,8 +32,8 @@ module Hypest
     File.delete(problem_type) if File.exist?(problem_type)
   end
 
-  def interpreted_execution_tests(domain, problem, output_expected)
-    assert_equal(output_expected, `ruby Hype.rb #{domain} #{problem} run`[/Plan-+\n(.+)Total/m, 1])
+  def interpreted_execution_tests(domain, problem, script, output_expected)
+    assert_true(`ruby #{script} #{domain} #{problem} run`.include?(output_expected))
   end
 
   def native_execution_tests(domain, problem, compiler, output_expected)

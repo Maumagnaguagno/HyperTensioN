@@ -59,8 +59,10 @@ HyperTensioN did not exploit the seed variable provided during the competition, 
 A more detailed explanation is provided in the IPC paper [HyperTensioN: A three-stage compiler for planning](https://gki.informatik.uni-freiburg.de/competition/proceedings.pdf#page=14) and the extended paper [HyperTensioN and Total-order Forward Decomposition optimizations](https://arxiv.org/pdf/2207.00345.pdf).
 
 The [plan format output](https://gki.informatik.uni-freiburg.de/ipc2020/format.pdf) required by the IPC to analyze plan correctness was different from the one used by HyperTensioN.
-This output format can be obtained by setting the constant ``FAST_OUTPUT = false`` in ``Hypertension.rb`` or defining the ``IPC`` flag to the C++ compiler, note that this adds a small overhead.
-Some examples and tests expect the original fast output.
+Some examples and tests expect the original non-IPC output, the reason why it is disabled by default.
+The IPC output format was hardcoded during the competition, but now can be enabled by defining the IPC flag to the Ruby interpreter or C++ compiler, note that this adds a small overhead.
+- ``ruby -s Hype.rb -IPC $DOMAINFILE $PROBLEMFILE {extensions} run``
+- ``ruby Hype.rb $DOMAINFILE $PROBLEMFILE {extensions} cpp && CXX -D IPC -O3 $DOMAINFILE.cpp -o $DOMAINFILE.bin && ./$DOMAINFILE.bin``
 Plans in the IPC format can be visualized using the [HTN Plan Viewer](https://maumagnaguagno.github.io/HTN_Plan_Viewer/).
 
 The [presented](https://gki.informatik.uni-freiburg.de/competition/results.pdf) and [fixed](https://gki.informatik.uni-freiburg.de/competition/results-fixed.pdf) results are now available, and the presentation is on YouTube:
