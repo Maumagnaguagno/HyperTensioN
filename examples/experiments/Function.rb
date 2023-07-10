@@ -104,7 +104,7 @@ module Continuous
     v = @state[:function][f]
     ev = @state[:event]
     pr = @state[:process]
-    time = start_time.to_f
+    start_time = start_time.to_f
     finish_time = finish_time.to_f
     ev_index = pr_index = 0
     while ev_index != ev.size or pr_index != pr.size
@@ -126,8 +126,8 @@ module Continuous
         type, g, expression, start, finish = pr[pr_index]
         break if start > finish_time
         if f == g
-          (start > time ? start : time).step(finish_time, step) {|t|
-            value = __send__(*expression, (t > finish ? finish : t) - start)
+          (start > start_time ? start : start_time).step(finish_time > finish ? finish : finish_time, step) {|t|
+            value = __send__(*expression, t - start)
             case type
             when 'increase' then v += value
             when 'decrease' then v -= value
@@ -135,6 +135,15 @@ module Continuous
             when 'scale_down' then v /= value
             end
           }
+          if finish_time > finish
+            value *= finish_time - finish
+            case type
+            when 'increase' then v += value
+            when 'decrease' then v -= value
+            when 'scale_up' then v *= value
+            when 'scale_down' then v /= value
+            end
+          end
         end
         pr_index += 1
       end
