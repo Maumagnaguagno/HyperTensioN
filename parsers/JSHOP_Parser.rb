@@ -78,9 +78,9 @@ module JSHOP_Parser
         raise "#{name} redefined #{label} decomposition" if method.drop(2).assoc(label)
       else label = "case_#{method.size - 2}"
       end
-      method << [label, free_variables = [], pos = [], neg = []]
       # Preconditions
       raise "Error with #{name} precondition" unless (group = met.shift).instance_of?(Array)
+      method << [label, free_variables = [], pos = [], neg = [], subtasks = met.shift]
       group.each {|pre|
         pre.first != NOT ? pos << pre : pre.size == 2 ? neg << pre = pre.last : raise("Error with #{name} negative precondition")
         @predicates[pre.first.freeze] ||= false
@@ -88,8 +88,8 @@ module JSHOP_Parser
       }
       free_variables.uniq!
       # Subtasks
-      raise "Error with #{name} subtasks" unless (group = met.shift).instance_of?(Array)
-      method.last << group.each {|pre,| pre.sub!(/^!!/,'invisible_') or pre.delete_prefix!('!')}
+      raise "Error with #{name} subtasks" unless subtasks.instance_of?(Array)
+      subtasks.each {|pre,| pre.sub!(/^!!/,'invisible_') or pre.delete_prefix!('!')}
     end
   end
 
