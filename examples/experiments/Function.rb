@@ -226,10 +226,9 @@ end
 #-----------------------------------------------
 if $0 == __FILE__
   require 'test/unit'
-  require_relative '../../Hypertension'
 
   class Exogenous < Test::Unit::TestCase
-    include Continuous, Hypertension
+    include Continuous
 
     def identity(i)
       i
