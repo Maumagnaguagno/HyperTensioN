@@ -562,19 +562,17 @@ int main(void)
   // Print plan
   if(result)
   {
+#ifdef IPC
+    puts("==>");
+#endif
     if(result == &empty)
     {
 #ifndef IPC
       puts("Empty plan");
-#else
-      puts("==>\nroot\n<==");
 #endif
     }
     else
     {
-#ifdef IPC
-      puts("==>");
-#endif
       do
       {
 #ifdef IPC
@@ -583,27 +581,27 @@ int main(void)
         print_task(result);
         result = result->next;
       } while(result != &empty);
-#ifdef IPC
-      fputs("root", stdout);
-      print_sequence(0, <NTASKS>);
-      unsigned int size = decomposition.size();
-      while(size--)
-      {
-        const Task *task = decomposition[size].task;
-        printf("%u ", task->index);
-        fputs(tokens[task->value], stdout);
-        for(VALUE i = 1; i <= task->parameters[0]; ++i)
-        {
-          putchar(\' \');
-          fputs(tokens[task->parameters[i]], stdout);
-        }
-        fputs(" -> ", stdout);
-        fputs(labels[decomposition[size].label], stdout);
-        print_sequence(decomposition[size].min, decomposition[size].max);
-      }
-      puts("<==");
-#endif
     }
+#ifdef IPC
+    fputs("root", stdout);
+    print_sequence(0, <NTASKS>);
+    unsigned int size = decomposition.size();
+    while(size--)
+    {
+      const Task *task = decomposition[size].task;
+      printf("%u ", task->index);
+      fputs(tokens[task->value], stdout);
+      for(VALUE i = 1; i <= task->parameters[0]; ++i)
+      {
+        putchar(\' \');
+        fputs(tokens[task->parameters[i]], stdout);
+      }
+      fputs(" -> ", stdout);
+      fputs(labels[decomposition[size].label], stdout);
+      print_sequence(decomposition[size].min, decomposition[size].max);
+    }
+    puts("<==");
+#endif
     return EXIT_SUCCESS;
   }
   puts(nostack ? "Planning failed, try with more STACK" : "Planning failed");
