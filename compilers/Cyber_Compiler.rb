@@ -145,16 +145,16 @@ module Cyber_Compiler
         define_methods << "\n  if(#{equality.join(' || ')}) return false;" unless equality.empty?
         define_methods << define_methods_comparison
         visit_param = nil
-        dec[4].each {|s|
-          if s.size > 1 and s.first.start_with?('invisible_visit_')
-            if ((visit_param = s.drop(1)) & f).empty?
-              define_methods << "\n  if(applicable_const(visit#{visit_param.size}, #{terms_to_hyper(visit_param)})) return false;"
-              visit_param = nil
-            end
-            break
-          end
-        } unless state_visit
         unless dec[4].empty?
+          dec[4].each {|s|
+            if s.size > 1 and s.first.start_with?('invisible_visit_')
+              if ((visit_param = s.drop(1)) & f).empty?
+                define_methods << "\n  if(applicable_const(visit#{visit_param.size}, #{terms_to_hyper(visit_param)})) return false;"
+                visit_param = nil
+              end
+              break
+            end
+          } unless state_visit
           malloc = []
           dec[4].each_with_index {|s,i|
             define_methods << "\n  Task *subtask#{i} = new_task(#{s.size - 1});"
