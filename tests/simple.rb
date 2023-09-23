@@ -377,10 +377,10 @@ Drop | ?a
 Swap | ?x ?y ||
 --- | --- | ---
 ***Label*** | ***Preconditions*** | ***Subtasks***
-case_0 ||
+|case_0
 || (have ?x) | drop ?x
 || **not** (have ?y) | pickup ?y
-case_1 ||
+|case_1
 || (have ?y) | drop ?y
 || **not** (have ?x) | pickup ?x',
       # Problem

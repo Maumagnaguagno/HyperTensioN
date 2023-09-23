@@ -24,7 +24,7 @@ module Markdown_Compiler
       methods.each_with_index {|(name,param,*decompositions),i|
         output << "\n#{name.capitalize} | #{param.join(' ')} ||\n--- | --- | ---\n***Label*** | ***Preconditions*** | ***Subtasks***"
         decompositions.each {|label,free,precond_pos,precond_not,subtasks|
-          output << "\n#{label} ||"
+          output << "\n|#{label}"
           index = 0
           precond_pos.each {|pre|
             output << "\n|| (#{pre.join(' ')}) | #{subtasks[index]&.join(' ')}"
@@ -51,7 +51,7 @@ module Markdown_Compiler
     state.each {|pre,k| k.each {|terms| output << "\n- (#{[pre, *terms].join(' ')})"}}
     unless tasks.empty?
       ordered = tasks.shift
-      output << "\n\n## Tasks" << (ordered ? "\n**ordered**" : "\n**unordered**")
+      output << (ordered ? "\n\n## Tasks\n**ordered**" : "\n\n## Tasks\n**unordered**")
       tasks.each {|task| output << "\n- (#{task.join(' ')})"}.unshift(ordered)
     end
     unless goal_pos.empty? and goal_not.empty?
