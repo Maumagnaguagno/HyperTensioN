@@ -75,7 +75,7 @@ class Sphygmomanometer < Test::Unit::TestCase
     w = ''
     z = ''
     # Generate x y w z based on state and preconditions
-    Hypertension.generate(
+    assert_nil(Hypertension.generate(
       [
         [A, x],
         [B, y],
@@ -87,7 +87,7 @@ class Sphygmomanometer < Test::Unit::TestCase
       ], x, y, w, z
     ) {
       assert_equal(expected.shift, [x,y,w,z])
-    }
+    })
     assert_true(expected.empty?)
   end
 
@@ -101,7 +101,7 @@ class Sphygmomanometer < Test::Unit::TestCase
     z = ''
     # Generate x y w z based on state and preconditions
     exist_y = nil # One unification of y is enough
-    Hypertension.generate(
+    assert_nil(Hypertension.generate(
       [
         [A, x],
         [B, y],
@@ -114,7 +114,7 @@ class Sphygmomanometer < Test::Unit::TestCase
     ) {
       break if (exist_y ||= y.dup) != y
       assert_equal(expected.shift, [x,y,w,z])
-    }
+    })
     assert_true(expected.empty?)
   end
 
