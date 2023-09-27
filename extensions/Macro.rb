@@ -7,34 +7,50 @@ module Macro
 
   def apply(operators, methods, predicates, state, tasks, goal_pos, goal_not, debug = false)
     puts 'Macro'.center(50,'-') if debug
-    # Subtask counter
+    # Task counter
     counter = Hash.new(0)
-    methods.each {|met| met.drop(2).each {|dec| dec.last.each {|subtask,| counter[subtask] += 1}}}
+    methods.each {|met| met.drop(2).each {|dec| dec.last.each {|t,| counter[t] += 1}}}
+    tasks.each {|t,| counter[t] += 1}
     # Macro sequential operators
     macro = []
     clear_ops = {}
     methods.each {|met|
       met.drop(2).each {|dec|
-        new_subtasks = []
-        dec.last.each {|subtask|
-          # Add operators to macro and skip methods
-          if op = operators.assoc(subtask.first)
-            macro << [op, subtask]
-          else
-            add_macro_to_subtasks(operators, macro, new_subtasks, counter, clear_ops, debug)
-            new_subtasks << subtask
-          end
-        }
-        add_macro_to_subtasks(operators, macro, new_subtasks, counter, clear_ops, debug)
+        macro_sequential_operators(operators, macro, dec.last, new_subtasks = [], counter, clear_ops, debug)
         dec[4] = new_subtasks
       }
     }
+    # Macro sequential top operators
+    if not (ordered = tasks.shift) and tasks.any? {|t,| (op = operators.assoc(t)) and clear_ops.include?(op)}
+      # TODO replace top cleared operators with new method that decomposes to invisible and visible counterparts
+      raise 'Expected ordered tasks or no top operators'
+    end
+    macro_sequential_operators(operators, macro, tasks, new_subtasks = [ordered], counter, clear_ops, debug)
+    tasks.replace(new_subtasks)
+    # Clear operators
     clear_ops.each_key {|op|
       op[2] = []
       op[3] = []
       op[4] = []
       op[5] = []
     }
+  end
+
+  #-----------------------------------------------
+  # Macro sequential operators
+  #-----------------------------------------------
+
+  def macro_sequential_operators(operators, macro, subtasks, new_subtasks, counter, clear_ops, debug)
+    subtasks.each {|subtask|
+      # Add operators to macro and skip methods
+      if op = operators.assoc(subtask.first)
+        macro << [op, subtask]
+      else
+        add_macro_to_subtasks(operators, macro, new_subtasks, counter, clear_ops, debug)
+        new_subtasks << subtask
+      end
+    }
+    add_macro_to_subtasks(operators, macro, new_subtasks, counter, clear_ops, debug)
   end
 
   #-----------------------------------------------
