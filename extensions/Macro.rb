@@ -70,7 +70,7 @@ module Macro
         param = subtask.drop(1)
         clear_ops[op] = nil
         # Header
-        (name ? name << '_and_' : name = 'invisible_macro_') << op.first.delete_prefix('invisible')
+        (name ? name << '_and_' : name = 'invisible_macro_') << op.first
         parameters.concat(param)
         variables = op[1]
         # Preconditions
