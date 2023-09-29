@@ -99,8 +99,8 @@ And is represented by:
 ```Ruby
 @methods = [
   ['swap', ['?x', '?y'],
-    # First case becomes 'swap_0' because no label was found in JSHOP
-    ['swap_0',
+    # First case becomes 'case_0' because no label was found in JSHOP
+    ['case_0',
       # Free variables
       [],
       # Positive preconditions
@@ -113,8 +113,8 @@ And is represented by:
         ['pickup', '?y']
       ]
     ],
-    # Second case becomes 'swap_1' because no label was found in JSHOP
-    ['swap_1',
+    # Second case becomes 'case_1' because no label was found in JSHOP
+    ['case_1',
       # Free variables
       [],
       # Positive preconditions
