@@ -67,11 +67,13 @@ module Macro
       effect_del = []
       index = new_subtasks.size
       macro.each {|op,subtask|
-        param = subtask.drop(1)
-        clear_ops[op] = nil
+        unless op.first.start_with?('invisible_')
+          clear_ops[op] = nil
+          new_subtasks << subtask
+        end
         # Header
         (name ? name << '_and_' : name = 'invisible_macro_') << op.first
-        parameters.concat(param)
+        parameters.concat(param = subtask.drop(1))
         variables = op[1]
         # Preconditions
         op[2].each {|pre|
@@ -97,7 +99,6 @@ module Macro
           effect_del.delete(pre = pre.map {|p| p.start_with?('?') ? param[variables.index(p)] : p})
           effect_add << pre unless precond_pos.include?(pre) or effect_add.include?(pre)
         }
-        new_subtasks << subtask
       }.clear
       parameters.uniq!
       unless operators.assoc(name)
@@ -107,7 +108,7 @@ module Macro
       new_subtasks.insert(index, [name, *parameters])
     elsif macro.size == 1
       op, subtask = macro.shift
-      if counter[op.first] != 1
+      if counter[op.first] != 1 and not op.first.start_with?('invisible_')
         unless operators.assoc(name = "invisible_macro_#{op.first}")
           clear_ops[op] = nil
           operators << [name, op[1], op[2], op[3], op[4], op[5]]
