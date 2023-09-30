@@ -69,11 +69,11 @@ module Hype
     output = ''
     indent = "\n        "
     @parser.operators.each {|op|
-      output << "    #{op.first}(#{op[1].join(' ')})\n"
-      output << "      Precond positive:#{predicates_to_s(op[2], indent)}\n" unless op[2].empty?
-      output << "      Precond negative:#{predicates_to_s(op[3], indent)}\n" unless op[3].empty?
-      output << "      Effect positive:#{predicates_to_s(op[4], indent)}\n" unless op[4].empty?
-      output << "      Effect negative:#{predicates_to_s(op[5], indent)}\n" unless op[5].empty?
+      output << "\n    #{op.first}(#{op[1].join(' ')})"
+      output << "\n      Precond positive:#{predicates_to_s(op[2], indent)}" unless op[2].empty?
+      output << "\n      Precond negative:#{predicates_to_s(op[3], indent)}" unless op[3].empty?
+      output << "\n      Effect positive:#{predicates_to_s(op[4], indent)}" unless op[4].empty?
+      output << "\n      Effect negative:#{predicates_to_s(op[5], indent)}" unless op[5].empty?
       output << "\n"
     }
     output
@@ -87,13 +87,13 @@ module Hype
     output = ''
     indent = "\n          "
     @parser.methods.each {|name,param,*decompositions|
-      output << "    #{name}(#{param.join(' ')})\n"
+      output << "\n    #{name}(#{param.join(' ')})"
       decompositions.each {|dec|
-        output << "      Label: #{dec.first}\n"
-        output << "        Free variables:\n          #{dec[1].join(indent)}\n" unless dec[1].empty?
-        output << "        Precond positive:#{predicates_to_s(dec[2], indent)}\n" unless dec[2].empty?
-        output << "        Precond negative:#{predicates_to_s(dec[3], indent)}\n" unless dec[3].empty?
-        output << "        Subtasks:#{subtasks_to_s(dec[4], indent)}\n"
+        output << "\n      Label: #{dec.first}"
+        output << "\n        Free variables:\n          #{dec[1].join(indent)}" unless dec[1].empty?
+        output << "\n        Precond positive:#{predicates_to_s(dec[2], indent)}" unless dec[2].empty?
+        output << "\n        Precond negative:#{predicates_to_s(dec[3], indent)}" unless dec[3].empty?
+        output << "\n        Subtasks:#{subtasks_to_s(dec[4], indent)}"
       }
       output << "\n"
     }
@@ -106,8 +106,8 @@ module Hype
 
   def to_s
 "Domain #{@parser.domain_name}
-  Operators:\n#{operators_to_s}
-  Methods:\n#{methods_to_s}
+  Operators:#{operators_to_s}\n
+  Methods:#{methods_to_s}\n
 Problem #{@parser.problem_name}
   State:#{predicates_to_s(@parser.state.flat_map {|k,v| [k].product(v)}, "\n    ")}\n
   Goal:
