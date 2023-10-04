@@ -325,7 +325,9 @@ module Cyber_Compiler
     template.sub!('<VALUE_TYPE>', tokens.size <= 256 ? 'char' : 'int')
     template.sub!('<VALUES>', arity.map! {|v| "\ntypedef std::set<std::tuple<#{Array.new(v,'VALUE').join(',')}>> VALUE#{v};"}.join)
     # Tasks
-    if tasks.empty? then template.sub!('<TASK0>', 'NULL')
+    if tasks.empty?
+      template.sub!('<TASK0>', 'NULL')
+      template.sub!('<NTASKS>','0')
     else
       raise 'Unordered tasks not supported' unless ordered = tasks.shift
       define_tasks = ''
@@ -335,12 +337,12 @@ module Cyber_Compiler
         malloc << "subtask#{i}"
       }
       tasks_to_hyper(define_tasks << "\n  malloc_test(#{malloc.join(' && ')});", tasks, "\n  ", 'NULL')
-      tasks.unshift(ordered)
       tasks.pop if invisible_goal
       template.sub!('<TASKS>', define_tasks)
       template.sub!('<TASK0>', 'subtask0')
+      template.sub!('<NTASKS>', tasks.size.to_s)
+      tasks.unshift(ordered)
     end
-    template.sub!('<NTASKS>', (tasks.size - 1).to_s)
     template.gsub!(/\b-\b/,'_')
     template
   end
@@ -482,11 +484,10 @@ static void print_task(const Task *task)
 
 static void print_sequence(unsigned int min, unsigned int max)
 {
-  do
+  while(min < max)
   {
-    printf(" %u", min);
-  } while(++min < max);
-  putchar(\'\n\');
+    printf(" %u", min++);
+  }
 }
 
 static Task* planning(Task *tasks)
@@ -589,7 +590,7 @@ int main(void)
     while(size--)
     {
       const Task *task = decomposition[size].task;
-      printf("%u ", task->index);
+      printf("\n%u ", task->index);
       fputs(tokens[task->value], stdout);
       for(VALUE i = 1; i <= task->parameters[0]; ++i)
       {
@@ -600,7 +601,7 @@ int main(void)
       fputs(labels[decomposition[size].label], stdout);
       print_sequence(decomposition[size].min, decomposition[size].max);
     }
-    puts("<==");
+    puts("\n<==");
 #endif
     return EXIT_SUCCESS;
   }
