@@ -275,11 +275,11 @@ end
   def task_permutations(state, tasks, goal_task = nil)
     # All permutations are considered
     tasks.permutation {|task_list|
-      @state = state
       task_list = Marshal.load(Marshal.dump(task_list))
       task_list << goal_task if goal_task
       plan = planning(task_list)
       return plan if plan
+      @state = state
     }
     nil
   end
