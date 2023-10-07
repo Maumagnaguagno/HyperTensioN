@@ -20,13 +20,25 @@ module Macro
         dec[4] = new_subtasks
       }
     }
-    # Macro sequential top operators
-    if not (ordered = tasks.shift) and tasks.any? {|t,| (op = operators.assoc(t)) and clear_ops.include?(op)}
-      # TODO replace top cleared operators with new method that decomposes to invisible and visible counterparts
-      raise 'Expected ordered tasks or no top operators'
+    # Macro sequential top ordered operators
+    if ordered = tasks.shift
+      macro_sequential_operators(operators, macro, tasks, new_subtasks = [ordered], counter, clear_ops, debug)
+      tasks.replace(new_subtasks)
+    else
+      tasks.each {|t,|
+        if op = operators.assoc(t) and clear_ops.include?(op)
+          unless methods.assoc(name = "macro_#{t}")
+            puts "Macro method #{name}" if debug
+            methods << [name, op[1], ['case_0', [], [], [], [[op_name = "invisible_#{name}", *op[1]], [t, *op[1]]]]]
+            unless operators.assoc(op_name)
+              operators << [op_name, op[1], op[2], op[3], op[4], op[5]]
+              puts "Macro operator #{op_name}" if debug
+            end
+          end
+          t.replace(name)
+        end
+      }.unshift(ordered)
     end
-    macro_sequential_operators(operators, macro, tasks, new_subtasks = [ordered], counter, clear_ops, debug)
-    tasks.replace(new_subtasks)
     # Clear operators
     clear_ops.each_key {|op|
       op[2] = []
