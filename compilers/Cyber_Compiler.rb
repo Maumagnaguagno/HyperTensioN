@@ -279,7 +279,7 @@ module Cyber_Compiler
           define_start_bits << "\n  start.#{pre}_ = #{k ? true : false};"
         else
           define_state << "\n  VALUE#{a} *#{pre}_;"
-          define_delete << "\n  if(old_state->#{pre}_ != state->#{pre}_) delete state->#{pre}_"
+          define_delete << "\n  if(old_state->#{pre}_ != state->#{pre}_) delete state->#{pre}_; \\"
           define_start << "\n  start.#{pre}_ = new VALUE#{a}"
           if k
             define_start << "\n  {\n    #{k.map {|terms| terms_to_hyper(terms)}.join(",\n    ")}\n  }"
@@ -306,7 +306,7 @@ module Cyber_Compiler
     else
       define_visit.uniq!
       template.sub!('<CLEAR>', define_visit.map! {|i| define_state_const << "\nstatic VALUE#{i} visit#{i};"; "\n  visit#{i}.clear()"}.join('; \\'))
-      template.sub!('<DELETE>', define_delete.join('; \\') << "; \\\n  free(state)")
+      template.sub!('<DELETE>', define_delete.join << "\n  free(state)")
     end
     template.sub!('<STATE_CONST>', define_state_const)
     template.sub!('<START>', define_start << define_start_bits)
