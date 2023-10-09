@@ -482,14 +482,6 @@ static void print_task(const Task *task)
   putchar(\'\n\');
 }
 
-static void print_sequence(unsigned int min, unsigned int max)
-{
-  while(min < max)
-  {
-    printf(" %u", min++);
-  }
-}
-
 static Task* planning(Task *tasks)
 {
   // Empty tasks
@@ -585,7 +577,8 @@ int main(void)
     }
 #ifdef IPC
     fputs("root", stdout);
-    print_sequence(0, <NTASKS>);
+    unsigned int min = 0, max = <NTASKS>;
+    while(min < max) printf(" %u", min++);
     unsigned int size = decomposition.size();
     while(size--)
     {
@@ -599,7 +592,8 @@ int main(void)
       }
       fputs(" -> ", stdout);
       fputs(labels[decomposition[size].label], stdout);
-      print_sequence(decomposition[size].min, decomposition[size].max);
+      min = decomposition[size].min, max = decomposition[size].max;
+      while(min < max) printf(" %u", min++);
     }
     puts("\n<==");
 #endif
