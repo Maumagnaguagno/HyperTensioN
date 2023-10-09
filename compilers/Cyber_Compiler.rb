@@ -479,7 +479,6 @@ static void print_task(const Task *task)
     putchar(\' \');
     fputs(tokens[task->parameters[i]], stdout);
   }
-  putchar(\'\n\');
 }
 
 static Task* planning(Task *tasks)
@@ -506,8 +505,8 @@ static Task* planning(Task *tasks)
     printf("Domain defines no decomposition for index %u\n", tasks->value);
     exit(EXIT_FAILURE);
   }
-  printf("%u: %u %p\n", level, tasks->value, tasks->next);
   print_task(tasks);
+  printf("\n%u: %p\n", level, tasks->next);
 #endif
   ++level;
   // Operator
@@ -572,6 +571,7 @@ int main(void)
         printf("%u ", result->index);
 #endif
         print_task(result);
+        putchar(\'\n\');
         result = result->next;
       } while(result != &empty);
     }
@@ -584,12 +584,7 @@ int main(void)
     {
       const Task *task = decomposition[size].task;
       printf("\n%u ", task->index);
-      fputs(tokens[task->value], stdout);
-      for(VALUE i = 1; i <= task->parameters[0]; ++i)
-      {
-        putchar(\' \');
-        fputs(tokens[task->parameters[i]], stdout);
-      }
+      print_task(task);
       fputs(" -> ", stdout);
       fputs(labels[decomposition[size].label], stdout);
       min = decomposition[size].min, max = decomposition[size].max;
