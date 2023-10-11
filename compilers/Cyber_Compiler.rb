@@ -383,25 +383,20 @@ module Cyber_Compiler
 #ifndef IPC
 
 #define yield(subtasks, label, ntasks) \
-  Task *plan = planning(subtasks);     \
-  if(plan)                             \
-  {                                    \
-    next_plan = plan;                  \
-    return true;                       \
-  }
+  next_plan = planning(subtasks);      \
+  if(next_plan) return true
 
 #else
 
 #define yield(subtasks, label, ntasks) \
   unsigned int new_index = tindex, old_index = tindex - ntasks; \
-  Task *plan = planning(subtasks);     \
-  if(plan)                             \
+  next_plan = planning(subtasks);      \
+  if(next_plan)                        \
   {                                    \
     decomposition.push_back({task, label, old_index, new_index}); \
-    next_plan = plan;                  \
     return true;                       \
   }                                    \
-  tindex = old_index;
+  tindex = old_index
 
 #endif
 
