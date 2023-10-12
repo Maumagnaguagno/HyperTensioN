@@ -171,7 +171,7 @@ end
         match_objects.shift << match_objects.shift until match_objects.empty?
       }
       # Unification closed
-      terms.each {|i| i.first.replace('X') if i.instance_of?(Array) and i.first.empty?}
+      terms.each {|i| i.first << 0 if i.instance_of?(Array) and i.first.empty?}
     }
     # Remove pointer and duplicates
     objects.each {|i|
