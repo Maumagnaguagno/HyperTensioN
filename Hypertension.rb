@@ -254,9 +254,7 @@ else
     t = Time.now.to_f
     plan = ordered ? planning(tasks) : task_permutations(state, tasks, (tasks.pop if tasks.dig(-1,1,0) == :invisible_goal))
     puts "Time: #{Time.now.to_f - t}s", 'Plan'.center(50,'-')
-    if plan
-      puts 'Empty plan' if plan.empty?
-      puts '==>', plan.map {|d| d.join(' ')}, root, @decomposition, '<=='
+    if plan then puts '==>', plan.map {|d| d.join(' ')}, root, @decomposition, '<=='
     else abort(@nostack ? 'Planning failed, try with more stack' : 'Planning failed')
     end
     plan
