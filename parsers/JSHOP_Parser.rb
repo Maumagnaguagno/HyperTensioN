@@ -27,7 +27,7 @@ module JSHOP_Parser
     }
     raise 'Missing close parentheses' unless stack.empty?
     raise 'Malformed expression' if list.size != 1
-    list.first
+    list[0]
   end
 
   #-----------------------------------------------
@@ -52,8 +52,8 @@ module JSHOP_Parser
     # Preconditions
     raise "Error with #{name} precondition" unless (group = op[2]).instance_of?(Array)
     group.each {|pre|
-      pre.first != NOT ? pos << pre : pre.size == 2 ? neg << pre = pre.last : raise("Error with #{name} negative precondition")
-      @predicates[pre.first.freeze] ||= false
+      pre[0] != NOT ? pos << pre : pre.size == 2 ? neg << pre = pre[1] : raise("Error with #{name} negative precondition")
+      @predicates[pre[0].freeze] ||= false
     }
     # Effects
     define_effects(name, op[3])
@@ -73,7 +73,7 @@ module JSHOP_Parser
     end
     until met.empty?
       # Optional label, add index for the unlabeled decompositions
-      if met.first.instance_of?(String)
+      if met[0].instance_of?(String)
         label = met.shift
         raise "#{name} redefined #{label} decomposition" if method.drop(2).assoc(label)
       else label = "case_#{method.size - 2}"
@@ -82,8 +82,8 @@ module JSHOP_Parser
       raise "Error with #{name} precondition" unless (group = met.shift).instance_of?(Array)
       method << [label, free_variables = [], pos = [], neg = [], subtasks = met.shift]
       group.each {|pre|
-        pre.first != NOT ? pos << pre : pre.size == 2 ? neg << pre = pre.last : raise("Error with #{name} negative precondition")
-        @predicates[pre.first.freeze] ||= false
+        pre[0] != NOT ? pos << pre : pre.size == 2 ? neg << pre = pre[1] : raise("Error with #{name} negative precondition")
+        @predicates[pre[0].freeze] ||= false
         pre.each {|i| free_variables << i if i.start_with?('?') and not method[1].include?(i)}
       }
       free_variables.uniq!
@@ -105,10 +105,10 @@ module JSHOP_Parser
       @predicates = {}
       tokens = tokens[2]
       while group = tokens.shift
-        case group.first
+        case group[0]
         when ':operator' then parse_operator(group)
         when ':method' then parse_method(group)
-        else raise "#{group.first} is not recognized in domain"
+        else raise "#{group[0]} is not recognized in domain"
         end
       end
     else raise "File #{domain_filename} does not match domain pattern"
@@ -127,7 +127,7 @@ module JSHOP_Parser
       tokens[3].each {|pre| (@state[pre.shift.freeze] ||= []) << pre}
       @tasks = tokens[4]
       # Tasks may be ordered or unordered
-      @tasks.shift unless ordered = (@tasks.first != ':unordered')
+      @tasks.shift unless ordered = (@tasks[0] != ':unordered')
       @tasks.each {|pre,| pre.sub!(/^!!/,'invisible_') or pre.delete_prefix!('!')}.unshift(ordered) unless @tasks.empty?
       @goal_pos = []
       @goal_not = []

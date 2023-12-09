@@ -13,7 +13,7 @@ module Wise
         # Duplicates
         puts "Initial state contains duplicate predicates (#{pre} ...): removed" if k.uniq! and debug
         # Arity check
-        puts "Initial state contains (#{pre} ...) with different arity" if k.any? {|i| i.size != k.first.size} and debug
+        puts "Initial state contains (#{pre} ...) with different arity" if k.any? {|i| i.size != k[0].size} and debug
       else
         # Unused predicate
         puts "Initial state contains unused predicates (#{pre} ...): removed" if debug
@@ -32,8 +32,8 @@ module Wise
       puts "#{opname} contains duplicate add effect: removed" if effect_add.uniq! and debug
       puts "#{opname} contains duplicate del effect: removed" if effect_del.uniq! and debug
       # Equality
-      precond_pos.each {|pre| raise "#{opname} precondition contains unnecessary (#{pre.join(' ')}), use same variable instead" if pre.first == '='}
-      precond_not.each {|pre| raise "#{opname} precondition contains contradiction (not (#{pre.join(' ')}))" if pre.first == '=' and pre[1] == pre[2]}
+      precond_pos.each {|pre| raise "#{opname} precondition contains unnecessary (#{pre.join(' ')}), use same variable instead" if pre[0] == '='}
+      precond_not.each {|pre| raise "#{opname} precondition contains contradiction (not (#{pre.join(' ')}))" if pre[0] == '=' and pre[1] == pre[2]}
       raise "#{opname} effect contains equality" if effect_add.assoc('=') or effect_del.assoc('=')
       # Precondition contradiction
       (precond_pos & precond_not).each {|pre| raise "#{opname} precondition contains contradiction (#{pre.join(' ')}) and (not (#{pre.join(' ')}))"}
@@ -75,7 +75,6 @@ module Wise
       decompositions.each {|label,free,precond_pos,precond_not,subtasks|
         prefix_variables(label = "#{name} #{label}", free, debug)
         define_variables(label, param + free, [precond_pos, precond_not, subtasks], debug)
-        # Duplicates
         puts "#{label} contains duplicate free variable: removed" if free.uniq! and debug
         puts "#{label} contains duplicate positive precondition: removed" if precond_pos.uniq! and debug
         puts "#{label} contains duplicate negative precondition: removed" if precond_not.uniq! and debug
@@ -86,8 +85,8 @@ module Wise
           end
         }
         # Equality
-        precond_pos.each {|pre| raise "#{label} precondition contains unnecessary (#{pre.join(' ')}), use same variable instead" if pre.first == '='}
-        precond_not.each {|pre| raise "#{label} precondition contains contradiction (not (#{pre.join(' ')}))" if pre.first == '=' and pre[1] == pre[2]}
+        precond_pos.each {|pre| raise "#{label} precondition contains unnecessary (#{pre.join(' ')}), use same variable instead" if pre[0] == '='}
+        precond_not.each {|pre| raise "#{label} precondition contains contradiction (not (#{pre.join(' ')}))" if pre[0] == '=' and pre[1] == pre[2]}
         # Precondition contradiction
         (precond_pos & precond_not).each {|pre| raise "#{label} precondition contains contradiction (#{pre.join(' ')}) and (not (#{pre.join(' ')}))"}
         verify_tasks("#{label} subtask", subtasks, noops, operators, methods, debug)
@@ -145,14 +144,14 @@ module Wise
   def verify_tasks(name, tasks, noops, operators, methods, debug)
     # Task arity check and noops removal
     tasks.reject! {|task|
-      if noops.include?(task.first)
-        puts "#{name} #{task.first}: removed" if debug
+      if noops.include?(task[0])
+        puts "#{name} #{task[0]}: removed" if debug
         true
-      elsif t = operators.assoc(task.first) || methods.assoc(task.first)
-        raise "#{name} #{task.first} expected #{t[1].size} terms instead of #{task.size.pred}" if t[1].size != task.size.pred
-      elsif task.first.start_with?('?')
-        puts "#{name} #{task.first} is variable" if debug
-      else raise "#{name} #{task.first} is unknown"
+      elsif t = operators.assoc(task[0]) || methods.assoc(task[0])
+        raise "#{name} #{task[0]} expected #{t[1].size} terms instead of #{task.size.pred}" if t[1].size != task.size.pred
+      elsif task[0].start_with?('?')
+        puts "#{name} #{task[0]} is variable" if debug
+      else raise "#{name} #{task[0]} is unknown"
       end
     }
   end

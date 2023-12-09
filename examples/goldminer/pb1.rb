@@ -61,7 +61,7 @@ plan = Goldminer.problem(
     [:get_gold]
   ],
   # Debug
-  ARGV.first == 'debug'
+  ARGV[0] == 'debug'
 )
 
 # Test

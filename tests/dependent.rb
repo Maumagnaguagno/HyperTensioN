@@ -550,7 +550,7 @@ Dependency.problem(
     [:invisible_goal]
   ],
   # Debug
-  ARGV.first == 'debug',
+  ARGV[0] == 'debug',
   # Ordered
   false
 )"

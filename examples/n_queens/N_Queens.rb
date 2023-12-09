@@ -70,8 +70,8 @@ end
 #-----------------------------------------------
 if $0 == __FILE__
   # Size input
-  size = ARGV.first ? ARGV.first.to_i : 8
-  N_Queens.solve(size, ARGV.last == 'debug', true)
+  size = ARGV[0] ? ARGV[0].to_i : 8
+  N_Queens.solve(size, ARGV[1] == 'debug', true)
   # Draw from row size - 1 to 0
   N_Queens.state[:queen].reverse_each {|i,|
     row = '[ ]' * size

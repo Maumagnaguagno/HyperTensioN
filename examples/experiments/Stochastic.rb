@@ -1,7 +1,7 @@
 module Stochastic
 
   def planning(tasks, level = 0)
-    if not tasks.empty? and (d = @domain[tasks.first.first]).instance_of?(Array)
+    if not tasks.empty? and (d = @domain[tasks[0][0]]).instance_of?(Array)
       d.shuffle!
     end
     super

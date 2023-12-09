@@ -70,7 +70,7 @@ plan = Robby.problem(
     [:swap_at, robby, right]
   ],
   # Debug
-  ARGV.first == 'debug'
+  ARGV[0] == 'debug'
 )
 
 # Test

@@ -111,7 +111,7 @@ module Hyper_Compiler
     methods.each_with_index {|(name,param,*decompositions),mi|
       variables = "(#{param.join(', ').tr!('?','_')})" unless param.empty?
       decompositions.map! {|dec|
-        define_methods << "\n  def #{name}_#{dec.first}#{variables}"
+        define_methods << "\n  def #{name}_#{dec[0]}#{variables}"
         equality = []
         define_methods_comparison = ''
         f = dec[1]
@@ -143,7 +143,7 @@ module Hyper_Compiler
         define_methods << define_methods_comparison
         visit_param = nil
         dec[4].each {|s|
-          if s.size > 1 and s.first.start_with?('invisible_visit_')
+          if s.size > 1 and s[0].start_with?('invisible_visit_')
             if ((visit_param = s.drop(1)) & f).empty?
               define_methods << "\n    return if @visit.include?(#{terms_to_hyper(visit_param)})"
               visit_param = nil
@@ -236,7 +236,7 @@ module Hyper_Compiler
           define_methods << define_methods_comparison
         end
         define_methods << indentation << (dec[4].empty? ? 'yield []' : "yield [#{indentation}  [" << dec[4].map {|g| g.map {|i| term(i)}.join(', ')}.join("],#{indentation}  [") << "]#{indentation}]") << close_method_str
-        "\n      :#{name}_#{dec.first}"
+        "\n      :#{name}_#{dec[0]}"
       }
       domain_str << "\n    :#{name} => [" << decompositions.join(',') << (methods.size.pred == mi ? "\n    ]" : "\n    ],")
     }
@@ -287,7 +287,7 @@ module Hyper_Compiler
     }
     # Tasks
     ordered = tasks.shift
-    problem_str << start_str << "  ],\n  # Tasks\n  [" << tasks.map {|g| "\n    [:#{g.join(', :')}]"}.join(',') << "\n  ],\n  # Debug\n  ARGV.first == 'debug'#{",\n  # Ordered\n  false" if ordered == false}\n)"
+    problem_str << start_str << "  ],\n  # Tasks\n  [" << tasks.map {|g| "\n    [:#{g.join(', :')}]"}.join(',') << "\n  ],\n  # Debug\n  ARGV[0] == 'debug'#{",\n  # Ordered\n  false" if ordered == false}\n)"
     unless tasks.empty?
       tasks.unshift(ordered)
       tasks.pop if tasks[-1][0] == 'invisible_goal'

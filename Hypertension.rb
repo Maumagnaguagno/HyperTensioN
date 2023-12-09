@@ -19,10 +19,10 @@ if not $IPC
 
   def planning(tasks, level = 0)
     return tasks if tasks.empty?
-    case decomposition = @domain[(current_task = tasks.shift).first]
+    case decomposition = @domain[(current_task = tasks.shift)[0]]
     # Operator (true: visible, false: invisible)
     when true, false
-      puts "#{'  ' * level}#{current_task.first}(#{current_task.drop(1).join(' ')})" if @debug
+      puts "#{'  ' * level}#{current_task[0]}(#{current_task.drop(1).join(' ')})" if @debug
       old_state = @state
       begin
         # Keep decomposing the hierarchy if operator applied
@@ -48,7 +48,7 @@ if not $IPC
       end
       current_task.unshift(task_name)
     # Error
-    else raise "Domain defines no decomposition for #{current_task.first}"
+    else raise "Domain defines no decomposition for #{current_task[0]}"
     end
     nil
   end
@@ -58,10 +58,10 @@ else
   def planning(tasks, level = 0)
     return tasks if tasks.empty?
     index, current_task = tasks.shift
-    case decomposition = @domain[current_task.first]
+    case decomposition = @domain[current_task[0]]
     # Operator (true: visible, false: invisible)
     when true, false
-      puts "#{'  ' * level}#{current_task.first}(#{current_task.drop(1).join(' ')})" if @debug
+      puts "#{'  ' * level}#{current_task[0]}(#{current_task.drop(1).join(' ')})" if @debug
       old_state = @state
       begin
         # Keep decomposing the hierarchy if operator applied
@@ -83,7 +83,7 @@ else
           puts "#{'  ' * level.pred}#{method}(#{current_task.join(' ')})" if @debug
           # Every unification is tested
           __send__(method, *current_task) {|subtasks|
-            subtasks.map! {|t| [(@index += 1 if @domain[t.first]), t]}
+            subtasks.each {|t| [(@index += 1 if @domain[t[0]]), t]}
             new_index = @index
             if plan = planning(subtasks.concat(tasks), level)
               @decomposition.unshift("#{index} #{task_name} #{current_task.join(' ')} -> #{method[task_name.size+1..-1]} #{(old_index+1..new_index).to_a.join(' ')}")
@@ -98,7 +98,7 @@ else
       end
       current_task.unshift(task_name)
     # Error
-    else raise "Domain defines no decomposition for #{current_task.first}"
+    else raise "Domain defines no decomposition for #{current_task[0]}"
     end
     nil
   end
@@ -154,7 +154,7 @@ end
           # Free variable
           if t.instance_of?(Array)
             # Not unified
-            if t.first.empty?
+            if t[0].empty?
               match_objects.push(t, o)
             # No match with previous unification
             elsif not t.include?(o)
@@ -171,7 +171,7 @@ end
         match_objects.shift << match_objects.shift until match_objects.empty?
       }
       # Unification closed
-      terms.each {|i| i.first << 0 if i.instance_of?(Array) and i.first.empty?}
+      terms.each {|i| i[0] << 0 if i.instance_of?(Array) and i[0].empty?}
     }
     # Remove pointer and duplicates
     objects.each {|i|
@@ -224,7 +224,7 @@ if not $IPC
     print_data(tasks)
     puts 'Planning'.center(50,'-')
     t = Time.now.to_f
-    plan = ordered ? planning(tasks) : task_permutations(state, tasks, (tasks.pop if tasks[-1]&.first == :invisible_goal))
+    plan = ordered ? planning(tasks) : task_permutations(state, tasks, (tasks.pop if tasks[-1]&.[](0) == :invisible_goal))
     puts "Time: #{Time.now.to_f - t}s", 'Plan'.center(50,'-')
     if plan
       if plan.empty? then puts 'Empty plan'

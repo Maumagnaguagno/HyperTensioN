@@ -52,8 +52,8 @@ module Cyber_Compiler
 
   def tasks_to_hyper(output, tasks, indentation, next_task = 'task->next')
     tasks.each_with_index {|s,i|
-      output << "#{indentation}subtask#{i}->value = #{term(s.first)};"
-      output << "#{indentation}tindex(subtask#{i});" unless s.first.start_with?('invisible_')
+      output << "#{indentation}subtask#{i}->value = #{term(s[0])};"
+      output << "#{indentation}tindex(subtask#{i});" unless s[0].start_with?('invisible_')
       output << "#{indentation}subtask#{i}->parameters[0] = #{s.size - 1};"
       1.upto(s.size - 1) {|j| output << "#{indentation}subtask#{i}->parameters[#{j}] = #{term(s[j])};"}
       output << "#{indentation}subtask#{i}->next = #{i != tasks.size - 1 ? "subtask#{i + 1}" : next_task};"
@@ -147,7 +147,7 @@ module Cyber_Compiler
         visit_param = nil
         unless dec[4].empty?
           dec[4].each {|s|
-            if s.size > 1 and s.first.start_with?('invisible_visit_')
+            if s.size > 1 and s[0].start_with?('invisible_visit_')
               if ((visit_param = s.drop(1)) & f).empty?
                 define_methods << "\n  if(applicable_const(visit#{visit_param.size}, #{terms_to_hyper(visit_param)})) return false;"
                 visit_param = nil
@@ -202,7 +202,7 @@ module Cyber_Compiler
               # close_method_str.prepend('}') and no indentation change for compact output
               close_method_str.prepend("#{indentation}}")
               indentation << '  '
-              if terms2.size == 1 then define_methods << "#{indentation}VALUE #{terms2.first} = *it#{counter};"
+              if terms2.size == 1 then define_methods << "#{indentation}VALUE #{terms2[0]} = *it#{counter};"
               else terms2.each_with_index {|term,i| define_methods << "#{indentation}VALUE #{term} = std::get<#{i}>(*it#{counter});"}
               end
             elsif pre == '=' then equality << "#{terms2[0]} != #{terms2[1]}"
@@ -289,9 +289,9 @@ module Cyber_Compiler
         end
         comparison << pre
       elsif k
-        if k.first.empty? then define_state_const << "\nstatic VALUE0 #{pre}_ = true;"
+        if k[0].empty? then define_state_const << "\nstatic VALUE0 #{pre}_ = true;"
         else
-          define_state_const << "\nstatic VALUE#{arity[pre] ||= k.first.size} #{pre == '=' ? 'equal' : pre}_\n{\n  #{k.map {|terms| terms_to_hyper(terms)}.join(",\n  ")}\n};"
+          define_state_const << "\nstatic VALUE#{arity[pre] ||= k[0].size} #{pre == '=' ? 'equal' : pre}_\n{\n  #{k.map {|terms| terms_to_hyper(terms)}.join(",\n  ")}\n};"
           tokens.concat(k.flatten(1))
         end
       end

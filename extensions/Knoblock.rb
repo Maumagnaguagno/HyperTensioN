@@ -28,8 +28,8 @@ module Knoblock
 
   def map(positive, negative, predicates)
     m = []
-    positive.each {|pre| m << [true, pre] if predicates[pre.first]}
-    negative.each {|pre| m << [false, pre] if predicates[pre.first]}
+    positive.each {|pre| m << [true, pre] if predicates[pre[0]]}
+    negative.each {|pre| m << [false, pre] if predicates[pre[0]]}
     m
   end
 
@@ -91,7 +91,7 @@ module Knoblock
   end
 
   def dot_str(i)
-    i.first.instance_of?(Array) ? i.map {|j| dot_str(j)}.join(' &and; ') : i.first ? i.last.join(' ') : "not #{i.last.join(' ')}"
+    i[0].instance_of?(Array) ? i.map {|j| dot_str(j)}.join(' &and; ') : i[0] ? i[1].join(' ') : "not #{i[1].join(' ')}"
   end
 end
 
@@ -101,7 +101,7 @@ end
 if $0 == __FILE__
   require_relative '../parsers/PDDL_Parser'
   begin
-    PDDL_Parser.parse_domain(ARGV.first)
+    PDDL_Parser.parse_domain(ARGV[0])
     if ARGV[1]
       PDDL_Parser.parse_problem(ARGV[1])
       goals = Knoblock.map(PDDL_Parser.goal_pos, PDDL_Parser.goal_not, PDDL_Parser.predicates)

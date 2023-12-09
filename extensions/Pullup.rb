@@ -19,7 +19,7 @@ module Pullup
         if precond_pos.each {|pre,*terms|
           unless predicates[pre]
             if not s = state[pre] or (not terms.all? {|i| i.start_with?('?')} and (s = s.select {|i| not i.zip(terms) {|a,b| break true unless a == b or b.start_with?('?')}}).empty?) then break
-            elsif s.size == 1 and not (terms & free).empty? then terms.zip(s.first) {|a,b| substitutions[a] = b if a != b}
+            elsif s.size == 1 and not (terms & free).empty? then terms.zip(s[0]) {|a,b| substitutions[a] = b if a != b}
             end
           end
         }
@@ -29,7 +29,7 @@ module Pullup
             free.reject! {|i| substitutions.include?(i)}
             precond_pos.each {|pre| pre.map! {|i| substitutions[i] || i}}
             precond_not.each {|pre| pre.map! {|i| substitutions[i] || i}}
-            subtasks.each {|t| counter[t.map! {|i| substitutions[i] || i}.first] += 1}
+            subtasks.each {|t| counter[t.map! {|i| substitutions[i] || i}[0]] += 1}
           end
         end
       }
@@ -39,7 +39,7 @@ module Pullup
       else decompositions.unshift(name, param)
       end
     }
-    operators.reject! {|op| impossible << op.first unless counter.include?(op.first) and op[2].all? {|pre,| predicates[pre] || state.include?(pre)}}
+    operators.reject! {|op| impossible << op[0] unless counter.include?(op[0]) and op[2].all? {|pre,| predicates[pre] || state.include?(pre)}}
     # Move current or rigid predicates from leaves to root/entry tasks
     clear_ops = []
     clear_met = []
@@ -53,33 +53,33 @@ module Pullup
           old_precond_pos_size = precond_pos.size
           old_precond_not_size = precond_not.size
           subtasks.each {|s|
-            if impossible.include?(s.first)
+            if impossible.include?(s[0])
               repeat = true
               subtasks.each {|i,| operators.reject! {|op,| op == i} if (counter[i] -= 1) == 0}
               break
-            elsif op = operators.assoc(s.first)
-              op[2].each {|pre| precond_pos << pre.map {|t| (j = op[1].index(t)) ? s[j + 1] : t} if effects[pre.first].even?}
-              op[3].each {|pre| precond_not << pre.map {|t| (j = op[1].index(t)) ? s[j + 1] : t} if effects[pre.first] < 2}
+            elsif op = operators.assoc(s[0])
+              op[2].each {|pre| precond_pos << pre.map {|t| (j = op[1].index(t)) ? s[j + 1] : t} if effects[pre[0]].even?}
+              op[3].each {|pre| precond_not << pre.map {|t| (j = op[1].index(t)) ? s[j + 1] : t} if effects[pre[0]] < 2}
               op[4].each {|pre,| effects[pre] |= 1}
               op[5].each {|pre,| effects[pre] |= 2}
-              if first_task and counter[s.first] == 1
+              if first_task and counter[s[0]] == 1
                 op[2].clear
                 op[3].clear
-              elsif first_pass and not tasks.assoc(s.first) then clear_ops << op
+              elsif first_pass and not tasks.assoc(s[0]) then clear_ops << op
               end
             else
               all_pos = all_neg = nil
-              metdecompositions = (met = methods.assoc(s.first)).drop(2).each {|m|
+              metdecompositions = (met = methods.assoc(s[0])).drop(2).each {|m|
                 pos = []
                 neg = []
                 m[2].each {|pre|
-                  if effects[pre.first].even?
+                  if effects[pre[0]].even?
                     pre = pre.map {|t| (j = met[1].index(t)) ? s[j + 1] : t}
                     pos << pre if (pre & m[1]).empty?
                   end
                 }
                 m[3].each {|pre|
-                  if effects[pre.first] < 2
+                  if effects[pre[0]] < 2
                     pre = pre.map {|t| (j = met[1].index(t)) ? s[j + 1] : t}
                     neg << pre if (pre & m[1]).empty?
                   end
@@ -93,7 +93,7 @@ module Pullup
                 end
               }
               mark_effects(operators, methods, metdecompositions, effects)
-              clear_met << [metdecompositions, all_pos, all_neg] unless tasks.assoc(s.first)
+              clear_met << [metdecompositions, all_pos, all_neg] unless tasks.assoc(s[0])
               precond_pos.concat(all_pos)
               precond_not.concat(all_neg)
             end
@@ -102,7 +102,7 @@ module Pullup
             # Add equality duplicates
             equalities = Hash.new {|h,k| h[k] = []}
             precond_pos.each {|pre|
-              if pre.first == '='
+              if pre[0] == '='
                 if pre[1].start_with?('?')
                   equalities[pre[2]] << pre[1] unless pre[2].start_with?('?')
                 elsif pre[2].start_with?('?')
@@ -113,7 +113,7 @@ module Pullup
             unless equalities.empty?
               new_precond_pos = []
               precond_pos.each {|pre|
-                if pre.first != '='
+                if pre[0] != '='
                   modified = false
                   npre = pre.drop(1).map! {|i|
                     if equalities.include?(i)
@@ -122,7 +122,7 @@ module Pullup
                     else [i]
                     end
                   }
-                  new_precond_pos.concat([pre.first].product(*npre)) if modified
+                  new_precond_pos.concat([pre[0]].product(*npre)) if modified
                 end
               }.concat(new_precond_pos).uniq!
             end
@@ -159,8 +159,8 @@ module Pullup
           subtasks.each {|t| t.map! {|i| substitutions[i] || i}}
         end
         precond_pos.reject! {|pre|
-          if not predicates[pre.first] and pre.none? {|i| i.start_with?('?')}
-            unless state[pre.first]&.include?(pre.drop(1))
+          if not predicates[pre[0]] and pre.none? {|i| i.start_with?('?')}
+            unless state[pre[0]]&.include?(pre.drop(1))
               possible_decomposition = false
               break
             end
@@ -169,8 +169,8 @@ module Pullup
         }
         if possible_decomposition
           precond_not.reject! {|pre|
-            if not predicates[pre.first] and pre.none? {|i| i.start_with?('?')}
-              if state[pre.first]&.include?(pre.drop(1))
+            if not predicates[pre[0]] and pre.none? {|i| i.start_with?('?')}
+              if state[pre[0]]&.include?(pre.drop(1))
                 possible_decomposition = false
                 break
               end
@@ -203,7 +203,7 @@ module Pullup
 
   def mark_effects(operators, methods, decompositions, effects, visited = {})
     decompositions.each {|dec|
-      dec.last.each {|s,|
+      dec[-1].each {|s,|
         unless visited.include?(s)
           visited[s] = nil
           if op = operators.assoc(s)

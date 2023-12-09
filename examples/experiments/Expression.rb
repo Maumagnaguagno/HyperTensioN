@@ -21,7 +21,7 @@ end
 
 def call(expression)
   f = expression.shift
-  expression.map! {|i| i.instance_of?(Array) && i.first == :call ? (i.shift; call(i)) : i}.inject(f)
+  expression.map! {|i| i.instance_of?(Array) && i[0] == :call ? (i.shift; call(i)) : i}.inject(f)
 end
 
 #-----------------------------------------------

@@ -11,7 +11,7 @@ module Typredicate
     operator_types = {}
     operators.each {|name,_,precond_pos,precond_not,effect_add,effect_del|
       operator_types[name] = types = {}
-      precond_pos.each {|terms| types[terms.last] ||= terms.first if terms.size == 2 and not predicates[terms.first]}
+      precond_pos.each {|terms| types[terms[1]] ||= terms[0] if terms.size == 2 and not predicates[terms[0]]}
       find_types(precond_pos, types, new_predicates)
       find_types(precond_not, types, new_predicates)
       find_types(effect_add, types, new_predicates)
@@ -34,7 +34,7 @@ module Typredicate
     methods.each {|met|
       met.drop(2).each {|_,_,precond_pos,precond_not|
         types = {}
-        precond_pos.each {|terms| types[terms.last] ||= terms.first if terms.size == 2 and not predicates[terms.first]}
+        precond_pos.each {|terms| types[terms[1]] ||= terms[0] if terms.size == 2 and not predicates[terms[0]]}
         next if types.empty?
         precond_pos.each {|terms| pre = terms.shift; terms.unshift(transformations[types.values_at(*terms).unshift(pre)] || pre)}
         precond_not.each {|terms| pre = terms.shift; terms.unshift(transformations[types.values_at(*terms).unshift(pre)] || pre)}

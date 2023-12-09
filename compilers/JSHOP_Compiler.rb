@@ -28,7 +28,7 @@ module JSHOP_Compiler
     else
       output << "#{indentation}(#{':unordered' unless order}\n"
       tasks.each {|t|
-        name = t.first
+        name = t[0]
         t[0] = "!#{name.sub(/^invisible_/,'!')}" if operators.assoc(name)
         output << "#{indentation}  (#{t.join(' ')})\n"
         t[0] = name
@@ -46,7 +46,7 @@ module JSHOP_Compiler
     # Operators
     operators.each {|op|
       # Header
-      domain_str << "\n\n  (:operator (!#{op.first.sub(/^invisible_/,'!')} #{op[1].join(' ')})\n"
+      domain_str << "\n\n  (:operator (!#{op[0].sub(/^invisible_/,'!')} #{op[1].join(' ')})\n"
       # Preconditions
       predicates_to_jshop(domain_str, op[2], op[3])
       # Delete effects
@@ -64,10 +64,10 @@ module JSHOP_Compiler
     # Methods
     domain_str << "\n\n  ;#{SPACER}\n  ; Methods\n  ;#{SPACER}"
     methods.each {|met|
-      header = "\n\n  (:method (#{met.first} #{met[1].join(' ')})\n    "
+      header = "\n\n  (:method (#{met[0]} #{met[1].join(' ')})\n    "
       met.drop(2).each {|dec|
         # Header and label
-        domain_str << header << "#{dec.first}\n"
+        domain_str << header << "#{dec[0]}\n"
         # Preconditions
         predicates_to_jshop(domain_str, dec[2], dec[3])
         # Subtasks
@@ -96,7 +96,7 @@ module JSHOP_Compiler
     end
     # Tasks
     problem_str << ")\n\n  ;#{SPACER}\n  ; Tasks\n  ;#{SPACER}\n\n"
-    subtasks_to_jshop(problem_str, goal_pos.empty? && goal_not.empty? ? tasks.drop(1) : tasks.drop(1) << ['!!goal'], operators, '  ', tasks.first)
+    subtasks_to_jshop(problem_str, goal_pos.empty? && goal_not.empty? ? tasks.drop(1) : tasks.drop(1) << ['!!goal'], operators, '  ', tasks[0])
     problem_str << ')'
   end
 end

@@ -10,4 +10,4 @@ module Hanoi
   end
 end
 
-puts Hanoi.generate(ARGV.first.to_i) if $0 == __FILE__
+puts Hanoi.generate(ARGV[0].to_i) if $0 == __FILE__

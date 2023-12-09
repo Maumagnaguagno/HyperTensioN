@@ -56,7 +56,7 @@ module Hype
     else
       operators = @parser.operators
       output = "#{indent}#{'un' unless ordered}ordered"
-      tasks.each {|t| output << indent << (operators.assoc(t.first) ? 'operator' : 'method  ') << " (#{t.join(' ')})"}
+      tasks.each {|t| output << indent << (operators.assoc(t[0]) ? 'operator' : 'method  ') << " (#{t.join(' ')})"}
       output
     end
   end
@@ -69,7 +69,7 @@ module Hype
     output = ''
     indent = "\n        "
     @parser.operators.each {|op|
-      output << "\n    #{op.first}(#{op[1].join(' ')})"
+      output << "\n    #{op[0]}(#{op[1].join(' ')})"
       output << "\n      Precond positive:#{predicates_to_s(op[2], indent)}" unless op[2].empty?
       output << "\n      Precond negative:#{predicates_to_s(op[3], indent)}" unless op[3].empty?
       output << "\n      Effect positive:#{predicates_to_s(op[4], indent)}" unless op[4].empty?
@@ -89,7 +89,7 @@ module Hype
     @parser.methods.each {|name,param,*decompositions|
       output << "\n    #{name}(#{param.join(' ')})"
       decompositions.each {|dec|
-        output << "\n      Label: #{dec.first}"
+        output << "\n      Label: #{dec[0]}"
         output << "\n        Free variables:\n          #{dec[1].join(indent)}" unless dec[1].empty?
         output << "\n        Precond positive:#{predicates_to_s(dec[2], indent)}" unless dec[2].empty?
         output << "\n        Precond negative:#{predicates_to_s(dec[3], indent)}" unless dec[3].empty?
@@ -111,7 +111,7 @@ module Hype
 Problem #{@parser.problem_name}
   State:#{predicates_to_s(@parser.state.flat_map {|k,v| [k].product(v)}, "\n    ")}\n
   Goal:
-    Tasks:#{subtasks_to_s(@parser.tasks.drop(1), "\n      ", @parser.tasks.first)}
+    Tasks:#{subtasks_to_s(@parser.tasks.drop(1), "\n      ", @parser.tasks[0])}
     Positive:#{@parser.goal_pos.empty? ? "\n      empty" : predicates_to_s(@parser.goal_pos, "\n      ")}
     Negative:#{@parser.goal_not.empty? ? "\n      empty" : predicates_to_s(@parser.goal_not, "\n      ")}"
   end
@@ -217,7 +217,7 @@ end
 #-----------------------------------------------
 if $0 == __FILE__
   begin
-    if ARGV.size < 2 or ARGV.first == '-h'
+    if ARGV.size < 2 or ARGV[0] == '-h'
       puts Hype::HELP
     elsif not File.exist?(domain = ARGV.shift)
       abort("Domain not found: #{domain}")

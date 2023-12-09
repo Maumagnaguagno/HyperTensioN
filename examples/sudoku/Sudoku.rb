@@ -91,7 +91,7 @@ module Sudoku
       if symbols.empty?
         return
       elsif symbols.size == 1
-        singles << [:put_symbol, x, y, b, s = symbols.first]
+        singles << [:put_symbol, x, y, b, s = symbols[0]]
         col.delete(s)
         row.delete(s)
         box.delete(s)
@@ -117,7 +117,7 @@ end
 # Main
 #-----------------------------------------------
 if $0 == __FILE__
-  debug = ARGV.first == 'debug'
+  debug = ARGV[0] == 'debug'
   # Easy
   board = '
   3 4 | 1 2

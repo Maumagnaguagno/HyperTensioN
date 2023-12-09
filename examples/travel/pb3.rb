@@ -40,7 +40,7 @@ plan = Travel.problem(
     [:travel, 'me', 'home']
   ],
   # Debug
-  ARGV.first == 'debug'
+  ARGV[0] == 'debug'
 )
 
 # Test

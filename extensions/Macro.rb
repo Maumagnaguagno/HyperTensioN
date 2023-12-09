@@ -9,14 +9,14 @@ module Macro
     puts 'Macro'.center(50,'-') if debug
     # Task counter
     counter = Hash.new(0)
-    methods.each {|met| met.drop(2).each {|dec| dec.last.each {|t,| counter[t] += 1}}}
+    methods.each {|met| met.drop(2).each {|dec| dec[-1].each {|t,| counter[t] += 1}}}
     tasks.each {|t,| counter[t] += 1}
     # Macro sequential operators
     macro = []
     clear_ops = {}
     methods.each {|met|
       met.drop(2).each {|dec|
-        macro_sequential_operators(operators, macro, dec.last, new_subtasks = [], counter, clear_ops, debug)
+        macro_sequential_operators(operators, macro, dec[-1], new_subtasks = [], counter, clear_ops, debug)
         dec[4] = new_subtasks
       }
     }
@@ -55,7 +55,7 @@ module Macro
   def macro_sequential_operators(operators, macro, subtasks, new_subtasks, counter, clear_ops, debug)
     subtasks.each {|subtask|
       # Add operators to macro and skip methods
-      if op = operators.assoc(subtask.first)
+      if op = operators.assoc(subtask[0])
         macro << [op, subtask]
       else
         add_macro_to_subtasks(operators, macro, new_subtasks, counter, clear_ops, debug)
@@ -79,26 +79,26 @@ module Macro
       effect_del = []
       index = new_subtasks.size
       macro.each {|op,subtask|
-        unless op.first.start_with?('invisible_')
+        unless op[0].start_with?('invisible_')
           clear_ops[op] = nil
           new_subtasks << subtask
         end
         # Header
-        (name ? name << '_and_' : name = 'invisible_macro_') << op.first
+        (name ? name << '_and_' : name = 'invisible_macro_') << op[0]
         parameters.concat(param = subtask.drop(1))
         variables = op[1]
         # Preconditions
         op[2].each {|pre|
           pre = pre.map {|p| p.start_with?('?') ? param[variables.index(p)] : p}
           if precond_not.include?(pre) and not effect_add.include?(pre) or effect_del.include?(pre)
-            raise "#{op.first} precondition (#{pre.join(' ')}) will never be satisfied"
+            raise "#{op[0]} precondition (#{pre.join(' ')}) will never be satisfied"
           else precond_pos << pre unless precond_pos.include?(pre) or effect_add.include?(pre)
           end
         }
         op[3].each {|pre|
           pre = pre.map {|p| p.start_with?('?') ? param[variables.index(p)] : p}
           if precond_pos.include?(pre) and not effect_del.include?(pre) or effect_add.include?(pre)
-            raise "#{op.first} precondition (not (#{pre.join(' ')})) will never be satisfied"
+            raise "#{op[0]} precondition (not (#{pre.join(' ')})) will never be satisfied"
           else precond_not << pre unless precond_not.include?(pre) or effect_del.include?(pre)
           end
         }
@@ -120,8 +120,8 @@ module Macro
       new_subtasks.insert(index, [name, *parameters])
     elsif macro.size == 1
       op, subtask = macro.shift
-      if counter[op.first] != 1 and not op.first.start_with?('invisible_')
-        unless operators.assoc(name = "invisible_macro_#{op.first}")
+      if counter[op[0]] != 1 and not op[0].start_with?('invisible_')
+        unless operators.assoc(name = "invisible_macro_#{op[0]}")
           clear_ops[op] = nil
           operators << [name, op[1], op[2], op[3], op[4], op[5]]
           puts "Macro operator #{name}" if debug

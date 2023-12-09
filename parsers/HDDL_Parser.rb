@@ -32,7 +32,7 @@ module HDDL_Parser
     }
     raise 'Missing close parentheses' unless stack.empty?
     raise 'Malformed expression' if list.size != 1
-    list.first
+    list[0]
   end
 
   #-----------------------------------------------
@@ -98,15 +98,15 @@ module HDDL_Parser
         raise "Error with #{name} precondition" unless (group = op.shift).instance_of?(Array)
         unless group.empty?
           # Conjunction or atom
-          group.first == AND ? group.shift : group = [group]
+          group[0] == AND ? group.shift : group = [group]
           group.each {|pre|
             raise "Error with #{name} precondition" unless pre.instance_of?(Array)
-            if pre.first == 'forall'
-              pre[2].first == AND ? pre[2].shift : pre[2] = [pre[2]]
+            if pre[0] == 'forall'
+              pre[2][0] == AND ? pre[2].shift : pre[2] = [pre[2]]
               @foralls << [pos, neg, pre, false]
             else
-              pre.first != NOT ? pos << pre : pre.size == 2 ? neg << pre = pre.last : raise("Unexpected not in #{name} precondition")
-              @predicates[pre.first.freeze] ||= false
+              pre[0] != NOT ? pos << pre : pre.size == 2 ? neg << pre = pre[1] : raise("Unexpected not in #{name} precondition")
+              @predicates[pre[0].freeze] ||= false
             end
           }
         end
@@ -114,15 +114,15 @@ module HDDL_Parser
         raise "Error with #{name} effect" unless (group = op.shift).instance_of?(Array)
         unless group.empty?
           # Conjunction or atom
-          group.first == AND ? group.shift : group = [group]
+          group[0] == AND ? group.shift : group = [group]
           group.each {|pre|
             raise "Error with #{name} effect" unless pre.instance_of?(Array)
-            if pre.first == 'forall'
-              pre[2].first == AND ? pre[2].shift : pre[2] = [pre[2]]
+            if pre[0] == 'forall'
+              pre[2][0] == AND ? pre[2].shift : pre[2] = [pre[2]]
               @foralls << [add, del, pre, true]
             else
-              pre.first != NOT ? add << pre : pre.size == 2 ? del << pre = pre.last : raise("Unexpected not in #{name} effect")
-              @predicates[pre.first.freeze] = true
+              pre[0] != NOT ? add << pre : pre.size == 2 ? del << pre = pre[1] : raise("Unexpected not in #{name} effect")
+              @predicates[pre[0].freeze] = true
             end
           }
         end
@@ -144,7 +144,7 @@ module HDDL_Parser
       when ':task' then name = (variables = met.shift).shift
       when ':precondition' then precondition.concat(met.shift)
       when ':constraints'
-        met.first.shift if not precondition.empty? and met.first.first == AND
+        met[0].shift if not precondition.empty? and met[0][0] == AND
         precondition.concat(met.shift)
       when ':subtasks', ':tasks', ':ordered-subtasks', ':ordered-tasks' then subtasks = met.shift
       when ':ordering' then ordering = met.shift
@@ -174,28 +174,28 @@ module HDDL_Parser
     end
     unless precondition.empty?
       # Conjunction or atom
-      precondition.first == AND ? precondition.shift : precondition = [precondition]
+      precondition[0] == AND ? precondition.shift : precondition = [precondition]
       precondition.each {|pre|
-        if pre.first == 'forall'
-          pre[2].first == AND ? pre[2].shift : pre[2] = [pre[2]]
-          pre[2].each {|g| (g.first != NOT ? g : g[1]).map! {|i| variables.find {|j| j == i} || free_variables.find {|j| j == i} || i}}
+        if pre[0] == 'forall'
+          pre[2][0] == AND ? pre[2].shift : pre[2] = [pre[2]]
+          pre[2].each {|g| (g[0] != NOT ? g : g[1]).map! {|i| variables.find {|j| j == i} || free_variables.find {|j| j == i} || i}}
           @foralls << [pos, neg, pre, false]
         else
-          pre.first != NOT ? pos << pre : pre.size == 2 ? neg << pre = pre.last : raise("Error with #{name} negative precondition")
+          pre[0] != NOT ? pos << pre : pre.size == 2 ? neg << pre = pre[1] : raise("Error with #{name} negative precondition")
           pre.map! {|i| variables.find {|j| j == i} || free_variables.find {|j| j == i} || i}
-          @predicates[pre.first.freeze] ||= false
+          @predicates[pre[0].freeze] ||= false
         end
       }
     end
     # Subtasks
     raise "Error with #{name} subtasks" unless (subtasks ||= []).instance_of?(Array)
-    if subtasks.empty? then method.last << subtasks
+    if subtasks.empty? then method[-1] << subtasks
     else
       # Conjunction or atom
-      subtasks.first == AND ? subtasks.shift : subtasks = [subtasks]
+      subtasks[0] == AND ? subtasks.shift : subtasks = [subtasks]
       # Ordering
       parse_ordering(name, ordering, subtasks) if ordering
-      method.last << subtasks.map! {|t| (t[1].instance_of?(Array) ? t[1] : t).map! {|i| variables.find {|j| j == i} || free_variables.find {|j| j == i} || i}}
+      method[-1] << subtasks.map! {|t| (t[1].instance_of?(Array) ? t[1] : t).map! {|i| variables.find {|j| j == i} || free_variables.find {|j| j == i} || i}}
     end
     free_variables.each {|i| i.insert(1,'free_') if method[1].include?(i)}
     variables.zip(method[1]) {|i,j| i.replace(j)}
@@ -217,11 +217,11 @@ module HDDL_Parser
       @requirements = []
       @foralls = []
       while group = tokens.shift
-        case group.first
+        case group[0]
         when ':action' then parse_action(group)
         when ':method' then parse_method(group)
         when ':task' then @methods << [group[1], group[2] == ':parameters' ? group[3].keep_if {|i| i.start_with?('?')} : []]
-        when 'domain' then @domain_name = group.last
+        when 'domain' then @domain_name = group[1]
         when ':requirements' then (@requirements = group).shift
         when ':predicates'
         when ':types'
@@ -234,7 +234,7 @@ module HDDL_Parser
             group.shift(i+2)
           end
         when ':constants' then parse_objects(group)
-        else raise "#{group.first} is not recognized in domain"
+        else raise "#{group[0]} is not recognized in domain"
         end
       end
     else raise "File #{domain_filename} does not match domain pattern"
@@ -252,17 +252,17 @@ module HDDL_Parser
       @goal_not = []
       @tasks = []
       while group = tokens.shift
-        case group.first
-        when 'problem' then @problem_name = group.last
-        when ':domain' then raise 'Different domain specified in problem file' if @domain_name != group.last
+        case group[0]
+        when 'problem' then @problem_name = group[1]
+        when ':domain' then raise 'Different domain specified in problem file' if @domain_name != group[1]
         when ':objects'
           parse_objects(group)
           # Expand foralls
           @foralls.each {|pos,neg,(_,(fv,_,fvtype),g),mutable|
             @state[fvtype]&.each {|obj,|
               g.each {|pre|
-                pre.first != NOT ? pos << pre.map {|j| j == fv ? obj : j} : pre.size == 2 ? neg << pre = pre.last.map {|j| j == fv ? obj : j} : raise('Unexpected not in forall')
-                @predicates[pre.first.freeze] ||= mutable
+                pre[0] != NOT ? pos << pre.map {|j| j == fv ? obj : j} : pre.size == 2 ? neg << pre = pre[1].map {|j| j == fv ? obj : j} : raise('Unexpected not in forall')
+                @predicates[pre[0].freeze] ||= mutable
               }
             }
           }
@@ -274,23 +274,23 @@ module HDDL_Parser
         when ':goal'
           if group = group[1]
             # Conjunction or atom
-            group.first == AND ? group.shift : group = [group]
+            group[0] == AND ? group.shift : group = [group]
             group.each {|pre|
-              pre.first != NOT ? @goal_pos << pre : pre.size == 2 ? @goal_not << pre = pre.last : raise('Unexpected not in goal')
-              @predicates[pre.first.freeze] ||= false
+              pre[0] != NOT ? @goal_pos << pre : pre.size == 2 ? @goal_not << pre = pre[1] : raise('Unexpected not in goal')
+              @predicates[pre[0].freeze] ||= false
             }
             @methods.map! {|name,param,*decompositions| decompositions.sort_by! {|d| d[4].assoc(name) ? 0 : 1}.unshift(name, param)}
           end
         when ':htn'
           group.shift
           # TODO loop group elements to improve support
-          if group.first == ':parameters'
+          if group[0] == ':parameters'
             group.shift
-            group.first.empty? ? group.shift : parameters = group.shift
+            group[0].empty? ? group.shift : parameters = group.shift
           end
           if (g = group.shift) == ':subtasks' or g == ':tasks' or g == ':ordered-subtasks' or g == ':ordered-tasks'
             @tasks = group.shift
-            @tasks.first == AND ? @tasks.shift : @tasks = [@tasks]
+            @tasks[0] == AND ? @tasks.shift : @tasks = [@tasks]
             # Ordering
             parse_ordering('problem', group.shift, @tasks) if group.shift == ':ordering'
             @tasks.map! {|t| t[1].instance_of?(Array) ? t[1] : t}
@@ -312,7 +312,7 @@ module HDDL_Parser
             elsif not @tasks.empty? then @tasks.unshift(true)
             end
           end
-        else raise "#{group.first} is not recognized in problem"
+        else raise "#{group[0]} is not recognized in problem"
         end
       end
     else raise "File #{problem_filename} does not match problem pattern"

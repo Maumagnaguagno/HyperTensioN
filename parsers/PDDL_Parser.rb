@@ -30,7 +30,7 @@ module PDDL_Parser
     }
     raise 'Missing close parentheses' unless stack.empty?
     raise 'Malformed expression' if list.size != 1
-    list.first
+    list[0]
   end
 
   #-----------------------------------------------
@@ -61,24 +61,24 @@ module PDDL_Parser
         raise "Error with #{name} precondition" unless (group = op.shift).instance_of?(Array)
         unless group.empty?
           # Conjunction or atom
-          group.first == AND ? group.shift : group = [group]
+          group[0] == AND ? group.shift : group = [group]
           group.each {|pre|
             raise "Error with #{name} precondition" unless pre.instance_of?(Array)
-            pre.first != NOT ? pos << pre : pre.size == 2 ? neg << pre = pre.last : raise("Unexpected not in #{name} precondition")
+            pre[0] != NOT ? pos << pre : pre.size == 2 ? neg << pre = pre[1] : raise("Unexpected not in #{name} precondition")
             pre.map! {|i| free_variables.find {|j| j == i} || i}
-            @predicates[pre.first.freeze] ||= false
+            @predicates[pre[0].freeze] ||= false
           }
         end
       when ':effect'
         raise "Error with #{name} effect" unless (group = op.shift).instance_of?(Array)
         unless group.empty?
           # Conjunction or atom
-          group.first == AND ? group.shift : group = [group]
+          group[0] == AND ? group.shift : group = [group]
           group.each {|pre|
             raise "Error with #{name} effect" unless pre.instance_of?(Array)
-            pre.first != NOT ? add << pre : pre.size == 2 ? del << pre = pre.last : raise("Unexpected not in #{name} effect")
+            pre[0] != NOT ? add << pre : pre.size == 2 ? del << pre = pre[1] : raise("Unexpected not in #{name} effect")
             pre.map! {|i| free_variables.find {|j| j == i} || i}
-            @predicates[pre.first.freeze] = true
+            @predicates[pre[0].freeze] = true
           }
         end
       else raise "#{group} is not recognized in action"
@@ -99,9 +99,9 @@ module PDDL_Parser
       @types = []
       @requirements = []
       while group = tokens.shift
-        case group.first
+        case group[0]
         when ':action' then parse_action(group)
-        when 'domain' then @domain_name = group.last
+        when 'domain' then @domain_name = group[1]
         when ':requirements' then (@requirements = group).shift
         when ':predicates'
         when ':types'
@@ -113,7 +113,7 @@ module PDDL_Parser
             @types << [group[j], type] while (j += 1) != i
             group.shift(i+2)
           end
-        else raise "#{group.first} is not recognized in domain"
+        else raise "#{group[0]} is not recognized in domain"
         end
       end
     else raise "File #{domain_filename} does not match domain pattern"
@@ -133,9 +133,9 @@ module PDDL_Parser
       @goal_not = []
       @tasks = []
       while group = tokens.shift
-        case group.first
-        when 'problem' then @problem_name = group.last
-        when ':domain' then raise 'Different domain specified in problem file' if @domain_name != group.last
+        case group[0]
+        when 'problem' then @problem_name = group[1]
+        when ':domain' then raise 'Different domain specified in problem file' if @domain_name != group[1]
         when ':objects'
           # Move types to initial state
           group.shift
@@ -144,7 +144,7 @@ module PDDL_Parser
             group.shift
             types = [type = group.shift]
             while type = @types.assoc(type)
-              raise 'Circular typing' if types.include?(type = type.last)
+              raise 'Circular typing' if types.include?(type = type[1])
               types << type
             end
             types.each {|t| (@state[t] ||= []).concat(o.zip)}
@@ -157,13 +157,13 @@ module PDDL_Parser
         when ':goal'
           if group = group[1]
             # Conjunction or atom
-            group.first == AND ? group.shift : group = [group]
+            group[0] == AND ? group.shift : group = [group]
             group.each {|pre|
-              pre.first != NOT ? @goal_pos << pre : pre.size == 2 ? @goal_not << pre = pre.last : raise('Unexpected not in goal')
-              @predicates[pre.first.freeze] ||= false
+              pre[0] != NOT ? @goal_pos << pre : pre.size == 2 ? @goal_not << pre = pre[1] : raise('Unexpected not in goal')
+              @predicates[pre[0].freeze] ||= false
             }
           end
-        else raise "#{group.first} is not recognized in problem"
+        else raise "#{group[0]} is not recognized in problem"
         end
       end
     else raise "File #{problem_filename} does not match problem pattern"
