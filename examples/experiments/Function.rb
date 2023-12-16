@@ -194,13 +194,31 @@ module Continuous
   end
 
   def event(type, f, value, start)
+    (@state = @state.dup)[:event] = @state[:event].dup
     insert_ordered(@state[:event], [type, f, value.to_f, start.to_f])
     axioms_protected_at_time?(start)
   end
 
   def process(type, f, expression, start, finish)
+    (@state = @state.dup)[:process] = @state[:process].dup
     insert_ordered(@state[:process], [type, f, expression, start.to_f, finish.to_f])
     axioms_protected_at_time?(finish)
+  end
+
+  def events(events)
+    ev = (@state = @state.dup)[:event] = @state[:event].dup
+    events.map {|type,f,value,start|
+      insert_ordered(ev, [type, f, value.to_f, start.to_f])
+      start
+    }.uniq.all? {|i| axioms_protected_at_time?(i)}
+  end
+
+  def processes(processes)
+    pr = (@state = @state.dup)[:process] = @state[:process].dup
+    processes.map {|type,f,expression,start,finish|
+      insert_ordered(pr, [type, f, expression, start.to_f, finish.to_f])
+      finish
+    }.uniq.all? {|i| axioms_protected_at_time?(i)}
   end
 
   def insert_ordered(array, n)
@@ -210,14 +228,6 @@ module Continuous
 
   def axioms_protected_at_time?(time)
     @state['protect_axiom'].all? {|i| __send__(*i, time)}
-  end
-
-  def event_effect
-    (@state = @state.dup)[:event] = @state[:event].dup
-  end
-
-  def process_effect
-    (@state = @state.dup)[:process] = @state[:process].dup
   end
 end
 
@@ -236,6 +246,10 @@ if $0 == __FILE__
 
     def x_less_than(y, time = nil)
       function(:x, time, false) < y
+    end
+
+    def x_zero(time)
+      function(:x, time, false) == 0
     end
 
     def happy(time = nil)
@@ -310,6 +324,34 @@ if $0 == __FILE__
       assert_true(process('increase', :x, :identity, 5, 15))
       assert_true(process('increase', :x, :identity, 10, 20))
       0.step(25, 0.5) {|i| assert_equal(i < 5 ? 0 : i < 10 ? i - 5 : i < 15 ? i * 2 - 15 : i < 20 ? i : 20, function(:x, i, false))}
+    end
+
+    def test_event_interference
+      setup_initial_state
+      @state['protect_axiom'] << ['x_zero']
+      assert_false(event('increase', :x, 100, 0))
+      assert_true(event('decrease', :x, 100, 0))
+      setup_initial_state
+      @state['protect_axiom'] << ['x_zero']
+      assert_true(events([
+        ['increase', :x, 100, 0],
+        ['decrease', :x, 100, 0]
+      ]))
+      assert_equal(0, function(:x, 100, false))
+    end
+
+    def test_process_interference
+      setup_initial_state
+      @state['protect_axiom'] << ['x_zero']
+      assert_false(process('increase', :x, :identity, 0, 100))
+      assert_true(process('decrease', :x, :identity, 0, 100))
+      setup_initial_state
+      @state['protect_axiom'] << ['x_zero']
+      assert_true(processes([
+        ['increase', :x, :identity, 0, 100],
+        ['decrease', :x, :identity, 0, 100]
+      ]))
+      assert_equal(0, function(:x, 100, false))
     end
 
     def test_at_time
