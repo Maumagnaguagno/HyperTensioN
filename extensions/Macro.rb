@@ -10,6 +10,7 @@ module Macro
     # Task counter
     counter = Hash.new(0)
     methods.each {|met| met.drop(2).each {|dec| dec[-1].each {|t,| counter[t] += 1}}}
+    ordered = tasks.shift
     tasks.each {|t,| counter[t] += 1}
     # Macro sequential operators
     macro = []
@@ -21,10 +22,11 @@ module Macro
       }
     }
     # Macro sequential top ordered operators
-    if ordered = tasks.shift
+    case ordered
+    when true
       macro_sequential_operators(operators, macro, tasks, new_subtasks = [ordered], counter, clear_ops, debug)
       tasks.replace(new_subtasks)
-    else
+    when false
       tasks.each {|t,|
         if op = operators.assoc(t) and clear_ops.include?(op)
           unless methods.assoc(name = "macro_#{t}")
