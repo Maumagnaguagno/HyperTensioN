@@ -4,13 +4,13 @@ jobs:
   test:
     strategy:
       matrix:
-        ruby: [2.5, 2.6, 2.7, '3.0', 3.1, 3.2, head, jruby-head, truffleruby-head]
+        ruby: [2.5, 2.6, 2.7, '3.0', 3.1, 3.2, 3.3, head, jruby-head, truffleruby-head]
       fail-fast: false
     name: Ruby ${{ matrix.ruby }}
     runs-on: ubuntu-latest
     if: "!contains(github.event.head_commit.message, '[ci skip]')"
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
     - uses: ruby/setup-ruby@v1
       with:
         ruby-version: ${{ matrix.ruby }}
