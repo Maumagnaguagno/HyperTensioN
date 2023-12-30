@@ -203,7 +203,7 @@ module Pullup
 
   def mark_effects(operators, methods, decompositions, effects, visited = {})
     decompositions.each {|dec|
-      dec[-1].each {|s,|
+      dec[4].each {|s,|
         unless visited.include?(s)
           visited[s] = nil
           if op = operators.assoc(s)

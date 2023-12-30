@@ -35,7 +35,7 @@ module Dejavu
         end
         method.drop(2).each {|dec|
           break if dec.equal?(decomposition)
-          dec[-1].each {|subtask,*sterms| subtask.sub!('visit','mark') if subtask.start_with?('invisible_visit_','invisible_unvisit_') and sterms == terms}
+          dec[4].each {|subtask,*sterms| subtask.sub!('visit','mark') if subtask.start_with?('invisible_visit_','invisible_unvisit_') and sterms == terms}
         }
       end
     }

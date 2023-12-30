@@ -9,7 +9,7 @@ module Macro
     puts 'Macro'.center(50,'-') if debug
     # Task counter
     counter = Hash.new(0)
-    methods.each {|met| met.drop(2).each {|dec| dec[-1].each {|t,| counter[t] += 1}}}
+    methods.each {|met| met.drop(2).each {|dec| dec[4].each {|t,| counter[t] += 1}}}
     ordered = tasks.shift
     tasks.each {|t,| counter[t] += 1}
     # Macro sequential operators
@@ -17,8 +17,7 @@ module Macro
     clear_ops = {}
     methods.each {|met|
       met.drop(2).each {|dec|
-        macro_sequential_operators(operators, macro, dec[-1], new_subtasks = [], counter, clear_ops, debug)
-        dec[4] = new_subtasks
+        macro_sequential_operators(operators, macro, dec[4], dec[4] = [], counter, clear_ops, debug)
       }
     }
     # Macro sequential top ordered operators
