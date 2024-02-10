@@ -21,6 +21,7 @@ module Dejavu
         terms |= t.drop(1)
         t.equal?(task)
       }
+      terms.select! {|t| t.start_with?('?')}
       if name == task[0] && decomposition[-1].size > 1 or decomposition[1].empty? or task.size == 1 or task.drop(1).sort! != terms.sort
         name = "#{name}_#{decomposition[0]}_#{index}"
         decomposition[3] << [visited = "visited_#{name}".freeze, *terms]
