@@ -58,13 +58,13 @@ Some large planning instances require more stack, which is possible with ``expor
 HyperTensioN did not exploit the seed variable provided during the competition, although it is possible that randomizing parts of the planning instance may improve timing in certain domains.
 A more detailed explanation is provided in the IPC paper [HyperTensioN: A three-stage compiler for planning](https://gki.informatik.uni-freiburg.de/competition/proceedings.pdf#page=14) and the extended paper [HyperTensioN and Total-order Forward Decomposition optimizations](https://arxiv.org/pdf/2207.00345.pdf).
 
-The [plan format output](https://gki.informatik.uni-freiburg.de/ipc2020/format.pdf) required by the IPC to analyze plan correctness was different from the one used by HyperTensioN.
+The [plan format output](https://ipc2020.hierarchical-task.net/data/format.pdf) required by the IPC to analyze plan correctness was different from the one used by HyperTensioN.
 Some examples and tests expect the original non-IPC output, the reason why it is disabled by default.
 The IPC output format was hardcoded during the competition, but now can be enabled by defining the IPC flag to the Ruby interpreter or C++ compiler, note that this adds a small overhead.
 - ``ruby -s Hype.rb -IPC $DOMAINFILE $PROBLEMFILE {extensions} run``
 - ``ruby Hype.rb $DOMAINFILE $PROBLEMFILE {extensions} cpp && CXX -D IPC -O3 $DOMAINFILE.cpp -o $DOMAINFILE.bin && ./$DOMAINFILE.bin``
-Plans in the IPC format can be visualized using the [HTN Plan Viewer](https://maumagnaguagno.github.io/HTN_Plan_Viewer/).
 
-The [presented](https://gki.informatik.uni-freiburg.de/competition/results.pdf) and [fixed](https://gki.informatik.uni-freiburg.de/competition/results-fixed.pdf) results are now available, and the presentation is on YouTube:
+Plans in the IPC format can be visualized using the [HTN Plan Viewer](https://maumagnaguagno.github.io/HTN_Plan_Viewer/).
+The [competition results](https://ipc2020.hierarchical-task.net/data/results-fixed.pdf) are available, and the presentation is on YouTube:
 
 [![IPC 2020](https://img.youtube.com/vi/SSaw5YmxpaA/0.jpg)](https://www.youtube.com/watch?v=SSaw5YmxpaA "International Planning Competition (IPC) 2020 on Hierarchical Task Network (HTN) Planning: Results")
