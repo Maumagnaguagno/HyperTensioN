@@ -259,11 +259,15 @@ module HDDL_Parser
           parse_objects(group)
           # Expand foralls
           @foralls.each {|pos,neg,(_,(fv,_,fvtype),g),mutable|
-            @state[fvtype]&.each {|obj,|
-              g.each {|pre|
-                pre[0] != NOT ? pos << pre.map {|j| j == fv ? obj : j} : pre.size == 2 ? neg << pre = pre[1].map {|j| j == fv ? obj : j} : raise('Unexpected not in forall')
-                @predicates[pre[0].freeze] ||= mutable
-              }
+            fvtype = @state[fvtype] and g.each {|pre|
+              if pre[0] != NOT
+                fvtype.each {|obj,| pos << pre.map {|j| j == fv ? obj : j}}
+              elsif pre.size == 2
+                pre = pre[1]
+                fvtype.each {|obj,| neg << pre.map {|j| j == fv ? obj : j}}
+              else raise('Unexpected not in forall')
+              end
+              @predicates[pre[0].freeze] ||= mutable
             }
           }
           raise 'Repeated object definition' if @objects.uniq!
