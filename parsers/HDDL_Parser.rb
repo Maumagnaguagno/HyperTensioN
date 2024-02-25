@@ -256,7 +256,7 @@ module HDDL_Parser
         when 'problem' then @problem_name = group[1]
         when ':domain' then raise 'Different domain specified in problem file' if @domain_name != group[1]
         when ':objects'
-          parse_objects(group)
+          raise 'Repeated object definition' if parse_objects(group).uniq!
           # Expand foralls
           @foralls.each {|pos,neg,(_,(fv,_,fvtype),g),mutable|
             fvtype = @state[fvtype] and g.each {|pre|
@@ -265,12 +265,11 @@ module HDDL_Parser
               elsif pre.size == 2
                 pre = pre[1]
                 fvtype.each {|obj,| neg << pre.map {|j| j == fv ? obj : j}}
-              else raise('Unexpected not in forall')
+              else raise 'Unexpected not in forall'
               end
               @predicates[pre[0].freeze] ||= mutable
             }
           }
-          raise 'Repeated object definition' if @objects.uniq!
           @state[EQUAL] = @objects.zip(@objects) if @predicates.include?(EQUAL)
         when ':init'
           group.shift
