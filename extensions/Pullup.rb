@@ -47,7 +47,7 @@ module Pullup
     while repeat
       repeat = false
       methods.map! {|name,param,*decompositions|
-        decompositions.select! {|_,free,precond_pos,precond_not,subtasks|
+        decompositions.select! {|_,_,precond_pos,precond_not,subtasks|
           first_task = true
           effects = Hash.new(0)
           old_precond_pos_size = precond_pos.size
