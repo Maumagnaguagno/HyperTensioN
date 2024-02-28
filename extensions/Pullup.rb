@@ -55,7 +55,7 @@ module Pullup
           subtasks.each {|s|
             if impossible.include?(s[0])
               repeat = true
-              subtasks.each {|i,| operators.reject! {|op,| op == i} if (counter[i] -= 1) == 0}
+              subtasks.each {|i,| operators.delete_at(i) if (counter[i] -= 1) == 0 and i = operators.index {|op,| op == i}}
               break
             elsif op = operators.assoc(s[0])
               op[2].each {|pre| precond_pos << pre.map {|t| (j = op[1].index(t)) ? s[j + 1] : t} if effects[pre[0]].even?}
