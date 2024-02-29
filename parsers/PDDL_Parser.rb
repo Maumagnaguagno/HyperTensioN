@@ -106,12 +106,11 @@ module PDDL_Parser
         when ':predicates'
         when ':types'
           # Type hierarchy
-          group.shift
           while i = group.index(HYPHEN)
             type = group[i+1]
-            j = -1
+            j = 0
             @types << [group[j], type] while (j += 1) != i
-            group.shift(i+2)
+            group.shift(i+1)
           end
         else raise "#{group[0]} is not recognized in domain"
         end
