@@ -1,26 +1,26 @@
-<svg width="392pt" height="354pt" viewBox="0 0 392 354" xmlns="http://www.w3.org/2000/svg">
-<style>svg{background-color:white}text{fill:black;font-size:14px}polyline{stroke:black}path{stroke:black;fill:none}polygon{stroke:black}</style>
-<g transform="translate(4 350)"><title>basic</title>
+<svg width="330pt" height="354pt" viewBox="0 0 330 354" xmlns="http://www.w3.org/2000/svg">
+<style>svg{background-color:white}text{fill:black;font-size:14px}polyline,polygon{stroke:black}path{stroke:black;fill:none}</style>
+<g transform="translate(-36 350)"><title>basic</title>
 
 <g><title>pickup</title>
-<polygon fill="none" points="0,-0.5 0,-46.5 156,-46.5 156,-0.5"/>
-<text text-anchor="middle" x="45.5" y="-31.3">pickup</text>
-<polyline points="91,-23.5 91,-46.5"/>
-<text text-anchor="middle" x="123.5" y="-31.3">?a</text>
-<polyline points="0,-23.5 156,-23.5"/>
-<text text-anchor="start" x="8" y="-8.3">not (have ?a)</text>
-<polyline points="89,-0.5 89,-23.5"/>
-<text text-anchor="start" x="97" y="-8.3">(have ?a)</text></g>
+<path d="M40,-0.5v-46H196V-0.5z"/>
+<text text-anchor="middle" x="85.5" y="-31.3">pickup</text>
+<polyline points="131,-23.5 131,-46.5"/>
+<text text-anchor="middle" x="163.5" y="-31.3">?a</text>
+<polyline points="40,-23.5 196,-23.5"/>
+<text x="48" y="-8.3">not (have ?a)</text>
+<polyline points="129,-0.5 129,-23.5"/>
+<text x="137" y="-8.3">(have ?a)</text></g>
 
 <g><title>drop</title>
-<polygon fill="none" points="228,-0.5 228,-46.5 384,-46.5 384,-0.5"/>
-<text text-anchor="middle" x="270.5" y="-31.3">drop</text>
-<polyline points="313,-23.5 313,-46.5"/>
-<text text-anchor="middle" x="348.5" y="-31.3">?a</text>
-<polyline points="228,-23.5 384,-23.5"/>
-<text text-anchor="start" x="236" y="-8.3">(have ?a)</text>
-<polyline points="295,-0.5 295,-23.5"/>
-<text text-anchor="start" x="303" y="-8.3">not (have ?a)</text></g>
+<path d="M208,-0.5v-46H364V-0.5z"/>
+<text text-anchor="middle" x="250.5" y="-31.3">drop</text>
+<polyline points="293,-23.5 293,-46.5"/>
+<text text-anchor="middle" x="328.5" y="-31.3">?a</text>
+<polyline points="208,-23.5 364,-23.5"/>
+<text x="216" y="-8.3">(have ?a)</text>
+<polyline points="275,-0.5 275,-23.5"/>
+<text x="283" y="-8.3">not (have ?a)</text></g>
 
 <g><title>swap</title>
 <path stroke-width="2" d="M112,-299.5C112,-299.5 272,-299.5 272,-299.5 278,-299.5 284,-305.5 284,-311.5 284,-311.5 284,-333.5 284,-333.5 284,-339.5 278,-345.5 272,-345.5 272,-345.5 112,-345.5 112,-345.5 106,-345.5 100,-339.5 100,-333.5 100,-333.5 100,-311.5 100,-311.5 100,-305.5 106,-299.5 112,-299.5"/>
@@ -35,10 +35,9 @@
 <path d="M56,-119.5C56,-119.5 144,-119.5 144,-119.5 150,-119.5 156,-125.5 156,-131.5 156,-131.5 156,-214.5 156,-214.5 156,-220.5 150,-226.5 144,-226.5 144,-226.5 56,-226.5 56,-226.5 50,-226.5 44,-220.5 44,-214.5 44,-214.5 44,-131.5 44,-131.5 44,-125.5 50,-119.5 56,-119.5"/>
 <text text-anchor="middle" x="90" y="-211.3">swap_case_0</text>
 <polyline points="136,-203.5 136,-226.5"/>
-<text text-anchor="middle" x="146" y="-211.3"> </text>
 <polyline points="44,-203.5 156,-203.5"/>
-<text text-anchor="start" x="52" y="-188.3">(have ?x)</text>
-<text text-anchor="start" x="52" y="-173.3">not (have ?y)</text>
+<text x="52" y="-188.3">(have ?x)</text>
+<text x="52" y="-173.3">not (have ?y)</text>
 <polyline points="44,-165.5 156,-165.5"/>
 <text text-anchor="middle" x="100" y="-150.3">drop ?x</text>
 <polyline points="44,-142.5 156,-142.5"/>
@@ -53,8 +52,8 @@
 <text text-anchor="middle" x="274" y="-211.3">swap_case_1</text>
 <polyline points="320,-203.5 320,-226.5"/>
 <polyline points="228,-203.5 340,-203.5"/>
-<text text-anchor="start" x="236" y="-188.3">(have ?y)</text>
-<text text-anchor="start" x="236" y="-173.3">not (have ?x)</text>
+<text x="236" y="-188.3">(have ?y)</text>
+<text x="236" y="-173.3">not (have ?x)</text>
 <polyline points="228,-165.5 340,-165.5"/>
 <text text-anchor="middle" x="284" y="-150.3">drop ?y</text>
 <polyline points="228,-142.5 340,-142.5"/>

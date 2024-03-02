@@ -187,10 +187,10 @@ end
 It is impossible to propagate variables all the time, some variables must be bound during run-time.
 Free variables are created as empty strings, being used as pointers to their future values.
 A ``generate(precond_pos, precond_not, *free)`` method will do the hard work, using positive preconditions to find possible values for the free variables, only yielding values that satisfy the preconditions requested.
-Therefore a positive precondition set that does not mention all free variables will generate zero unifications.
+Therefore, a positive precondition set that does not mention all free variables will generate zero unifications.
 In classical planning it is possible to try the entire list of objects as values, but in HTN there may be an infinite number of values.
 It is possible to solve this problem adding each object possible to be used to the initial state, ``(object kiwi) (object banjo)``, in the initial state and add them in the preconditions, ``(object var)``.
-Unifications only happen to methods in HyperTensioN, a method must be created to bound values for an operator if a free variable value is not know.
+Unifications only happen to methods in HyperTensioN, a method must be created to bound values for an operator if a free variable value is not known.
 The following example goes beyond this specification, using an instance variable to avoid cached positions created by other decomposition paths.
 One can always use ``if-else`` constructs to speed-up problem solving.
 Here it is clear that no state memory is created by HyperTensioN, that is why ``@visited_at`` is used.
@@ -265,7 +265,7 @@ end
 ```
 
 The compilers use a less readable but optimized approach without generate and free variables.
-Static analysis is able to determine that ``connected`` is a rigid predicate, never changes, which can be stored in a constant outside the state.
+Static analysis is able to determine that ``connected`` is a rigid predicate, never changes, which can be stored as a constant outside the state.
 Both ``at`` and ``connected`` predicates are iterated, looking for a suitable set of values that satisfy the original method preconditions.
 
 ```Ruby
@@ -285,7 +285,7 @@ end
 With the domain ready it is time for the problem, with an initial state and task list.
 The initial state is defined as an Array in which each index represent one predicate while the value is an array of possible terms.
 The task list follows the same principle, an array of each task to be solved.
-Note that the names must match the ones defined in the domain and tasks are be decomposed in the same order they are described (in ordered mode).
+Note that the names must match the ones defined in the domain and tasks to be decomposed in the same order they are described (in ordered mode).
 Even predicates that do not appear in the initial state must be declared, in this example nothing is reported so ``state[REPORTED]`` is declared as ``[]``.
 If the problem does not generate objects during run-time a speed improvement can be obtained moving them to constants, therefore the comparisons will be pointer-based.
 Goal states can be defined as an ``invisible_goal`` operator, that have the goal state as precondition and no effect, being the last task to be decomposed.
