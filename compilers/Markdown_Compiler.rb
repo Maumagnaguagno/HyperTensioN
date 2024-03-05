@@ -23,7 +23,7 @@ module Markdown_Compiler
       output << "\n## Methods"
       methods.each_with_index {|(name,param,*decompositions),i|
         output << "\n#{name.capitalize} | #{param.join(' ')} ||\n--- | --- | ---\n***Label*** | ***Preconditions*** | ***Subtasks***"
-        decompositions.each {|label,free,precond_pos,precond_not,subtasks|
+        decompositions.each {|label,_,precond_pos,precond_not,subtasks|
           output << "\n|#{label}"
           index = 0
           precond_pos.each {|pre|
