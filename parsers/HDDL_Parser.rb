@@ -60,10 +60,9 @@ module HDDL_Parser
       @objects.concat(o = group.shift(i))
       group.shift
       types = [group.shift]
-      ti = 0
-      while type = types[ti]
+      ti = -1
+      while type = types[ti += 1]
         @types.each {|sub,t| types << t if sub == type and not types.include?(t)}
-        ti += 1
       end
       types.each {|t| (@state[t] ||= []).concat(o.zip)}
     end
