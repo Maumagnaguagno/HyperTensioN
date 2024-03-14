@@ -194,6 +194,23 @@ module Pullup
       op[2].select! {|pre,| predicates[pre]}
       op[3].select! {|pre,| predicates[pre]}
     }
+    # Update mutability
+    new_predicates = {}
+    operators.each {|_,_,precond_pos,precond_not,effect_add,effect_del|
+      precond_pos.each {|pre,| new_predicates[pre.freeze] ||= false}
+      precond_not.each {|pre,| new_predicates[pre.freeze] ||= false}
+      effect_add.each {|pre,| new_predicates[pre.freeze] = true}
+      effect_del.each {|pre,| new_predicates[pre.freeze] = true}
+    }
+    methods.each {|decompositions|
+      decompositions.drop(2).each {|m|
+        m[2].each {|pre,| new_predicates[pre.freeze] ||= false}
+        m[3].each {|pre,| new_predicates[pre.freeze] ||= false}
+      }
+    }
+    goal_pos.each {|pre,| new_predicates[pre.freeze] ||= false}
+    goal_not.each {|pre,| new_predicates[pre.freeze] ||= false}
+    predicates.replace(new_predicates)
     tasks.unshift(ordered) unless tasks.empty?
   end
 
