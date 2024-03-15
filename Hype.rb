@@ -20,6 +20,7 @@ module Hype
     rb    - generate Ruby files to HyperTensioN
     cpp   - generate C++ file with HyperTensioN
     pddl  - generate PDDL files
+    hddl  - generate HDDL files
     jshop - generate JSHOP files
     dot   - generate DOT file
     md    - generate Markdown file
@@ -169,6 +170,7 @@ Problem #{@parser.problem_name}
     when 'rb' then Hyper_Compiler
     when 'cpp' then Cyber_Compiler
     when 'jshop' then JSHOP_Compiler
+    when 'hddl' then HDDL_Compiler
     when 'pddl' then PDDL_Compiler
     when 'dot' then Dot_Compiler
     when 'md' then Markdown_Compiler

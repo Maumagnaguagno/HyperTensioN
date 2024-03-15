@@ -132,6 +132,7 @@ Output:
   rb    - generate Ruby files to HyperTensioN
   cpp   - generate C++ file with HyperTensioN
   pddl  - generate PDDL files
+  hddl  - generate HDDL files
   jshop - generate JSHOP files
   dot   - generate DOT file
   md    - generate Markdown file
@@ -195,6 +196,7 @@ Hype is composed of:
 - Hyper (methods and tasks are unavailable for a PDDL input without extensions)
 - Cyber (methods and tasks are unavailable for a PDDL input without extensions)
 - [PDDL] (methods are ignored, goal must be manually converted based on tasks)
+- [HDDL] (methods and tasks are unavailable for a PDDL input without extensions)
 - [JSHOP] (methods and tasks are unavailable for a PDDL input without extensions)
 - [Graphviz DOT](https://www.graphviz.org/) (generate a [graph](docs/Graph.md) description to be compiled into an image)
 - [Markdown](https://daringfireball.net/projects/markdown/)
@@ -390,6 +392,8 @@ Unordered tasks are supported only at the problem level and are not interleaved 
   - Skip invisible operators as subtasks in Macro
 - Oct 2023
   - Support unordered tasks in Macro
+- Mar 2024
+  - Add HDDL compiler
 
 </details>
 
