@@ -8,7 +8,7 @@ module HDDL_Compiler
   def compile_domain(domain_name, problem_name, operators, methods, predicates, state, tasks, goal_pos, goal_not)
     negative_preconditions = method_preconditions = false
     declared = {}
-    action_str = ''
+    action_str = "  )\n"
     # Operators
     operators.each {|op|
       # Header
@@ -49,7 +49,7 @@ module HDDL_Compiler
       (pre = pre.join(' ?')).squeeze!('?')
       domain_str << "    (#{pre})\n"
     }
-    domain_str << "  )\n" << action_str << ')'
+    domain_str << action_str << ')'
   end
 
   #-----------------------------------------------
