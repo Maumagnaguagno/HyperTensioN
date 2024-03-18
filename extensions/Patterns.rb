@@ -82,11 +82,11 @@ module Patterns
         op2_namesub = (name2 = op2[0]).tr(hyphen, underscore)
         pos.each {|pre|
           puts "  #{name2} before #{name}, dependency (#{pre_join = pre.join(sep)})"
-          edges.push("\n  #{op2_namesub} -> \"(#{pre_join})\"", "\n  \"(#{pre_join})\" -> #{namesub}")
+          edges << "\n  #{op2_namesub} -> \"(#{pre_join})\" -> #{namesub}"
         }
         neg.each {|pre|
           puts "  #{name2} before #{name}, dependency (not (#{pre_join = pre.join(sep)}))"
-          edges.push("\n  #{op2_namesub} -> \"(not (#{pre_join}))\"", "\n  \"(not (#{pre_join}))\" -> #{namesub}")
+          edges << "\n  #{op2_namesub} -> \"(not (#{pre_join}))\" -> #{namesub}"
         }
       }
     }
