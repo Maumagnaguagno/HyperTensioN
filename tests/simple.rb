@@ -487,29 +487,26 @@ digraph "basic" {
   nodesep=1
   ranksep=1
   // Operators
+  node [shape=record]
   "pickup" [
-    shape=record
     label="{{pickup|?a}|{not (have ?a)\l|(have ?a)\l}}"
   ]
   "drop" [
-    shape=record
     label="{{drop|?a}|{(have ?a)\l|not (have ?a)\l}}"
   ]
   // Methods
+  node [shape=Mrecord]
   "swap" [
-    shape=Mrecord
     style=bold
     label="{{swap|?x ?y}|{<n0>swap_case_0|<n1>swap_case_1}}"
   ]
   "label_swap_case_0" [
-    shape=Mrecord
     label="{{swap_case_0|}|(have ?x)\lnot (have ?y)\l|<n0>drop ?x|<n1>pickup ?y}"
   ]
   "swap":n0 -> "label_swap_case_0" [style=dotted]
   "label_swap_case_0":n0 -> "drop"
   "label_swap_case_0":n1 -> "pickup"
   "label_swap_case_1" [
-    shape=Mrecord
     label="{{swap_case_1|}|(have ?y)\lnot (have ?x)\l|<n0>drop ?y|<n1>pickup ?x}"
   ]
   "swap":n1 -> "label_swap_case_1" [style=dotted]
