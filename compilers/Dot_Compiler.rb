@@ -19,7 +19,7 @@ module Dot_Compiler
     # Operators
     operators.each {|op|
       # Header
-      domain_str << "  \"#{op[0]}\" [\n    label=\"{{#{op[0]}|#{op[1].join(' ')}}|{"
+      domain_str << "  \"#{op[0]}\" [\n    label=\"{{\\N|#{op[1].join(' ')}}|{"
       # Preconditions
       predicates_to_dot(domain_str, op[2], op[3])
       # Effects
@@ -32,21 +32,21 @@ module Dot_Compiler
       method_str = ''
       decompositions = []
       met.drop(2).each_with_index {|dec,i|
-        decompositions << "<n#{i}>#{met[0]}_#{dec[0]}"
+        decompositions << "<#{i}>#{met[0]}_#{dec[0]}"
         # Label
-        method_str << "  \"label_#{met[0]}_#{dec[0]}\" [\n    label=\"{{#{met[0]}_#{dec[0]}|#{dec[1].join(' ')}}|"
+        method_str << "  \"#{met[0]}_#{dec[0]}\" [\n    label=\"{{\\N|#{dec[1].join(' ')}}|"
         # Preconditions
         predicates_to_dot(method_str, dec[2], dec[3])
         # Subtasks
         connections = ''
         dec[4].each_with_index {|subtask,j|
-          method_str << "|<n#{j}>#{subtask.join(' ')}"
-          connections << "  \"label_#{met[0]}_#{dec[0]}\":n#{j} -> \"#{subtask[0]}\"\n" if all_connections or operators.assoc(subtask[0])
+          method_str << "|<#{j}>#{subtask.join(' ')}"
+          connections << "  \"#{met[0]}_#{dec[0]}\":#{j} -> \"#{subtask[0]}\"\n" if all_connections or operators.assoc(subtask[0])
         }
         # Connections
-        method_str << "}\"\n  ]\n  \"#{met[0]}\":n#{i} -> \"label_#{met[0]}_#{dec[0]}\" [style=dotted]\n#{connections}"
+        method_str << "}\"\n  ]\n  \"#{met[0]}\":#{i} -> \"#{met[0]}_#{dec[0]}\" [style=dotted]\n#{connections}"
       }
-      domain_str << "  \"#{met[0]}\" [\n    style=bold\n    label=\"{{#{met[0]}|#{met[1].join(' ')}}|{#{decompositions.join('|')}}}\"\n  ]\n#{method_str}"
+      domain_str << "  \"#{met[0]}\" [\n    style=bold\n    label=\"{{\\N|#{met[1].join(' ')}}|{#{decompositions.join('|')}}}\"\n  ]\n#{method_str}"
     }
     domain_str << '}'
   end

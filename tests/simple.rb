@@ -489,29 +489,29 @@ digraph "basic" {
   // Operators
   node [shape=record]
   "pickup" [
-    label="{{pickup|?a}|{not (have ?a)\l|(have ?a)\l}}"
+    label="{{\N|?a}|{not (have ?a)\l|(have ?a)\l}}"
   ]
   "drop" [
-    label="{{drop|?a}|{(have ?a)\l|not (have ?a)\l}}"
+    label="{{\N|?a}|{(have ?a)\l|not (have ?a)\l}}"
   ]
   // Methods
   node [shape=Mrecord]
   "swap" [
     style=bold
-    label="{{swap|?x ?y}|{<n0>swap_case_0|<n1>swap_case_1}}"
+    label="{{\N|?x ?y}|{<0>swap_case_0|<1>swap_case_1}}"
   ]
-  "label_swap_case_0" [
-    label="{{swap_case_0|}|(have ?x)\lnot (have ?y)\l|<n0>drop ?x|<n1>pickup ?y}"
+  "swap_case_0" [
+    label="{{\N|}|(have ?x)\lnot (have ?y)\l|<0>drop ?x|<1>pickup ?y}"
   ]
-  "swap":n0 -> "label_swap_case_0" [style=dotted]
-  "label_swap_case_0":n0 -> "drop"
-  "label_swap_case_0":n1 -> "pickup"
-  "label_swap_case_1" [
-    label="{{swap_case_1|}|(have ?y)\lnot (have ?x)\l|<n0>drop ?y|<n1>pickup ?x}"
+  "swap":0 -> "swap_case_0" [style=dotted]
+  "swap_case_0":0 -> "drop"
+  "swap_case_0":1 -> "pickup"
+  "swap_case_1" [
+    label="{{\N|}|(have ?y)\lnot (have ?x)\l|<0>drop ?y|<1>pickup ?x}"
   ]
-  "swap":n1 -> "label_swap_case_1" [style=dotted]
-  "label_swap_case_1":n0 -> "drop"
-  "label_swap_case_1":n1 -> "pickup"
+  "swap":1 -> "swap_case_1" [style=dotted]
+  "swap_case_1":0 -> "drop"
+  "swap_case_1":1 -> "pickup"
 }',
       # Problem
       nil
