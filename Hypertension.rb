@@ -235,8 +235,10 @@ if not $IPC
     plan
   rescue Interrupt
     puts 'Interrupted'
+    exit(130)
   rescue
     puts $!, $@
+    exit(2)
   end
 
 else
@@ -260,8 +262,10 @@ else
     plan
   rescue Interrupt
     puts 'Interrupted'
+    exit(130)
   rescue
     puts $!, $@
+    exit(2)
   end
 
 end

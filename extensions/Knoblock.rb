@@ -109,5 +109,6 @@ if $0 == __FILE__
     Knoblock.create_hierarchy(PDDL_Parser.operators, PDDL_Parser.predicates, goals, true)
   rescue
     puts $!, $@
+    exit(2)
   end
 end
