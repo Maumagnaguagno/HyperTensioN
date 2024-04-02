@@ -17,7 +17,7 @@ Note that the HyperTensioN used in the IPC 2020 is slightly different from the o
 During the competition only HDDL_Parser, Typredicate, Pullup, Dejavu and Hyper_Compiler modules were loaded by Hype.
 The debug outputs in the planning method were commented out.
 A few bugs made the competition release of HyperTensioN not able to parse Entertainment and Monroe (partially and fully observable) domains correctly, these are now fixed.
-The new timings were obtained in an Intel E5500 @ 2.8GHz with 3.25GBs of RAM, which match IPC timings.
+The new timings were obtained in an Intel E5500 @ 2.8GHz with 3.25GB of RAM, which match IPC timings.
 Currently, the first 5 of 12 Entertainment instances are solved in less than a second, the sixth in 42s, the seventh in 740s, and the eighth in 235s, while others will take more than 1800s.
 All 20 Monroe-Fully-Observable instances are solvable, most in few seconds and the last two in 32s.
 The Monroe-Partially-Observable instances are still not solvable within a 1800s time limit.
@@ -56,7 +56,7 @@ The planner was executed as ``ruby --disable=all Hype.rb $DOMAINFILE $PROBLEMFIL
 Due to a [limit](https://bugs.ruby-lang.org/issues/16616) in the amount of stack available to the Ruby interpreter in the Ubuntu 20.04 + Ruby 2.7 it was decided to use an older version, Ubuntu 18.04 + Ruby 2.5, to be able to solve more planning instances.
 Some large planning instances require more stack, which is possible with ``export RUBY_THREAD_VM_STACK_SIZE=$(($MEMORY * 512 * 1024))``.
 HyperTensioN did not exploit the seed variable provided during the competition, although it is possible that randomizing parts of the planning instance may improve timing in certain domains.
-A more detailed explanation is provided in the IPC paper [HyperTensioN: A three-stage compiler for planning](https://gki.informatik.uni-freiburg.de/competition/proceedings.pdf#page=14) and the extended paper [HyperTensioN and Total-order Forward Decomposition optimizations](https://arxiv.org/pdf/2207.00345.pdf).
+A more detailed explanation is provided in the IPC paper [HyperTensioN: A three-stage compiler for planning](https://ipc2020.hierarchical-task.net/publications/IPC2020Booklet.pdf#page=14) and the extended paper [HyperTensioN and Total-order Forward Decomposition optimizations](https://arxiv.org/pdf/2207.00345.pdf).
 
 The [plan format output](https://ipc2020.hierarchical-task.net/data/format.pdf) required by the IPC to analyze plan correctness was different from the one used by HyperTensioN.
 Some examples and tests expect the original non-IPC output, the reason why it is disabled by default.
