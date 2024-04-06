@@ -143,7 +143,6 @@ module Pullup
       name = decompositions.shift
       param = decompositions.shift
       decompositions.select! {|_,free,precond_pos,precond_not,subtasks|
-        possible_decomposition = true
         # Remove unnecessary free variables
         substitutions = {}
         precond_pos.each {|pre,*terms|
@@ -158,27 +157,18 @@ module Pullup
           precond_not.each {|pre| pre.map! {|i| substitutions[i] || i}}
           subtasks.each {|t| t.map! {|i| substitutions[i] || i}}
         end
-        precond_pos.reject! {|pre|
+        precond_pos.delete_if {|pre|
           if not predicates[pre[0]] and pre.none? {|i| i.start_with?('?')}
-            unless state[pre[0]]&.include?(pre.drop(1))
-              possible_decomposition = false
-              break
-            end
+            break unless state[pre[0]]&.include?(pre.drop(1))
+            true
+          end
+        } &&
+        precond_not.delete_if {|pre|
+          if not predicates[pre[0]] and pre.none? {|i| i.start_with?('?')}
+            break if state[pre[0]]&.include?(pre.drop(1))
             true
           end
         }
-        if possible_decomposition
-          precond_not.reject! {|pre|
-            if not predicates[pre[0]] and pre.none? {|i| i.start_with?('?')}
-              if state[pre[0]]&.include?(pre.drop(1))
-                possible_decomposition = false
-                break
-              end
-              true
-            end
-          }
-        end
-        possible_decomposition
       }
       decompositions.unshift(name, param)
     }
