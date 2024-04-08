@@ -57,6 +57,7 @@ Due to a [limit](https://bugs.ruby-lang.org/issues/16616) in the amount of stack
 Some large planning instances require more stack, which is possible with ``export RUBY_THREAD_VM_STACK_SIZE=$(($MEMORY * 512 * 1024))``.
 HyperTensioN did not exploit the seed variable provided during the competition, although it is possible that randomizing parts of the planning instance may improve timing in certain domains.
 A more detailed explanation is provided in the IPC paper [HyperTensioN: A three-stage compiler for planning](https://ipc2020.hierarchical-task.net/publications/IPC2020Booklet.pdf#page=14) and the extended paper [HyperTensioN and Total-order Forward Decomposition optimizations](https://arxiv.org/pdf/2207.00345.pdf).
+The effects of each extension in the domain structures can be visualized online in the [HyperTensioN HTN IPC 2020 Explorer](https://maumagnaguagno.github.io/HyperTensioN_HTN_IPC_2020_Explorer/).
 
 The [plan format output](https://ipc2020.hierarchical-task.net/data/format.pdf) required by the IPC to analyze plan correctness was different from the one used by HyperTensioN.
 Some examples and tests expect the original non-IPC output, the reason why it is disabled by default.
