@@ -10,6 +10,8 @@ module Wise
     # Initial state
     state.reject! {|pre,k|
       if predicates.include?(pre)
+        # Free variable
+        raise 'Initial state contains free variable' if k.flatten(1).any? {|t| t.start_with?('?')}
         # Duplicates
         puts "Initial state contains duplicate predicates (#{pre} ...): removed" if k.uniq! and debug
         # Arity check
@@ -99,6 +101,7 @@ module Wise
       tasks.unshift(ordered)
     end
     # Goal
+    raise 'Goal contains free variable' if (goal_pos + goal_not).flatten(1).any? {|t| t.start_with?('?')}
     puts "Goal contains duplicate positive condition: removed" if goal_pos.uniq! and debug
     puts "Goal contains duplicate negative condition: removed" if goal_not.uniq! and debug
     (goal_pos & goal_not).each {|pre| raise "Goal contains contradiction (#{pre.join(' ')}) and (not (#{pre.join(' ')}))"}
