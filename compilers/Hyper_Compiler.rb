@@ -114,7 +114,7 @@ module Hyper_Compiler
         define_methods << "\n  def #{name}_#{dec[0]}#{variables}"
         equality = []
         define_methods_comparison = ''
-        f = dec[1]
+        f = dec[1].dup
         precond_pos = dec[2].sort_by {|pre| (pre & param).size * -100 - (pre & f).size}
         precond_pos.reject! {|pre,*terms|
           if (terms & f).empty?
