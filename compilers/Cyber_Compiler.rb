@@ -341,7 +341,7 @@ module Cyber_Compiler
       template.sub!('<TASKS>', define_tasks)
       template.sub!('<TASK0>', 'subtask0')
       template.sub!('<NTASKS>', tasks.size.to_s)
-      tasks.unshift(ordered)
+      tasks.unshift(ordered) unless tasks.empty?
     end
     template.gsub!(/\b-\b/,'_')
     template
