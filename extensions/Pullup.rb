@@ -42,14 +42,14 @@ module Pullup
     operators.reject! {|op| impossible << op[0] unless counter.include?(op[0]) and op[2].all? {|pre,| predicates[pre] || state.include?(pre)}}
     # Move current or rigid predicates from leaves to root/entry tasks
     clear_ops = []
-    clear_met = []
+    clear_met = {}
     first_pass = repeat = true
     while repeat
       repeat = false
       methods.map! {|name,param,*decompositions|
         decompositions.select! {|_,_,precond_pos,precond_not,subtasks|
           first_task = true
-          effects = Hash.new(0)
+          effects = {}
           old_precond_pos_size = precond_pos.size
           old_precond_not_size = precond_not.size
           subtasks.each {|s|
@@ -58,10 +58,10 @@ module Pullup
               subtasks.each {|i,| operators.delete_at(i) if (counter[i] -= 1) == 0 and i = operators.index {|op,| op == i}}
               break
             elsif op = operators.assoc(s[0])
-              op[2].each {|pre| precond_pos << pre.map {|t| (j = op[1].index(t)) ? s[j + 1] : t} if effects[pre[0]].even?}
-              op[3].each {|pre| precond_not << pre.map {|t| (j = op[1].index(t)) ? s[j + 1] : t} if effects[pre[0]] < 2}
-              op[4].each {|pre,| effects[pre] |= 1}
-              op[5].each {|pre,| effects[pre] |= 2}
+              op[2].each {|pre| precond_pos << pre.map {|t| (j = op[1].index(t)) ? s[j + 1] : t} unless effects[pre[0]]}
+              op[3].each {|pre| precond_not << pre.map {|t| (j = op[1].index(t)) ? s[j + 1] : t} unless effects[pre[0]]}
+              op[4].each {|pre,| effects[pre] = true}
+              op[5].each {|pre,| effects[pre] = true}
               if first_task and counter[s[0]] == 1
                 op[2].clear
                 op[3].clear
@@ -69,17 +69,23 @@ module Pullup
               end
             else
               all_pos = all_neg = nil
-              metdecompositions = (met = methods.assoc(s[0])).drop(2).each {|m|
+              metdecompositions = (met = methods.assoc(s[0])).drop(2)
+              clear_pos, clear_neg, keep_pos, keep_neg = clear_met[metdecompositions]
+              keep_pos ||= []
+              keep_neg ||= []
+              metdecompositions.each {|m|
                 pos = []
                 neg = []
                 m[2].each {|pre|
-                  if effects[pre[0]].even?
+                  if effects[pre[0]] then keep_pos << pre
+                  else
                     pre = pre.map {|t| (j = met[1].index(t)) ? s[j + 1] : t}
                     pos << pre if (pre & m[1]).empty?
                   end
                 }
                 m[3].each {|pre|
-                  if effects[pre[0]] < 2
+                  if effects[pre[0]] then keep_neg << pre
+                  else
                     pre = pre.map {|t| (j = met[1].index(t)) ? s[j + 1] : t}
                     neg << pre if (pre & m[1]).empty?
                   end
@@ -93,7 +99,13 @@ module Pullup
                 end
               }
               mark_effects(operators, methods, metdecompositions, effects)
-              clear_met << [metdecompositions, all_pos, all_neg] unless tasks.assoc(s[0])
+              unless tasks.assoc(s[0])
+                if clear_pos
+                  clear_pos.concat(all_pos)
+                  clear_neg.concat(all_neg)
+                else clear_met[metdecompositions] = [all_pos, all_neg, keep_pos, keep_neg]
+                end
+              end
               precond_pos.concat(all_pos)
               precond_not.concat(all_neg)
             end
@@ -173,10 +185,14 @@ module Pullup
       decompositions.unshift(name, param)
     }
     # Remove dead leaves
-    clear_met.each {|decompositions,pos,neg|
+    clear_met.each {|decompositions,(del_pos,del_neg,keep_pos,keep_neg)|
+      keep_pos.uniq!
+      keep_neg.uniq!
+      del_pos.reject! {|pre| keep_pos.include?(pre)}
+      del_neg.reject! {|pre| keep_neg.include?(pre)}
       decompositions.each {|dec|
-        dec[2] -= pos
-        dec[3] -= neg
+        dec[2] -= del_pos
+        dec[3] -= del_neg
       }
     }
     clear_ops.uniq!(&:object_id)
@@ -213,8 +229,8 @@ module Pullup
         unless visited.include?(s)
           visited[s] = nil
           if op = operators.assoc(s)
-            op[4].each {|pre,| effects[pre] |= 1}
-            op[5].each {|pre,| effects[pre] |= 2}
+            op[4].each {|pre,| effects[pre] = true}
+            op[5].each {|pre,| effects[pre] = true}
           elsif met = methods.assoc(s)
             mark_effects(operators, methods, met.drop(2), effects, visited)
           end
