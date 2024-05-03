@@ -1,6 +1,6 @@
 require './tests/hypest'
 
-class Polyglot < Test::Unit::TestCase
+class Recompiler < Test::Unit::TestCase
 
   def intermediate_representation(parser)
     [

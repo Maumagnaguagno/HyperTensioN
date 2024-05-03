@@ -23,10 +23,10 @@ jobs:
     - run: ruby tests/miner.rb
     - run: ruby tests/painter.rb
     - run: ruby tests/paisley.rb
-    - run: ruby tests/polyglot.rb
     - run: ruby tests/rescue.rb
     - run: ruby tests/simple.rb
     - run: ruby tests/walker.rb
+    - run: ruby tests/recompiler.rb
     # Examples
     - run: ruby examples/experiments/Expression.rb
     - run: ruby examples/experiments/Function.rb
