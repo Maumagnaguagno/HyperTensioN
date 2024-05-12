@@ -105,7 +105,7 @@ module Cyber_Compiler
         elsif predicates[pre] or state.include?(pre) then define_operators << "\n  if(#{applicable(pre, terms, predicates, arity)}) return false;"
         end
       }
-      define_operators << "\n    return if #{equality.join(' || ')}" unless equality.empty?
+      define_operators << "\n  if(#{equality.join(' || ')}) return false;" unless equality.empty?
       unless effect_add.empty? and effect_del.empty?
         define_operators << "\n  new_state();"
         apply('erase', effect_del, define_operators, duplicated = {}, arity)
