@@ -394,6 +394,8 @@ Unordered tasks are supported only at the problem level and are not interleaved 
   - Support unordered tasks in Macro
 - Mar 2024
   - Add HDDL compiler
+- Apr 2024
+  - Fix interference in Pullup
 
 </details>
 
