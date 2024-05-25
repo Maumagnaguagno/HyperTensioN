@@ -31,15 +31,6 @@ module JSHOP_Parser
   end
 
   #-----------------------------------------------
-  # Define effects
-  #-----------------------------------------------
-
-  def define_effects(name, group)
-    raise "Error with #{name} effect" unless group.instance_of?(Array)
-    group.each {|pre,| pre != NOT ? @predicates[pre.freeze] = true : raise("Unexpected not in #{name} effect")}
-  end
-
-  #-----------------------------------------------
   # Parse operator
   #-----------------------------------------------
 
@@ -50,14 +41,15 @@ module JSHOP_Parser
     raise "#{name} redefined" if @operators.assoc(name)
     @operators << [name, op[1], pos = [], neg = [], op[4], op[3]]
     # Preconditions
-    raise "Error with #{name} precondition" unless (group = op[2]).instance_of?(Array)
-    group.each {|pre|
+    raise "Error with #{name} precondition" unless op[2].instance_of?(Array)
+    op[2].each {|pre|
       pre[0] != NOT ? pos << pre : pre.size == 2 ? neg << pre = pre[1] : raise("Error with #{name} negative precondition")
       @predicates[pre[0].freeze] ||= false
     }
     # Effects
-    define_effects(name, op[3])
-    define_effects(name, op[4])
+    raise "Error with #{name} effect" unless op[3].instance_of?(Array) and op[4].instance_of?(Array)
+    op[3].each {|pre,| pre != NOT ? @predicates[pre.freeze] = true : raise("Unexpected not in #{name} effect")}
+    op[4].each {|pre,| pre != NOT ? @predicates[pre.freeze] = true : raise("Unexpected not in #{name} effect")}
   end
 
   #-----------------------------------------------
