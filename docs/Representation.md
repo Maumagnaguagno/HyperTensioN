@@ -145,8 +145,8 @@ pre_rigid      = ['object', '?x']
 pre_irrelevant = ['cookie', '?y']
 
 @predicates = {
-  pre_fluent.first.freeze => true,
-  pre_rigid.first.freeze => false
+  pre_fluent[0].freeze => true,
+  pre_rigid[0].freeze => false
 }
 ```
 
