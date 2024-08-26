@@ -104,6 +104,20 @@ module Wise
     raise 'Goal contains free variable' if (goal_pos + goal_not).flatten(1).any? {|t| t.start_with?('?')}
     puts "Goal contains duplicate positive condition: removed" if goal_pos.uniq! and debug
     puts "Goal contains duplicate negative condition: removed" if goal_not.uniq! and debug
+    goal_pos.reject! {|pre|
+      unless predicates[pre[0]]
+        raise "Goal contains impossible positive condition (#{pre.join(' ')})" unless state[pre[0]].include?(pre.drop(1))
+        puts "Goal contains unnecessary positive condition (#{pre.join(' ')})" if debug
+        true
+      end
+    }
+    goal_not.reject! {|pre|
+      unless predicates[pre[0]]
+        raise "Goal contains impossible negative condition (#{pre.join(' ')})" if state[pre[0]].include?(pre.drop(1))
+        puts "Goal contains unnecessary negative condition (#{pre.join(' ')})" if debug
+        true
+      end
+    }
     (goal_pos & goal_not).each {|pre| raise "Goal contains contradiction (#{pre.join(' ')}) and (not (#{pre.join(' ')}))"}
   end
 
