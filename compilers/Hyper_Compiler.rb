@@ -278,11 +278,11 @@ module Hyper_Compiler
       if type
         problem_str << "#{pre.upcase} = #{counter += 1}\n"
         start_str << '    ['
-        start_str << "\n      #{'[' unless unary}" << k.join(unary ? ",\n      " : "],\n      [") << "#{']' unless unary}\n    " if k
+        start_str << (unary ? "\n      " << k.join(",\n      ") << "\n    " : "\n      [" << k.join("],\n      [") << "]\n    ") if k
         start_str << "],\n"
       elsif k
-        problem_str << "#{pre == '=' ? 'EQUAL' : pre.upcase} = ["
-        problem_str << "\n  #{'[' unless unary}" << k.join(unary ? ",\n  " : "],\n  [") << (unary ? "\n]\n" : "]\n]\n")
+        problem_str << "#{pre == '=' ? 'EQUAL' : pre.upcase} = [\n  "
+        problem_str << (unary ? k.join(",\n  ") << "\n]\n" : '[' << k.join("],\n  [") << "]\n]\n")
       end
     }
     # Tasks
