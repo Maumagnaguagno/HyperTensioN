@@ -38,13 +38,13 @@ module Dot_Compiler
         # Preconditions
         predicates_to_dot(method_str, dec[2], dec[3])
         # Subtasks
-        connections = ''
+        connections = "}\"\n  ]\n  \"#{met[0]}\":#{i} -> \"#{met[0]}_#{dec[0]}\" [style=dotted]\n"
         dec[4].each_with_index {|subtask,j|
           method_str << "|<#{j}>#{subtask.join(' ')}"
           connections << "  \"#{met[0]}_#{dec[0]}\":#{j} -> \"#{subtask[0]}\"\n" if all_connections or operators.assoc(subtask[0])
         }
         # Connections
-        method_str << "}\"\n  ]\n  \"#{met[0]}\":#{i} -> \"#{met[0]}_#{dec[0]}\" [style=dotted]\n#{connections}"
+        method_str << connections
       }
       domain_str << "  \"#{met[0]}\" [\n    style=bold\n    label=\"{{\\N|#{met[1].join(' ')}}|{#{decompositions.join('|')}}}\"\n  ]\n#{method_str}"
     }
