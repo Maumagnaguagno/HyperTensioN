@@ -168,6 +168,7 @@ module Pullup
           precond_pos.each {|pre| pre.map! {|i| substitutions[i] || i}}
           precond_not.each {|pre| pre.map! {|i| substitutions[i] || i}}
           subtasks.each {|t| t.map! {|i| substitutions[i] || i}}
+          param.each {|i| j = substitutions[i] and precond_pos << ['=', i, j]}
         end
         precond_pos.delete_if {|pre|
           if not predicates[pre[0]] and pre.none? {|i| i.start_with?('?')}
