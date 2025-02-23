@@ -105,7 +105,7 @@ In case of failure, ``nil`` is returned.
 - ``generate(precond_pos, precond_not, *free)`` yields all possible unifications to the free variables defined, therefore a block is needed to capture the unifications. Returns ``nil``.
 - ``print_data(data)`` can be used to print task and predicate lists, useful for debug.
 - ``problem(state, tasks, debug = false, ordered = true)`` simplifies the setup of a problem instance, returns the value of planning. Use problem as a template to see how to add HyperTensioN in a project.
-- ``task_permutations(state, tasks, goal_task = nil)`` tries permutations of ``tasks`` to achieve unordered decomposition, ``goal_task`` is the final task, used by ``problem``. Returns a plan or ``nil``.
+- ``task_permutations(tasks, goal_task = nil)`` tries permutations of ``tasks`` to achieve unordered decomposition, ``goal_task`` is the final task, used by ``problem``. Returns a plan or ``nil``.
 
 Domain operators can be defined without ``apply_operator`` and will have the return value considered.
 - ``false`` or ``nil`` means the operator has failed.

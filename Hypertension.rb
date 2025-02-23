@@ -224,7 +224,7 @@ if not $IPC
     print_data(tasks)
     puts 'Planning'.center(50,'-')
     t = Time.now.to_f
-    plan = ordered ? planning(tasks) : task_permutations(state, tasks, (tasks.pop if tasks[-1]&.[](0) == :invisible_goal))
+    plan = ordered ? planning(tasks) : task_permutations(tasks, (tasks.pop if tasks[-1]&.[](0) == :invisible_goal))
     puts "Time: #{Time.now.to_f - t}s", 'Plan'.center(50,'-')
     if plan
       if plan.empty? then puts 'Empty plan'
@@ -254,7 +254,7 @@ else
     root = "root #{(0..@index).to_a.join(' ')}"
     puts 'Planning'.center(50,'-')
     t = Time.now.to_f
-    plan = ordered ? planning(tasks) : task_permutations(state, tasks, (tasks.pop if tasks.dig(-1,1,0) == :invisible_goal))
+    plan = ordered ? planning(tasks) : task_permutations(tasks, (tasks.pop if tasks.dig(-1,1,0) == :invisible_goal))
     puts "Time: #{Time.now.to_f - t}s", 'Plan'.center(50,'-')
     if plan then puts '==>', plan.map {|d| d.join(' ')}, root, @decomposition, '<=='
     else abort(@nostack ? 'Planning failed, try with more stack' : 'Planning failed')
@@ -274,14 +274,13 @@ end
   # Task permutations
   #-----------------------------------------------
 
-  def task_permutations(state, tasks, goal_task = nil)
+  def task_permutations(tasks, goal_task = nil)
     # All permutations are considered
     tasks.permutation {|task_list|
       task_list = Marshal.load(Marshal.dump(task_list))
       task_list << goal_task if goal_task
       plan = planning(task_list)
       return plan if plan
-      @state = state
     }
     nil
   end
