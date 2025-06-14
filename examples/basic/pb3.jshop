@@ -1,0 +1,4 @@
+(defproblem pb3 basic
+  ()
+  (:unordered (!drop kiwi) (!pickup kiwi)) ; Same as pb2, but unordered
+)

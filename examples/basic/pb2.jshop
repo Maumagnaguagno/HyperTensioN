@@ -1,0 +1,4 @@
+(defproblem pb2 basic
+  ()
+  ((!drop kiwi) (!pickup kiwi)) ; These operators are impossible in this order
+)
