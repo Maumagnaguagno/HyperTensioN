@@ -33,7 +33,7 @@ module Hypest
   end
 
   def interpreted_execution_tests(domain, problem, script, output_expected)
-    assert_true(`ruby #{script} #{domain} #{problem} run`.include?(output_expected))
+    assert_true(`ruby #{script} #{domain} #{problem} run 2>&1`.include?(output_expected))
   end
 
   def native_execution_tests(domain, problem, compiler, output_expected)
