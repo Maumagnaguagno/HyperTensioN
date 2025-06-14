@@ -279,6 +279,7 @@ end
     tasks.permutation {|task_list|
       task_list = Marshal.load(Marshal.dump(task_list))
       task_list << goal_task if goal_task
+      task_list.each_with_index {|t,i| t[0] = i} if $IPC
       plan = planning(task_list)
       return plan if plan
     }
