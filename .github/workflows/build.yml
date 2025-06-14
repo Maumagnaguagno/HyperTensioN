@@ -19,6 +19,7 @@ jobs:
     - run: ruby tests/frenesi.rb
     - run: ruby tests/again.rb
     - run: ruby tests/dependent.rb
+    - run: ruby tests/disorder.rb
     - run: ruby tests/logic_high.rb
     - run: ruby tests/miner.rb
     - run: ruby tests/painter.rb
