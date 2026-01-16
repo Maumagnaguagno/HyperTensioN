@@ -28,15 +28,15 @@ end
 # Quantifiers
 #-----------------------------------------------
 
-def forall?(precond_pos, precond_not, *free)
+def forall?(free, precond_pos, precond_not)
   # Try all calls
-  generate(precond_pos, precond_not, *free) {return false unless yield}
+  generate(free, precond_pos, precond_not) {return false unless yield}
   true
 end
 
-def exists?(precond_pos, precond_not, *free)
+def exists?(free, precond_pos, precond_not)
   # Try until first call succeed
-  generate(precond_pos, precond_not, *free) {return true if yield}
+  generate(free, precond_pos, precond_not) {return true if yield}
   false
 end
 
@@ -76,8 +76,8 @@ if $0 == __FILE__
       @state = {:number => [['1'],['2'],['3']]}
       assert_true(evaluate([:xor, [:number, '1'], [:number, 'a']]))
       assert_false(evaluate([:xor, [:number, '1'], [:number, '2']]))
-      assert_true(evaluate([:forall, [[:number, x = '']], [], x]) {x.to_i != 0})
-      assert_true(evaluate([:exists, [[:number, x = '']], [], x]) {x.to_i != 0})
+      assert_true(evaluate([:forall, [x = ''], [[:number, x]], []]) {x.to_i != 0})
+      assert_true(evaluate([:exists, [x = ''], [[:number, x]], []]) {x.to_i != 0})
     end
 
     def test_call
@@ -99,26 +99,26 @@ if $0 == __FILE__
       # Variable x may assume any value from [1, 2, 3]
       @state = {:number => [['1'],['2'],['3']]}
       # For all numbers x, x != 0
-      assert_true(forall?([[:number, x = '']], [], x) {x.to_i != 0})
+      assert_true(forall?([x = ''], [[:number, x]], []) {x.to_i != 0})
       # For all numbers x, x != 1
-      assert_false(forall?([[:number, x]], [], x.clear) {x.to_i != 1})
+      assert_false(forall?([x.clear], [[:number, x]], []) {x.to_i != 1})
       # For all numbers x, x == 4
-      assert_false(forall?([[:number, x]], [], x.clear) {x.to_i == 4})
+      assert_false(forall?([x.clear], [[:number, x]], []) {x.to_i == 4})
       # For all numbers x, x is odd or even
-      assert_true(forall?([[:number, x]], [], x.clear) {x.to_i.odd? or x.to_i.even?})
+      assert_true(forall?([x.clear], [[:number, x]], []) {x.to_i.odd? or x.to_i.even?})
     end
 
     def test_quantification_exists?
       # Variable x may assume any value from [1, 2, 3]
       @state = {:number => [['1'],['2'],['3']]}
       # There exists a number x, x != 0
-      assert_true(exists?([[:number, x = '']], [], x) {x.to_i != 0})
+      assert_true(exists?([x = ''], [[:number, x]], []) {x.to_i != 0})
       # There exists a number x, x != 1
-      assert_true(exists?([[:number, x]], [], x.clear) {x.to_i != 1})
+      assert_true(exists?([x.clear], [[:number, x]], []) {x.to_i != 1})
       # There exists a number x, x == 4
-      assert_false(exists?([[:number, x]], [], x.clear) {x.to_i == 4})
+      assert_false(exists?([x.clear], [[:number, x]], []) {x.to_i == 4})
       # There exists a number x, x is odd and even
-      assert_false(exists?([[:number, x]], [], x.clear) {x.to_i.odd? and x.to_i.even?})
+      assert_false(exists?([x.clear], [[:number, x]], []) {x.to_i.odd? and x.to_i.even?})
     end
   end
 end

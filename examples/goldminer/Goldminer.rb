@@ -151,10 +151,12 @@ module Goldminer
   end
 
   def travel__recursion(agent, from, to)
-    # Free variables
-    place = ''
     # Generate unifications
     generate(
+      # Free variables
+      [
+        place = ''
+      ],
       # Positive preconditions
       [
         [AT, agent, from],
@@ -165,7 +167,7 @@ module Goldminer
         [AT, agent, to],
         [BLOCKED, place],
         [BLOCKED, to]
-      ], place
+      ]
     ) {
       unless @visited_at[agent].include?(place)
         yield [
@@ -215,9 +217,12 @@ module Goldminer
     until frontier.empty?
       current = frontier.shift
       plan = frontier.shift
-      place = ''
       # Generate unifications
       generate(
+        # Free variables
+        [
+          place = ''
+        ],
         # Positive preconditions
         [
           [ADJACENT, current, place]
@@ -225,7 +230,7 @@ module Goldminer
         # Negative preconditions
         [
           [BLOCKED, place]
-        ], place
+        ]
       ) {
         next if visited.include?(place)
         if place == to
@@ -245,15 +250,17 @@ module Goldminer
   end
 
   def get_gold__recursion
-    # Free variables
-    agent = ''
-    agent_pos = ''
-    other = ''
-    gold = ''
-    gold_pos = ''
-    deposit_pos = ''
     # Generate unifications
     generate(
+      # Free variables
+      [
+        agent = '',
+        agent_pos = '',
+        other = '',
+        gold = '',
+        gold_pos = '',
+        deposit_pos = ''
+      ],
       # Positive preconditions
       [
         [DUTY, agent],
@@ -265,7 +272,7 @@ module Goldminer
       # Negative preconditions
       [
         [DIBS, gold]
-      ], agent, agent_pos, other, gold, gold_pos, deposit_pos
+      ]
     ) {
       yield [
         [:see, gold],

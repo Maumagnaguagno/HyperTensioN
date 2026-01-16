@@ -4,7 +4,7 @@ Note that custom domains cannot be optimized/verified by static analysis extensi
 Two examples are available: [N-Queens](../examples/n_queens/N_Queens.rb) and [Sudoku](../examples/sudoku/Sudoku.rb).
 
 A module represents the domain with methods and operators, according to the [API](../README.md#api "Jump to API"), and reused for different problems.
-Problems may be in a separate file or generated during run-time.
+Problems may be in a separate file or generated at run-time.
 Since HyperTensioN uses **metaprogramming**, there is a need to specify which Ruby methods may be used by the [planner](../README.md#algorithm "Jump to Algorithm").
 This specification declares operator visibility and how each task can be decomposed in the domain structure.
 
@@ -186,7 +186,7 @@ end
 ### Lifted preconditions
 It is impossible to propagate variables all the time, some variables must be bound during run-time.
 Free variables are created as empty strings, being used as pointers to their future values.
-A ``generate(precond_pos, precond_not, *free)`` method will do the hard work, using positive preconditions to find possible values for the free variables, only yielding values that satisfy the preconditions requested.
+A ``generate(free, precond_pos, precond_not)`` method will do the hard work, using positive preconditions to find possible values for the free variables, only yielding values that satisfy the preconditions requested.
 Therefore, a positive precondition set that does not mention all free variables will generate zero unifications.
 In classical planning it is possible to try the entire list of objects as values, but in HTN there may be an infinite number of values.
 It is possible to solve this problem adding each object possible to be used to the initial state, ``(object kiwi) (object banjo)``, in the initial state and add them in the preconditions, ``(object var)``.
@@ -199,11 +199,13 @@ Visit and unvisit can also be defined as predicates, but then memory would only 
 
 ```Ruby
 def swap_at__recursion_enter(object, goal)
-  # Free variables
-  current = ''
-  intermediate = ''
   # Generate unifications
   generate(
+    # Free variables
+    [
+      current = '',
+      intermediate = ''
+    ],
     # Positive preconditions
     [
       [AT, object, current],
@@ -212,7 +214,7 @@ def swap_at__recursion_enter(object, goal)
     # Negative preconditions
     [
       [AT, object, goal]
-    ], current, intermediate
+    ]
   ) {
     unless @visited_at[object].include?(intermediate)
       yield [
@@ -249,6 +251,11 @@ The refactored example looks like this:
 def swap_at__recursion_enter(object, goal, current = free_variable, intermediate = free_variable)
   # Generate unifications
   generate(
+    # Free variables
+    [
+      current,
+      intermediate
+    ],
     # Positive preconditions
     [
       [AT, object, current],
@@ -257,7 +264,7 @@ def swap_at__recursion_enter(object, goal, current = free_variable, intermediate
     # Negative preconditions
     [
       [AT, object, goal]
-    ], current, intermediate
+    ]
   ) {
     ...
   }

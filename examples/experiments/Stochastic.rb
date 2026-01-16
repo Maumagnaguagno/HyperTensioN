@@ -7,7 +7,7 @@ module Stochastic
     super
   end
 
-  def generate(precond_pos, precond_not, *free)
+  def generate(free, precond_pos, precond_not)
     unifications = []
     super {unifications << free.map(&:dup)}
     unifications.shuffle!.each {|values|

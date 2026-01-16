@@ -139,7 +139,7 @@ end
   # Generate
   #-----------------------------------------------
 
-  def generate(precond_pos, precond_not, *free)
+  def generate(free, precond_pos, precond_not)
     # Free variable to set of values
     objects = free.zip
     # Unification by positive preconditions

@@ -2,10 +2,10 @@
 # Apply operator with side effects
 #-----------------------------------------------
 
-def apply_operator_with_side_effects(precond_pos, precond_not, effect_add, effect_del, side_precond_pos, side_precond_not, *free, &block)
+def apply_operator_with_side_effects(free, precond_pos, precond_not, effect_add, effect_del, side_precond_pos, side_precond_not, &block)
   if applicable?(precond_pos, precond_not)
     # Side-effects
-    generate(side_precond_pos, side_precond_not, *free, &block)
+    generate(free, side_precond_pos, side_precond_not, &block)
     # Apply effect only once, avoid intermediate state creation
     apply(effect_add, effect_del)
   end
@@ -35,15 +35,16 @@ if $0 == __FILE__
         effect_add = [[AT, briefcase, to]]
         effect_del = [[AT, briefcase, from]]
         # Side-effects
-        object = ''
         generate(
+          # Free variables
+          [object = ''],
           # Positive preconditions
           [
             [AT, object, from],
             [IN, object, briefcase]
           ],
           # Negative preconditions
-          [], object
+          []
         ) {
           obj_dup = object.dup
           effect_add << [AT, obj_dup, to]
@@ -59,6 +60,8 @@ if $0 == __FILE__
       effect_add = [[AT, briefcase, to]]
       effect_del = [[AT, briefcase, from]]
       apply_operator_with_side_effects(
+        # Free variables
+        [object],
         # Primary positive preconditions
         [[AT, briefcase, from]],
         # Primary negative preconditions
@@ -72,9 +75,7 @@ if $0 == __FILE__
           [IN, object, briefcase]
         ],
         # Side-effects negative preconditions
-        [],
-        # Free variables
-        object
+        []
       ) {
         obj_dup = object.dup
         effect_add << [AT, obj_dup, to]

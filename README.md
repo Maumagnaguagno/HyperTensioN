@@ -102,7 +102,7 @@ In case of failure, ``nil`` is returned.
 - ``applicable?(precond_pos, precond_not)`` tests if the current state have all positive preconditions and not a single negative precondition. Returns ``true`` if applicable, ``false`` otherwise.
 - ``apply(effect_add, effect_del)`` modifies the current state, add or remove predicates present in the lists. Returns ``true``.
 - ``apply_operator(precond_pos, precond_not, effect_add, effect_del)`` applies effects if ``applicable?``. Returns ``true`` if applied, ``nil`` otherwise.
-- ``generate(precond_pos, precond_not, *free)`` yields all possible unifications to the free variables defined, therefore a block is needed to capture the unifications. Returns ``nil``.
+- ``generate(free, precond_pos, precond_not)`` yields all possible unifications to the free variables defined, therefore a block is needed to capture the unifications. Returns ``nil``.
 - ``print_data(data)`` can be used to print task and predicate lists, useful for debug.
 - ``problem(state, tasks, debug = false, ordered = true)`` simplifies the setup of a problem instance, returns the value of planning. Use problem as a template to see how to add HyperTensioN in a project.
 - ``task_permutations(tasks, goal_task = nil)`` tries permutations of ``tasks`` to achieve unordered decomposition, ``goal_task`` is the final task, used by ``problem``. Returns a plan or ``nil``.

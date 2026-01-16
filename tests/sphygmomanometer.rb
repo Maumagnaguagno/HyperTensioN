@@ -69,13 +69,14 @@ class Sphygmomanometer < Test::Unit::TestCase
   def test_generate
     expected = ['1','2','3'].product(['4','5'], ['c'], ['d'])
     Hypertension.state = simple_state
-    # Free variables
-    x = ''
-    y = ''
-    w = ''
-    z = ''
     # Generate x y w z based on state and preconditions
     assert_nil(Hypertension.generate(
+      [
+        x = '',
+        y = '',
+        w = '',
+        z = ''
+      ],
       [
         [A, x],
         [B, y],
@@ -84,7 +85,7 @@ class Sphygmomanometer < Test::Unit::TestCase
       ],
       [
         [A, y]
-      ], x, y, w, z
+      ]
     ) {
       assert_equal(expected.shift, [x,y,w,z])
     })
@@ -102,6 +103,13 @@ class Sphygmomanometer < Test::Unit::TestCase
     # Generate x y w z based on state and preconditions
     exist_y = nil # One unification of y is enough
     assert_nil(Hypertension.generate(
+      # Sort exist variables
+      [
+        y = '',
+        x = '',
+        w = '',
+        z = ''
+      ],
       [
         [A, x],
         [B, y],
@@ -110,7 +118,7 @@ class Sphygmomanometer < Test::Unit::TestCase
       ],
       [
         [A, y]
-      ], y, x, w, z # Sort exist variables
+      ]
     ) {
       break if (exist_y ||= y.dup) != y
       assert_equal(expected.shift, [x,y,w,z])

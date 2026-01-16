@@ -130,14 +130,16 @@ module Travel
   end
 
   def travel_by_taxi(agent, destination)
-    # Free variables
-    source = ''
-    amount_of_money = ''
-    taxi_position = ''
-    distance = ''
-    stamina = ''
     # Generate unifications
     generate(
+      # Free variables
+      [
+        source = '',
+        amount_of_money = '',
+        taxi_position = '',
+        distance = '',
+        stamina = ''
+      ],
       # Positive preconditions
       [
         [AT, agent, source],
@@ -149,7 +151,7 @@ module Travel
       # Negative preconditions
       [
         [AT, agent, destination]
-      ], source, amount_of_money, taxi_position, distance, stamina
+      ]
     ) {
       distance = distance.to_i
       if distance > stamina.to_i
@@ -167,10 +169,12 @@ module Travel
   end
 
   def travel_by_foot(agent, destination)
-    # Free variables
-    source = ''
     # Generate unifications
     generate(
+      # Free variables
+      [
+        source = ''
+      ],
       # Positive preconditions
       [
         [AT, agent, source]
@@ -178,7 +182,7 @@ module Travel
       # Negative preconditions
       [
         [AT, agent, destination]
-      ], source
+      ]
     ) {
       yield [
         [:walk, agent, source, destination]

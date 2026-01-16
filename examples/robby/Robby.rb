@@ -159,11 +159,13 @@ module Robby
   end
 
   def swap_at__recursion_enter(object, goal)
-    # Free variables
-    current = ''
-    intermediate = ''
     # Generate unifications
     generate(
+      # Free variables
+      [
+        current = '',
+        intermediate = ''
+      ],
       # Positive preconditions
       [
         [AT, object, current],
@@ -172,7 +174,7 @@ module Robby
       # Negative preconditions
       [
         [AT, object, goal]
-      ], current, intermediate
+      ]
     ) {
       unless @visited_at[object].include?(intermediate)
         yield [
@@ -185,11 +187,13 @@ module Robby
   end
 
   def swap_at__recursion_exit(object, goal)
-    # Free variables
-    current = ''
-    intermediate = ''
     # Generate unifications
     generate(
+      # Free variables
+      [
+        current = '',
+        intermediate = ''
+      ],
       # Positive preconditions
       [
         [AT, object, current],
@@ -198,7 +202,7 @@ module Robby
       # Negative preconditions
       [
         [AT, object, goal]
-      ], current, intermediate
+      ]
     ) {
       unless @visited_at[object].include?(intermediate)
         yield [
@@ -211,11 +215,13 @@ module Robby
   end
 
   def swap_at__recursion_move(object, goal)
-    # Free variables
-    current = ''
-    intermediate = ''
     # Generate unifications
     generate(
+      # Free variables
+      [
+        current = '',
+        intermediate = ''
+      ],
       # Positive preconditions
       [
         [AT, object, current],
@@ -224,7 +230,7 @@ module Robby
       # Negative preconditions
       [
         [AT, object, goal]
-      ], current, intermediate
+      ]
     ) {
       unless @visited_at[object].include?(intermediate)
         yield [
