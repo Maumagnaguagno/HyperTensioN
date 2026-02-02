@@ -20,7 +20,7 @@ module Typredicate
     transformations = {}
     new_predicates.each {|pre,types|
       types.uniq!
-      next if types.size == 1 or not (supertypes & types.flatten(1).uniq).empty?
+      next if types.size == 1 or supertypes.intersect?(types.flatten(1).uniq)
       types.each {|t| predicates[transformations[t] = t.unshift(pre).join('_')] = predicates[pre] if t.all? {|p| state.include?(p)}}
     }
     return if transformations.empty?

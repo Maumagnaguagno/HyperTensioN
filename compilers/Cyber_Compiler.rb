@@ -126,7 +126,7 @@ module Cyber_Compiler
         f = dec[1].dup
         precond_pos = dec[2].sort_by {|pre| (pre & param).size * -100 - (pre & f).size}
         precond_pos.reject! {|pre,*terms|
-          if (terms & f).empty?
+          unless terms.intersect?(f)
             if pre == '=' then equality << "#{term(terms[0])} != #{term(terms[1])}"
             elsif not predicates[pre] || state.include?(pre) then define_methods << "\n  return false;"
             else define_methods_comparison << "\n  if(!#{applicable(pre, terms, predicates, arity)}) return false;"
@@ -136,7 +136,7 @@ module Cyber_Compiler
         precond_not = dec[3].reject {|pre,*terms|
           if terms.empty? and pre.start_with?('visited_') then predicates[pre] = nil
           elsif not predicates[pre] || state.include?(pre) then true
-          elsif (terms & f).empty?
+          elsif not terms.intersect?(f)
             if pre == '=' then equality << "#{term(terms[0])} == #{term(terms[1])}"
             else define_methods_comparison << "\n  if(#{applicable(pre, terms, predicates, arity)}) return false;"
             end
@@ -148,7 +148,7 @@ module Cyber_Compiler
         unless dec[4].empty?
           dec[4].each {|s|
             if s.size > 1 and s[0].start_with?('invisible_visit_')
-              if ((visit_param = s.drop(1)) & f).empty?
+              unless (visit_param = s.drop(1)).intersect?(f)
                 define_methods << "\n  if(applicable_const(visit#{visit_param.size}, #{terms_to_hyper(visit_param)})) return false;"
                 visit_param = nil
               end
@@ -210,7 +210,7 @@ module Cyber_Compiler
             else define_methods_comparison << "#{indentation}if(!#{applicable(pre, terms, predicates, arity)}) continue;"
             end
             precond_pos.reject! {|pre,*terms|
-              if (terms & f).empty?
+              unless terms.intersect?(f)
                 if pre == '=' then equality << "#{term(terms[0])} != #{term(terms[1])}"
                 elsif not predicates[pre] || state.include?(pre) then define_methods << "#{indentation}return false;"
                 else define_methods_comparison << "#{indentation}if(!#{applicable(pre, terms, predicates, arity)}) continue;"
@@ -218,7 +218,7 @@ module Cyber_Compiler
               end
             }
             precond_not.reject! {|pre,*terms|
-              if (terms & f).empty?
+              unless terms.intersect?(f)
                 if pre == '=' then equality << "#{term(terms[0])} == #{term(terms[1])}"
                 elsif predicates[pre] or state.include?(pre) then define_methods_comparison << "#{indentation}if(#{applicable(pre, terms, predicates, arity)}) continue;"
                 end
@@ -226,7 +226,7 @@ module Cyber_Compiler
             }
             define_methods << "#{indentation}if(#{equality.join(' || ')}) continue;" unless equality.empty?
             define_methods << define_methods_comparison
-            if visit_param and (visit_param & f).empty?
+            if visit_param and not visit_param.intersect?(f)
               define_methods << "#{indentation}if(applicable_const(visit#{visit_param.size}, #{terms_to_hyper(visit_param)})) continue;"
               visit_param = nil
             end

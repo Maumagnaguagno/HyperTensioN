@@ -117,7 +117,7 @@ module Hyper_Compiler
         f = dec[1].dup
         precond_pos = dec[2].sort_by {|pre| (pre & param).size * -100 - (pre & f).size}
         precond_pos.reject! {|pre,*terms|
-          if (terms & f).empty?
+          unless terms.intersect?(f)
             if pre == '=' then equality << "#{term(terms[0])} != #{term(terms[1])}"
             elsif pre.start_with?('?')
               define_methods_comparison << "\n    return unless predicate(#{pre.tr('?','_')}).include?(#{terms_to_hyper(terms)})"
@@ -130,7 +130,7 @@ module Hyper_Compiler
         precond_not = dec[3].reject {|pre,*terms|
           if terms.empty? and pre.start_with?('visited_') then predicates[pre] = nil
           elsif not pre.start_with?('?') || predicates[pre] || state.include?(pre) then true
-          elsif (terms & f).empty?
+          elsif not terms.intersect?(f)
             if pre == '=' then equality << "#{term(terms[0])} == #{term(terms[1])}"
             elsif pre.start_with?('?')
               define_methods_comparison << "\n    return if predicate(#{pre.tr('?','_')}).include?(#{terms_to_hyper(terms)})"
@@ -144,7 +144,7 @@ module Hyper_Compiler
         visit_param = nil
         dec[4].each {|s|
           if s.size > 1 and s[0].start_with?('invisible_visit_')
-            if ((visit_param = s.drop(1)) & f).empty?
+            unless (visit_param = s.drop(1)).intersect?(f)
               define_methods << "\n    return if @visit.include?(#{terms_to_hyper(visit_param)})"
               visit_param = nil
             end
@@ -195,7 +195,7 @@ module Hyper_Compiler
             else applicable(define_methods_comparison << "#{indentation}next unless ", pre, terms, predicates)
             end
             precond_pos.reject! {|pre,*terms|
-              if (terms & f).empty?
+              unless terms.intersect?(f)
                 if pre == '=' then equality << "#{term(terms[0])} != #{term(terms[1])}"
                 elsif pre.start_with?('?')
                   define_methods_comparison << "#{indentation}next unless predicate(#{pre.tr('?','_')}).include?(#{terms_to_hyper(terms)})"
@@ -206,7 +206,7 @@ module Hyper_Compiler
               end
             }
             precond_not.reject! {|pre,*terms|
-              if (terms & f).empty?
+              unless terms.intersect?(f)
                 if pre == '=' then equality << "#{term(terms[0])} == #{term(terms[1])}"
                 elsif pre.start_with?('?')
                   define_methods_comparison << "#{indentation}next if predicate(#{pre.tr('?','_')}).include?(#{terms_to_hyper(terms)})"
@@ -217,7 +217,7 @@ module Hyper_Compiler
             }
             define_methods << "#{indentation}next if #{equality.join(' or ')}" unless equality.empty?
             define_methods << define_methods_comparison
-            if visit_param and (visit_param & f).empty?
+            if visit_param and not visit_param.intersect?(f)
               define_methods << "#{indentation}next if @visit.include?(#{terms_to_hyper(visit_param)})"
               visit_param = nil
             end

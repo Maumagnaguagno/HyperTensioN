@@ -19,7 +19,7 @@ module Pullup
         if precond_pos.each {|pre,*terms|
           unless predicates[pre]
             if not s = state[pre] or (not terms.all? {|i| i.start_with?('?')} and (s = s.select {|i| not i.zip(terms) {|a,b| break true unless a == b or b.start_with?('?')}}).empty?) then break
-            elsif s.size == 1 and not (terms & free).empty? then terms.zip(s[0]) {|a,b| substitutions[a] = b if a != b}
+            elsif s.size == 1 and terms.intersect?(free) then terms.zip(s[0]) {|a,b| substitutions[a] = b if a != b}
             end
           end
         }
@@ -80,14 +80,14 @@ module Pullup
                   if effects[pre[0]] then keep_pos << pre
                   else
                     pre = pre.map {|t| (j = met[1].index(t)) ? s[j + 1] : t}
-                    pos << pre if (pre & m[1]).empty?
+                    pos << pre unless pre.intersect?(m[1])
                   end
                 }
                 m[3].each {|pre|
                   if effects[pre[0]] then keep_neg << pre
                   else
                     pre = pre.map {|t| (j = met[1].index(t)) ? s[j + 1] : t}
-                    neg << pre if (pre & m[1]).empty?
+                    neg << pre unless pre.intersect?(m[1])
                   end
                 }
                 if all_pos
@@ -158,7 +158,7 @@ module Pullup
         # Remove unnecessary free variables
         substitutions = {}
         precond_pos.each {|pre,*terms|
-          if not predicates[pre] and not (terms & free).empty? and s = state[pre]
+          if not predicates[pre] and terms.intersect?(free) and s = state[pre]
             sub = nil
             terms.zip(sub) {|a,b| substitutions[a] = b if a != b} if s.each {|i| sub ? break : sub = i unless i.zip(terms) {|a,b| break true unless a == b or b.start_with?('?')}}
           end
