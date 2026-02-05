@@ -51,7 +51,7 @@ if $0 == __FILE__
     include Hypertension
 
     def test_evaluate
-      @state = {:p => nil}
+      @state = {}
       variables = [[:a],[:b],[:c],[:d]]
       5.times {|i|
         variables.combination(i) {|p|
