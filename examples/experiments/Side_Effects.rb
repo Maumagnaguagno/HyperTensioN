@@ -56,19 +56,16 @@ if $0 == __FILE__
     end
 
     def move_briefcase_with_side_effects(briefcase, from, to)
-      object = ''
-      effect_add = [[AT, briefcase, to]]
-      effect_del = [[AT, briefcase, from]]
       apply_operator_with_side_effects(
         # Free variables
-        [object],
+        [object = ''],
         # Primary positive preconditions
         [[AT, briefcase, from]],
         # Primary negative preconditions
         [[AT, briefcase, to]],
         # Primary effects
-        effect_add,
-        effect_del,
+        effect_add = [[AT, briefcase, to]],
+        effect_del = [[AT, briefcase, from]],
         # Side-effects positive preconditions
         [
           [AT, object, from],

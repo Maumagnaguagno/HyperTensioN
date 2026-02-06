@@ -95,11 +95,6 @@ class Sphygmomanometer < Test::Unit::TestCase
   def test_generate_exist
     expected = ['1','2','3'].product(['4'], ['c'], ['d'])
     Hypertension.state = simple_state
-    # Free variables
-    x = ''
-    y = ''
-    w = ''
-    z = ''
     # Generate x y w z based on state and preconditions
     exist_y = nil # One unification of y is enough
     assert_nil(Hypertension.generate(
