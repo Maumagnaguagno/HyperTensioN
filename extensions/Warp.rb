@@ -21,16 +21,16 @@ module Warp
           # Get preconditions related to no free variables and to the ones found before
           precond_p = []
           precond_n = []
-          precond_pos.reject! {|pre| precond_p << pre if pre.all? {|t| not t.start_with?('?') or param.include?(t)} or pre.any? {|t| f.include?(t)}}
-          precond_not.reject! {|pre| precond_n << pre if pre.all? {|t| not t.start_with?('?') or param.include?(t)} or pre.any? {|t| f.include?(t)}}
+          precond_pos.reject! {|pre| precond_p << pre if pre.all? {|t| not t.start_with?('?') or param.include?(t)} or pre.intersect?(f)}
+          precond_not.reject! {|pre| precond_n << pre if pre.all? {|t| not t.start_with?('?') or param.include?(t)} or pre.intersect?(f)}
           # Find related variables
           precond_p.each {|pre| pre.each {|t| f << t if t.start_with?('?') and not param.include?(t)}}
           precond_n.each {|pre| pre.each {|t| f << t if t.start_with?('?') and not param.include?(t)}}
           f.uniq!
           free.replace(free - f)
           # Find preconditions with related variables
-          precond_pos.reject! {|pre| precond_p << pre if pre.any? {|t| f.include?(t)}}
-          precond_not.reject! {|pre| precond_n << pre if pre.any? {|t| f.include?(t)}}
+          precond_pos.reject! {|pre| precond_p << pre if pre.intersect?(f)}
+          precond_not.reject! {|pre| precond_n << pre if pre.intersect?(f)}
           # It is just a jump to the left, and a step to the right
           if i == 0
             top_variables = f
