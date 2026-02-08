@@ -18,7 +18,7 @@ module Protection
   end
 
   def protected?(effect_add, effect_del)
-    effect_add.any? {|pre| @state[@protection_not].include?(pre)} or effect_del.any? {|pre| @state[@protection_pos].include?(pre)}
+    @state[@protection_not].intersect?(effect_add) or @state[@protection_pos].intersect?(effect_del)
   end
 
   def apply(effect_add, effect_del)
