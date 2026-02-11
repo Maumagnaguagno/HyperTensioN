@@ -5,7 +5,7 @@ module Pullup
   # Apply
   #-----------------------------------------------
 
-  def apply(operators, methods, predicates, state, tasks, goal_pos, goal_not, debug = false)
+  def apply(operators, methods, predicates, state, tasks, goal_pos, goal_not)
     # Remove impossible operators and methods and unnecessary free variables
     impossible = []
     counter = Hash.new(0)

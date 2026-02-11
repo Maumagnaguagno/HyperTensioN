@@ -5,7 +5,7 @@ module Typredicate
   # Apply
   #-----------------------------------------------
 
-  def apply(operators, methods, predicates, state, tasks, goal_pos, goal_not, debug = false)
+  def apply(operators, methods, predicates, state, tasks, goal_pos, goal_not)
     (supertypes = (PDDL_Parser.types || HDDL_Parser.types || return).map(&:last)).uniq!
     new_predicates = {}
     operator_types = {}

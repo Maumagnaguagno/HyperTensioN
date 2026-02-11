@@ -7,7 +7,7 @@ module Warp
   # Apply
   #-----------------------------------------------
 
-  def apply(operators, methods, predicates, state, tasks, goal_pos, goal_not, debug = false)
+  def apply(operators, methods, predicates, state, tasks, goal_pos, goal_not)
     new_methods = []
     methods.each {|name,param,*decompositions|
       old_param = param

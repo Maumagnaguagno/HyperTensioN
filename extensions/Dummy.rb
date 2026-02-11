@@ -7,8 +7,7 @@ module Dummy
   # Apply
   #-----------------------------------------------
 
-  def apply(operators, methods, predicates, state, tasks, goal_pos, goal_not, debug = false, repetitions = 1)
-    puts 'Dummy'.center(50,'-'), "Repetitions: #{repetitions}" if debug
+  def apply(operators, methods, predicates, state, tasks, goal_pos, goal_not, repetitions = 1)
     return if goal_pos.empty? and goal_not.empty?
     # Tasks are unordered
     tasks[0] = false

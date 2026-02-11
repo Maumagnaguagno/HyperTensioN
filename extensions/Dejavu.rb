@@ -5,7 +5,7 @@ module Dejavu
   # Apply
   #-----------------------------------------------
 
-  def apply(operators, methods, predicates, state, tasks, goal_pos, goal_not, debug = false)
+  def apply(operators, methods, predicates, state, tasks, goal_pos, goal_not)
     return if tasks.empty?
     methods_h = {}
     methods.each {|m| methods_h[m[0]] = m}
