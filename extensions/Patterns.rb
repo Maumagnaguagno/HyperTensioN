@@ -9,25 +9,25 @@ module Patterns
   # Apply
   #-----------------------------------------------
 
-  def apply(operators, methods, predicates, state, tasks, goal_pos, goal_not, debug = false)
+  def apply(operators, methods, predicates, state, tasks, goal_pos, goal_not, verbose = false)
     # Find patterns
-    puts 'Patterns'.center(50,'-'), 'Identify patterns' if debug
-    match_patterns(swaps = {}, dependencies = {}, operators, predicates, debug)
+    puts 'Patterns'.center(50,'-'), 'Identify patterns' if verbose
+    match_patterns(swaps = {}, dependencies = {}, operators, predicates, verbose)
     # Compose methods
-    puts 'Compose methods' if debug
-    compose_swap_methods(swaps, operators, methods, predicates, debug)
-    compose_dependency_methods(swaps, dependencies, operators, methods, predicates, debug)
+    puts 'Compose methods' if verbose
+    compose_swap_methods(swaps, operators, methods, predicates, verbose)
+    compose_dependency_methods(swaps, dependencies, operators, methods, predicates, verbose)
     # Build HTN
-    goal_methods = find_goal_methods(operators, methods, predicates, goal_pos, goal_not, debug)
-    inject_method_dependencies(swaps, methods, predicates, debug)
-    add_tasks(goal_methods, operators, methods, predicates, tasks, goal_pos, goal_not, debug)
+    goal_methods = find_goal_methods(operators, methods, predicates, goal_pos, goal_not, verbose)
+    inject_method_dependencies(swaps, methods, predicates, verbose)
+    add_tasks(goal_methods, operators, methods, predicates, tasks, goal_pos, goal_not, verbose)
   end
 
   #-----------------------------------------------
   # Match patterns
   #-----------------------------------------------
 
-  def match_patterns(swaps, dependencies, operators, predicates, debug)
+  def match_patterns(swaps, dependencies, operators, predicates, verbose)
     # TODO support negative patterns
     operators.each {|op|
       precond_pos, constraints = op[2].partition {|pre,| predicates[pre]}
@@ -62,7 +62,7 @@ module Patterns
         (dependencies[op] ||= []) << [op2, pos, neg] unless pos.empty? and neg.empty?
       }
     }
-    return unless debug
+    return unless verbose
     sep = ' '
     hyphen = '-'
     underscore = '_'
@@ -116,8 +116,8 @@ module Patterns
   # Find goal methods
   #-----------------------------------------------
 
-  def find_goal_methods(operators, methods, predicates, goal_pos, goal_not, debug)
-    puts 'Goals' if debug
+  def find_goal_methods(operators, methods, predicates, goal_pos, goal_not, verbose)
+    puts 'Goals' if verbose
     # Avoid methods for simple goals
     goal_pos_complex = goal_pos.reject {|goal,|
       operators.any? {|op|
@@ -153,7 +153,7 @@ module Patterns
         val = mets[0].end_with?(for_goal) ? -1 : 0
         val - mets.drop(2).count {|dec| dec[4][0] and op = operators.assoc(dec[4][-1][0]) and op[type ? 4 : 5].assoc(goal[0])}
       }
-      if debug
+      if verbose
         puts "  #{'not ' unless type}(#{goal.join(' ')})"
         v.each {|met,pred| puts "    #{met[0]}(#{met[1].join(' ')}) achieves (#{pred.join(' ')})"}
       end
@@ -164,9 +164,9 @@ module Patterns
   # Inject method dependencies
   #-----------------------------------------------
 
-  def inject_method_dependencies(swaps, methods, predicates, debug)
+  def inject_method_dependencies(swaps, methods, predicates, verbose)
     # Inject dependencies
-    puts 'Inject dependencies' if debug
+    puts 'Inject dependencies' if verbose
     methods.each {|met|
       if met[0] =~ /^dependency_([\w-]+)_before_([\w-]+)_for_([\w-]+)$/
         dependency = $1
@@ -181,7 +181,7 @@ module Patterns
           end
         }
         if sub
-          puts "  #{dependency} to #{sub[0]} in #{met[0]}" if debug
+          puts "  #{dependency} to #{sub[0]} in #{met[0]}" if verbose
           met.drop(3).each {|dec| dec[4][0] = [sub[0], *sub[1]] if dec[4][0][0] == dependency}
           sub = nil
         end
@@ -193,7 +193,7 @@ module Patterns
           end
         }
         if sub
-          puts "  #{dependent} to #{sub[0]} in #{met[0]}" if debug
+          puts "  #{dependent} to #{sub[0]} in #{met[0]}" if verbose
           dependent_split = dependent.split('_or_')
           met.drop(3).each {|dec|
             dec[4].map! {|subtask| dependent_split.include?(subtask[0]) ? [sub[0], *sub[1]] : subtask}
@@ -207,25 +207,25 @@ module Patterns
   # Add tasks
   #-----------------------------------------------
 
-  def add_tasks(goal_methods, operators, methods, predicates, tasks, goal_pos, goal_not, debug)
+  def add_tasks(goal_methods, operators, methods, predicates, tasks, goal_pos, goal_not, verbose)
     # Select task
-    puts 'Goal to Task' if debug
+    puts 'Goal to Task' if verbose
     tasks_goals = []
     goal_methods.each {|(type,goal),v|
-      puts "  #{'not ' unless type}(#{goal.join(' ')})" if debug
+      puts "  #{'not ' unless type}(#{goal.join(' ')})" if verbose
       # Ground
       if v.none? {|met,pred|
         # TODO check free variable names in pred
         ground = met[1].map {|var| (i = pred.index(var)) ? goal[i] : var}
         if ground.none? {|var| var.start_with?('?')}
-          puts "    Ground task #{met[0]}(#{ground.join(' ')})" if debug
+          puts "    Ground task #{met[0]}(#{ground.join(' ')})" if verbose
           tasks_goals.unshift([ground.unshift(met[0]), type, goal])
         end
       }
         # Lifted
         met, pred = v[0]
         ground = met[1].map {|var| (i = pred.index(var)) ? goal[i] : var}
-        puts "    Lifted task #{met[0]}(#{ground.join(' ')})" if debug
+        puts "    Lifted task #{met[0]}(#{ground.join(' ')})" if verbose
         tasks_goals.unshift([compose_unification_method(operators, methods, predicates, met, ground), type, goal])
       end
     }
@@ -264,7 +264,7 @@ module Patterns
   # Compose swap methods
   #-----------------------------------------------
 
-  def compose_swap_methods(swaps, operators, methods, predicates, debug)
+  def compose_swap_methods(swaps, operators, methods, predicates, verbose)
     # Method arguments
     current = '?current'
     intermediate = '?intermediate'
@@ -307,7 +307,7 @@ module Patterns
         effects.each {|eff|
           # Swap method
           unless swap_method = methods.assoc(method_name = "swap_#{predicate_name}_until_#{eff[0]}")
-            puts "  swap method composed: #{method_name}" if debug
+            puts "  swap method composed: #{method_name}" if verbose
             methods << swap_method = [method_name, predicate_terms2]
             if (predicate_terms2 - eff).empty?
               swap_method << ['base', [], [eff], [], []]
@@ -344,7 +344,7 @@ module Patterns
   # Compose dependency methods
   #-----------------------------------------------
 
-  def compose_dependency_methods(swaps, dependencies, operators, methods, predicates, debug)
+  def compose_dependency_methods(swaps, dependencies, operators, methods, predicates, verbose)
     visited = []
     disjunctions = Hash.new {|h,k| h[k] = []}
     dependencies.each_key {|op| disjunctions[[op[4], op[5]]] << op}.each {|op,op_dependencies|
@@ -426,7 +426,7 @@ module Patterns
         }
         # Disjunctions share effects
         op[4].each {|effect|
-          puts "  dependency method composed: #{name}_for_#{effect[0]}" if debug
+          puts "  dependency method composed: #{name}_for_#{effect[0]}" if verbose
           methods << ["#{name}_for_#{effect[0]}", first_terms | second_terms,
             # Label and free variables
             ['goal-satisfied', [],

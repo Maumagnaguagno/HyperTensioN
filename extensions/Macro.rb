@@ -5,8 +5,8 @@ module Macro
   # Apply
   #-----------------------------------------------
 
-  def apply(operators, methods, predicates, state, tasks, goal_pos, goal_not, debug = false)
-    puts 'Macro'.center(50,'-') if debug
+  def apply(operators, methods, predicates, state, tasks, goal_pos, goal_not, verbose = false)
+    puts 'Macro'.center(50,'-') if verbose
     # Task counter
     counter = Hash.new(0)
     methods.each {|met| met.drop(2).each {|dec| dec[4].each {|t,| counter[t] += 1}}}
@@ -17,23 +17,23 @@ module Macro
     clear_ops = {}
     methods.each {|met|
       met.drop(2).each {|dec|
-        macro_sequential_operators(operators, macro, dec[4], dec[4] = [], counter, clear_ops, debug)
+        macro_sequential_operators(operators, macro, dec[4], dec[4] = [], counter, clear_ops, verbose)
       }
     }
     # Macro sequential top ordered operators
     case ordered
     when true
-      macro_sequential_operators(operators, macro, tasks, new_subtasks = [ordered], counter, clear_ops, debug)
+      macro_sequential_operators(operators, macro, tasks, new_subtasks = [ordered], counter, clear_ops, verbose)
       tasks.replace(new_subtasks)
     when false
       tasks.each {|t,|
         if op = operators.assoc(t) and clear_ops.include?(op)
           unless methods.assoc(name = "macro_#{t}")
-            puts "Macro method #{name}" if debug
+            puts "Macro method #{name}" if verbose
             methods << [name, op[1], ['case_0', [], [], [], [[op_name = "invisible_#{name}", *op[1]], [t, *op[1]]]]]
             unless operators.assoc(op_name)
               operators << [op_name, op[1], op[2], op[3], op[4], op[5]]
-              puts "Macro operator #{op_name}" if debug
+              puts "Macro operator #{op_name}" if verbose
             end
           end
           t.replace(name)
@@ -53,24 +53,24 @@ module Macro
   # Macro sequential operators
   #-----------------------------------------------
 
-  def macro_sequential_operators(operators, macro, subtasks, new_subtasks, counter, clear_ops, debug)
+  def macro_sequential_operators(operators, macro, subtasks, new_subtasks, counter, clear_ops, verbose)
     subtasks.each {|subtask|
       # Add operators to macro and skip methods
       if op = operators.assoc(subtask[0])
         macro << [op, subtask]
       else
-        add_macro_to_subtasks(operators, macro, new_subtasks, counter, clear_ops, debug)
+        add_macro_to_subtasks(operators, macro, new_subtasks, counter, clear_ops, verbose)
         new_subtasks << subtask
       end
     }
-    add_macro_to_subtasks(operators, macro, new_subtasks, counter, clear_ops, debug)
+    add_macro_to_subtasks(operators, macro, new_subtasks, counter, clear_ops, verbose)
   end
 
   #-----------------------------------------------
   # Add macro to subtasks
   #-----------------------------------------------
 
-  def add_macro_to_subtasks(operators, macro, new_subtasks, counter, clear_ops, debug)
+  def add_macro_to_subtasks(operators, macro, new_subtasks, counter, clear_ops, verbose)
     if macro.size > 1
       name = nil
       parameters = []
@@ -116,7 +116,7 @@ module Macro
       parameters.uniq!
       unless operators.assoc(name)
         operators << [name, parameters, precond_pos, precond_not, effect_add, effect_del]
-        puts "Macro operator #{name}" if debug
+        puts "Macro operator #{name}" if verbose
       end
       new_subtasks.insert(index, [name, *parameters])
     elsif macro.size == 1
@@ -125,7 +125,7 @@ module Macro
         unless operators.assoc(name = "invisible_macro_#{op[0]}")
           clear_ops[op] = nil
           operators << [name, op[1], op[2], op[3], op[4], op[5]]
-          puts "Macro operator #{name}" if debug
+          puts "Macro operator #{name}" if verbose
         end
         new_subtasks << subtask.drop(1).unshift(name)
       end
