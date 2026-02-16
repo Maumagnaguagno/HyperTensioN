@@ -54,10 +54,7 @@ module Typredicate
   #-----------------------------------------------
 
   def find_types(group, types, new_predicates)
-    group.each {|pre,*terms|
-      values = types.values_at(*terms)
-      (new_predicates[pre] ||= []) << values if values.all?
-    }
+    group.each {|pre,*terms| values = types.fetch_values(*terms) {break} and (new_predicates[pre] ||= []) << values}
   end
 
   #-----------------------------------------------
