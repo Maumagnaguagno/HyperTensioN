@@ -70,12 +70,11 @@ module Hype
     output = ''
     indent = "\n        "
     @parser.operators.each {|op|
-      output << "\n    #{op[0]}(#{op[1].join(' ')})"
-      output << "\n      Precond positive:#{predicates_to_s(op[2], indent)}" unless op[2].empty?
-      output << "\n      Precond negative:#{predicates_to_s(op[3], indent)}" unless op[3].empty?
-      output << "\n      Effect positive:#{predicates_to_s(op[4], indent)}" unless op[4].empty?
-      output << "\n      Effect negative:#{predicates_to_s(op[5], indent)}" unless op[5].empty?
-      output << "\n"
+      output << "\n    #{op[0]}(#{op[1].join(' ')})\n"
+      output << "      Precond positive:#{predicates_to_s(op[2], indent)}\n" unless op[2].empty?
+      output << "      Precond negative:#{predicates_to_s(op[3], indent)}\n" unless op[3].empty?
+      output << "      Effect positive:#{predicates_to_s(op[4], indent)}\n" unless op[4].empty?
+      output << "      Effect negative:#{predicates_to_s(op[5], indent)}\n" unless op[5].empty?
     }
     output
   end
@@ -88,15 +87,14 @@ module Hype
     output = ''
     indent = "\n          "
     @parser.methods.each {|name,param,*decompositions|
-      output << "\n    #{name}(#{param.join(' ')})"
+      output << "\n    #{name}(#{param.join(' ')})\n"
       decompositions.each {|dec|
-        output << "\n      Label: #{dec[0]}"
-        output << "\n        Free variables:\n          #{dec[1].join(indent)}" unless dec[1].empty?
-        output << "\n        Precond positive:#{predicates_to_s(dec[2], indent)}" unless dec[2].empty?
-        output << "\n        Precond negative:#{predicates_to_s(dec[3], indent)}" unless dec[3].empty?
-        output << "\n        Subtasks:#{subtasks_to_s(dec[4], indent)}"
+        output << "      Label: #{dec[0]}\n"
+        output << "        Free variables:\n          #{dec[1].join(indent)}\n" unless dec[1].empty?
+        output << "        Precond positive:#{predicates_to_s(dec[2], indent)}\n" unless dec[2].empty?
+        output << "        Precond negative:#{predicates_to_s(dec[3], indent)}\n" unless dec[3].empty?
+        output << "        Subtasks:#{subtasks_to_s(dec[4], indent)}\n"
       }
-      output << "\n"
     }
     output
   end
