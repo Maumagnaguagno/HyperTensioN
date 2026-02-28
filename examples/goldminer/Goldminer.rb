@@ -186,8 +186,7 @@ module Goldminer
     adjacent = @state[ADJACENT]
     frontier = [from]
     visited = {}
-    until frontier.empty?
-      current = frontier.shift
+    while current = frontier.shift
       plan = frontier.shift
       adjacent.each {|c,place|
         if c == current and not blocked.include?([place]) and not visited.include?(place)
@@ -214,8 +213,7 @@ module Goldminer
     frontier = [from]
     visited = {}
     # Generate as a generic method of unification
-    until frontier.empty?
-      current = frontier.shift
+    while current = frontier.shift
       plan = frontier.shift
       # Generate unifications
       generate(
