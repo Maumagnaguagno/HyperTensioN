@@ -28,6 +28,7 @@ module Wise
       prefix_variables(opname = "Operator #{name}", param, verbose)
       define_variables(opname, param, [precond_pos, precond_not, effect_add, effect_del], verbose)
       # Duplicates
+      raise "Operator and method with same name: #{name}" if methods.assoc(name)
       puts "#{opname} contains duplicate parameter: removed" if param.uniq! and verbose
       puts "#{opname} contains duplicate positive precondition: removed" if precond_pos.uniq! and verbose
       puts "#{opname} contains duplicate negative precondition: removed" if precond_not.uniq! and verbose
