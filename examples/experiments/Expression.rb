@@ -2,15 +2,15 @@
 # Evaluate
 #-----------------------------------------------
 
-def evaluate(expression, &block)
+def evaluate(expression, &)
   case first = expression.shift
   when :and then expression.all? {|e| evaluate(e)}
   when :or then expression.any? {|e| evaluate(e)}
   when :xor then expression.one? {|e| evaluate(e)}
   when :not then expression.none? {|e| evaluate(e)}
   when :call then call(expression)
-  when :forall then forall?(*expression, &block)
-  when :exists then exists?(*expression, &block)
+  when :forall then forall?(*expression, &)
+  when :exists then exists?(*expression, &)
   else @state[first].include?(expression)
   end
 end
