@@ -45,7 +45,7 @@ module HDDL_Parser
     graph = Hash.new {|h,k| h[k] = []}
     ordering.each {|_,before,after| graph[after] << before}
     graph.default = []
-    total = TSort.tsort(lambda {|&b| graph.each_key(&b)}, lambda {|n,&b| graph[n].each(&b)})
+    total = TSort.tsort(->(&b) {graph.each_key(&b)}, ->(n,&b) {graph[n].each(&b)})
     tasks.sort_by! {|label,| total.index(label)}
   end
 

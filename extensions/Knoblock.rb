@@ -15,7 +15,7 @@ module Knoblock
     else find_problem_independent_constraints(operators, predicates, graph)
     end
     puts 'Dependency graph', dot(graph) if verbose
-    reduce_graph(graph, each_node = lambda {|&b| graph.each_key(&b)}, each_child = lambda {|n,&b| graph.fetch(n, []).each(&b)})
+    reduce_graph(graph, each_node = ->(&b) {graph.each_key(&b)}, each_child = ->(n,&b) {graph.fetch(n, []).each(&b)})
     puts 'Partial order graph', dot(graph) if verbose
     total_order = TSort.tsort(each_node, each_child)
     puts 'Total order', total_order.map {|i| "  #{i}"} if verbose
