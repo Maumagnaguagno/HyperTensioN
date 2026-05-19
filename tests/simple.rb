@@ -535,37 +535,23 @@ digraph "basic" {
     }
   end
 
-  def test_gcc
-    ['jshop', 'hddl'].each {|type|
-      native_execution_tests(
-        "examples/basic/basic.#{type}",
-        "examples/basic/pb1.#{type}",
-        'g++ -O3 -march=native -flto',
-        "Planning\ndrop kiwi\npickup banjo\n"
-      )
-      native_execution_tests(
-        "examples/basic/basic.#{type}",
-        "examples/basic/pb1.#{type}",
-        'g++ -O3 -march=native -flto -D IPC',
-        "Planning\n==>\n1 drop kiwi\n2 pickup banjo\nroot 0\n0 swap banjo kiwi -> #{type == 'jshop' ? 'case_1' : 'have_second'} 1 2\n<==\n"
-      )
+  def test_cpp
+    ['g++', 'clang++'].each {|cc|
+      next unless system("#{cc} -v")
+      ['jshop', 'hddl'].each {|type|
+        native_execution_tests(
+          "examples/basic/basic.#{type}",
+          "examples/basic/pb1.#{type}",
+          "#{cc} -O3 -march=native -flto",
+          "Planning\ndrop kiwi\npickup banjo\n"
+        )
+        native_execution_tests(
+          "examples/basic/basic.#{type}",
+          "examples/basic/pb1.#{type}",
+          "#{cc} -O3 -march=native -flto -D IPC",
+          "Planning\n==>\n1 drop kiwi\n2 pickup banjo\nroot 0\n0 swap banjo kiwi -> #{type == 'jshop' ? 'case_1' : 'have_second'} 1 2\n<==\n"
+        )
+      }
     }
-  end if system('g++ -v')
-
-  def test_clang
-    ['jshop', 'hddl'].each {|type|
-      native_execution_tests(
-        "examples/basic/basic.#{type}",
-        "examples/basic/pb1.#{type}",
-        'clang++ -O3 -march=native -flto',
-        "Planning\ndrop kiwi\npickup banjo\n"
-      )
-      native_execution_tests(
-        "examples/basic/basic.#{type}",
-        "examples/basic/pb1.#{type}",
-        'clang++ -O3 -march=native -flto -D IPC',
-        "Planning\n==>\n1 drop kiwi\n2 pickup banjo\nroot 0\n0 swap banjo kiwi -> #{type == 'jshop' ? 'case_1' : 'have_second'} 1 2\n<==\n"
-      )
-    }
-  end if system('clang++ -v')
+  end
 end
