@@ -73,7 +73,7 @@ if $0 == __FILE__
           assert_equal((pa and (pb or (pc and not pd))), evaluate(expression))
         }
       }
-      @state = {:number => [['1'],['2'],['3']]}
+      @state = {number: [['1'],['2'],['3']]}
       assert_true(evaluate([:xor, [:number, '1'], [:number, 'a']]))
       assert_false(evaluate([:xor, [:number, '1'], [:number, '2']]))
       assert_true(evaluate([:forall, [x = ''], [[:number, x]], []]) {x.to_i != 0})
@@ -97,7 +97,7 @@ if $0 == __FILE__
 
     def test_quantification_forall?
       # Variable x may assume any value from [1, 2, 3]
-      @state = {:number => [['1'],['2'],['3']]}
+      @state = {number: [['1'],['2'],['3']]}
       # For all numbers x, x != 0
       assert_true(forall?([x = ''], [[:number, x]], []) {x.to_i != 0})
       # For all numbers x, x != 1
@@ -110,7 +110,7 @@ if $0 == __FILE__
 
     def test_quantification_exists?
       # Variable x may assume any value from [1, 2, 3]
-      @state = {:number => [['1'],['2'],['3']]}
+      @state = {number: [['1'],['2'],['3']]}
       # There exists a number x, x != 0
       assert_true(exists?([x = ''], [[:number, x]], []) {x.to_i != 0})
       # There exists a number x, x != 1
