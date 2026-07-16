@@ -46,14 +46,14 @@ module Robby
 
   @domain = {
     # Operators
-    :enter => true,
-    :exit => true,
-    :move => true,
-    :report => true,
-    :visit_at => false,
-    :unvisit_at => false,
+    enter: true,
+    exit: true,
+    move: true,
+    report: true,
+    visit_at: false,
+    unvisit_at: false,
     # Methods
-    :swap_at => [
+    swap_at: [
       :swap_at__base,
       :swap_at__recursion_enter,
       :swap_at__recursion_exit,
@@ -73,7 +73,7 @@ It is also possible to avoid listing all of them and filter based on their name 
 @domain[:swap_at] = instance_methods.grep(/^swap_at/)
 ```
 
-The enter operator appears to be a good starting point to define preconditions and effects.
+The **enter** operator appears to be a good starting point to define preconditions and effects.
 Easier to see what is changing using a table:
 
 Enter | bot source destination

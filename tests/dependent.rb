@@ -361,27 +361,27 @@ module Dependency
 
   @domain = {
     # Operators
-    :work => true,
-    :buy => true,
-    :give => true,
-    :invisible_goal => false,
+    work: true,
+    buy: true,
+    give: true,
+    invisible_goal: false,
     # Methods
-    :dependency_work_before_buy_for_have => [
+    dependency_work_before_buy_for_have: [
       :dependency_work_before_buy_for_have_goal_satisfied,
       :dependency_work_before_buy_for_have_satisfied,
       :dependency_work_before_buy_for_have_unsatisfied
     ],
-    :dependency_buy_before_give_for_have => [
+    dependency_buy_before_give_for_have: [
       :dependency_buy_before_give_for_have_goal_satisfied,
       :dependency_buy_before_give_for_have_satisfied,
       :dependency_buy_before_give_for_have_unsatisfied
     ],
-    :dependency_buy_before_give_for_happy => [
+    dependency_buy_before_give_for_happy: [
       :dependency_buy_before_give_for_happy_goal_satisfied,
       :dependency_buy_before_give_for_happy_satisfied,
       :dependency_buy_before_give_for_happy_unsatisfied
     ],
-    :unify_a_x_before_dependency_buy_before_give_for_happy => [
+    unify_a_x_before_dependency_buy_before_give_for_happy: [
       :unify_a_x_before_dependency_buy_before_give_for_happy_a_x
     ]
   }
