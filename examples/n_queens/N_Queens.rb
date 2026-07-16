@@ -10,15 +10,15 @@ module N_Queens
 
   @domain = {
     # Operators
-    :put_piece => true,
+    put_piece: true,
     # Methods
-    :solve => [:try_next]
+    solve: [:try_next]
   }
 
   def solve(size, debug, verbose)
     state = {
-      :queen => [],
-      :free_collumn => (0...size).to_a
+      queen: [],
+      free_collumn: (0...size).to_a
     }
     tasks = [
       [:solve, size]
@@ -41,7 +41,7 @@ module N_Queens
     q = @state[:queen].dup << [x, y]
     # Del effects
     (f = @state[:free_collumn].dup).delete(x)
-    @state = {:queen => q, :free_collumn => f}
+    @state = {queen: q, free_collumn: f}
   end
 
   #-----------------------------------------------
