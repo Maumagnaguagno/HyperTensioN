@@ -10,14 +10,14 @@ module Robby
 
   @domain = {
     # Operators
-    :enter => true,
-    :exit => true,
-    :move => true,
-    :report => true,
-    :visit_at => false,
-    :unvisit_at => false,
+    enter: true,
+    exit: true,
+    move: true,
+    report: true,
+    visit_at: false,
+    unvisit_at: false,
     # Methods
-    :swap_at => [
+    swap_at: [
       :swap_at__base,
       :swap_at__recursion_enter,
       :swap_at__recursion_exit,

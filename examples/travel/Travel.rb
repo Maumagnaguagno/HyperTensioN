@@ -10,12 +10,12 @@ module Travel
 
   @domain = {
     # Operators
-    :walk => true,
-    :call_taxi => true,
-    :ride_taxi => true,
-    :pay_driver => true,
+    walk: true,
+    call_taxi: true,
+    ride_taxi: true,
+    pay_driver: true,
     # Methods
-    :travel => [
+    travel: [
       :stay_here,
       :travel_by_taxi,
       :travel_by_foot

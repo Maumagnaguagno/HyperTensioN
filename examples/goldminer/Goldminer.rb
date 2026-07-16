@@ -10,20 +10,20 @@ module Goldminer
 
   @domain = {
     # Operators
-    :move => true,
-    :pick => true,
-    :drop => true,
-    :see => false,
-    :shift => false,
-    :visit_at => false,
-    :unvisit_at => false,
+    move: true,
+    pick: true,
+    drop: true,
+    see: false,
+    shift: false,
+    visit_at: false,
+    unvisit_at: false,
     # Methods
-    :travel => [
+    travel: [
       :travel__bfs, # Optimal
       :travel__base,
       :travel__recursion
     ],
-    :get_gold => [
+    get_gold: [
       :get_gold__recursion,
       :get_gold__base
     ]
