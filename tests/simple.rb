@@ -30,10 +30,10 @@ class Simple < Test::Unit::TestCase
       # Parser and extensions
       parser, [],
       # Attributes
-      :domain_name => 'basic',
-      :problem_name => 'pb1',
-      :operators => OPERATORS,
-      :methods => [
+      domain_name: 'basic',
+      problem_name: 'pb1',
+      operators: OPERATORS,
+      methods: [
         ['swap', ['?x', '?y'],
           [method1_label, [],
             # Preconditions
@@ -51,11 +51,11 @@ class Simple < Test::Unit::TestCase
           ]
         ]
       ],
-      :predicates => {'have' => true},
-      :state => {'have' => [['kiwi']]},
-      :tasks => [true, ['swap', 'banjo', 'kiwi']],
-      :goal_pos => [],
-      :goal_not => []
+      predicates: {'have' => true},
+      state: {'have' => [['kiwi']]},
+      tasks: [true, ['swap', 'banjo', 'kiwi']],
+      goal_pos: [],
+      goal_not: []
     )
   end
 
@@ -75,17 +75,17 @@ class Simple < Test::Unit::TestCase
       # Parser and extensions
       PDDL_Parser, [],
       # Attributes
-      :domain_name => 'basic',
-      :problem_name => 'pb1',
-      :operators => OPERATORS,
-      :methods => [],
-      :predicates => {'have' => true},
-      :state => {},
-      :tasks => [],
-      :goal_pos => [['have', 'banjo']],
-      :goal_not => [],
-      :objects => ['kiwi', 'banjo'],
-      :requirements => [':strips', ':negative-preconditions']
+      domain_name: 'basic',
+      problem_name: 'pb1',
+      operators: OPERATORS,
+      methods: [],
+      predicates: {'have' => true},
+      state: {},
+      tasks: [],
+      goal_pos: [['have', 'banjo']],
+      goal_not: [],
+      objects: ['kiwi', 'banjo'],
+      requirements: [':strips', ':negative-preconditions']
     )
   end
 
@@ -149,17 +149,17 @@ class Simple < Test::Unit::TestCase
       # Parser and extensions
       PDDL_Parser, ['patterns'],
       # Attributes
-      :domain_name => 'basic',
-      :problem_name => 'pb3',
-      :operators => OPERATORS,
-      :methods => [],
-      :predicates => {'have' => true},
-      :state => {'have' => [['kiwi']]},
-      :tasks => [false, ['pickup', 'banjo'], ['drop', 'kiwi']],
-      :goal_pos => [['have', 'banjo']],
-      :goal_not => [['have', 'kiwi']],
-      :objects => ['kiwi', 'banjo'],
-      :requirements => [':strips', ':negative-preconditions']
+      domain_name: 'basic',
+      problem_name: 'pb3',
+      operators: OPERATORS,
+      methods: [],
+      predicates: {'have' => true},
+      state: {'have' => [['kiwi']]},
+      tasks: [false, ['pickup', 'banjo'], ['drop', 'kiwi']],
+      goal_pos: [['have', 'banjo']],
+      goal_not: [['have', 'kiwi']],
+      objects: ['kiwi', 'banjo'],
+      requirements: [':strips', ':negative-preconditions']
     )
   end
 
@@ -171,9 +171,9 @@ class Simple < Test::Unit::TestCase
       # Parser and extensions
       JSHOP_Parser, ['macro'],
       # Attributes
-      :domain_name => 'basic',
-      :problem_name => 'pb1',
-      :operators => [
+      domain_name: 'basic',
+      problem_name: 'pb1',
+      operators: [
         ['pickup', ['?a'], [], [], [], []],
         ['drop', ['?a'], [], [], [], []],
         ['invisible_macro_drop_and_pickup', ['?x', '?y'],
@@ -185,7 +185,7 @@ class Simple < Test::Unit::TestCase
           [['have', '?x']]
         ]
       ],
-      :methods => [
+      methods: [
         ['swap', ['?x', '?y'],
           ['case_0', [],
             # Preconditions
@@ -203,11 +203,11 @@ class Simple < Test::Unit::TestCase
           ]
         ]
       ],
-      :predicates => {'have' => true},
-      :state => {'have' => [['kiwi']]},
-      :tasks => [true, ['swap', 'banjo', 'kiwi']],
-      :goal_pos => [],
-      :goal_not => []
+      predicates: {'have' => true},
+      state: {'have' => [['kiwi']]},
+      tasks: [true, ['swap', 'banjo', 'kiwi']],
+      goal_pos: [],
+      goal_not: []
     )
   end
 

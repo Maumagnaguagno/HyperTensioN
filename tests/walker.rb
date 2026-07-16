@@ -57,18 +57,18 @@ class Walker < Test::Unit::TestCase
       # Parser and extensions
       PDDL_Parser, [],
       # Attributes
-      :domain_name => 'tsp',
-      :problem_name => 'pb1',
-      :operators => [MOVE],
-      :methods => [],
-      :predicates => {
+      domain_name: 'tsp',
+      problem_name: 'pb1',
+      operators: [MOVE],
+      methods: [],
+      predicates: {
         'at' => true,
         'connected' => false,
         'visited' => true
       },
-      :state => STATE,
-      :tasks => [],
-      :goal_pos => [
+      state: STATE,
+      tasks: [],
+      goal_pos: [
         ['at', 'pittsburgh'],
         ['visited', 'boston'],
         ['visited', 'newyork'],
@@ -76,9 +76,9 @@ class Walker < Test::Unit::TestCase
         ['visited', 'toronto'],
         ['visited', 'albany']
       ],
-      :goal_not => [],
-      :objects => ['boston', 'newyork', 'pittsburgh', 'toronto', 'albany'],
-      :requirements => [':strips', ':negative-preconditions']
+      goal_not: [],
+      objects: ['boston', 'newyork', 'pittsburgh', 'toronto', 'albany'],
+      requirements: [':strips', ':negative-preconditions']
     )
   end
 
@@ -90,10 +90,10 @@ class Walker < Test::Unit::TestCase
       # Parser and extensions
       PDDL_Parser, ['patterns'],
       # Attributes
-      :domain_name => 'tsp',
-      :problem_name => 'pb1',
-      :operators => [MOVE, INVISIBLE_VISIT_AT, INVISIBLE_UNVISIT_AT],
-      :methods => [
+      domain_name: 'tsp',
+      problem_name: 'pb1',
+      operators: [MOVE, INVISIBLE_VISIT_AT, INVISIBLE_UNVISIT_AT],
+      methods: [
         ['swap_at_until_at', ['?finish'],
           ['base', [],
             # Preconditions
@@ -137,14 +137,14 @@ class Walker < Test::Unit::TestCase
           ]
         ],
       ],
-      :predicates => {
+      predicates: {
         'at' => true,
         'connected' => false,
         'visited' => true,
         'visited_at' => true
       },
-      :state => STATE,
-      :tasks => [false,
+      state: STATE,
+      tasks: [false,
         ['swap_at_until_visited', 'boston'],
         ['swap_at_until_visited', 'newyork'],
         ['swap_at_until_visited', 'pittsburgh'],
@@ -152,7 +152,7 @@ class Walker < Test::Unit::TestCase
         ['swap_at_until_visited', 'albany'],
         ['swap_at_until_at', 'pittsburgh']
       ],
-      :goal_pos => [
+      goal_pos: [
         ['at', 'pittsburgh'],
         ['visited', 'boston'],
         ['visited', 'newyork'],
@@ -160,9 +160,9 @@ class Walker < Test::Unit::TestCase
         ['visited', 'toronto'],
         ['visited', 'albany']
       ],
-      :goal_not => [],
-      :objects => ['boston', 'newyork', 'pittsburgh', 'toronto', 'albany'],
-      :requirements => [':strips', ':negative-preconditions']
+      goal_not: [],
+      objects: ['boston', 'newyork', 'pittsburgh', 'toronto', 'albany'],
+      requirements: [':strips', ':negative-preconditions']
     )
   end
 
@@ -174,9 +174,9 @@ class Walker < Test::Unit::TestCase
       # Parser and extensions
       PDDL_Parser, ['patterns', 'pullup'],
       # Attributes
-      :domain_name => 'tsp',
-      :problem_name => 'pb1',
-      :operators => [
+      domain_name: 'tsp',
+      problem_name: 'pb1',
+      operators: [
         ['move', ['?start', '?finish'],
           # Preconditions
           [
@@ -197,7 +197,7 @@ class Walker < Test::Unit::TestCase
         INVISIBLE_VISIT_AT,
         INVISIBLE_UNVISIT_AT
       ],
-      :methods => [
+      methods: [
         ['swap_at_until_at', ['?finish'],
           ['base', [],
             # Preconditions
@@ -241,14 +241,14 @@ class Walker < Test::Unit::TestCase
           ]
         ],
       ],
-      :predicates => {
+      predicates: {
         'at' => true,
         'connected' => false,
         'visited' => true,
         'visited_at' => true
       },
-      :state => STATE,
-      :tasks => [false,
+      state: STATE,
+      tasks: [false,
         ['swap_at_until_visited', 'boston'],
         ['swap_at_until_visited', 'newyork'],
         ['swap_at_until_visited', 'pittsburgh'],
@@ -256,7 +256,7 @@ class Walker < Test::Unit::TestCase
         ['swap_at_until_visited', 'albany'],
         ['swap_at_until_at', 'pittsburgh']
       ],
-      :goal_pos => [
+      goal_pos: [
         ['at', 'pittsburgh'],
         ['visited', 'boston'],
         ['visited', 'newyork'],
@@ -264,9 +264,9 @@ class Walker < Test::Unit::TestCase
         ['visited', 'toronto'],
         ['visited', 'albany']
       ],
-      :goal_not => [],
-      :objects => ['boston', 'newyork', 'pittsburgh', 'toronto', 'albany'],
-      :requirements => [':strips', ':negative-preconditions']
+      goal_not: [],
+      objects: ['boston', 'newyork', 'pittsburgh', 'toronto', 'albany'],
+      requirements: [':strips', ':negative-preconditions']
     )
   end
 end

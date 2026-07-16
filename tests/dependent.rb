@@ -11,9 +11,9 @@ class Dependent < Test::Unit::TestCase
       # Parser and extensions
       PDDL_Parser, [],
       # Attributes
-      :domain_name => 'dependency',
-      :problem_name => 'pb1',
-      :operators => [
+      domain_name: 'dependency',
+      problem_name: 'pb1',
+      operators: [
         ['work', ['?a'],
           # Preconditions
           [['agent', '?a']],
@@ -39,24 +39,24 @@ class Dependent < Test::Unit::TestCase
           [['have', '?a', '?x']]
         ]
       ],
-      :methods => [],
-      :predicates => {
+      methods: [],
+      predicates: {
         'agent' => false,
         'object' => false,
         'have' => true,
         'got_money' => true,
         'happy' => true
       },
-      :state => {
+      state: {
         'agent' => [['ana'], ['bob']],
         'object' => [['gift']],
         'have' => [['ana', 'gift']]
       },
-      :tasks => [],
-      :goal_pos => [['happy', 'bob']],
-      :goal_not => [],
-      :objects => ['ana', 'bob', 'gift'],
-      :requirements => [':strips', ':typing', ':negative-preconditions']
+      tasks: [],
+      goal_pos: [['happy', 'bob']],
+      goal_not: [],
+      objects: ['ana', 'bob', 'gift'],
+      requirements: [':strips', ':typing', ':negative-preconditions']
     )
   end
 

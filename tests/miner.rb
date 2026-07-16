@@ -12,9 +12,9 @@ class Miner < Test::Unit::TestCase
       # Parser and extensions
       PDDL_Parser, ['patterns'],
       # Attributes
-      :domain_name => 'goldminer',
-      :problem_name => 'pb2',
-      :operators => [
+      domain_name: 'goldminer',
+      problem_name: 'pb2',
+      operators: [
         ['move', ['?agent', '?from', '?to'],
           # Preconditions
           [
@@ -72,7 +72,7 @@ class Miner < Test::Unit::TestCase
           [['visited_at', '?agent', '?from']]
         ]
       ],
-      :methods => [
+      methods: [
         ['swap_at_until_at', ['?agent', '?to'],
           ['base', [],
             # Preconditions
@@ -220,7 +220,7 @@ class Miner < Test::Unit::TestCase
           ]
         ]
       ],
-      :predicates => {
+      predicates: {
         'adjacent' => false,
         'at' => true,
         'blocked' => false,
@@ -228,7 +228,7 @@ class Miner < Test::Unit::TestCase
         'on' => true,
         'visited_at' => true
       },
-      :state => {
+      state: {
         'adjacent' => Grid.generate(10,10),
         'at' => [['ag1', 'p1_6']],
         'on' => [['g1', 'p4_0'], ['g2', 'p4_3'], ['g3', 'p5_9']],
@@ -239,19 +239,19 @@ class Miner < Test::Unit::TestCase
           ['p1_8'], ['p2_8'], ['p3_8'], ['p6_8'], ['p7_8'], ['p8_8']
         ]
       },
-      :tasks => [false,
+      tasks: [false,
         ['unify_agent_pick_position_before_dependency_pick_before_drop_for_on', 'g1', 'p8_6'],
         ['unify_agent_pick_position_before_dependency_pick_before_drop_for_on', 'g2', 'p8_6'],
         ['unify_agent_pick_position_before_dependency_pick_before_drop_for_on', 'g3', 'p8_6']
       ],
-      :goal_pos => [
+      goal_pos: [
         ['on', 'g1', 'p8_6'],
         ['on', 'g2', 'p8_6'],
         ['on', 'g3', 'p8_6']
       ],
-      :goal_not => [],
-      :objects => ['ag1', 'g1', 'g2', 'g3'].concat(*Grid.objects(10,10)),
-      :requirements => [':strips', ':negative-preconditions']
+      goal_not: [],
+      objects: ['ag1', 'g1', 'g2', 'g3'].concat(*Grid.objects(10,10)),
+      requirements: [':strips', ':negative-preconditions']
     )
   end
 end

@@ -55,9 +55,9 @@ class Painter < Test::Unit::TestCase
       # Parser and extensions
       PDDL_Parser, [],
       # Attributes
-      :domain_name => 'floortile',
-      :problem_name => 'pb1',
-      :operators => [
+      domain_name: 'floortile',
+      problem_name: 'pb1',
+      operators: [
         ['change-color', ['?r', '?c', '?c2'],
           # Preconditions
           [
@@ -79,8 +79,8 @@ class Painter < Test::Unit::TestCase
         move_operator('right'),
         move_operator('left')
       ],
-      :methods => [],
-      :predicates => {
+      methods: [],
+      predicates: {
         'robot' => false,
         'tile' => false,
         'color' => false,
@@ -94,7 +94,7 @@ class Painter < Test::Unit::TestCase
         'robot-has' => true,
         'available-color' => false,
       },
-      :state => {
+      state: {
         'tile' => [['top_left'], ['top_right'], ['bottom_left'], ['bottom_right']],
         'robot' => [['robot1']],
         'color' => [['white'], ['black']],
@@ -107,14 +107,14 @@ class Painter < Test::Unit::TestCase
         'left' => [['top_right', 'top_left'], ['bottom_right', 'bottom_left']],
         'right' => [['top_left', 'top_right'], ['bottom_left', 'bottom_right']]
       },
-      :tasks => [],
-      :goal_pos => [
+      tasks: [],
+      goal_pos: [
         ['painted', 'top_right', 'black'],
         ['painted', 'bottom_left', 'white']
       ],
-      :goal_not => [],
-      :objects => ['top_left', 'top_right', 'bottom_left', 'bottom_right', 'robot1', 'white', 'black'],
-      :requirements => [':strips', ':typing']
+      goal_not: [],
+      objects: ['top_left', 'top_right', 'bottom_left', 'bottom_right', 'robot1', 'white', 'black'],
+      requirements: [':strips', ':typing']
     )
   end
 

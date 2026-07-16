@@ -90,11 +90,11 @@ class Rescue < Test::Unit::TestCase
       # Parser and extensions
       PDDL_Parser, [],
       # Attributes
-      :domain_name => 'robby',
-      :problem_name => 'pb1',
-      :operators => operators,
-      :methods => [],
-      :predicates => {
+      domain_name: 'robby',
+      problem_name: 'pb1',
+      operators: operators,
+      methods: [],
+      predicates: {
         'robot' => false,
         'beacon' => false,
         'room' => false,
@@ -105,12 +105,12 @@ class Rescue < Test::Unit::TestCase
         'connected' => false,
         'reported' => true
       },
-      :state => STATE,
-      :tasks => [],
-      :goal_pos => [['reported', 'robby', 'beacon1'], ['at', 'robby', 'right']],
-      :goal_not => [],
-      :objects => ['robby', 'left', 'middle', 'right', 'room1', 'beacon1'],
-      :requirements => [':strips', ':typing', ':negative-preconditions']
+      state: STATE,
+      tasks: [],
+      goal_pos: [['reported', 'robby', 'beacon1'], ['at', 'robby', 'right']],
+      goal_not: [],
+      objects: ['robby', 'left', 'middle', 'right', 'room1', 'beacon1'],
+      requirements: [':strips', ':typing', ':negative-preconditions']
     )
   end
 
@@ -122,11 +122,11 @@ class Rescue < Test::Unit::TestCase
       # Parser and extensions
       PDDL_Parser, ['typredicate'],
       # Attributes
-      :domain_name => 'robby',
-      :problem_name => 'pb1',
-      :operators => operators(true),
-      :methods => [],
-      :predicates => {
+      domain_name: 'robby',
+      problem_name: 'pb1',
+      operators: operators(true),
+      methods: [],
+      predicates: {
         'robot' => false,
         'hallway' => false,
         'location' => false,
@@ -139,16 +139,16 @@ class Rescue < Test::Unit::TestCase
         'connected_hallway_hallway' => false,
         'reported' => true
       },
-      :state => STATE.merge({
+      state: STATE.merge({
         'connected_hallway_room' => [['middle', 'room1']],
         'connected_room_hallway' => [['room1', 'middle']],
         'connected_hallway_hallway' => [['left', 'middle'], ['middle', 'left'], ['middle', 'right'], ['right', 'middle']]
       }),
-      :tasks => [],
-      :goal_pos => [['reported', 'robby', 'beacon1'], ['at', 'robby', 'right']],
-      :goal_not => [],
-      :objects => ['robby', 'left', 'middle', 'right', 'room1', 'beacon1'],
-      :requirements => [':strips', ':typing', ':negative-preconditions']
+      tasks: [],
+      goal_pos: [['reported', 'robby', 'beacon1'], ['at', 'robby', 'right']],
+      goal_not: [],
+      objects: ['robby', 'left', 'middle', 'right', 'room1', 'beacon1'],
+      requirements: [':strips', ':typing', ':negative-preconditions']
     )
   end
 
