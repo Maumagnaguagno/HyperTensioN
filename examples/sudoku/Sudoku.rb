@@ -13,9 +13,9 @@ module Sudoku
 
   @domain = {
     # Operators
-    :put_symbol => true,
+    put_symbol: true,
     # Methods
-    :solve => [:try_next]
+    solve: [:try_next]
   }
 
   def solve(board_str, width, height, box_width, box_height, debug, verbose)
