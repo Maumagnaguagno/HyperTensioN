@@ -260,7 +260,7 @@ if $0 == __FILE__
       @state = {
         :event => [],
         :process => [],
-        :function => {:x => 0.0},
+        :function => {x: 0.0},
         'happy' => [['you']],
         'protect_axiom' => []
       }
