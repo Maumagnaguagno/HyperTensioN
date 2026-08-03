@@ -1,6 +1,6 @@
 module Function
 
-  def problem(state, *args)
+  def problem(state, *)
     function = state[:function] = {}
     state.delete('function')&.each {|f,v| function[f] = v.to_f}
     state['protect_axiom'] ||= []
@@ -55,7 +55,7 @@ end
 module Continuous
   include Function
 
-  def problem(state, *args)
+  def problem(state, *)
     state[:event] = []
     state[:process] = []
     super

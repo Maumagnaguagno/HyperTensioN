@@ -1,6 +1,6 @@
 module Protection
 
-  def problem(state, *args)
+  def problem(state, *)
     @protection_pos = state.size
     @protection_not = @protection_pos + 1
     state.push([], [])
