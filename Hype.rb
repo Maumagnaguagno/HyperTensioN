@@ -195,7 +195,7 @@ Problem #{@parser.problem_name}
   # Execute
   #-----------------------------------------------
 
-  def execute
+  def execute(domain, problem)
     args = [
       @parser.domain_name,
       @parser.problem_name,
@@ -207,8 +207,8 @@ Problem #{@parser.problem_name}
       @parser.goal_pos,
       @parser.goal_not
     ]
-    eval(Hyper_Compiler.compile_domain(*args))
-    eval(Hyper_Compiler.compile_problem(*args))
+    eval(Hyper_Compiler.compile_domain(*args), TOPLEVEL_BINDING, "#{domain}.rb")
+    eval(Hyper_Compiler.compile_problem(*args), TOPLEVEL_BINDING, "#{problem}.rb")
   end
 end
 
@@ -231,7 +231,7 @@ if $0 == __FILE__
       if not type or type == 'print'
         puts Hype.to_s
       elsif type == 'run' or (ARGV[0] = type) == 'debug'
-        Hype.execute
+        Hype.execute(domain, problem)
       elsif type != 'nil'
         Hype.compile(domain, problem, type)
       end
