@@ -30,7 +30,7 @@ class Recompiler < Test::Unit::TestCase
     ].each {|compiler|
       next if compiler == Cyber_Compiler and not ir[6][0]
       compiler.compile_domain(*ir)
-      compiler.compile_problem(*ir, nil)
+      compiler.compile_problem(*ir)
       assert_equal(expected, ir)
     }
   end

@@ -46,7 +46,7 @@ module Markdown_Compiler
   # Compile problem
   #-----------------------------------------------
 
-  def compile_problem(domain_name, problem_name, operators, methods, predicates, state, tasks, goal_pos, goal_not, domain_filename)
+  def compile_problem(domain_name, problem_name, operators, methods, predicates, state, tasks, goal_pos, goal_not, domain_filename = nil)
     output = "# #{problem_name.capitalize} of #{domain_name.capitalize}\n## Initial state"
     state.each {|pre,k| k.each {|terms| output << "\n- (#{[pre, *terms].join(' ')})"}}
     unless tasks.empty?
