@@ -1,4 +1,5 @@
-require './tests/hypest'
+require 'test/unit'
+require './Hype'
 
 class Recompiler < Test::Unit::TestCase
 
