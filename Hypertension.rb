@@ -86,7 +86,7 @@ else
             subtasks.map! {|t| [(@index += 1 if @domain[t[0]]), t]}
             new_index = @index
             if plan = planning(subtasks.concat(tasks), level)
-              @decomposition.unshift("#{index} #{task_name} #{current_task.join(' ')} -> #{method[task_name.size+1..-1]} #{(old_index+1..new_index).to_a.join(' ')}")
+              @decomposition.unshift("#{index} #{task_name} #{current_task.join(' ')} -> #{method[task_name.size+1..]} #{(old_index+1..new_index).to_a.join(' ')}")
               return plan
             end
             @index = old_index
