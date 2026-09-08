@@ -61,8 +61,8 @@ module Hyper_Compiler
       tasks << [invisible_goal = 'invisible_goal']
       operators << [invisible_goal, [], goal_pos, goal_not, [], []]
     end
-    operators.each_with_index {|(name,param,precond_pos,precond_not,effect_add,effect_del),i|
-      domain_str << "\n    #{name}: #{!name.start_with?('invisible_')}#{',' unless operators.size.pred == i and methods.empty?}"
+    operators.each {|name,param,precond_pos,precond_not,effect_add,effect_del|
+      domain_str << "\n    #{name}: #{!name.start_with?('invisible_')},"
       define_operators << "\n  def #{name}#{"(#{(paramstr = param.join(', ')).tr!('?','_'); paramstr})" unless param.empty?}"
       if state_visit
         if name.start_with?('invisible_visit_', 'invisible_mark_')
@@ -108,7 +108,7 @@ module Hyper_Compiler
     visit = false
     define_methods = ''
     domain_str << "\n    # Methods"
-    methods.each_with_index {|(name,param,*decompositions),mi|
+    methods.each {|name,param,*decompositions|
       variables = "(#{param.join(', ').tr!('?','_')})" unless param.empty?
       decompositions.map! {|dec|
         define_methods << "\n  def #{name}_#{dec[0]}#{variables}"
@@ -238,7 +238,7 @@ module Hyper_Compiler
         define_methods << indentation << (dec[4].empty? ? 'yield []' : "yield [#{indentation}  [" << dec[4].map {|g| g.map {|i| term(i)}.join(', ')}.join("],#{indentation}  [") << "]#{indentation}]") << close_method_str
         "\n      :#{name}_#{dec[0]}"
       }
-      domain_str << "\n    #{name}: [" << decompositions.join(',') << (methods.size.pred == mi ? "\n    ]" : "\n    ],")
+      domain_str << "\n    #{name}: [" << decompositions.join(',') << "\n    ],"
     }
     if meta
       define_methods << "\n  def predicate(pre)\n    case pre"

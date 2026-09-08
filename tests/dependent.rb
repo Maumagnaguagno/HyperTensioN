@@ -383,7 +383,7 @@ module Dependency
     ],
     unify_a_x_before_dependency_buy_before_give_for_happy: [
       :unify_a_x_before_dependency_buy_before_give_for_happy_a_x
-    ]
+    ],
   }
 
   #-----------------------------------------------
