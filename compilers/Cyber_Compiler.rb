@@ -142,7 +142,10 @@ module Cyber_Compiler
             end
           end
         }
-        define_methods << "\n  if(#{equality.join(' || ')}) return false;" unless equality.empty?
+        unless equality.empty?
+          define_methods << "\n  if(#{equality.join(' || ')}) return false;"
+          equality.clear
+        end
         define_methods << define_methods_comparison
         visit_param = nil
         unless dec[4].empty?
@@ -171,7 +174,6 @@ module Cyber_Compiler
           predicate_loops = []
           until precond_pos.empty?
             pre, *terms = precond_pos.shift
-            equality.clear
             define_methods_comparison.clear
             new_grounds = false
             terms2 = terms.map {|j|
@@ -224,21 +226,26 @@ module Cyber_Compiler
                 end
               end
             }
-            define_methods << "#{indentation}if(#{equality.join(' || ')}) continue;" unless equality.empty?
+            unless equality.empty?
+              define_methods << "#{indentation}if(#{equality.join(' || ')}) continue;"
+              equality.clear
+            end
             define_methods << define_methods_comparison
             if visit_param and not visit_param.intersect?(f)
               define_methods << "#{indentation}if(applicable_const(visit#{visit_param.size}, #{terms_to_hyper(visit_param)})) continue;"
               visit_param = nil
             end
           end
-          equality.clear
           define_methods_comparison.clear
           precond_not.each {|pre,*terms|
             if pre == '=' then equality << "#{term(terms[0])} == #{term(terms[1])}"
             elsif predicates[pre] or state.include?(pre) then define_methods_comparison << "#{indentation}if(#{applicable(pre, terms, predicates, arity)}) continue;"
             end
           }
-          define_methods << "#{indentation}if(#{equality.join(' || ')}) continue;" unless equality.empty?
+          unless equality.empty?
+            define_methods << "#{indentation}if(#{equality.join(' || ')}) continue;"
+            equality.clear
+          end
           define_methods << define_methods_comparison
         end
         if dec[4].empty? then define_methods << "#{indentation}yield(task->next, #{labels.size}, 0);#{close_method_str}\n  return false;\n}"

@@ -139,7 +139,10 @@ module Hyper_Compiler
             end
           end
         }
-        define_methods << "\n    return if #{equality.join(' or ')}" unless equality.empty?
+        unless equality.empty?
+          define_methods << "\n    return if #{equality.join(' or ')}"
+          equality.clear
+        end
         define_methods << define_methods_comparison
         visit_param = nil
         dec[4].each {|s|
@@ -159,7 +162,6 @@ module Hyper_Compiler
           ground = param.dup
           until precond_pos.empty?
             pre, *terms = precond_pos.shift
-            equality.clear
             define_methods_comparison.clear
             new_grounds = false
             terms2 = terms.map {|j|
@@ -215,14 +217,16 @@ module Hyper_Compiler
                 end
               end
             }
-            define_methods << "#{indentation}next if #{equality.join(' or ')}" unless equality.empty?
+            unless equality.empty?
+              define_methods << "#{indentation}next if #{equality.join(' or ')}"
+              equality.clear
+            end
             define_methods << define_methods_comparison
             if visit_param and not visit_param.intersect?(f)
               define_methods << "#{indentation}next if @visit.include?(#{terms_to_hyper(visit_param)})"
               visit_param = nil
             end
           end
-          equality.clear
           define_methods_comparison.clear
           precond_not.each {|pre,*terms|
             if pre == '=' then equality << "#{term(terms[0])} == #{term(terms[1])}"
@@ -232,7 +236,10 @@ module Hyper_Compiler
             elsif predicates[pre] or state.include?(pre) then applicable(define_methods_comparison << "#{indentation}next if ", pre, terms, predicates)
             end
           }
-          define_methods << "#{indentation}next if #{equality.join(' or ')}" unless equality.empty?
+          unless equality.empty?
+            define_methods << "#{indentation}next if #{equality.join(' or ')}"
+            equality.clear
+          end
           define_methods << define_methods_comparison
         end
         define_methods << indentation << (dec[4].empty? ? 'yield []' : "yield [#{indentation}  [" << dec[4].map {|g| g.map {|i| term(i)}.join(', ')}.join("],#{indentation}  [") << "]#{indentation}]") << close_method_str
