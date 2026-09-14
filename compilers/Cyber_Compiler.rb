@@ -242,10 +242,7 @@ module Cyber_Compiler
             elsif predicates[pre] or state.include?(pre) then define_methods_comparison << "#{indentation}if(#{applicable(pre, terms, predicates, arity)}) continue;"
             end
           }
-          unless equality.empty?
-            define_methods << "#{indentation}if(#{equality.join(' || ')}) continue;"
-            equality.clear
-          end
+          define_methods << "#{indentation}if(#{equality.join(' || ')}) continue;" unless equality.empty?
           define_methods << define_methods_comparison
         end
         if dec[4].empty? then define_methods << "#{indentation}yield(task->next, #{labels.size}, 0);#{close_method_str}\n  return false;\n}"

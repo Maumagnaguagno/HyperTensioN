@@ -236,10 +236,7 @@ module Hyper_Compiler
             elsif predicates[pre] or state.include?(pre) then applicable(define_methods_comparison << "#{indentation}next if ", pre, terms, predicates)
             end
           }
-          unless equality.empty?
-            define_methods << "#{indentation}next if #{equality.join(' or ')}"
-            equality.clear
-          end
+          define_methods << "#{indentation}next if #{equality.join(' or ')}" unless equality.empty?
           define_methods << define_methods_comparison
         end
         define_methods << indentation << (dec[4].empty? ? 'yield []' : "yield [#{indentation}  [" << dec[4].map {|g| g.map {|i| term(i)}.join(', ')}.join("],#{indentation}  [") << "]#{indentation}]") << close_method_str
