@@ -186,7 +186,6 @@ module Hyper_Compiler
                 define_methods << "#{indentation}return" unless state.include?(pre)
                 define_methods << "#{indentation}#{pre == '=' ? 'EQUAL' : pre.upcase}.each {|#{terms2.join(', ')}|"
               end
-              # close_method_str.prepend('}') and no indentation change for compact output
               close_method_str.prepend("#{indentation}}")
               indentation << '  '
             elsif pre == '=' then equality << "#{terms2[0]} != #{terms2[1]}"
